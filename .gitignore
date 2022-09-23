@@ -352,3 +352,5 @@ MigrationBackup/
 *build*
 
 *.vscode
+
+out/

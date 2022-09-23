@@ -9,7 +9,7 @@ Plan SAS_Parser::Parse(std::string path) {
         if (line[0] == '(') {
             actions.push_back(ParseAction(line.substr(1, line.length() - 2)));
         } else if (line[0] == ';') {
-
+            cost = ParseCost(line);
         }
     }
     return Plan(actions, cost);
@@ -34,6 +34,5 @@ Action SAS_Parser::ParseAction(std::string line) {
 }
 
 int SAS_Parser::ParseCost(std::string line) {
-    int equalIndex = line.find('=');
     return -1;
 }

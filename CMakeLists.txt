@@ -17,9 +17,9 @@ set(SOURCES
 	"src/PDDLParser/predicate.cc" "src/PDDLParser/predicate.hh"
 	"src/PDDLParser/problem.cc" "src/PDDLParser/problem.hh"
 	"src/PDDLParser/stack.hh"	)
-add_executable (P7 "src/P7.cpp" "src/P7.h" ${SOURCES})
+add_executable (P7 "src/P7.cpp" ${SOURCES})
 target_include_directories(P7 PRIVATE "PDDLParser")
-file(COPY "Data/gripper.pddl" "Data/gripper-4.pddl" "Data/gripper-typed.pddl"
+file(COPY "Data/gripper.pddl" "Data/gripper-4.pddl" "Data/gripper-typed.pddl" "Data/test_sas_plan"
      DESTINATION ${CMAKE_BINARY_DIR}/Data)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

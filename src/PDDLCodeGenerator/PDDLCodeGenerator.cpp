@@ -7,6 +7,8 @@ void PDDLCodeGenerator::GenerateCode(PDDLDriver driver, string domainFile, strin
 	GenerateProblemFile(driver.problem, problemFile);
 }
 
+#pragma region Domain File
+
 void PDDLCodeGenerator::GenerateDomainFile(Domain* domain, string domainFile) {
 	ofstream file;
 	file.open(domainFile);
@@ -45,6 +47,10 @@ string PDDLCodeGenerator::GetArguments(StringList* list) {
 	return retStr;
 }
 
+#pragma endregion
+
+#pragma region Problem
+
 void PDDLCodeGenerator::GenerateProblemFile(Problem* problem, string problemFile) {
 	ofstream file;
 	file.open(problemFile);
@@ -52,3 +58,5 @@ void PDDLCodeGenerator::GenerateProblemFile(Problem* problem, string problemFile
 	file << ")" << endl;
 	file.close();
 }
+
+#pragma endregion

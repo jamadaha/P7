@@ -24,7 +24,7 @@ public:
     Plan(std::vector<SASAction> actions, int cost) : actions(actions), cost(cost) {}
 };
 
-class SAS_Parser {
+class SASParser {
 public:
     Plan Parse(std::string path);
 

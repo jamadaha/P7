@@ -1,6 +1,6 @@
 #include "SASParser.h"
 
-Plan SAS_Parser::Parse(std::string path) {
+Plan SASParser::Parse(std::string path) {
     std::vector<SASAction> actions;
     int cost;
     std::ifstream stream(path);
@@ -28,14 +28,14 @@ std::vector<std::string> tokenize(std::string const &str, const char delim) {
     return tokens;
 }
 
-SASAction SAS_Parser::ParseAction(std::string line) {
+SASAction SASParser::ParseAction(std::string line) {
     std::vector<std::string> tokens = tokenize(line, ' ');
     std::string actionName = tokens.front(); tokens.erase(tokens.begin());
     std::vector<std::string> parameters = tokens;
     return SASAction(actionName, parameters);
 }
 
-int SAS_Parser::ParseCost(std::string line) {
+int SASParser::ParseCost(std::string line) {
     int equalityIndex = line.find('=');
     if (equalityIndex == line.npos)
         return -1;

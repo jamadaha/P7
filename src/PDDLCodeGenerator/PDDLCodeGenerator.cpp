@@ -23,8 +23,9 @@ void PDDLCodeGenerator::GenerateDomainFile(Domain* domain, string domainFile) {
 string PDDLCodeGenerator::GetRequirements(Domain* domain) {
 	string retStr = "";
 	retStr += "\t(:requirements";
-	for (StringList::iterator t = domain->_requirements->begin(); t != domain->_requirements->end(); ++t)
-		retStr += " " + * t;
+	for (string i : *(domain->_requirements)) {
+		retStr += " " + i;
+	}
 	retStr += "\n\t)";
 	return retStr;
 }
@@ -32,8 +33,8 @@ string PDDLCodeGenerator::GetRequirements(Domain* domain) {
 string PDDLCodeGenerator::GetPredicates(Domain* domain) {
 	string retStr = "";
 	retStr += "\t(:predicates\n";
-	for (PredicateList::iterator t = domain->_predicates->begin(); t != domain->_predicates->end(); ++t) {
-		retStr += " (" + (*t)->_name + GetArguments((*t)->_args) + ")";
+	for (Predicate *i : *(domain->_predicates)) {
+		retStr += " (" + i->_name + GetArguments(i->_args) + ")";
 	}
 	retStr += "\n\t)";
 	return retStr;
@@ -41,8 +42,8 @@ string PDDLCodeGenerator::GetPredicates(Domain* domain) {
 
 string PDDLCodeGenerator::GetArguments(StringList* list) {
 	string retStr = "";
-	for (StringList::iterator t = list->begin(); t != list->end(); ++t) {
-		retStr += " " + (*t);
+	for (string i : *(list)) {
+		retStr += " " + i;
 	}
 	return retStr;
 }

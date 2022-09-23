@@ -6,7 +6,7 @@ using namespace std;
 
 int main()
 {
-	SAS_Parser parser;
+	SASParser parser;
 	auto a = parser.Parse("Data/test_sas_plan");
 
 	PDDLDriver driver;

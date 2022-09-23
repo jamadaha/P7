@@ -16,7 +16,9 @@ set(SOURCES
 	"src/PDDLParser/position.hh"
 	"src/PDDLParser/predicate.cc" "src/PDDLParser/predicate.hh"
 	"src/PDDLParser/problem.cc" "src/PDDLParser/problem.hh"
-	"src/PDDLParser/stack.hh"	)
+	"src/PDDLParser/stack.hh"
+
+	"src/SASParser/SASParser.h" "src/SASParser/SASParser.cpp")
 add_executable (P7 "src/P7.cpp" ${SOURCES})
 target_include_directories(P7 PRIVATE "PDDLParser")
 file(COPY "Data/gripper.pddl" "Data/gripper-4.pddl" "Data/gripper-typed.pddl" "Data/test_sas_plan"

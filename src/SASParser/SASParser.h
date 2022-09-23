@@ -7,20 +7,20 @@
 #include <sstream>
 #include <string>
 
-struct Action {
+struct SASAction {
 public:
     std::string name;
     std::vector<std::string> parameters;
 
-    Action(std::string name, std::vector<std::string> parameters) : name(name), parameters(parameters) {}
+    SASAction(std::string name, std::vector<std::string> parameters) : name(name), parameters(parameters) {}
 };
 
 struct Plan {
 public:
-    std::vector<Action> actions;
+    std::vector<SASAction> actions;
     int cost;
 
-    Plan(std::vector<Action> actions, int cost) : actions(actions), cost(cost) {}
+    Plan(std::vector<SASAction> actions, int cost) : actions(actions), cost(cost) {}
 };
 
 class SAS_Parser {
@@ -28,7 +28,7 @@ public:
     Plan Parse(std::string path);
 
 private:
-    Action ParseAction(std::string line);
+    SASAction ParseAction(std::string line);
     int ParseCost(std::string line);
 };
 

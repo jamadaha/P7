@@ -21,8 +21,8 @@ set(SOURCES
 	"src/SASParser/SASParser.h" "src/SASParser/SASParser.cpp")
 add_executable (P7 "src/P7.cpp" ${SOURCES})
 target_include_directories(P7 PRIVATE "PDDLParser")
-file(COPY "Data/gripper.pddl" "Data/gripper-4.pddl" "Data/gripper-typed.pddl" "Data/test_sas_plan"
-     DESTINATION ${CMAKE_BINARY_DIR}/Data)
+
+file(COPY Data DESTINATION ${CMAKE_BINARY_DIR})
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET P7 PROPERTY CXX_STANDARD 20)

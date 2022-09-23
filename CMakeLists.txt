@@ -1,9 +1,10 @@
-﻿# CMakeList.txt : CMake project for P7, include source and define
-# project specific logic here.
-#
-cmake_minimum_required (VERSION 3.8)
+﻿cmake_minimum_required (VERSION 3.8)
+set (CMAKE_CXX_STANDARD 17)
 
-project ("P7")
+project(P7 VERSION 0.1.0)
+
+include(CTest)
+enable_testing()
 
 # Add source to this project's executable.
 set(SOURCES 
@@ -24,8 +25,6 @@ target_include_directories(P7 PRIVATE "PDDLParser")
 
 file(COPY Data DESTINATION ${CMAKE_BINARY_DIR})
 
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET P7 PROPERTY CXX_STANDARD 20)
-endif()
-
-# TODO: Add tests and install targets if needed.
+set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+include(CPack)

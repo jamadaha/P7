@@ -19,7 +19,7 @@ public:
 
 	friend std::ostream &operator<<(std::ostream &os, const Domain &domain);
 
-private:
+//private:
 	std::string               _name;
 	std::vector<std::string> *_requirements;
 	std::vector<Predicate*>  *_predicates;

@@ -24,7 +24,7 @@ public:
 
 	friend std::ostream &operator<<(std::ostream& out, const Problem& problem);
 
-private:
+//private:
 	std::string _name;
 	std::string _domain;
 

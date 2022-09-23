@@ -30,7 +30,7 @@ public:
 
 	friend std::ostream& operator<<(std::ostream& out, const Action& action);
 
-private:
+//private:
 	std::string             _name;
 	const StringList       *_params;
 	const TypeDict         *_types;

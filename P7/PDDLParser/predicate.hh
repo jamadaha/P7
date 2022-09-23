@@ -17,7 +17,7 @@ public:
 
 	friend std::ostream& operator<<(std::ostream& out, const Predicate& predicate);
 
-private:
+//private:
 	std::string  _name;
 	StringList  *_args;
 	TypeDict    *_types;

@@ -1,3 +1,0 @@
-C:/Users/kris7/OneDrive/Programming/_ GitHub _/School Projects/P7/P7/P7/out/build/x64-debug/CMakeFiles/P7.dir
-C:/Users/kris7/OneDrive/Programming/_ GitHub _/School Projects/P7/P7/P7/out/build/x64-debug/CMakeFiles/edit_cache.dir
-C:/Users/kris7/OneDrive/Programming/_ GitHub _/School Projects/P7/P7/P7/out/build/x64-debug/CMakeFiles/rebuild_cache.dir

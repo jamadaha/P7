@@ -7,19 +7,21 @@ project ("P7")
 
 # Add source to this project's executable.
 set(SOURCES 
-	"PDDLParser/action.cc" "PDDLParser/action.hh" 
-	"PDDLParser/pddldriver.cc" "PDDLParser/pddldriver.hh"
-	"PDDLParser/domain.cc" "PDDLParser/domain.hh"
-	"PDDLParser/location.hh"
-	"PDDLParser/pddllex.yy.cc"
-	"PDDLParser/pddlparser.tab.cc" "PDDLParser/pddlparser.tab.hh"
-	"PDDLParser/position.hh"
-	"PDDLParser/predicate.cc" "PDDLParser/predicate.hh"
-	"PDDLParser/problem.cc" "PDDLParser/problem.hh"
-	"PDDLParser/stack.hh"	)
-add_executable (P7 "P7.cpp" "P7.h" ${SOURCES})
+	"src/PDDLParser/action.cc" "src/PDDLParser/action.hh" 
+	"src/PDDLParser/pddldriver.cc" "src/PDDLParser/pddldriver.hh"
+	"src/PDDLParser/domain.cc" "src/PDDLParser/domain.hh"
+	"src/PDDLParser/location.hh"
+	"src/PDDLParser/pddllex.yy.cc"
+	"src/PDDLParser/pddlparser.tab.cc" "src/PDDLParser/pddlparser.tab.hh"
+	"src/PDDLParser/position.hh"
+	"src/PDDLParser/predicate.cc" "src/PDDLParser/predicate.hh"
+	"src/PDDLParser/problem.cc" "src/PDDLParser/problem.hh"
+	"src/PDDLParser/stack.hh"
+
+	"src/SASParser/SASParser.h" "src/SASParser/SASParser.cpp")
+add_executable (P7 "src/P7.cpp" ${SOURCES})
 target_include_directories(P7 PRIVATE "PDDLParser")
-file(COPY "Data/gripper.pddl" "Data/gripper-4.pddl" "Data/gripper-typed.pddl"
+file(COPY "Data/gripper.pddl" "Data/gripper-4.pddl" "Data/gripper-typed.pddl" "Data/test_sas_plan"
      DESTINATION ${CMAKE_BINARY_DIR}/Data)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

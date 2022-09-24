@@ -5,16 +5,16 @@ using namespace std;
 void PDDLProblemCodeGenerator::GenerateProblemFile(Problem* problem, string problemFile) {
 	ofstream file;
 	file.open(problemFile);
-	file << "(define (problem " + problem->_name + ")" << endl;
-	file << GetTabs(1) + "(:domain " + problem->_domain + ")" << endl;
-	file << endl;
-	file << GetObjects(problem->_objects) << endl;
-	file << endl;
-	file << GetInits(problem->_init) << endl;
-	file << endl;
-	file << GetGoals(problem->_goal) << endl;
-	file << endl;
-	file << ")" << endl;
+	file << "(define (problem " + problem->_name + ")\n";
+	file << GetTabs(1) + "(:domain " + problem->_domain + ")\n";
+	file << "\n";
+	file << GetObjects(problem->_objects) + "\n";
+	file << "\n";
+	file << GetInits(problem->_init) + "\n";
+	file << "\n";
+	file << GetGoals(problem->_goal) + "\n";
+	file << "\n";
+	file << ")\n";
 	file.close();
 }
 

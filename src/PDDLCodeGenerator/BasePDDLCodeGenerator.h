@@ -10,6 +10,7 @@ class BasePDDLCodeGenerator {
 public:
 	string GetPredicate(Predicate* predicate);
 	string GetStringList(StringList* list);
+	string GetTabs(int count);
 };
 
 #endif

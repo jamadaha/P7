@@ -18,21 +18,23 @@ void PDDLDomainCodeGenerator::GenerateDomainFile(Domain* domain, string domainFi
 
 string PDDLDomainCodeGenerator::GetRequirements(StringList* requirements) {
 	string retStr = "";
-	retStr += "\t(:requirements\n\t\t";
+	retStr += GetTabs(1) + "(:requirements\n";
+	retStr += GetTabs(2);
 	for (string i : *(requirements)) {
 		retStr += " " + i;
 	}
-	retStr += ")\n";
+	retStr += "\n" + GetTabs(1) + ")";
 	return retStr;
 }
 
 string PDDLDomainCodeGenerator::GetPredicates(PredicateList* predicates) {
 	string retStr = "";
-	retStr += "\t(:predicates\n\t\t";
+	retStr += GetTabs(1) + "(:predicates\n";
+	retStr += GetTabs(2);
 	for (Predicate* i : *(predicates)) {
 		retStr += GetPredicate(i);
 	}
-	retStr += "\n\t)";
+	retStr += "\n" + GetTabs(1) + ")";
 	return retStr;
 }
 
@@ -45,21 +47,26 @@ string PDDLDomainCodeGenerator::GetActions(ActionList* actions) {
 }
 
 string PDDLDomainCodeGenerator::GetAction(Action* action) {
-	string retStr = "(:action " + action->_name + "\n";
-	retStr += ":parameters (";
+	string retStr = GetTabs(1) + "(:action " + action->_name + "\n";
+	retStr += GetTabs(2) + ":parameters (\n";
+	retStr += GetTabs(3);
 	for (string i : *(action->_params)) {
 		retStr += " " + i;
 	}
-	retStr += ")\n";
-	retStr += ":precondition (" + GetLiteralChain(action->_precond) + ")";
-	retStr += ")\n";
-	retStr += ":effect (" + GetLiteralChain(action->_effects) + ")";
-	retStr += ")\n";
+	retStr += "\n";
+	retStr += GetTabs(2) + ")\n";
+	retStr += GetTabs(2) + ":precondition (\n";
+	retStr += GetTabs(3) + GetLiteralChain(action->_precond) + "\n";
+	retStr += GetTabs(2) + ")\n";
+	retStr += GetTabs(2) + ":effect (\n";
+	retStr += GetTabs(3) + GetLiteralChain(action->_effects) + "\n";
+	retStr += GetTabs(2) + ")\n";
+	retStr += GetTabs(1) + ")\n";
 	return retStr;
 }
 
 string PDDLDomainCodeGenerator::GetPrecondition(Literal* predicate) {
-	if (predicate->second) {
+	if (!predicate->second) {
 		return "(not " + GetPredicate(predicate->first) + ")";
 	}
 	else
@@ -71,10 +78,9 @@ string PDDLDomainCodeGenerator::GetPrecondition(Literal* predicate) {
 string PDDLDomainCodeGenerator::GetLiteralChain(const vector<pair<Predicate*, bool>*>* chain) {
 	string retStr = "";
 	if (chain->size() > 1) {
-		retStr = "and (\n";
+		retStr = "and ";
 		for (auto i : *(chain))
 			retStr += GetPrecondition(i) + " ";
-		retStr += ")";
 	}
 	else
 	{

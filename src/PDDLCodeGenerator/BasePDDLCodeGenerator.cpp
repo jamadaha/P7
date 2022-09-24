@@ -13,3 +13,11 @@ string BasePDDLCodeGenerator::GetStringList(StringList* list) {
 	}
 	return retStr;
 }
+
+string BasePDDLCodeGenerator::GetTabs(int count) {
+	string retStr = "";
+	for (int i = 0; i < count; i++) {
+		retStr += "\t";
+	}
+	return retStr;
+}

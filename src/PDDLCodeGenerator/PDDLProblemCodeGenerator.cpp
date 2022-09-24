@@ -6,7 +6,7 @@ void PDDLProblemCodeGenerator::GenerateProblemFile(Problem* problem, string prob
 	ofstream file;
 	file.open(problemFile);
 	file << "(define (problem " + problem->_name + ")" << endl;
-	file << "\t(:domain " + problem->_domain + ")" << endl;
+	file << GetTabs(1) + "(:domain " + problem->_domain + ")" << endl;
 	file << endl;
 	file << GetObjects(problem->_objects) << endl;
 	file << endl;
@@ -19,30 +19,36 @@ void PDDLProblemCodeGenerator::GenerateProblemFile(Problem* problem, string prob
 }
 
 string PDDLProblemCodeGenerator::GetObjects(StringList* objects) {
-	string retStr = "(:objects\n";
+	string retStr = GetTabs(1) + "(:objects\n";
+	retStr += GetTabs(2);
 	for (string i : *(objects)) {
 		retStr += " " + i;
 	}
-	retStr += ")";
+	retStr += "\n";
+	retStr += GetTabs(1) + ")";
 	return retStr;
 }
 
 string PDDLProblemCodeGenerator::GetInits(LiteralList* literals) {
-	string retStr = "(:init\n";
+	string retStr = GetTabs(1) + "(:init\n";
+	retStr += GetTabs(2);
 	for (auto i : *(literals)) {
 		retStr += GetPredicate(i->first);
 	}
-	retStr += ")";
+	retStr += "\n";
+	retStr += GetTabs(1) + ")";
 	return retStr;
 }
 
 string PDDLProblemCodeGenerator::GetGoals(LiteralList* literals) {
-	string retStr = "(:goal\n";
-	retStr += "(and \n";
+	string retStr = GetTabs(1) + "(:goal\n";
+	retStr += GetTabs(2) + "(and \n";
+	retStr += GetTabs(3);
 	for (auto i : *(literals)) {
 		retStr += GetPredicate(i->first);
 	}
-	retStr += ")";
-	retStr += ")";
+	retStr += "\n";
+	retStr += GetTabs(2) + ")\n";
+	retStr += GetTabs(1) + ")";
 	return retStr;
 }

@@ -9,7 +9,7 @@ using namespace std;
 class BasePDDLCodeGenerator {
 public:
 	string GetPredicate(Predicate* predicate);
-	string GetArguments(StringList* list);
+	string GetStringList(StringList* list);
 };
 
 #endif

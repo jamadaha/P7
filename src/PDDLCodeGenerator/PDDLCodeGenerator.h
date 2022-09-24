@@ -19,6 +19,8 @@ public:
 private:
 	PDDLDomainCodeGenerator domainGenerator;
 	PDDLProblemCodeGenerator problemGenerator;
+
+	void RemoveCharacter(string* buffer, char character);
 };
 
 #endif

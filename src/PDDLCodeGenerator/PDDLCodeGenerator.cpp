@@ -23,17 +23,21 @@ bool PDDLCodeGenerator::VerifyCodeGeneration(string sourceFile, string generated
     string generatedBuffer((istreambuf_iterator<char>(generatedStream)),
                             istreambuf_iterator<char>());
 
-    sourceBuffer.erase(remove(sourceBuffer.begin(), sourceBuffer.end(), '\n'), sourceBuffer.end());
-    sourceBuffer.erase(remove(sourceBuffer.begin(), sourceBuffer.end(), '\r'), sourceBuffer.end());
-    sourceBuffer.erase(remove(sourceBuffer.begin(), sourceBuffer.end(), '\t'), sourceBuffer.end());
-    sourceBuffer.erase(remove(sourceBuffer.begin(), sourceBuffer.end(), ' '), sourceBuffer.end());
+    RemoveCharacter(&(sourceBuffer), '\n');
+    RemoveCharacter(&(sourceBuffer), '\r');
+    RemoveCharacter(&(sourceBuffer), '\t');
+    RemoveCharacter(&(sourceBuffer), ' ');
 
-    generatedBuffer.erase(remove(generatedBuffer.begin(), generatedBuffer.end(), '\n'), generatedBuffer.end());
-    generatedBuffer.erase(remove(generatedBuffer.begin(), generatedBuffer.end(), '\r'), generatedBuffer.end());
-    generatedBuffer.erase(remove(generatedBuffer.begin(), generatedBuffer.end(), '\t'), generatedBuffer.end());
-    generatedBuffer.erase(remove(generatedBuffer.begin(), generatedBuffer.end(), ' '), generatedBuffer.end());
+    RemoveCharacter(&(generatedBuffer), '\n');
+    RemoveCharacter(&(generatedBuffer), '\r');
+    RemoveCharacter(&(generatedBuffer), '\t');
+    RemoveCharacter(&(generatedBuffer), ' ');
 
     if (sourceBuffer != generatedBuffer)
         return false;
     return true;
+}
+
+void PDDLCodeGenerator::RemoveCharacter(string* buffer, char character) {
+    buffer->erase(remove(buffer->begin(), buffer->end(), character), buffer->end());
 }

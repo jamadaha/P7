@@ -13,11 +13,9 @@ int main()
 	PDDLDriver driver;
 	driver.parse("Data/gripper.pddl");
 	driver.parse("Data/gripper-4.pddl");
-	cout << *(driver.domain) << endl;
-	cout << *(driver.problem) << endl;
 
 	PDDLCodeGenerator generator;
-	generator.GenerateCode(driver, "Data/newDomain.pddl", "Data/newProblem.pddl");
+	generator.GenerateAndVerifyCode(&(driver), "Data/gripper.pddl", "Data/newDomain.pddl", "Data/gripper-4.pddl", "Data/newProblem.pddl");
 
 	return 0;
 }

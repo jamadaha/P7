@@ -1,5 +1,5 @@
 ﻿cmake_minimum_required (VERSION 3.8)
-set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD 20)
 
 project(P7 VERSION 0.1.0)
 
@@ -19,7 +19,8 @@ set(SOURCES
 	"src/PDDLParser/problem.cc" "src/PDDLParser/problem.hh"
 	"src/PDDLParser/stack.hh"
 
-	"src/SASParser/SASParser.h" "src/SASParser/SASParser.cpp")
+	"src/SASParser/SASParser.h" "src/SASParser/SASParser.cpp"
+	"src/PDDLCodeGenerator/PDDLCodeGenerator.h" "src/PDDLCodeGenerator/PDDLCodeGenerator.cpp" "src/PDDLCodeGenerator/PDDLDomainCodeGenerator.h" "src/PDDLCodeGenerator/PDDLDomainCodeGenerator.cpp" "src/PDDLCodeGenerator/PDDLProblemCodeGenerator.h" "src/PDDLCodeGenerator/PDDLProblemCodeGenerator.cpp" "src/PDDLCodeGenerator/BasePDDLCodeGenerator.h" "src/PDDLCodeGenerator/BasePDDLCodeGenerator.cpp")
 add_executable (P7 "src/P7.cpp" ${SOURCES})
 target_include_directories(P7 PRIVATE "PDDLParser")
 

@@ -1,9 +1,10 @@
-﻿# CMakeList.txt : CMake project for P7, include source and define
-# project specific logic here.
-#
-cmake_minimum_required (VERSION 3.8)
+﻿cmake_minimum_required (VERSION 3.8)
+set (CMAKE_CXX_STANDARD 17)
 
-project ("P7")
+project(P7 VERSION 0.1.0)
+
+include(CTest)
+enable_testing()
 
 # Add source to this project's executable.
 set(SOURCES 
@@ -22,11 +23,9 @@ set(SOURCES
 	"src/PDDLCodeGenerator/PDDLCodeGenerator.h" "src/PDDLCodeGenerator/PDDLCodeGenerator.cpp" "src/PDDLCodeGenerator/PDDLDomainCodeGenerator.h" "src/PDDLCodeGenerator/PDDLDomainCodeGenerator.cpp" "src/PDDLCodeGenerator/PDDLProblemCodeGenerator.h" "src/PDDLCodeGenerator/PDDLProblemCodeGenerator.cpp" "src/PDDLCodeGenerator/BasePDDLCodeGenerator.h" "src/PDDLCodeGenerator/BasePDDLCodeGenerator.cpp")
 add_executable (P7 "src/P7.cpp" ${SOURCES})
 target_include_directories(P7 PRIVATE "PDDLParser")
-file(COPY "Data/gripper.pddl" "Data/gripper-4.pddl" "Data/gripper-typed.pddl" "Data/test_sas_plan"
-     DESTINATION ${CMAKE_BINARY_DIR}/Data)
 
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET P7 PROPERTY CXX_STANDARD 20)
-endif()
+file(COPY Data DESTINATION ${CMAKE_BINARY_DIR})
 
-# TODO: Add tests and install targets if needed.
+set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+include(CPack)

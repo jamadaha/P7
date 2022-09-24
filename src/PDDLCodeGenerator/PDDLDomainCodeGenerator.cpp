@@ -36,18 +36,6 @@ string PDDLDomainCodeGenerator::GetPredicates(PredicateList* predicates) {
 	return retStr;
 }
 
-string PDDLDomainCodeGenerator::GetPredicate(Predicate* predicate) {
-	return " (" + predicate->_name + GetArguments(predicate->_args) + ")";
-}
-
-string PDDLDomainCodeGenerator::GetArguments(StringList* list) {
-	string retStr = "";
-	for (string i : *(list)) {
-		retStr += " " + i;
-	}
-	return retStr;
-}
-
 string PDDLDomainCodeGenerator::GetActions(ActionList* actions) {
 	string retStr = "";
 	for (Action* i : *(actions)) {

@@ -2,19 +2,18 @@
 #define PDDLCodeGenerator_Domain_H
 
 #include "../PDDLParser/pddldriver.hh"
+#include "BasePDDLCodeGenerator.h"
 #include <fstream>
 
 using namespace std;
 
-class PDDLDomainCodeGenerator {
+class PDDLDomainCodeGenerator : public BasePDDLCodeGenerator {
 public:
 	void GenerateDomainFile(Domain* domain, string domainFile);
 
 private:
 	string GetRequirements(StringList* requirements);
 	string GetPredicates(PredicateList* predicates);
-	string GetPredicate(Predicate* predicate);
-	string GetArguments(StringList* list);
 	string GetActions(ActionList* actions);
 	string GetAction(Action* action);
 	string GetPrecondition(Literal* predicate);

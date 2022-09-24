@@ -46,15 +46,3 @@ string PDDLProblemCodeGenerator::GetGoals(LiteralList* literals) {
 	retStr += ")";
 	return retStr;
 }
-
-string PDDLProblemCodeGenerator::GetPredicate(Predicate* predicate) {
-	return " (" + predicate->_name + GetArguments(predicate->_args) + ")";
-}
-
-string PDDLProblemCodeGenerator::GetArguments(StringList* list) {
-	string retStr = "";
-	for (string i : *(list)) {
-		retStr += " " + i;
-	}
-	return retStr;
-}

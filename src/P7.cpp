@@ -3,6 +3,7 @@
 #include "SASParser/SASParser.h"
 #include "PDDLCodeGenerator/PDDLCodeGenerator.h"
 #include "Config/config.h"
+#include "DownwardRunner/DownwardRunner.h"
 #include "SASCodeGenerator/SASCodeGenerator.h"
 #include "FileVerifier/FileVerifier.h"
 #include "CommonInterface/CommonInterface.h"
@@ -25,6 +26,7 @@ int main(int argc, char** argv)
 	cout << "Done!" << endl;
 
 	Config c = Config::parseArgs(argc, argv);
+	DownwardRunner::runDownward(c);
 
 	cout << "Verifying SAS file..." << endl;
 	if (!verifier.VerifyFiles("Data/test_sas_plan", "Data/new_sas_plan"))

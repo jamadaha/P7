@@ -1,4 +1,5 @@
 #include "FileVerifier.h"
+#include "../Helpers/StringHelper.h"
 
 using namespace std;
 
@@ -14,16 +15,12 @@ bool FileVerifier::VerifyFiles(string sourceFile, string targetFile, vector<char
     string targetBuffer((istreambuf_iterator<char>(targetStream)),
         istreambuf_iterator<char>());
 
-    for(char character : purgeChars)
-        RemoveCharacter(&(sourceBuffer), character);
     for (char character : purgeChars)
-        RemoveCharacter(&(targetBuffer), character);
+        StringHelper::RemoveCharacter(&(sourceBuffer), character);
+    for (char character : purgeChars)
+        StringHelper::RemoveCharacter(&(targetBuffer), character);
 
     if (sourceBuffer != targetBuffer)
         return false;
     return true;
-}
-
-void FileVerifier::RemoveCharacter(string* buffer, char character) {
-    buffer->erase(remove(buffer->begin(), buffer->end(), character), buffer->end());
 }

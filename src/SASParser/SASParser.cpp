@@ -1,4 +1,5 @@
 #include "SASParser.h"
+#include "../Helpers/StringHelper.h"
 
 Plan SASParser::Parse(std::string path) {
     std::vector<SASAction> actions;
@@ -6,8 +7,8 @@ Plan SASParser::Parse(std::string path) {
     std::ifstream stream(path);
     std::string line;
     while (std::getline(stream, line)) {
-        line.erase(std::remove(line.begin(), line.end(), '('), line.end());
-        line.erase(std::remove(line.begin(), line.end(), ')'), line.end());
+        StringHelper::RemoveCharacter(&line, ')');
+        StringHelper::RemoveCharacter(&line, '(');
         if (line[0] == ';') {
             cost = ParseCost(line);
         } else {
@@ -29,6 +30,8 @@ std::vector<std::string> tokenize(std::string const &str, const char delim) {
 }
 
 SASAction SASParser::ParseAction(std::string line) {
+    StringHelper::RemoveCharacter(&line, '\r');
+    StringHelper::RemoveCharacter(&line, '\n');
     std::vector<std::string> tokens = tokenize(line, ' ');
     std::string actionName = tokens.front(); tokens.erase(tokens.begin());
     std::vector<std::string> parameters = tokens;

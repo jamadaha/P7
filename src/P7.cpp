@@ -24,6 +24,8 @@ int main(int argc, char** argv)
 		throw invalid_argument("Files not the same!");
 	cout << "Done!" << endl;
 
+	Config c = Config::parseArgs(argc, argv);
+
 	cout << "Verifying SAS file..." << endl;
 	if (!verifier.VerifyFiles("Data/test_sas_plan", "Data/new_sas_plan"))
 		throw invalid_argument("Files not the same!");

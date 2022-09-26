@@ -10,9 +10,9 @@ Config Config::parseArgs(int argc, char** argv){
     cxxopts::Options options("test","interesting description");
 
     options.add_options()
-        ("d,downwardpath", "fast-downward.py filepath", cxxopts::value<std::string>()) 
-        ("s,search", "Search method", cxxopts::value<std::string>())
-        ("h,heuristic", "Evaluator method", cxxopts::value<std::string>())
+        ("d,downwardpath", "fast-downward.py filepath", cxxopts::value<std::string>()->default_value("fast-downward.py")) 
+        ("s,search", "Search method", cxxopts::value<std::string>()->default_value("astar"))
+        ("h,heuristic", "Evaluator method", cxxopts::value<std::string>()->default_value("blind"))
     ;
 
     auto result = options.parse(argc, argv);

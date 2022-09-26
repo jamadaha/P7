@@ -12,7 +12,8 @@ Plan SASParser::Parse(std::string path) {
         if (line[0] == ';') {
             cost = ParseCost(line);
         } else {
-            actions.push_back(ParseAction(line));
+            SASAction newAction = ParseAction(line);
+            actions.push_back(newAction);
         }
     }
     return Plan(actions, cost);

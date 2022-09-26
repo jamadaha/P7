@@ -2,10 +2,9 @@
 #include <string>
 #include <cstring>
 #include <iostream>
-#include "../include/cxxopts.hpp"
+#include "../../include/cxxopts.hpp"
 using namespace std;
 
-// assumes domain and problem pddls are called "domain.pddl" and "problem.pddl"
 Config Config::parseArgs(int argc, char** argv){
     // create options
     cxxopts::Options options("test","interesting description");
@@ -25,13 +24,6 @@ Config Config::parseArgs(int argc, char** argv){
     Config c = Config(downwardpath, o);
 
     return c;
-    // string search = Config::stringifySearch(c.opt);
-    // string heuristic = Config::stringifyHeuristic(c.opt);
-
-    // string command = c.path + " domain.pddl problem.pddl --search \"" + search + "(" + heuristic + "())\"";
-    // cout << command;
-    //string command = c1 + c.path + " --help";
-    //system(command.c_str());
 }
 
 Search Config::enumerateSearch(string search) {

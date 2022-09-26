@@ -10,7 +10,7 @@ using namespace std;
 
 class SASCodeGenerator {
 public:
-	void GenerateCode(Plan plab, string targetFile);
+	void GenerateCode(Plan plan, string targetFile);
 
 private:
 	string GetAction(SASAction action);

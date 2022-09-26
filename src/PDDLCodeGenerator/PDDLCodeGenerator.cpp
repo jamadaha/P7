@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void PDDLCodeGenerator::GenerateCode(PDDLDriver* driver, string domainFile, string problemFile) {
-	domainGenerator.GenerateDomainFile(driver->domain, domainFile);
-	problemGenerator.GenerateProblemFile(driver->problem, problemFile);
+void PDDLCodeGenerator::GenerateCode(PDDLDocument document, string domainFile, string problemFile) {
+	domainGenerator.GenerateDomainFile(document.domain, domainFile);
+	problemGenerator.GenerateProblemFile(document.problem, problemFile);
 }

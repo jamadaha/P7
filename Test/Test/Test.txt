@@ -1,4 +1,0 @@
-add_executable(Test Test/Test/Test.cpp)
-
-add_test(Test Test)
-add_test(Test_Error Test 1)

@@ -3,9 +3,6 @@ set (CMAKE_CXX_STANDARD 20)
 
 project(P7 VERSION 0.1.0)
 
-include(CTest)
-enable_testing()
-
 # Add source to this project's executable.
 set(SOURCES 
 	"src/PDDLParser/action.cc" "src/PDDLParser/action.hh" 
@@ -29,4 +26,4 @@ file(COPY Data DESTINATION ${CMAKE_BINARY_DIR})
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
-include(Test/CMakeTest.txt)
+include(Test/CMakeLists.txt)

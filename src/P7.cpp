@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include "PDDLParser/pddldriver.hh"
 #include "SASParser/SASParser.h"
 #include "PDDLCodeGenerator/PDDLCodeGenerator.h"
@@ -7,7 +7,7 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char** argv)
 {
 	FileVerifier verifier;
 

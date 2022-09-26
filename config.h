@@ -22,7 +22,7 @@ struct Config {
     std::string path;
     Options opt;
     Config (std::string p, Options o) {
-        Config::path = path;
+        Config::path = p;
         Config::opt = o;
     }
 };

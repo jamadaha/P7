@@ -68,5 +68,13 @@
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}"
             }
         }
-    ]
+    ],
+    "testPresets": [
+        {
+          "name": "tests",
+          "configurePreset": "Linux",
+          "output": {"outputOnFailure": true},
+          "execution": {"noTestsAction": "error", "stopOnFailure": true}
+        }
+      ]
 }

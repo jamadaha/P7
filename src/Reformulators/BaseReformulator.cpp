@@ -1,13 +1,11 @@
 #include "BaseReformulator.h"
 
-PDDLDriver BaseReformulator::ReformulatePDDL(PDDLDriver inputPDDL) {
+PDDLDriver* BaseReformulator::ReformulatePDDL(PDDLDriver* inputPDDL) {
 	// Do Something and transform the input PDDL into a new PDDL format
-	BaseReformulator::ReformulatedPDDL = inputPDDL;
-	return BaseReformulator::ReformulatedPDDL;
+	return inputPDDL;
 }
 
-Plan BaseReformulator::RebuildSASPlan(Plan reformulatedSAS) {
+Plan* BaseReformulator::RebuildSASPlan(Plan* reformulatedSAS) {
 	// Do Something and give a "corrected" SAS plan back
-	BaseReformulator::OutputSAS = reformulatedSAS;
-	return BaseReformulator::OutputSAS;
+	return reformulatedSAS;
 }

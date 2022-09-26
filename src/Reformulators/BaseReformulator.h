@@ -11,13 +11,8 @@ using namespace std;
 
 class BaseReformulator {
 public:
-	PDDLDriver InputPDDL;
-	PDDLDriver ReformulatedPDDL;
-	Plan ReformulatedSAS;
-	Plan OutputSAS;
-
-	PDDLDriver ReformulatePDDL(PDDLDriver inputPDDL);
-	Plan RebuildSASPlan(Plan reformulatedSAS);
+	PDDLDriver* ReformulatePDDL(PDDLDriver* inputPDDL);
+	Plan* RebuildSASPlan(Plan* reformulatedSAS);
 };
 
 #endif

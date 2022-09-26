@@ -29,6 +29,8 @@ std::vector<std::string> tokenize(std::string const &str, const char delim) {
 }
 
 SASAction SASParser::ParseAction(std::string line) {
+    RemoveCharacter(&line, '\r');
+    RemoveCharacter(&line, '\n');
     std::vector<std::string> tokens = tokenize(line, ' ');
     std::string actionName = tokens.front(); tokens.erase(tokens.begin());
     std::vector<std::string> parameters = tokens;
@@ -49,4 +51,8 @@ int SASParser::ParseCost(std::string line) {
         line = line.substr(1);
     }
     return std::atoi(strInt.c_str());
+}
+
+void SASParser::RemoveCharacter(string* buffer, char character) {
+    buffer->erase(remove(buffer->begin(), buffer->end(), character), buffer->end());
 }

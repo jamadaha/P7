@@ -8,6 +8,8 @@
 #include <string>
 #include <algorithm>
 
+using namespace std;
+
 struct SASAction {
 public:
     std::string name;
@@ -31,6 +33,7 @@ public:
 private:
     SASAction ParseAction(std::string line);
     int ParseCost(std::string line);
+    void RemoveCharacter(string* buffer, char character);
 };
 
 #endif

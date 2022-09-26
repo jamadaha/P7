@@ -11,11 +11,7 @@ using namespace std;
 int main()
 {
 	cout << "Running reformulator..." << endl;
-	CommonInterface interface;
-	interface.TempDomainName = "Data/newDomain.pddl";
-	interface.TempProblemName = "Data/newProblem.pddl";
-	interface.FastDownwardSASName = "Data/test_sas_plan";
-	interface.OutputSASName = "Data/new_sas_plan";
+	CommonInterface interface = CommonInterface("Data/newDomain.pddl", "Data/newProblem.pddl", "Data/test_sas_plan", "Data/new_sas_plan");
 	interface.Run("Data/gripper.pddl", "Data/gripper-4.pddl");
 	cout << "Done!" << endl;
 

@@ -12,6 +12,11 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
+	Config config;
+	// Do first as it quits on help
+	if (config.parseArgs(&config, argc, argv))
+		return 0;
+
 	cout << "Running reformulator..." << endl;
 	CommonInterface interface = CommonInterface("Data/newDomain.pddl", "Data/newProblem.pddl", "Data/test_sas_plan", "Data/new_sas_plan");
 	interface.Run("Data/gripper.pddl", "Data/gripper-4.pddl");
@@ -25,8 +30,7 @@ int main(int argc, char** argv)
 		throw invalid_argument("Files not the same!");
 	cout << "Done!" << endl;
 
-	Config c = Config::parseArgs(argc, argv);
-	DownwardRunner::runDownward(c);
+	DownwardRunner::runDownward(config);
 
 	cout << "Verifying SAS file..." << endl;
 	if (!verifier.VerifyFiles("Data/test_sas_plan", "Data/new_sas_plan"))

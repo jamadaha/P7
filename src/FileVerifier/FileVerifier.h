@@ -12,9 +12,6 @@ class FileVerifier {
 public:
 	bool VerifyFiles(string sourceFile, string targetFile);
 	bool VerifyFiles(string sourceFile, string targetFile, vector<char> purgeChars);
-
-private:
-	void RemoveCharacter(string* buffer, char character);
 };
 
 #endif

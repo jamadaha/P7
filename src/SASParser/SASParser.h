@@ -33,7 +33,6 @@ public:
 private:
     SASAction ParseAction(std::string line);
     int ParseCost(std::string line);
-    void RemoveCharacter(string* buffer, char character);
 };
 
 #endif

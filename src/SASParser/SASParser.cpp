@@ -1,4 +1,5 @@
 #include "SASParser.h"
+#include "../Helpers/StringHelper.h"
 
 Plan SASParser::Parse(std::string path) {
     std::vector<SASAction> actions;
@@ -6,8 +7,8 @@ Plan SASParser::Parse(std::string path) {
     std::ifstream stream(path);
     std::string line;
     while (std::getline(stream, line)) {
-        line.erase(std::remove(line.begin(), line.end(), '('), line.end());
-        line.erase(std::remove(line.begin(), line.end(), ')'), line.end());
+        StringHelper::RemoveCharacter(&line, ')');
+        StringHelper::RemoveCharacter(&line, '(');
         if (line[0] == ';') {
             cost = ParseCost(line);
         } else {
@@ -29,8 +30,8 @@ std::vector<std::string> tokenize(std::string const &str, const char delim) {
 }
 
 SASAction SASParser::ParseAction(std::string line) {
-    RemoveCharacter(&line, '\r');
-    RemoveCharacter(&line, '\n');
+    StringHelper::RemoveCharacter(&line, '\r');
+    StringHelper::RemoveCharacter(&line, '\n');
     std::vector<std::string> tokens = tokenize(line, ' ');
     std::string actionName = tokens.front(); tokens.erase(tokens.begin());
     std::vector<std::string> parameters = tokens;
@@ -51,8 +52,4 @@ int SASParser::ParseCost(std::string line) {
         line = line.substr(1);
     }
     return std::atoi(strInt.c_str());
-}
-
-void SASParser::RemoveCharacter(string* buffer, char character) {
-    buffer->erase(remove(buffer->begin(), buffer->end(), character), buffer->end());
 }

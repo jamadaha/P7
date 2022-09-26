@@ -45,81 +45,10 @@ struct Config {
         Config::path = p;
         Config::opt = o;
     }
-    string stringifySearch() {
-        string rstring;
-        switch(opt.search) {
-            case Astar:
-                rstring = "astar";
-                break;
-            case Eager:
-                rstring = "eager";
-                break;
-            case EagerGreedy:
-                rstring = "eager_greedy";
-                break;
-            case EagerWAstar:
-                rstring = "eager_wastar";
-                break;
-            case Ehc:
-                rstring = "ehc";
-                break;
-            case Iterated:
-                rstring = "iterated";
-                break;
-            case Lazy:
-                rstring = "lazy";
-                break;
-            case LazyGreedy:
-                rstring = "lazy_greedy";
-                break;
-            case LazyWAstar:
-                rstring = "lazy_wstar";
-                break;
-        }
-        return rstring;
-    }
-    string stringifyHeuristic() {
-        string rstring;
-        switch(opt.heuristic) {
-            case Add:
-                rstring = "add";
-                break;
-            case Blind:
-                rstring = "blind";
-                break;
-            case Cea:
-                rstring = "cea";
-                break;
-            case Cegar:
-                rstring = "cegar";
-                break;
-            case Cg:
-                rstring = "cg";
-                break;
-            case Ff:
-                rstring = "ff";
-                break;
-            case Hm:
-                rstring = "hm";
-                break;
-            case Hmax:
-                rstring = "hmax";
-                break;
-            case Lmcut:
-                rstring = "lmcut";
-                break;
-            case MergeAndShrink:
-                rstring = "merge_and_shrink";
-                break;
-            case OperatorCounting:
-                rstring = "operatorcounting";
-                break;
-            case Ipdb:
-                rstring = "ipdb";
-                break;
-        }
-        return rstring;
-    }
+    static Search enumerateSearch(string s);
+    static Heuristic enumerateHeuristic(string s);
+    static string stringifySearch(Options o);
+    static string stringifyHeuristic(Options o);
 };
 
 #endif

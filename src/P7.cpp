@@ -2,13 +2,15 @@
 #include "PDDLParser/pddldriver.hh"
 #include "SASParser/SASParser.h"
 #include "PDDLCodeGenerator/PDDLCodeGenerator.h"
+#include "Config/config.h"
+#include "DownwardRunner/DownwardRunner.h"
 #include "SASCodeGenerator/SASCodeGenerator.h"
 #include "FileVerifier/FileVerifier.h"
 #include "CommonInterface/CommonInterface.h"
 
 using namespace std;
 
-int main()
+int main(int argc, char** argv)
 {
 	cout << "Running reformulator..." << endl;
 	CommonInterface interface = CommonInterface("Data/newDomain.pddl", "Data/newProblem.pddl", "Data/test_sas_plan", "Data/new_sas_plan");
@@ -22,6 +24,9 @@ int main()
 	if (!verifier.VerifyFiles("Data/gripper-4.pddl", "Data/newProblem.pddl"))
 		throw invalid_argument("Files not the same!");
 	cout << "Done!" << endl;
+
+	Config c = Config::parseArgs(argc, argv);
+	DownwardRunner::runDownward(c);
 
 	cout << "Verifying SAS file..." << endl;
 	if (!verifier.VerifyFiles("Data/test_sas_plan", "Data/new_sas_plan"))

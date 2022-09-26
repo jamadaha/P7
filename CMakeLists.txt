@@ -18,7 +18,7 @@ set(SOURCES
 	"src/PDDLParser/predicate.cc" "src/PDDLParser/predicate.hh"
 	"src/PDDLParser/problem.cc" "src/PDDLParser/problem.hh"
 	"src/PDDLParser/stack.hh"
-
+	"src/Config/config.cpp"
 	"src/SASParser/SASParser.h" "src/SASParser/SASParser.cpp"
 	"src/PDDLCodeGenerator/PDDLCodeGenerator.h" "src/PDDLCodeGenerator/PDDLCodeGenerator.cpp" "src/PDDLCodeGenerator/PDDLDomainCodeGenerator.h" "src/PDDLCodeGenerator/PDDLDomainCodeGenerator.cpp" "src/PDDLCodeGenerator/PDDLProblemCodeGenerator.h" "src/PDDLCodeGenerator/PDDLProblemCodeGenerator.cpp" "src/PDDLCodeGenerator/BasePDDLCodeGenerator.h" "src/PDDLCodeGenerator/BasePDDLCodeGenerator.cpp" "src/SASCodeGenerator/SASCodeGenerator.h" "src/SASCodeGenerator/SASCodeGenerator.cpp" "src/FileVerifier/FileVerifier.h" "src/FileVerifier/FileVerifier.cpp" "src/Helpers/StringHelper.h" "src/Helpers/StringHelper.cpp")
 add_executable (P7 "src/P7.cpp" ${SOURCES})

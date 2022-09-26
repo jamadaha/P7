@@ -49,6 +49,7 @@ struct Config {
     static Heuristic enumerateHeuristic(string s);
     static string stringifySearch(Options o);
     static string stringifyHeuristic(Options o);
+    static Config parseArgs(int argc, char** argv);
 };
 
 #endif

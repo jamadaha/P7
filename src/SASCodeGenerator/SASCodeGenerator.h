@@ -10,11 +10,11 @@ using namespace std;
 
 class SASCodeGenerator {
 public:
-	void GenerateCode(Plan* plan, string targetFile);
+	void GenerateCode(Plan plan, string targetFile);
 
 private:
-	string GetAction(SASAction* action);
-	string GetParameters(vector<string>* parameters);
+	string GetAction(SASAction action);
+	string GetParameters(vector<string> parameters);
 };
 
 #endif

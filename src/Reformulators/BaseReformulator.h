@@ -2,6 +2,7 @@
 #define BaseReformulator_H
 
 #include "../PDDLParser/pddldriver.hh"
+#include "../PDDLParser/PDDLDocument.h"
 #include "../SASParser/SASParser.h"
 #include <string>
 #include <fstream>
@@ -11,8 +12,8 @@ using namespace std;
 
 class BaseReformulator {
 public:
-	PDDLDriver* ReformulatePDDL(PDDLDriver* inputPDDL);
-	Plan* RebuildSASPlan(Plan* reformulatedSAS);
+	PDDLDocument ReformulatePDDL(PDDLDocument* inputPDDL);
+	Plan RebuildSASPlan(Plan* reformulatedSAS);
 };
 
 #endif

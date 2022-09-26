@@ -1,11 +1,24 @@
 #include "BaseReformulator.h"
 
-PDDLDriver* BaseReformulator::ReformulatePDDL(PDDLDriver* inputPDDL) {
+PDDLDocument BaseReformulator::ReformulatePDDL(PDDLDocument* inputPDDL) {
 	// Do Something and transform the input PDDL into a new PDDL format
-	return inputPDDL;
+	static Domain domain(inputPDDL->domain->_name);
+	domain._requirements = inputPDDL->domain->_requirements;
+	domain._predicates = inputPDDL->domain->_predicates;
+	domain._actions = inputPDDL->domain->_actions;
+
+	static Problem problem(inputPDDL->problem->_name, inputPDDL->problem->_domain);
+	problem._objects = inputPDDL->problem->_objects;
+	problem._init = inputPDDL->problem->_init;
+	problem._goal = inputPDDL->problem->_goal;
+
+	PDDLDocument newDocument(&(domain), &(problem));
+
+	return newDocument;
 }
 
-Plan* BaseReformulator::RebuildSASPlan(Plan* reformulatedSAS) {
+Plan BaseReformulator::RebuildSASPlan(Plan* reformulatedSAS) {
 	// Do Something and give a "corrected" SAS plan back
-	return reformulatedSAS;
+	Plan newPlan(reformulatedSAS->actions, reformulatedSAS->cost);
+	return newPlan;
 }

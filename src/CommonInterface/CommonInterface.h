@@ -5,6 +5,7 @@
 #include "../PDDLParser/pddldriver.hh"
 #include "../PDDLCodeGenerator/PDDLCodeGenerator.h"
 #include "../SASCodeGenerator/SASCodeGenerator.h"
+#include "../PDDLParser/PDDLDocument.h"
 #include <string>
 #include <fstream>
 #include <streambuf>
@@ -22,12 +23,7 @@ public:
 	void Run(string domainFile, string problemFile);
 
 private:
-	BaseReformulator reformulator;
-	PDDLDriver originalDriver;
-	PDDLDriver reformulatedDriver;
-	PDDLCodeGenerator pddlGenerator;
-	SASParser sasParser;
-	SASCodeGenerator sasGenerator;
+	
 };
 
 #endif

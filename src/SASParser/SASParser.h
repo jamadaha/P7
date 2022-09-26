@@ -13,23 +13,22 @@ using namespace std;
 struct SASAction {
 public:
     std::string name;
-    std::vector<std::string>* parameters;
+    std::vector<std::string> parameters;
 
-    SASAction(std::string name, std::vector<std::string>* parameters) : name(name), parameters(parameters) {}
+    SASAction(std::string name, std::vector<std::string> parameters) : name(name), parameters(parameters) {}
 };
 
 struct Plan {
 public:
-    std::vector<SASAction*>* actions;
+    std::vector<SASAction> actions;
     int cost;
 
-    Plan(std::vector<SASAction*>* actions, int cost) : actions(actions), cost(cost) {}
+    Plan(std::vector<SASAction> actions, int cost) : actions(actions), cost(cost) {}
 };
 
 class SASParser {
 public:
-    Plan* SASPlan;
-    void Parse(std::string path);
+    Plan Parse(std::string path);
 
 private:
     SASAction ParseAction(std::string line);

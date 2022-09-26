@@ -2,17 +2,17 @@
 
 PDDLDocument BaseReformulator::ReformulatePDDL(PDDLDocument* inputPDDL) {
 	// Do Something and transform the input PDDL into a new PDDL format
-	static Domain domain(inputPDDL->domain->_name);
-	domain._requirements = inputPDDL->domain->_requirements;
-	domain._predicates = inputPDDL->domain->_predicates;
-	domain._actions = inputPDDL->domain->_actions;
+	Domain* domain = new Domain(inputPDDL->domain->_name);
+	domain->_requirements = inputPDDL->domain->_requirements;
+	domain->_predicates = inputPDDL->domain->_predicates;
+	domain->_actions = inputPDDL->domain->_actions;
 
-	static Problem problem(inputPDDL->problem->_name, inputPDDL->problem->_domain);
-	problem._objects = inputPDDL->problem->_objects;
-	problem._init = inputPDDL->problem->_init;
-	problem._goal = inputPDDL->problem->_goal;
+	Problem* problem = new Problem(inputPDDL->problem->_name, inputPDDL->problem->_domain);
+	problem->_objects = inputPDDL->problem->_objects;
+	problem->_init = inputPDDL->problem->_init;
+	problem->_goal = inputPDDL->problem->_goal;
 
-	PDDLDocument newDocument(&(domain), &(problem));
+	PDDLDocument newDocument(domain, problem);
 
 	return newDocument;
 }

@@ -3,6 +3,7 @@
 #include "SASParser/SASParser.h"
 #include "PDDLCodeGenerator/PDDLCodeGenerator.h"
 #include "SASCodeGenerator/SASCodeGenerator.h"
+#include "FileVerifier/FileVerifier.h"
 
 using namespace std;
 
@@ -19,15 +20,14 @@ int main()
 	pddlGenerator.GenerateAndVerifyCode(&(driver), "Data/gripper.pddl", "Data/newDomain.pddl", "Data/gripper-4.pddl", "Data/newProblem.pddl");
 	cout << "Done!\n";
 
-	cout << "Parsing SAS file...\n";
-	SASParser parser;
-	auto a = parser.Parse("Data/test_sas_plan");
-	cout << "Done!\n";
+	PDDLCodeGenerator generator;
+	generator.GenerateCode(&(driver), "Data/newDomain.pddl", "Data/newProblem.pddl");
 
-	cout << "Generating SAS file...\n";
-	SASCodeGenerator sasGenerator;
-	sasGenerator.GenerateCode(a, "Data/new_sas_plan");
-	cout << "Done!\n";
+	FileVerifier verifier;
+	if (!verifier.VerifyFiles("Data/gripper.pddl", "Data/newDomain.pddl"))
+		throw invalid_argument("Files not the same!");
+	if (!verifier.VerifyFiles("Data/gripper-4.pddl", "Data/newProblem.pddl"))
+		throw invalid_argument("Files not the same!");
 
 	return 0;
 }

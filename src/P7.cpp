@@ -5,13 +5,15 @@
 #include "SASCodeGenerator/SASCodeGenerator.h"
 #include "FileVerifier/FileVerifier.h"
 #include "CommonInterface/CommonInterface.h"
+#include "Reformulators/SameOutputReformulator.h"
 
 using namespace std;
 
 int main()
 {
 	cout << "Running reformulator..." << endl;
-	CommonInterface interface = CommonInterface("Data/newDomain.pddl", "Data/newProblem.pddl", "Data/test_sas_plan", "Data/new_sas_plan");
+	BaseReformulator* reformulator = new SameOutputReformulator();
+	CommonInterface interface = CommonInterface(reformulator, "Data/newDomain.pddl", "Data/newProblem.pddl", "Data/test_sas_plan", "Data/new_sas_plan");
 	interface.Run("Data/gripper.pddl", "Data/gripper-4.pddl");
 	cout << "Done!" << endl;
 

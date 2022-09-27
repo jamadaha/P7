@@ -13,7 +13,7 @@ sudo cmake --build build/ --target install
 
 This downloads the library, builds it, and installs it to path
 
-## Launch
+## Launch in VSCode
 These are for debugging in vscode. They aren't needed for anything else.
 ```json
 {
@@ -51,5 +51,31 @@ These are for debugging in vscode. They aren't needed for anything else.
             ]
         }
     ]
+}
+```
+
+## Launch in VS
+To launch in VS code:
+`launch.vs.json`
+```
+{
+  "version": "0.2.1",
+  "defaults": {},
+  "configurations": [
+    {
+      "type": "cppgdb",
+      "name": "P7",
+      "project": "CMakeLists.txt",
+      "projectTarget": "",
+      "comment": "",
+      "debuggerConfiguration": "gdb",
+      "args": [
+        "-d Data/gripper.pddl",
+        "-p Data/gripper-4.pddl",
+        "-f $HOME/downward-projects/downward/fast-downward.py"
+      ],
+      "env": {}
+    }
+  ]
 }
 ```

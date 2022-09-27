@@ -24,15 +24,12 @@ These are for debugging in VSCode. They aren't needed for anything else.
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            // Resolved by CMake Tools:
             "program": "${command:cmake.launchTargetPath}",
             "args": ["-h"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [
                 {
-                    // add the directory where our target was built to the PATHs
-                    // it gets resolved by CMake Tools:
                     "name": "PATH",
                     "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
                 },

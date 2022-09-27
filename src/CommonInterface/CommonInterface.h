@@ -10,22 +10,26 @@
 #include <fstream>
 #include <streambuf>
 #include <vector>
+#include "../Config/config.h"
+#include "../DownwardRunner/DownwardRunner.h"
 
 using namespace std;
 
 class CommonInterface {
 public:
-	string TempDomainName;
-	string TempProblemName;
-	string FastDownwardSASName;
-	string OutputSASName;
+	
 
-	CommonInterface(string tempDomainName = "tempDomain.pddl", string tempProblemName = "tempProblem.pddl", string fastDownwardSASName = "temp_sas_plan", string outputSASName = "sas_plan") : 
-	TempDomainName(tempDomainName), TempProblemName(tempProblemName), FastDownwardSASName(fastDownwardSASName), OutputSASName(outputSASName){};
+	CommonInterface(Config config, string tempDomainName = "tempDomain.pddl", string tempProblemName = "tempProblem.pddl", string fastDownwardSASName = "temp_sas_plan", string outputSASName = "sas_plan") : 
+	config(config), TempDomainName(tempDomainName), TempProblemName(tempProblemName), FastDownwardSASName(fastDownwardSASName), OutputSASName(outputSASName){};
 
 	void Run(string domainFile, string problemFile);
 
 private:
+	Config config;
+	string TempDomainName;
+	string TempProblemName;
+	string FastDownwardSASName;
+	string OutputSASName;
 	
 };
 

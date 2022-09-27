@@ -1,12 +1,20 @@
 #include "SASParser.h"
 #include "../Helpers/StringHelper.h"
 
-Plan SASParser::Parse(std::string path) {
+SASPlan SASParser::Parse(std::filesystem::path path) {
+    std::ifstream stream(path);
+    std::string content( (std::istreambuf_iterator<char>(stream) ),
+                       (std::istreambuf_iterator<char>()    ) );
+    return Parse(content);
+}
+
+SASPlan SASParser::Parse(std::string SAS) {
     std::vector<SASAction> actions;
     int cost;
-    std::ifstream stream(path);
+    std::stringstream ss(SAS);
     std::string line;
-    while (std::getline(stream, line)) {
+    while (std::getline(ss, line)) {
+        line = StringHelper::Trim(line);
         StringHelper::RemoveCharacter(&line, ')');
         StringHelper::RemoveCharacter(&line, '(');
         if (line[0] == ';') {
@@ -16,7 +24,7 @@ Plan SASParser::Parse(std::string path) {
             actions.push_back(newAction);
         }
     }
-    return Plan(actions, cost);
+    return SASPlan(actions, cost);
 }
 
 std::vector<std::string> tokenize(std::string const &str, const char delim) {

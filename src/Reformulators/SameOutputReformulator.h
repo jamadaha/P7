@@ -7,7 +7,7 @@ using namespace std;
 
 class SameOutputReformulator : public BaseReformulator {
 	PDDLDocument ReformulatePDDL(PDDLDocument* inputPDDL) override;
-	Plan RebuildSASPlan(Plan* reformulatedSAS) override;
+	SASPlan RebuildSASPlan(SASPlan* reformulatedSAS) override;
 };
 
 #endif

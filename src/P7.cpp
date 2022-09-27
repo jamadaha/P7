@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <memory>
 #include "PDDLParser/pddldriver.hh"
 #include "SASParser/SASParser.h"
 #include "PDDLCodeGenerator/PDDLCodeGenerator.h"
@@ -6,6 +7,7 @@
 #include "SASCodeGenerator/SASCodeGenerator.h"
 #include "FileVerifier/FileVerifier.h"
 #include "CommonInterface/CommonInterface.h"
+#include "Reformulators/SameOutputReformulator.h"
 
 using namespace std;
 
@@ -17,7 +19,8 @@ int main(int argc, char** argv)
 		return 0;
 
 	cout << "Running reformulator..." << endl;
-	CommonInterface interface = CommonInterface(config, "Data/newDomain.pddl", "Data/newProblem.pddl", "Data/test_sas_plan", "Data/new_sas_plan");
+	std::shared_ptr<BaseReformulator> reformulator = std::make_shared<SameOutputReformulator>();
+	CommonInterface interface = CommonInterface(config, reformulator, "Data/newDomain.pddl", "Data/newProblem.pddl", "Data/test_sas_plan", "Data/new_sas_plan");
 	interface.Run("Data/gripper.pddl", "Data/gripper-4.pddl");
 	cout << "Done!" << endl;
 

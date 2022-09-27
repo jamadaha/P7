@@ -2,8 +2,6 @@
 #include "../PDDLParser/PDDLDocument.h"
 
 void CommonInterface::Run(string domainFile, string problemFile) {
-	BaseReformulator reformulator;
-
 	// Parse original PDDL files
 	PDDLDriver originalDriver;
 	originalDriver.parse(domainFile);
@@ -11,7 +9,7 @@ void CommonInterface::Run(string domainFile, string problemFile) {
 	PDDLDocument originalPDDLDocument(originalDriver.domain, originalDriver.problem);
 
 	// Reformulate the PDDL file
-	PDDLDocument reformulatedDocument = reformulator.ReformulatePDDL(&originalPDDLDocument);
+	PDDLDocument reformulatedDocument = Reformulator->ReformulatePDDL(&originalPDDLDocument);
 
 	// Generate new PDDL files
 	PDDLCodeGenerator pddlGenerator;
@@ -25,7 +23,7 @@ void CommonInterface::Run(string domainFile, string problemFile) {
 	Plan reformulatedSASPlan = sasParser.Parse(CommonInterface::FastDownwardSASName);
 
 	// Rebuild the SAS Plan
-	Plan outputPlan = reformulator.RebuildSASPlan(&reformulatedSASPlan);
+	Plan outputPlan = Reformulator->RebuildSASPlan(&reformulatedSASPlan);
 
 	// Output the new SAS plan
 	SASCodeGenerator sasGenerator;

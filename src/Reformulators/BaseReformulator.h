@@ -12,8 +12,8 @@ using namespace std;
 
 class BaseReformulator {
 public:
-	PDDLDocument ReformulatePDDL(PDDLDocument* inputPDDL);
-	Plan RebuildSASPlan(Plan* reformulatedSAS);
+	virtual PDDLDocument ReformulatePDDL(PDDLDocument* inputPDDL) = 0;
+	virtual Plan RebuildSASPlan(Plan* reformulatedSAS) = 0;
 };
 
 #endif

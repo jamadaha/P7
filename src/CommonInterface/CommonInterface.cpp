@@ -1,11 +1,11 @@
 #include "CommonInterface.h"
 #include "../PDDLParser/PDDLDocument.h"
 
-void CommonInterface::Run(string domainFile, string problemFile) {
+void CommonInterface::Run() {
 	// Parse original PDDL files
 	PDDLDriver originalDriver;
-	originalDriver.parse(domainFile);
-	originalDriver.parse(problemFile);
+	originalDriver.parse(config.domainFile);
+	originalDriver.parse(config.problemFile);
 	PDDLDocument originalPDDLDocument(originalDriver.domain, originalDriver.problem);
 
 	// Reformulate the PDDL file
@@ -16,7 +16,7 @@ void CommonInterface::Run(string domainFile, string problemFile) {
 	pddlGenerator.GenerateCode(reformulatedDocument, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
 
 	// Throw the new pddl files into Fast Downward
-	DownwardRunner::runDownward(config);
+	DownwardRunner::runDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
 
 	// Parse the output SAS plan
 	SASParser sasParser;

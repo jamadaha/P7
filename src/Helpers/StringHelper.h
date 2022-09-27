@@ -11,6 +11,7 @@ using namespace std;
 class StringHelper {
 public:
 	static void RemoveCharacter(string* buffer, char character);
+	static string Trim(string buffer);
 };
 
 #endif

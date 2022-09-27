@@ -57,7 +57,7 @@ These are for debugging in vscode. They aren't needed for anything else.
 ## Launch in VS
 To launch in VS code:
 `launch.vs.json`
-```
+```json
 {
   "version": "0.2.1",
   "defaults": {},

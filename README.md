@@ -13,8 +13,9 @@ sudo cmake --build build/ --target install
 
 This downloads the library, builds it, and installs it to path
 
-## Launch in VSCode
-These are for debugging in vscode. They aren't needed for anything else.
+## Launch
+### VSCode
+These are for debugging in VSCode. They aren't needed for anything else.
 ```json
 {
     "version": "0.2.0",
@@ -54,8 +55,8 @@ These are for debugging in vscode. They aren't needed for anything else.
 }
 ```
 
-## Launch in VS
-To launch in VS code:
+### Visual Studio
+To launch in Visual Studio:
 `launch.vs.json`
 ```json
 {

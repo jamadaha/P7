@@ -17,7 +17,7 @@ int Config::parseArgs(Config* config, int argc, char** argv){
 
     auto result = options.parse(argc, argv);
     if (result.count("help")) {
-        std::cout << options.help() << std::endl;
+        cout << options.help() << endl;
         return 1;
     }
 

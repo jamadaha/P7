@@ -5,7 +5,7 @@
 #include "../Config/config.h"
 
 struct DownwardRunner {
-    static void runDownward(Config config);
+    static void runDownward(Config config, string reformulatedDomain, string reformulatedProblem);
 };
 
 #endif

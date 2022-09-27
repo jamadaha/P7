@@ -7,21 +7,21 @@
 using namespace std;
 
 struct Options {
-    std::string search;
-    std::string heuristic;
+    string search;
+    string heuristic;
 };
 
 class Config {
 public:
-    std::string path;
+    string path;
     string domainFile;
     string problemFile;
     Options opt;
 
     int parseArgs(Config* config, int argc, char** argv);
 private:
-    static std::string GetSearchDesc();
-    static std::string GetEvaluatorDesc();
+    static string GetSearchDesc();
+    static string GetEvaluatorDesc();
 };
 
 #endif

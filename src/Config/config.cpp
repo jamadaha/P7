@@ -5,152 +5,72 @@
 #include "../../include/cxxopts.hpp"
 using namespace std;
 
-Config Config::parseArgs(int argc, char** argv){
-    // create options
-    cxxopts::Options options("test","interesting description");
+int Config::parseArgs(Config* config, int argc, char** argv){
+    cxxopts::Options options("P7","Insert what program does");
 
     options.add_options()
+        ("h,help", "Print usage")
         ("d,downwardpath", "fast-downward.py filepath", cxxopts::value<std::string>()->default_value("fast-downward.py")) 
-        ("s,search", "Search method", cxxopts::value<std::string>()->default_value("astar"))
-        ("h,heuristic", "Evaluator method", cxxopts::value<std::string>()->default_value("blind"))
+        ("s,search", GetSearchDesc().c_str(), cxxopts::value<std::string>()->default_value("astar"))
+        ("e,evaluator", GetEvaluatorDesc().c_str(), cxxopts::value<std::string>()->default_value("blind"))
     ;
 
     auto result = options.parse(argc, argv);
-    string downwardpath = result["d"].as<string>();
-    string searchmethod = result["s"].as<string>();
-    string heuristicmethod = result["h"].as<string>();
-
-    Options o = {.search = Config::enumerateSearch(searchmethod), .heuristic = Config::enumerateHeuristic(heuristicmethod)};
-    Config c = Config(downwardpath, o);
-
-    return c;
-}
-
-Search Config::enumerateSearch(string search) {
-    if (search == "astar")
-        return Astar;
-    else if (search == "eager")
-        return Eager;
-    else if (search == "eager_greedy")
-        return EagerGreedy;
-    else if (search == "eager_wastar")
-        return EagerWAstar;
-    else if (search == "ehc")
-        return Ehc;
-    else if (search == "iterated")
-        return Iterated;
-    else if (search == "lazy")
-        return Lazy;
-    else if (search == "lazy_greedy")
-        return LazyGreedy;
-    else if (search == "lazy_wstar")
-        return LazyWAstar;
-    else
-        return Iterated;
-}
-
-Heuristic Config::enumerateHeuristic(string heuristic) {
-    if (heuristic == "add")
-        return Add;
-    else if (heuristic == "blind")
-        return Blind;
-    else if (heuristic == "cea")
-        return Cea;
-    else if (heuristic == "cegar")
-        return Cegar;
-    else if (heuristic == "cg")
-        return Cg;
-    else if (heuristic == "ff")
-        return Ff;
-    else if (heuristic == "hm")
-        return Hm;
-    else if (heuristic == "hmax")
-        return Hmax;
-    else if (heuristic == "lmcut")
-        return Lmcut;
-    else if (heuristic == "merge_and_shrink")
-        return MergeAndShrink;
-    else if (heuristic == "operatorcounting")
-        return OperatorCounting;
-    else if (heuristic == "ipdb")
-        return Ipdb;
-    else
-        return Blind;
-}
-
-string Config::stringifySearch(Options opt) {
-    string rstring;
-    switch(opt.search) {
-        case Astar:
-            rstring = "astar";
-            break;
-        case Eager:
-            rstring = "eager";
-            break;
-        case EagerGreedy:
-            rstring = "eager_greedy";
-            break;
-        case EagerWAstar:
-            rstring = "eager_wastar";
-            break;
-        case Ehc:
-            rstring = "ehc";
-            break;
-        case Iterated:
-            rstring = "iterated";
-            break;
-        case Lazy:
-            rstring = "lazy";
-            break;
-        case LazyGreedy:
-            rstring = "lazy_greedy";
-            break;
-        case LazyWAstar:
-            rstring = "lazy_wstar";
-            break;
+    if (result.count("help")) {
+        cout << options.help() << endl;
+        return 1;
     }
-    return rstring;
+
+    const string downwardpath = result["d"].as<string>();
+    const string searchmethod = result["s"].as<string>();
+    const string heuristicmethod = result["e"].as<string>();
+
+    config->path = downwardpath;
+    config->opt = {.search = searchmethod, .heuristic = heuristicmethod};
+
+    return 0;
 }
 
-string Config::stringifyHeuristic(Options opt) {
-    string rstring;
-    switch(opt.heuristic) {
-        case Add:
-            rstring = "add";
-            break;
-        case Blind:
-            rstring = "blind";
-            break;
-        case Cea:
-            rstring = "cea";
-            break;
-        case Cegar:
-            rstring = "cegar";
-            break;
-        case Cg:
-            rstring = "cg";
-            break;
-        case Ff:
-            rstring = "ff";
-            break;
-        case Hm:
-            rstring = "hm";
-            break;
-        case Hmax:
-            rstring = "hmax";
-            break;
-        case Lmcut:
-            rstring = "lmcut";
-            break;
-        case MergeAndShrink:
-            rstring = "merge_and_shrink";
-            break;
-        case OperatorCounting:
-            rstring = "operatorcounting";
-            break;
-        case Ipdb:
-            rstring = "ipdb";
-            break;
-    }
-    return rstring;
+template<typename ... Args>
+std::string string_format( const std::string& format, Args ... args )
+{
+    int size_s = std::snprintf( nullptr, 0, format.c_str(), args ... ) + 1; // Extra space for '\0'
+    if( size_s <= 0 ){ throw std::runtime_error( "Error during formatting." ); }
+    auto size = static_cast<size_t>( size_s );
+    std::unique_ptr<char[]> buf( new char[ size ] );
+    std::snprintf( buf.get(), size, format.c_str(), args ... );
+    return std::string( buf.get(), buf.get() + size - 1 ); // We don't want the '\0' inside
+}
+
+// Options from here https://www.fast-downward.org/Doc/SearchEngine
+string Config::GetSearchDesc() {
+    return string_format("%s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n",
+    "Search Method",
+    "astar", "a* Search",
+    "eager", "eager best-first search",
+    "eager_greedy", "greedy search (eager)",
+    "eager_wastar", "eager weighted A*",
+    "ehc", "lazy enforced hill-climbing",
+    "iterated", "iterated search",
+    "lazy", "lazy best-first search",
+    "lazy_greedy", "greedy search (lazy)",
+    "lazy_wstar", "(weighted) A* search (lazy)");
+}
+
+// Options from here https://www.fast-downward.org/Doc/Evaluator
+string Config::GetEvaluatorDesc() {
+    return string_format("%s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n",
+    "Evaluator Method",
+    "add", "additive heuristic",
+    "blind", "blind heuristic",
+    "cea", "context-enchanced additive heuristic",
+    "cegar", "additive CEGAR heuristic",
+    "cg", "causal graph heuristic",
+    "ff", "FF heuristic",
+    "hm", "h^m heuristic",
+    "hmax", "Max heuristic",
+    "lmcut", "Landmark-cut heuristic",
+    "merge_and_shrink", "merge-and-shrink heuristic",
+    "operatorcounting", "Operator-counting heuristic",
+    "ipdb", "canonical pdb with hillclimbing algo");
 }

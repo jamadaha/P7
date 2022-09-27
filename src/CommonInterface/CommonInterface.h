@@ -10,23 +10,26 @@
 #include <fstream>
 #include <streambuf>
 #include <vector>
+#include <memory>
+#include "../Config/config.h"
+#include "../DownwardRunner/DownwardRunner.h"
 
 using namespace std;
 
 class CommonInterface {
 public:
-	BaseReformulator* Reformulator;
-	string TempDomainName;
-	string TempProblemName;
-	string FastDownwardSASName;
-	string OutputSASName;
-
-	CommonInterface(BaseReformulator* reformulator, string tempDomainName = "tempDomain.pddl", string tempProblemName = "tempProblem.pddl", string fastDownwardSASName = "temp_sas_plan", string outputSASName = "sas_plan") :
-	Reformulator(reformulator), TempDomainName(tempDomainName), TempProblemName(tempProblemName), FastDownwardSASName(fastDownwardSASName), OutputSASName(outputSASName){};
+	CommonInterface(Config config, std::shared_ptr<BaseReformulator> reformulator, string tempDomainName = "tempDomain.pddl", string tempProblemName = "tempProblem.pddl", string fastDownwardSASName = "temp_sas_plan", string outputSASName = "sas_plan") :
+	config(config), Reformulator(reformulator), TempDomainName(tempDomainName), TempProblemName(tempProblemName), FastDownwardSASName(fastDownwardSASName), OutputSASName(outputSASName){};
 
 	void Run(string domainFile, string problemFile);
 
 private:
+	Config config;
+	std::shared_ptr<BaseReformulator> Reformulator;
+	string TempDomainName;
+	string TempProblemName;
+	string FastDownwardSASName;
+	string OutputSASName;
 	
 };
 

@@ -16,7 +16,7 @@ void CommonInterface::Run(string domainFile, string problemFile) {
 	pddlGenerator.GenerateCode(reformulatedDocument, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
 
 	// Throw the new pddl files into Fast Downward
-	// ...
+	DownwardRunner::runDownward(config);
 
 	// Parse the output SAS plan
 	SASParser sasParser;

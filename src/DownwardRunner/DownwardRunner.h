@@ -4,10 +4,8 @@
 #include <string>
 #include "../Config/config.h"
 
-using namespace std;
-
 struct DownwardRunner {
-    static void runDownward(Config c);
+    static void runDownward(Config config);
 };
 
 #endif

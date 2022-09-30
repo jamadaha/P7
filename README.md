@@ -48,21 +48,22 @@ These are for debugging in VSCode. They aren't needed for anything else.
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
+            // Resolved by CMake Tools:
             "program": "${command:cmake.launchTargetPath}",
-            "args": ["-h"],
+            "args": ["-d Data/gripper.pddl",
+            "-p Data/gripper-4.pddl",
+            "-f $HOME/bin/downward-projects/downward/fast-downward.py",
+            "-v $HOME/bin/downward-projects/VAL/validate"],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/build",
             "environment": [
                 {
+                    // add the directory where our target was built to the PATHs
+                    // it gets resolved by CMake Tools:
                     "name": "PATH",
                     "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
-                },
-                {
-                    "name": "OTHER_VALUE",
-                    "value": "Something something"
                 }
             ],
-            "console": "externalTerminal",
             "MIMode": "gdb",
             "setupCommands": [
                 {
@@ -77,7 +78,7 @@ These are for debugging in VSCode. They aren't needed for anything else.
 ```
 
 ### Visual Studio
-To launch in Visual Studio:
+To launch in Visual Studio (Note: This is the inferior version):
 `launch.vs.json`
 ```json
 {

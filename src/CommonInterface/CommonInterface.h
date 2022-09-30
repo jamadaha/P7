@@ -13,6 +13,8 @@
 #include <memory>
 #include "../Config/config.h"
 #include "../DownwardRunner/DownwardRunner.h"
+#include "../PDDLParser/PDDLDocument.h"
+#include "../PlanValidators/PlanValidator.h"
 
 using namespace std;
 

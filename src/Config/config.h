@@ -14,6 +14,7 @@ struct Options {
 class Config {
 public:
     string path;
+    string validatorPath;
     string domainFile;
     string problemFile;
     Options opt;

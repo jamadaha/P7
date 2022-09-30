@@ -9,7 +9,7 @@ enum PlanValidator::ValidatorResult PlanValidator::ValidatePlan(Config config, s
 	ifstream stream(ValidatorLogName);
 	string content((istreambuf_iterator<char>(stream)),
 		(istreambuf_iterator<char>()));
-	if (content.find("Plan Valid") != string::npos)
+	if (content.find("Plan valid") != string::npos)
 		return PlanValidator::ValidatorResult::PlanMatch;
 	if (content.find("Plan failed to execute") != string::npos)
 		return PlanValidator::ValidatorResult::PlanNotMatch;

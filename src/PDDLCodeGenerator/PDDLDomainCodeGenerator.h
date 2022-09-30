@@ -10,6 +10,7 @@ using namespace std;
 class PDDLDomainCodeGenerator : public BasePDDLCodeGenerator {
 public:
 	void GenerateDomainFile(Domain* domain, string domainFile);
+	string GenerateDomainString(Domain* domain);
 
 private:
 	string GetRequirements(StringList* requirements);

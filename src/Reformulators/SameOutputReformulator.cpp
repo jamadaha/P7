@@ -18,8 +18,8 @@ PDDLDocument SameOutputReformulator::ReformulatePDDL(PDDLDocument* inputPDDL) {
 	return newDocument;
 }
 
-Plan SameOutputReformulator::RebuildSASPlan(Plan* reformulatedSAS) {
+SASPlan SameOutputReformulator::RebuildSASPlan(SASPlan* reformulatedSAS) {
 	// Do Something and give a "corrected" SAS plan back
-	Plan newPlan(reformulatedSAS->actions, reformulatedSAS->cost);
+	SASPlan newPlan(reformulatedSAS->actions, reformulatedSAS->cost);
 	return newPlan;
 }

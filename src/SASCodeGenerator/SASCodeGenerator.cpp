@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void SASCodeGenerator::GenerateCode(Plan plan, string targetFile) {
+void SASCodeGenerator::GenerateCode(SASPlan plan, string targetFile) {
 	ofstream file;
 	file.open(targetFile);
 	for (SASAction action : plan.actions)

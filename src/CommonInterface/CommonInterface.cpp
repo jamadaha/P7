@@ -20,10 +20,10 @@ void CommonInterface::Run() {
 
 	// Parse the output SAS plan
 	SASParser sasParser;
-	Plan reformulatedSASPlan = sasParser.Parse(CommonInterface::FastDownwardSASName);
+	SASPlan reformulatedSASPlan = sasParser.Parse(CommonInterface::FastDownwardSASName);
 
 	// Rebuild the SAS Plan
-	Plan outputPlan = Reformulator->RebuildSASPlan(&reformulatedSASPlan);
+	SASPlan outputPlan = Reformulator->RebuildSASPlan(&reformulatedSASPlan);
 
 	// Output the new SAS plan
 	SASCodeGenerator sasGenerator;

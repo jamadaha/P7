@@ -7,6 +7,8 @@
 #include <sstream>
 #include <string>
 #include <algorithm>
+#include <iterator>
+#include <filesystem>
 
 using namespace std;
 
@@ -18,17 +20,18 @@ public:
     SASAction(std::string name, std::vector<std::string> parameters) : name(name), parameters(parameters) {}
 };
 
-struct Plan {
+struct SASPlan {
 public:
     std::vector<SASAction> actions;
     int cost;
 
-    Plan(std::vector<SASAction> actions, int cost) : actions(actions), cost(cost) {}
+    SASPlan(std::vector<SASAction> actions, int cost) : actions(actions), cost(cost) {}
 };
 
 class SASParser {
 public:
-    Plan Parse(std::string path);
+    SASPlan Parse(std::filesystem::path path);
+    SASPlan Parse(std::string SAS);
 
 private:
     SASAction ParseAction(std::string line);

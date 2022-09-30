@@ -13,7 +13,7 @@ using namespace std;
 class BaseReformulator {
 public:
 	virtual PDDLDocument ReformulatePDDL(PDDLDocument* inputPDDL) = 0;
-	virtual Plan RebuildSASPlan(Plan* reformulatedSAS) = 0;
+	virtual SASPlan RebuildSASPlan(SASPlan* reformulatedSAS) = 0;
 };
 
 #endif

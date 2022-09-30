@@ -5,15 +5,20 @@ using namespace std;
 void PDDLDomainCodeGenerator::GenerateDomainFile(Domain* domain, string domainFile) {
 	ofstream file;
 	file.open(domainFile);
-	file << "(define (domain " + domain->_name + ")\n";
-	file << GetRequirements(domain->_requirements) + "\n";
-	file << "\n";
-	file << GetPredicates(domain->_predicates) + "\n";
-	file << "\n";
-	file << GetActions(domain->_actions) + "\n";
-	file << "\n";
-	file << "\n)\n";
+	file << GenerateDomainString(domain);
 	file.close();
+}
+
+string PDDLDomainCodeGenerator::GenerateDomainString(Domain* domain) {
+	string out = "(define (domain " + domain->_name + ")\n";
+	out += GetRequirements(domain->_requirements) + "\n";
+	out += "\n";
+	out += GetPredicates(domain->_predicates) + "\n";
+	out += "\n";
+	out += GetActions(domain->_actions) + "\n";
+	out += "\n";
+	out += "\n)\n";
+	return out;
 }
 
 string PDDLDomainCodeGenerator::GetRequirements(StringList* requirements) {

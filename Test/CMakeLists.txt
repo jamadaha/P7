@@ -7,3 +7,4 @@ include(Catch)
 
 # Tests
 include(Test/SASParser/CMakeLists.txt)
+include(Test/PDDLCodeGenerator/CMakeLists.txt)

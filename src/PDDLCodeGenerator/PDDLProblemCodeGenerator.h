@@ -10,6 +10,7 @@ using namespace std;
 class PDDLProblemCodeGenerator : public BasePDDLCodeGenerator {
 public:
 	void GenerateProblemFile(Problem* problem, string problemFile);
+	string GenerateProblemString(Problem* problem);
 
 private:
 	string GetObjects(StringList* objects);

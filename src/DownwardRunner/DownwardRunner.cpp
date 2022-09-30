@@ -14,6 +14,7 @@ DownwardRunner::DownwardRunnerResult DownwardRunner::RunDownward(Config config, 
 	ifstream stream(RunnerLogName);
 	string content((istreambuf_iterator<char>(stream)),
 		(istreambuf_iterator<char>()));
+	stream.close();
 	if (content.find("Solution found.") != string::npos)
 		return DownwardRunner::DownwardRunnerResult::FoundPlan;
 	if (content.find("Search stopped without finding a solution.") != string::npos)

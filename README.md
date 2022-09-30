@@ -4,14 +4,38 @@
 Catch2 is used for testing.
 In order to install run the following
 
-<code>
-cd ~/bin && git clone https://github.com/catchorg/Catch2.git &&
-cd Catch2 &&
-cmake -Bbuild -H. -DBUILD_TESTING=OFF &&
-sudo cmake --build build/ --target install
-</code>
+```bash
+cd ~/bin
+    && git clone https://github.com/catchorg/Catch2.git
+    && cd Catch2
+    && cmake -Bbuild -H. -DBUILD_TESTING=OFF
+    && sudo cmake --build build/ --target install
+```
 
 This downloads the library, builds it, and installs it to path
+
+### Fast Downward
+Fast Downward is used as a planner for this project.
+Install it by running the following commands:
+```bash
+sudo apt install cmake g++ git make python3
+    && git clone https://github.com/aibasel/downward.git
+    && cd downward
+    && ./build.py
+```
+
+### VAL
+VAL is used for validating Fast Downward plans.
+Install it by running the following commands:
+```bash
+sudo apt install g++ make flex bison 
+    && git clone https://github.com/KCL-Planning/VAL.git 
+    && cd VAL 
+    && git checkout a5565396007eee73ac36527fbf904142b3077c74 
+    && make clean 
+    && sed -i 's/-Werror //g' Makefile 
+    && make
+```
 
 ## Launch
 ### VSCode
@@ -71,6 +95,7 @@ To launch in Visual Studio:
         "-d Data/gripper.pddl",
         "-p Data/gripper-4.pddl",
         "-f $HOME/downward-projects/downward/fast-downward.py"
+        "-v $HOME/downward-projects/VAL/validate"
       ],
       "env": {}
     }

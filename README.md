@@ -1,5 +1,7 @@
 # P7
 ## Requirements
+You can run `./installScript` in bash or install each requirement yourself.
+
 ### Catch2
 Catch2 is used for testing.
 In order to install run the following

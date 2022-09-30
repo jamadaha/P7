@@ -13,12 +13,14 @@
 #include <memory>
 #include "../Config/config.h"
 #include "../DownwardRunner/DownwardRunner.h"
+#include "../PDDLParser/PDDLDocument.h"
+#include "../PlanValidators/PlanValidator.h"
 
 using namespace std;
 
 class CommonInterface {
 public:
-	CommonInterface(Config config, std::shared_ptr<BaseReformulator> reformulator, string tempDomainName = "Temp/tempDomain.pddl", string tempProblemName = "Temp/tempProblem.pddl", string fastDownwardSASName = "sas_plan", string outputSASName = "real_sas_plan") :
+	CommonInterface(Config config, std::shared_ptr<BaseReformulator> reformulator, string tempDomainName = "tempDomain.pddl", string tempProblemName = "tempProblem.pddl", string fastDownwardSASName = "sas_plan", string outputSASName = "real_sas_plan") :
 	config(config), Reformulator(reformulator), TempDomainName(tempDomainName), TempProblemName(tempProblemName), FastDownwardSASName(fastDownwardSASName), OutputSASName(outputSASName){};
 
 	void Run();

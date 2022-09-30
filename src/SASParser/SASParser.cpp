@@ -5,6 +5,7 @@ SASPlan SASParser::Parse(std::filesystem::path path) {
     std::ifstream stream(path);
     std::string content( (std::istreambuf_iterator<char>(stream) ),
                        (std::istreambuf_iterator<char>()    ) );
+    stream.close();
     return Parse(content);
 }
 

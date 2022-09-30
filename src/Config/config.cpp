@@ -12,7 +12,8 @@ int Config::parseArgs(Config* config, int argc, char** argv){
         ("h,help", "Print usage")
         ("d,domain", "Name of domain file", cxxopts::value<std::string>()->default_value("domain.pddl"))
         ("p,problem", "Name of problem file", cxxopts::value<std::string>()->default_value("problem.pddl"))
-        ("f,downwardpath", "fast-downward.py filepath", cxxopts::value<std::string>()->default_value("fast-downward.py")) 
+        ("f,downwardpath", "fast-downward.py filepath", cxxopts::value<std::string>()->default_value("fast-downward.py"))
+        ("v,validatorpath", "validator filepath", cxxopts::value<std::string>()->default_value("validate"))
         ("s,search", GetSearchDesc().c_str(), cxxopts::value<std::string>()->default_value("astar"))
         ("e,evaluator", GetEvaluatorDesc().c_str(), cxxopts::value<std::string>()->default_value("blind"))
     ;
@@ -26,10 +27,12 @@ int Config::parseArgs(Config* config, int argc, char** argv){
     const string domainPath = StringHelper::Trim(result["d"].as<string>());
     const string problemPath = StringHelper::Trim(result["p"].as<string>());
     const string downwardpath = StringHelper::Trim(result["f"].as<string>());
+    const string validatorPath = StringHelper::Trim(result["v"].as<string>());
     const string searchmethod = result["s"].as<string>();
     const string heuristicmethod = result["e"].as<string>();
 
     config->path = downwardpath;
+    config->validatorPath = validatorPath;
     config->domainFile = domainPath;
     config->problemFile = problemPath;
     config->opt = {.search = searchmethod, .heuristic = heuristicmethod};

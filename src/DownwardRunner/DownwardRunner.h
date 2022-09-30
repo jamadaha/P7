@@ -4,8 +4,11 @@
 #include <string>
 #include "../Config/config.h"
 
+using namespace std;
+
 struct DownwardRunner {
-    static void runDownward(Config config, string reformulatedDomain, string reformulatedProblem);
+    enum DownwardRunnerResult { None, FoundPlan, DidNotFindPlan };
+    static enum DownwardRunnerResult RunDownward(Config config, string reformulatedDomain, string reformulatedProblem);
 };
 
 #endif

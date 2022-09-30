@@ -3,9 +3,9 @@
 
 #include "../../src/SASParser/SASParser.h"
 
+const std::string TAG = "SASParser ";
 
-
-TEST_CASE("SASParser SingleAction") {
+TEST_CASE(TAG + "SingleAction") {
     SASParser sasParser = SASParser();
     std::string testCase = "(test_action)\n; cost = 1 (general cost)";
     SASPlan plan = sasParser.Parse(testCase);
@@ -15,7 +15,7 @@ TEST_CASE("SASParser SingleAction") {
     REQUIRE(0 == plan.actions[0].parameters.size());
 }
 
-TEST_CASE("SASParser SingleAction_TrailingSpace") {
+TEST_CASE(TAG + "SingleAction_TrailingSpace") {
     SASParser sasParser = SASParser();
     std::string testCase = "(test_action) \n; cost = 1 (general cost) ";
     SASPlan plan = sasParser.Parse(testCase);
@@ -25,7 +25,7 @@ TEST_CASE("SASParser SingleAction_TrailingSpace") {
     REQUIRE(0 == plan.actions[0].parameters.size());
 }
 
-TEST_CASE("SASParser SingleAction_PrecedingSpace") {
+TEST_CASE(TAG + "SingleAction_PrecedingSpace") {
     SASParser sasParser = SASParser();
     std::string testCase = " (test_action)\n ; cost = 1 (general cost)";
     SASPlan plan = sasParser.Parse(testCase);
@@ -35,7 +35,7 @@ TEST_CASE("SASParser SingleAction_PrecedingSpace") {
     REQUIRE(0 == plan.actions[0].parameters.size());
 }
 
-TEST_CASE("SASParser SingleAction_Parameters") {
+TEST_CASE(TAG + "SingleAction_Parameters") {
     SASParser sasParser = SASParser();
     std::string testCase = "(test_action a b)\n ; cost = 1 (general cost)";
     SASPlan plan = sasParser.Parse(testCase);
@@ -47,7 +47,7 @@ TEST_CASE("SASParser SingleAction_Parameters") {
     REQUIRE("b" == plan.actions[0].parameters[1]);
 }
 
-TEST_CASE("SASParser MultiAction") {
+TEST_CASE(TAG + "MultiAction") {
     SASParser sasParser = SASParser();
     std::string testCase = "(test_action1)\n(test_action2)\n ; cost = 1 (general cost)";
     SASPlan plan = sasParser.Parse(testCase);
@@ -59,7 +59,7 @@ TEST_CASE("SASParser MultiAction") {
     REQUIRE(0 == plan.actions[1].parameters.size());
 }
 
-TEST_CASE("SASParser MultiAction_Parameters") {
+TEST_CASE(TAG + "MultiAction_Parameters") {
     SASParser sasParser = SASParser();
     std::string testCase = "(test_action1 a b)\n(test_action2 c d)\n ; cost = 1 (general cost)";
     SASPlan plan = sasParser.Parse(testCase);

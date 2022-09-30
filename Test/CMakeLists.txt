@@ -5,13 +5,12 @@ include(CTest)
 include(Catch)
 #set(CMAKE_CTEST_ARGUMENTS "--verbose")
 
-project(Tests-All VERSION 0.1.0)
-
 # Tests
 include(Test/SASParser/CMakeLists.txt)
 include(Test/PDDLCodeGenerator/CMakeLists.txt)
 include(Test/PDDLParser/CMakeLists.txt)
 
+# To run all tests
 add_executable(Test-All 
 	"Test/PDDLCodeGenerator/PDDLCodeGenerator.cpp" 
 	"Test/PDDLParser/PDDLParser.cpp"

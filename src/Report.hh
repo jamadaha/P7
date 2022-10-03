@@ -49,8 +49,12 @@ public:
 
     void Print(TimeScale ts = TimeScale::ms) {
         int lDesc = 0;
-        for (auto step : steps)
+        int64_t totalTime = 0;
+        for (auto step : steps) {
             lDesc = std::max(lDesc, (int) step.desc.size());
+            totalTime += step.time;
+        }
+            
         printf("---- Time Taken ----\n");
         std::string tts = (ts == TimeScale::ns) ? "(ns)" : "(ms)";
         printf("%-*s %s %s\n", lDesc, "Description", "Time Taken", tts.c_str());
@@ -58,8 +62,13 @@ public:
             if (ts == TimeScale::ns)
                 printf("%-*s %ld\n", lDesc, step.desc.c_str(), (long) step.time);
             else
-                printf("%-*s %f\n", lDesc, step.desc.c_str(), step.time / 1000000.0);
+                printf("%-*s %.3f\n", lDesc, step.desc.c_str(), step.time / 1000000.0);
         }
+        if (ts == TimeScale::ns)
+            printf("%-*s %ld\n", lDesc, "Total Time", (long) totalTime);
+        else
+            printf("%-*s %.3f\n", lDesc, "Total Time", totalTime / 1000000.0);
+        
     }
 
 private:

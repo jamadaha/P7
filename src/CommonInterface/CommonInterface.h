@@ -15,6 +15,7 @@
 #include "../DownwardRunner/DownwardRunner.h"
 #include "../PDDLParser/PDDLDocument.h"
 #include "../PlanValidators/PlanValidator.h"
+#include "../Report.hh"
 
 using namespace std;
 
@@ -23,7 +24,7 @@ public:
 	CommonInterface(Config config, std::shared_ptr<BaseReformulator> reformulator, string tempDomainName = "tempDomain.pddl", string tempProblemName = "tempProblem.pddl", string fastDownwardSASName = "sas_plan", string outputSASName = "real_sas_plan") :
 	config(config), Reformulator(reformulator), TempDomainName(tempDomainName), TempProblemName(tempProblemName), FastDownwardSASName(fastDownwardSASName), OutputSASName(outputSASName){};
 
-	void Run();
+	void Run(Report* report);
 
 private:
 	Config config;

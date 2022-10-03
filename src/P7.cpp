@@ -26,7 +26,7 @@ int main(int argc, char** argv)
 	std::shared_ptr<BaseReformulator> reformulator = std::make_shared<SameOutputReformulator>();
 	CommonInterface interface = CommonInterface(config, reformulator);
 	interface.Run(&report);
-	cout << "Done! - " << endl;
+	cout << "Done!" << endl;
 
 	//FileVerifier verifier;
 	//cout << "Verifying PDDL files..." << endl;

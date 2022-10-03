@@ -41,5 +41,6 @@ int main(int argc, char** argv)
 	//	throw invalid_argument("Files not the same!");
 	//cout << "Done!" << endl;
 
+	report.Print();
 	return 0;
 }

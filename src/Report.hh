@@ -29,10 +29,9 @@ public:
     }
 
     int64_t Stop(int i) {
-        auto step = steps[i];
-        step.eTime = std::chrono::steady_clock::now();
-        step.time = std::chrono::duration_cast<std::chrono::nanoseconds>(step.eTime - step.iTime).count();
-        return step.time / 1000000;
+        steps[i].eTime = std::chrono::steady_clock::now();
+        steps[i].time = std::chrono::duration_cast<std::chrono::nanoseconds>(steps[i].eTime - steps[i].iTime).count();
+        return steps[i].time / 1000000;
     }
 private:
     std::vector<ReportStep> steps;

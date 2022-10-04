@@ -5,15 +5,14 @@ using namespace std;
 
 const string tag = "SASCodeGenerator ";
 
-TEST_CASE(tag + "Parameters"){
-    cout << "hello" << endl;
+TEST_CASE(tag + "Check generation"){
     //Generator and parser
     SASCodeGenerator gen;
     SASParser parser;
-    
+
     //test setup
     SASAction act = SASAction("task", {"p1", "p2"});
-    string test = "(task p1 p2)\n; cost = 1 (general cost)";
+    string test = "(task p1 p2)\n; cost = 1 (general cost)\n";
     string fname = "./TestFiles/params.txt";
 
     SASPlan plan = parser.Parse(test);
@@ -27,8 +26,7 @@ TEST_CASE(tag + "Parameters"){
         ss << fptr.rdbuf();
         fcontent = ss.str();
     }
+
     //assertions
-    cout << fcontent;
-    cout << test;
     REQUIRE(fcontent == test);
 }

@@ -1,8 +1,6 @@
 #include "LabDownwardRunner.h"
 #include <iostream>
 
-const string RunnerLogName = "downwardLog";
-
 DownwardRunner::DownwardRunnerResult LabDownwardRunner::RunDownward(Config config, string reformulatedDomain, string reformulatedProblem)
 {
 	string path = config.path;
@@ -19,7 +17,7 @@ DownwardRunner::DownwardRunnerResult LabDownwardRunner::RunDownward(Config confi
 	system(command.c_str());
 	
 	//Call downward through lab script
-	command = "python3 ../runLab.py --all --downward " + folder + " --benchmarks '' --report " + labFolder + " --problem temp:" + reformulatedProblem + " > " + RunnerLogName;
+	command = "python3 ../runLab.py --all --downward " + folder + " --benchmarks '' --report " + labFolder + " --problem temp:" + reformulatedProblem;
 	system(command.c_str());
 
 	command = "rm -rf temp";
@@ -28,7 +26,7 @@ DownwardRunner::DownwardRunnerResult LabDownwardRunner::RunDownward(Config confi
 	command = "mv " + labFolder + "/runs-00001-00100/00001/sas_plan sas_plan";
 	system(command.c_str());
 
-	ifstream stream(RunnerLogName);
+	ifstream stream(labFolder + "/runs-00001-00100/00001/run.log");
 	string content((istreambuf_iterator<char>(stream)),(istreambuf_iterator<char>()));
 	stream.close();
 	if (content.find("Solution found.") != string::npos)

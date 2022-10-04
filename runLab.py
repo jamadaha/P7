@@ -26,7 +26,7 @@ ARGPARSER.add_argument(
 
 ARGPARSER.add_argument(
     "--report",
-    required=False,
+    required=True,
     help="Folder to report and eval"
     )
 
@@ -45,10 +45,7 @@ downwardfilepath = args.downward
 problem = args.problem
 benchmarksfolder = args.benchmarks
 
-if evaluationfolder:
-	experiment = FastDownwardExperiment(evaluationfolder)
-else:
-	experiment = FastDownwardExperiment()
+experiment = FastDownwardExperiment(evaluationfolder)
 
 experiment.add_step("build", experiment.build)
 experiment.add_step("start", experiment.start_runs)

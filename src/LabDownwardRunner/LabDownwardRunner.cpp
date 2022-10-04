@@ -9,21 +9,23 @@ DownwardRunner::DownwardRunnerResult LabDownwardRunner::RunDownward(Config confi
 	string search = config.opt.search;
 	string heuristic = config.opt.heuristic;
 
+	string labFolder = "labReport";
+
 	//Lab can't handle the full path for downward (it has to have the folder with .git inside)
 	std::string folder = path.substr(0, path.find_last_of("/"));
 
-	//Lab can only handle benchmarks that are folder with name = domain, inside folder domain.pddl and problem
-	string command = "rm -rf ../data/runLab ../data/runLab-eval && mkdir -p temp && cp " + reformulatedDomain + " " + reformulatedProblem + " temp && mv temp/" + reformulatedDomain + " temp/domain.pddl > " + RunnerLogName;
+	//Lab can only handle benchmarks where inside folder there is domain.pddl and problem
+	string command = "rm -rf " + labFolder + " " + labFolder + "-eval && mkdir -p temp && cp " + reformulatedDomain + " " + reformulatedProblem + " temp && mv temp/" + reformulatedDomain + " temp/domain.pddl";
 	system(command.c_str());
 	
 	//Call downward through lab script
-	command = "python3 ../runLab.py --all --downward " + folder + " --benchmarks ''" + " --problem temp:" + reformulatedProblem + " > " + RunnerLogName;
+	command = "python3 ../runLab.py --all --downward " + folder + " --benchmarks '' --report " + labFolder + " --problem temp:" + reformulatedProblem + " > " + RunnerLogName;
 	system(command.c_str());
 
 	command = "rm -rf temp";
 	system(command.c_str());
 
-	command = "mv ../data/runLab/runs-00001-00100/00001/sas_plan sas_plan";
+	command = "mv " + labFolder + "/runs-00001-00100/00001/sas_plan sas_plan";
 	system(command.c_str());
 
 	ifstream stream(RunnerLogName);

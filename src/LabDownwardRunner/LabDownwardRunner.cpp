@@ -14,15 +14,16 @@ DownwardRunner::DownwardRunnerResult LabDownwardRunner::RunDownward(Config confi
 
 	//Lab can only handle benchmarks that are folder with name = domain, inside folder domain.pddl and problem
 	string command = "rm -rf ../data/runLab ../data/runLab-eval && mkdir -p temp && cp " + reformulatedDomain + " " + reformulatedProblem + " temp && mv temp/" + reformulatedDomain + " temp/domain.pddl > " + RunnerLogName;
-	cout << command;
 	system(command.c_str());
 	
+	//Call downward through lab script
 	command = "python3 ../runLab.py --all --downward " + folder + " --benchmarks ''" + " --problem temp:" + reformulatedProblem + " > " + RunnerLogName;
-	cout << command;
 	system(command.c_str());
 
 	command = "rm -rf temp";
-	cout << command;
+	system(command.c_str());
+
+	command = "mv ../data/runLab/runs-00001-00100/00001/sas_plan sas_plan";
 	system(command.c_str());
 
 	ifstream stream(RunnerLogName);

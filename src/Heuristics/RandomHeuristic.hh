@@ -18,6 +18,8 @@ public:
 
 template <class T>
 T RandomHeuristic<T>::NextChoice() {
+	if (this->Choices.size() == 0)
+		return T();
 	int rndNum = rand() % this->Choices.size();
 	return this->Choices[rndNum];
 }

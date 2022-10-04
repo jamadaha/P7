@@ -30,8 +30,8 @@ void CommonInterface::Run(Report* report) {
 	// Generate new PDDL files
 	cout << "Generating PDDL files...";
 	report->Begin("Generating PDDL");
-	//PDDLCodeGenerator pddlGenerator;
-	//pddlGenerator.GenerateCode(reformulatedInstance, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
+	PDDLCodeGenerator pddlGenerator;
+	pddlGenerator.GenerateCode(reformulatedInstance, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
 	report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
 

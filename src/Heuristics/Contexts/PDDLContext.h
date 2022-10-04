@@ -2,14 +2,14 @@
 #define PDDLContext_H
 
 #include "BaseContext.h"
-#include "../../PDDLParser/pddldriver.hh"
+#include "../../PDDLTypes/PDDLInstance.hpp"
 
 using namespace std;
 
 class PDDLContext : public BaseContext {
 public:
-	Domain* DomainContext;
-	Problem* ProblemContext;
+	PDDLDomain* DomainContext;
+	PDDLProblem* ProblemContext;
 };
 
 #endif

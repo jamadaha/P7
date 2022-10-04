@@ -46,6 +46,10 @@ public:
         }
     };
 
+    PDDLDomain(PDDLDomain* domain) {
+        
+    }
+
     std::vector<PDDLArg> GetArguments(const StringList* params, const TypeDict* types) {
         std::vector<PDDLArg> args;
         std::unordered_map<std::string, std::string> tempTypeDict;

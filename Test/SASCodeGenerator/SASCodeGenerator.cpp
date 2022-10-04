@@ -1,25 +1,22 @@
 #include <catch2/catch_test_macros.hpp>
 #include "../../src/SASCodeGenerator/SASCodeGenerator.h"
 #include <iostream>
+
 using namespace std;
 
-const string tag = "SASCodeGenerator ";
+const string tag = "SASCodeGenerator: ";
 
-TEST_CASE(tag + "Check generation"){
+bool checkTranslation(string test, string targetFile){
     //Generator and parser
     SASCodeGenerator gen;
     SASParser parser;
 
-    //test setup
-    SASAction act = SASAction("task", {"p1", "p2"});
-    string test = "(task p1 p2)\n; cost = 1 (general cost)\n";
-    string fname = "./TestFiles/params.txt";
-
+    //Get plan and generate file
     SASPlan plan = parser.Parse(test);
-    
-    gen.GenerateCode(plan, fname);
+    gen.GenerateCode(plan, targetFile);
 
-    ifstream fptr(fname);
+    //Read file
+    ifstream fptr(targetFile);
     string fcontent;
     if (fptr) {
         ostringstream ss;
@@ -27,6 +24,45 @@ TEST_CASE(tag + "Check generation"){
         fcontent = ss.str();
     }
 
-    //assertions
-    REQUIRE(fcontent == test);
+    return test == fcontent;
+}
+
+TEST_CASE(tag + "Check generation"){
+    //Test setup
+    string test = "(task p1)\n; cost = 1 (general cost)\n";
+    string fname = "./TestFiles/params.txt";
+    //Assertion
+    REQUIRE(checkTranslation(test, fname));
+}
+
+TEST_CASE(tag + "Multiparameters"){
+    //Test setup
+    string test = "(task p1 p2 p3 p4 p5)\n; cost = 1 (general cost)\n";
+    string fname = "./TestFiles/params.txt";
+    //Assertion
+    REQUIRE(checkTranslation(test, fname));
+}
+
+TEST_CASE(tag + "Missing semicolon"){
+    //Test setup
+    string test = "(task p1)\n cost = 1 (general cost)\n";
+    string fname = "./TestFiles/params.txt";
+    //Assertion
+    REQUIRE(!checkTranslation(test, fname));
+}
+
+TEST_CASE(tag + "Illegal program 1"){
+    //Test setup
+    string test = ";cost = 1 (general cost)\n (task p1)";
+    string fname = "./TestFiles/params.txt";
+    //Assertion
+    REQUIRE(!checkTranslation(test, fname));
+}
+
+TEST_CASE(tag + "Illegal program 2"){
+    //Test setup
+    string test = "(task p1 p2 p3)\n";
+    string fname = "./TestFiles/params.txt";
+    //Assertion
+    REQUIRE(!checkTranslation(test, fname));
 }

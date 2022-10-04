@@ -65,6 +65,7 @@ experiment.add_algorithm(
     "main",
     ["--search", algorithm]
 )
+experiment._algorithms[algorithm].driver_options.remove("--validate")
 
 experiment.add_suite(benchmarksfolder, [problem])
 

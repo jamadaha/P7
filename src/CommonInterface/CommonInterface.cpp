@@ -8,22 +8,30 @@ void CommonInterface::Run(Report* report) {
 	PDDLDriver originalDriver;
 	originalDriver.parse(config.domainFile);
 	originalDriver.parse(config.problemFile);
-	PDDLDocument originalPDDLDocument(originalDriver.domain, originalDriver.problem);
+	t = report->Stop();
+	cout << "   ✓ " << t << "ms" << endl;
+
+	// Convert PDDL format
+	cout << "Converting PDDL format...";
+	report->Begin("Converison of PDDL format");
+	PDDLDomain domain = PDDLDomain(originalDriver.domain);
+	PDDLProblem problem = PDDLProblem(originalDriver.problem, &domain);
+	PDDLInstance instance = PDDLInstance(&domain, &problem);
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
 
 	// Reformulate the PDDL file
 	cout << "Reformulating PDDL...";
 	report->Begin("Reformulation of PDDL");
-	PDDLDocument reformulatedDocument = Reformulator->ReformulatePDDL(&originalPDDLDocument);
+	PDDLInstance reformulatedInstance = Reformulator->ReformulatePDDL(&instance);
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
 
 	// Generate new PDDL files
 	cout << "Generating PDDL files...";
 	report->Begin("Generating PDDL");
-	PDDLCodeGenerator pddlGenerator;
-	pddlGenerator.GenerateCode(reformulatedDocument, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
+	//PDDLCodeGenerator pddlGenerator;
+	//pddlGenerator.GenerateCode(reformulatedInstance, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
 	report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
 

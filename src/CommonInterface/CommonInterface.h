@@ -16,6 +16,9 @@
 #include "../PDDLParser/PDDLDocument.h"
 #include "../PlanValidators/PlanValidator.h"
 #include "../Report.hh"
+#include "../PDDLTypes/PDDLDomain.hpp"
+#include "../PDDLTypes/PDDLProblem.hpp"
+#include "../PDDLTypes/PDDLInstance.hpp"
 
 using namespace std;
 

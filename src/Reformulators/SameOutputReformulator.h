@@ -6,7 +6,7 @@ using namespace std;
 #include "BaseReformulator.h"
 
 class SameOutputReformulator : public BaseReformulator {
-	PDDLDocument ReformulatePDDL(PDDLDocument* inputPDDL) override;
+	PDDLInstance ReformulatePDDL(PDDLInstance* instance) override;
 	SASPlan RebuildSASPlan(SASPlan* reformulatedSAS) override;
 };
 

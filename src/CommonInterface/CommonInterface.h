@@ -5,7 +5,6 @@
 #include "../PDDLParser/pddldriver.hh"
 #include "../PDDLCodeGenerator/PDDLCodeGenerator.h"
 #include "../SASCodeGenerator/SASCodeGenerator.h"
-#include "../PDDLParser/PDDLDocument.h"
 #include <string>
 #include <fstream>
 #include <streambuf>
@@ -13,9 +12,11 @@
 #include <memory>
 #include "../Config/config.h"
 #include "../DownwardRunner/DownwardRunner.h"
-#include "../PDDLParser/PDDLDocument.h"
 #include "../PlanValidators/PlanValidator.h"
 #include "../Report.hh"
+#include "../PDDLTypes/PDDLDomain.hpp"
+#include "../PDDLTypes/PDDLProblem.hpp"
+#include "../PDDLTypes/PDDLInstance.hpp"
 
 using namespace std;
 

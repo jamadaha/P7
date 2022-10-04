@@ -1,8 +1,7 @@
 #ifndef BaseReformulator_H
 #define BaseReformulator_H
 
-#include "../PDDLParser/pddldriver.hh"
-#include "../PDDLParser/PDDLDocument.h"
+#include "../PDDLTypes/PDDLInstance.hpp"
 #include "../SASParser/SASParser.h"
 #include <string>
 #include <fstream>
@@ -12,7 +11,7 @@ using namespace std;
 
 class BaseReformulator {
 public:
-	virtual PDDLDocument ReformulatePDDL(PDDLDocument* inputPDDL) = 0;
+	virtual PDDLInstance ReformulatePDDL(PDDLInstance* instance) = 0;
 	virtual SASPlan RebuildSASPlan(SASPlan* reformulatedSAS) = 0;
 };
 

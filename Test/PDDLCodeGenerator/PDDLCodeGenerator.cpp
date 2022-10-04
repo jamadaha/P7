@@ -54,6 +54,6 @@ TEST_CASE(TAG + "PDDLProblemGenerator") {
     REQUIRE(generatedProblem.name == problem.name);
     //REQUIRE(generatedProblem->_domain == problem->_domain);
     REQUIRE(generatedProblem.objects.size() == problem.objects.size());
-    REQUIRE(generatedProblem.initState.size() == problem.initState.size());
-    REQUIRE(generatedProblem.goalState.size() == problem.goalState.size());
+    REQUIRE(generatedProblem.initState.state.size() == problem.initState.state.size());
+    REQUIRE(generatedProblem.goalState.state.size() == problem.goalState.state.size());
 }

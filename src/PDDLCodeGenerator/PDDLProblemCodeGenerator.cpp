@@ -31,10 +31,10 @@ string PDDLProblemCodeGenerator::GetObjects(vector<string> objects) {
 	return retStr;
 }
 
-string PDDLProblemCodeGenerator::GetInits(vector<PDDLLiteral> literals) {
+string PDDLProblemCodeGenerator::GetInits(PDDLState literals) {
 	string retStr = GetTabs(1) + "(:init\n";
 	retStr += GetTabs(2);
-	for (auto i : literals) {
+	for (auto i : literals.state) {
 		retStr += GetLiteral(i);
 	}
 	retStr += "\n";
@@ -42,11 +42,11 @@ string PDDLProblemCodeGenerator::GetInits(vector<PDDLLiteral> literals) {
 	return retStr;
 }
 
-string PDDLProblemCodeGenerator::GetGoals(vector<PDDLLiteral> literals) {
+string PDDLProblemCodeGenerator::GetGoals(PDDLState literals) {
 	string retStr = GetTabs(1) + "(:goal\n";
 	retStr += GetTabs(2) + "(and \n";
 	retStr += GetTabs(3);
-	for (auto i : literals) {
+	for (auto i : literals.state) {
 		retStr += GetLiteral(i);
 	}
 	retStr += "\n";

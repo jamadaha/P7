@@ -13,8 +13,8 @@ public:
 
 private:
 	string GetObjects(vector<string> objects);
-	string GetInits(vector<PDDLLiteral> literals);
-	string GetGoals(vector<PDDLLiteral> literals);
+	string GetInits(PDDLState literals);
+	string GetGoals(PDDLState literals);
 };
 
 #endif

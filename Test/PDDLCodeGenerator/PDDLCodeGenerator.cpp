@@ -34,9 +34,12 @@ TEST_CASE(TAG + "PDDLDomainGenerator") {
 
 TEST_CASE(TAG + "PDDLProblemGenerator") {
     PDDLDriver driver;
+    driver.parse(domainFile);
     driver.parse(problemFile);
+    Domain* driverDomain = driver.domain;
+    PDDLDomain domain = PDDLDomain(driverDomain);
     Problem* driverProblem = driver.problem;
-    PDDLProblem problem = PDDLProblem(driverProblem, nullptr);
+    PDDLProblem problem = PDDLProblem(driverProblem, &domain);
     PDDLProblemCodeGenerator PDDLProblemGen = PDDLProblemCodeGenerator();
     string problemString = PDDLProblemGen.GenerateProblemString(&problem);
 
@@ -47,7 +50,7 @@ TEST_CASE(TAG + "PDDLProblemGenerator") {
     PDDLDriver driver2;
     driver2.parse("problem.pddl");
     Problem* driverGeneratedProblem = driver2.problem;
-    PDDLProblem generatedProblem = PDDLProblem(driverGeneratedProblem, nullptr);
+    PDDLProblem generatedProblem = PDDLProblem(driverGeneratedProblem, &domain);
     REQUIRE(generatedProblem.name == problem.name);
     //REQUIRE(generatedProblem->_domain == problem->_domain);
     REQUIRE(generatedProblem.objects.size() == problem.objects.size());

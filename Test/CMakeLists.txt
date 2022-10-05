@@ -7,13 +7,15 @@ include(Catch)
 
 # Tests
 include(Test/SASParser/CMakeLists.txt)
+include(Test/SASCodeGenerator/CMakeLists.txt)
 include(Test/PDDLCodeGenerator/CMakeLists.txt)
 include(Test/PDDLParser/CMakeLists.txt)
 
 # To run all tests
 add_executable(Test-All 
-	"Test/PDDLCodeGenerator/PDDLCodeGenerator.cpp" 
+	"Test/PDDLCodeGenerator/PDDLCodeGenerator.cpp"
 	"Test/PDDLParser/PDDLParser.cpp"
 	"Test/SASParser/SASParser.cpp"
+	"Test/SASCodeGenerator/SASCodeGenerator.cpp"
 	${SOURCES})
 target_link_libraries(Test-All PRIVATE Catch2::Catch2WithMain)

@@ -24,7 +24,7 @@ void CommonInterface::Run() {
 
 	// Throw the new pddl files into Fast Downward
 	cout << "Run new PDDL files with Fast Downward...";
-	auto runRes = LabDownwardRunner::RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
+	auto runRes = LabDownwardRunner::RunLab(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
 	if (runRes != DownwardRunner::FoundPlan) {
 		cout << "   ✕" << endl;
 		cout << "No solution could be found for the plan" << endl;

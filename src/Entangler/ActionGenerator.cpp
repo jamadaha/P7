@@ -40,12 +40,19 @@ std::vector<PDDLActionInstance> ActionGenerator::GenerateLegal(PDDLAction action
         for (int i = 0; i < parameterCount; i++) 
             objects.push_back(candidateObjects[i][indexes[i]]);
         // test whether any multi literals do not match these objects
+        bool legalAction = true;
         for (int i = 0; i < parameterCount; i++) {
             for (auto literal : multiLiterals[i]) {
-                if (state->IsMultiLiteralTrue(literal, objects))
-                    legalActions.push_back(PDDLActionInstance(action, objects));
+                if (!state->IsMultiLiteralTrue(literal, objects)) {
+                    legalAction = false;
+                    break;
+                }  
             }
+            if (!legalAction)
+                break;
         }
+        if (legalAction)
+                legalActions.push_back(PDDLActionInstance(action, objects));
         
     } while (Increment(&indexes, candidateObjects));
 

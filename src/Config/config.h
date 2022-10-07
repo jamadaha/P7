@@ -15,6 +15,7 @@ class Config {
 public:
     string path;
     string validatorPath;
+    bool validatePlans;
     string domainFile;
     string problemFile;
     Options opt;

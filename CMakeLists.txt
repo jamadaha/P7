@@ -23,6 +23,7 @@ set(SOURCES
 	"src/FileVerifier/FileVerifier.h" "src/FileVerifier/FileVerifier.cpp" 
 	# Helpers
 	"src/Helpers/StringHelper.h" "src/Helpers/StringHelper.cpp" 
+	"src/Helpers/FileHelper.h" "src/Helpers/FileHelper.cpp" 
 	# Reformulators
 	"src/Reformulators/BaseReformulator.h" "src/Reformulators/SameOutputReformulator.cpp" 
 	# Common Interface

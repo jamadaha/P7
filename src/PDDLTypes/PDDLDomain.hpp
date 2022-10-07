@@ -60,11 +60,11 @@ public:
                 }
             }
 
-            for (auto const& arg : *params) {
-                if (tempTypeDict.find(arg) == tempTypeDict.end())
-                    args.push_back(PDDLArg(arg, nullptr));
+            for (int i = 0; i < params->size(); i++) {
+                if (tempTypeDict.find((*params)[i]) == tempTypeDict.end())
+                    args.push_back(PDDLArg(i, (*params)[i], nullptr));
                 else
-                    args.push_back(PDDLArg(arg, typeDict[tempTypeDict[arg]]));
+                    args.push_back(PDDLArg(i, (*params)[i], typeDict[tempTypeDict[(*params)[i]]]));
             }
         return args;
     }

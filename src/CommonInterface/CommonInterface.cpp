@@ -42,6 +42,7 @@ void CommonInterface::Run(Report* report) {
 	if (runRes != DownwardRunner::FoundPlan) {
 		cout << "   ✕" << endl;
 		cout << "No solution could be found for the plan" << endl;
+		t = report->Stop();
 		return;
 	}
 	else {
@@ -56,6 +57,7 @@ void CommonInterface::Run(Report* report) {
 			if (reformulatedSASValidatorResult != PlanValidator::PlanMatch) {
 				cout << "   ✕" << endl;
 				cout << "Output plan is not valid for reformulated domain and problem!" << endl;
+				t = report->Stop();
 				return;
 			}
 			t = report->Stop();
@@ -94,6 +96,7 @@ void CommonInterface::Run(Report* report) {
 			if (newSASValidatorResult != PlanValidator::PlanMatch) {
 				cout << "   ✕" << endl;
 				cout << "Output plan is not valid for original domain and problem!" << endl;
+				t = report->Stop();
 				return;
 			}
 			t = report->Stop();

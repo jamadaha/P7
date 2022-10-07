@@ -38,7 +38,7 @@ sudo apt install g++ make flex bison
 ```
 
 ### Lab
-Lab is used for evaluating Fast Downward on benchmark sets
+Lab is used for evaluating Fast Downward on benchmark sets.
 Install it by running the following commands:
 ```bash
 pip install lab

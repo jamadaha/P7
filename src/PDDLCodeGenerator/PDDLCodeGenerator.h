@@ -4,7 +4,7 @@
 #include "../PDDLParser/pddldriver.hh"
 #include "PDDLDomainCodeGenerator.h"
 #include "PDDLProblemCodeGenerator.h"
-#include "../PDDLParser/PDDLDocument.h"
+#include "../PDDLTypes/PDDLInstance.hpp"
 #include <string>
 #include <fstream>
 #include <streambuf>
@@ -13,7 +13,7 @@ using namespace std;
 
 class PDDLCodeGenerator {
 public:
-	void GenerateCode(PDDLDocument document, string domainFile, string problemFile);
+	void GenerateCode(PDDLInstance document, string domainFile, string problemFile);
 
 private:
 	PDDLDomainCodeGenerator domainGenerator;

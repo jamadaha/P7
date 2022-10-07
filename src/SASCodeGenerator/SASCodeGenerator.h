@@ -11,6 +11,7 @@ using namespace std;
 class SASCodeGenerator {
 public:
 	void GenerateCode(SASPlan plan, string targetFile);
+	string GenerateCodeString(SASPlan plan, string targetFile);
 
 private:
 	string GetAction(SASAction action);

@@ -14,16 +14,7 @@ bool checkTranslation(string test, string targetFile){
     //Get plan and generate file
     SASPlan plan = parser.Parse(test);
     gen.GenerateCode(plan, targetFile);
-
-    //Read file
-    ifstream fptr(targetFile);
-    string fcontent;
-    if (fptr) {
-        ostringstream ss;
-        ss << fptr.rdbuf();
-        fcontent = ss.str();
-    }
-
+    string fcontent = gen.GenerateCodeString(plan, targetFile)
     return test == fcontent;
 }
 

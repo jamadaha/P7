@@ -37,9 +37,12 @@ set(SOURCES
 	# Depth Functions
 	"src/DepthFunctions/BaseDepthFunction.h" "src/DepthFunctions/ObjectActionDepthFunction.h" "src/DepthFunctions/ObjectActionDepthFunction.cpp" "src/DepthFunctions/ConstantDepthFunction.h" "src/DepthFunctions/ConstantDepthFunction.cpp"
 
+	# Action Generator
+	"src/Entangler/ActionGenerator.cpp"
 	# Something new
 
- )
+
+)
 add_executable (P7 "src/P7.cpp" ${SOURCES})
 target_include_directories(P7 PRIVATE "PDDLParser")
 

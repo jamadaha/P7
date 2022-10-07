@@ -39,8 +39,9 @@ These are for debugging in VSCode. They aren't needed for anything else.
             "request": "launch",
             // Resolved by CMake Tools:
             "program": "${command:cmake.launchTargetPath}",
-            "args": ["-d Data/gripper.pddl",
-            "-p Data/gripper-4.pddl",
+            "args": [
+            "-d 'Data/Classical tracks/Gripper/gripper_domain.pddl'",
+            "-p 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
             "-f $HOME/bin/downward-projects/downward/fast-downward.py",
             "-v $HOME/bin/downward-projects/VAL/validate",
             "-c"],
@@ -83,8 +84,8 @@ To launch in Visual Studio (Note: This is the inferior version):
       "comment": "P7 With Args",
       "debuggerConfiguration": "gdb",
       "args": [
-        "-d Data/gripper.pddl",
-        "-p Data/gripper-4.pddl",
+        "-d 'Data/Classical tracks/Gripper/gripper_domain.pddl'",
+        "-p 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
         "-f $HOME/downward-projects/downward/fast-downward.py",
         "-v $HOME/downward-projects/VAL/validate",
         "-c"
@@ -100,8 +101,8 @@ To launch in Visual Studio (Note: This is the inferior version):
       "comment": "P7 With Args",
       "debuggerConfiguration": "gdb",
       "args": [
-        "-d Data/gripper.pddl",
-        "-p Data/gripper-4.pddl",
+        "-d 'Data/Classical tracks/Gripper/gripper_domain.pddl'",
+        "-p 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
         "-f $HOME/downward-projects/downward/fast-downward.py"
       ],
       "env": {

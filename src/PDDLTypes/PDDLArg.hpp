@@ -6,9 +6,10 @@
 #include "PDDLType.hpp"
 
 struct PDDLArg {
+    int index;
     std::string name;
     PDDLType* typeRef;
-    PDDLArg(std::string name, PDDLType* typeRef) : name(name), typeRef(typeRef) {};
+    PDDLArg(int index, std::string name, PDDLType* typeRef) : index(index), name(name), typeRef(typeRef) {};
 };
 
 #endif

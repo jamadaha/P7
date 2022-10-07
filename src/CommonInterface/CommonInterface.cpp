@@ -1,13 +1,13 @@
 ﻿#include "CommonInterface.h"
 
-void CommonInterface::Run(Report* report) {
+enum CommonInterface::RunResult CommonInterface::Run(Report* report) {
 	int64_t t;
 	// Parse original PDDL files
 	cout << "Parsing PDDL files...";
 	report->Begin("Parsing PDDL");
 	PDDLDriver originalDriver;
 	originalDriver.parse(config.domainFile);
-	originalDriver.parse(config.problemFile);
+	originalDriver.parse(config.problemFile);	
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
 
@@ -27,6 +27,9 @@ void CommonInterface::Run(Report* report) {
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
 
+	ActionGenerator ag = ActionGenerator(reformulatedInstance.domain);
+	std::vector<PDDLActionInstance> actionInstance = ag.GenerateActions(&problem.initState);
+
 	// Generate new PDDL files
 	cout << "Generating PDDL files...";
 	report->Begin("Generating PDDL");
@@ -42,7 +45,8 @@ void CommonInterface::Run(Report* report) {
 	if (runRes != DownwardRunner::FoundPlan) {
 		cout << "   ✕" << endl;
 		cout << "No solution could be found for the plan" << endl;
-		return;
+		t = report->Stop();
+		return CommonInterface::RunResult::ErrorsEncountered;
 	}
 	else {
 		t = report->Stop();
@@ -56,7 +60,8 @@ void CommonInterface::Run(Report* report) {
 			if (reformulatedSASValidatorResult != PlanValidator::PlanMatch) {
 				cout << "   ✕" << endl;
 				cout << "Output plan is not valid for reformulated domain and problem!" << endl;
-				return;
+				t = report->Stop();
+				return CommonInterface::RunResult::ErrorsEncountered;
 			}
 			t = report->Stop();
 			cout << "   ✓ " << t << "ms" << endl;
@@ -94,10 +99,12 @@ void CommonInterface::Run(Report* report) {
 			if (newSASValidatorResult != PlanValidator::PlanMatch) {
 				cout << "   ✕" << endl;
 				cout << "Output plan is not valid for original domain and problem!" << endl;
-				return;
+				t = report->Stop();
+				return CommonInterface::RunResult::ErrorsEncountered;
 			}
 			t = report->Stop();
 			cout << "   ✓" << t << "ms" << endl;
 		}
 	}
+	return CommonInterface::RunResult::RanWithoutErrors;
 }

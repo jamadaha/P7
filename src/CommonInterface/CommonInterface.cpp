@@ -1,7 +1,5 @@
 ﻿#include "CommonInterface.h"
 
-#include "../LabDownwardRunner/LabDownwardRunner.h"
-
 void CommonInterface::Run() {
 	// Parse original PDDL files
 	cout << "Parsing PDDL files...";
@@ -24,7 +22,7 @@ void CommonInterface::Run() {
 
 	// Throw the new pddl files into Fast Downward
 	cout << "Run new PDDL files with Fast Downward...";
-	auto runRes = LabDownwardRunner::RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
+	auto runRes = DownwardRunner::RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
 	if (runRes != DownwardRunner::FoundPlan) {
 		cout << "   ✕" << endl;
 		cout << "No solution could be found for the plan" << endl;

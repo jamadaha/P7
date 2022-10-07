@@ -17,7 +17,6 @@ set(SOURCES
 	"src/PDDLParser/stack.hh"
 	"src/Config/config.cpp"
 	"src/DownwardRunner/DownwardRunner.cpp"
-	"src/LabDownwardRunner/LabDownwardRunner.cpp"
 	"src/SASParser/SASParser.h" "src/SASParser/SASParser.cpp"
 	"src/PDDLCodeGenerator/PDDLCodeGenerator.h" "src/PDDLCodeGenerator/PDDLCodeGenerator.cpp" "src/PDDLCodeGenerator/PDDLDomainCodeGenerator.h" "src/PDDLCodeGenerator/PDDLDomainCodeGenerator.cpp" "src/PDDLCodeGenerator/PDDLProblemCodeGenerator.h" "src/PDDLCodeGenerator/PDDLProblemCodeGenerator.cpp" "src/PDDLCodeGenerator/BasePDDLCodeGenerator.h" "src/PDDLCodeGenerator/BasePDDLCodeGenerator.cpp" "src/SASCodeGenerator/SASCodeGenerator.h" "src/SASCodeGenerator/SASCodeGenerator.cpp" "src/FileVerifier/FileVerifier.h" "src/FileVerifier/FileVerifier.cpp" "src/Helpers/StringHelper.h" "src/Helpers/StringHelper.cpp" "src/Reformulators/BaseReformulator.h" "src/Reformulators/SameOutputReformulator.cpp" "src/CommonInterface/CommonInterface.h" "src/CommonInterface/CommonInterface.cpp" "src/PDDLParser/PDDLDocument.h" "src/Reformulators/SameOutputReformulator.h" "src/PlanValidators/PlanValidator.h" "src/PlanValidators/PlanValidator.cpp")
 add_executable (P7 "src/P7.cpp" ${SOURCES})

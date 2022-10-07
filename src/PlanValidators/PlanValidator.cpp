@@ -10,6 +10,8 @@ enum PlanValidator::ValidatorResult PlanValidator::ValidatePlan(Config config, s
 	if (!FileHelper::DoesFileExist(filesystem::path(planFile)))
 		return PlanValidator::ValidatorResult::MissingPlanFile;
 
+	if (!FileHelper::DoesFileExist(filesystem::path(config.validatorPath)))
+		return PlanValidator::ValidatorResult::MissingVAL;
 	string command = config.validatorPath + " " + domainFile + " " + problemFile + " " + planFile + " > " + ValidatorLogName;
 	system(command.c_str());
 

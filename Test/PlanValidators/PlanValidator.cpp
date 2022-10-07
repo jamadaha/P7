@@ -40,20 +40,29 @@ TEST_CASE(TAG + "ValidateBadPlan") {
     }
 }
 
+TEST_CASE(TAG + "MissingVAL") {
+    Config config;
+    config.validatorPath = "Not Val Path";
+
+    PlanValidator validator;
+    PlanValidator::ValidatorResult res = validator.ValidatePlan(config, domainFile, problemFile, badPlan);
+    REQUIRE(PlanValidator::ValidatorResult::MissingVAL == res);
+}
+
 TEST_CASE(TAG + "MissingDomainFile") {
     PlanValidator validator;
-    PlanValidator::ValidatorResult res = validator.ValidatePlan(Config(), "none", problemFile, badPlan);
+    PlanValidator::ValidatorResult res = validator.ValidatePlan(Config(), "Not a domain", problemFile, badPlan);
     REQUIRE(PlanValidator::ValidatorResult::MissingDomainFile == res);
 }
 
 TEST_CASE(TAG + "MissingProblemFile") {
     PlanValidator validator;
-    PlanValidator::ValidatorResult res = validator.ValidatePlan(Config(), domainFile, "none", badPlan);
+    PlanValidator::ValidatorResult res = validator.ValidatePlan(Config(), domainFile, "Not a problem", badPlan);
     REQUIRE(PlanValidator::ValidatorResult::MissingProblemFile == res);
 }
 
 TEST_CASE(TAG + "MissingPlanFile") {
     PlanValidator validator;
-    PlanValidator::ValidatorResult res = validator.ValidatePlan(Config(), domainFile, problemFile, "none");
+    PlanValidator::ValidatorResult res = validator.ValidatePlan(Config(), domainFile, problemFile, "Not a plan");
     REQUIRE(PlanValidator::ValidatorResult::MissingPlanFile == res);
 }

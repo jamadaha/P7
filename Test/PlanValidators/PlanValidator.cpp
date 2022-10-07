@@ -10,7 +10,7 @@ const string domainFile = "./TestFiles/gripper.pddl";
 const string problemFile = "./TestFiles/gripper-4.pddl";
 const string goodPlan = "./TestFiles/good_plan";
 const string badPlan = "./TestFiles/bad_plan";
-const filesystem::path validatorPath = filesystem::path(ot/downward-projects/VAL/validate");
+const filesystem::path validatorPath = filesystem::path("/root/downward-projects/VAL/validate");
 
 TEST_CASE(TAG + "ValidateGoodPlan") {
     if (!FileHelper::DoesFileExist(validatorPath)) {

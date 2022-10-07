@@ -14,7 +14,7 @@ bool checkTranslation(string test, string targetFile){
     //Get plan and generate file
     SASPlan plan = parser.Parse(test);
     gen.GenerateCode(plan, targetFile);
-    string fcontent = gen.GenerateCodeString(plan, targetFile)
+    string fcontent = gen.GenerateCodeString(plan, targetFile);
     return test == fcontent;
 }
 

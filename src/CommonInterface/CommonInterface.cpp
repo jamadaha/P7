@@ -1,6 +1,6 @@
 ﻿#include "CommonInterface.h"
 
-void CommonInterface::Run(Report* report) {
+enum CommonInterface::RunResult CommonInterface::Run(Report* report) {
 	int64_t t;
 	// Parse original PDDL files
 	cout << "Parsing PDDL files...";
@@ -43,7 +43,7 @@ void CommonInterface::Run(Report* report) {
 		cout << "   ✕" << endl;
 		cout << "No solution could be found for the plan" << endl;
 		t = report->Stop();
-		return;
+		return CommonInterface::RunResult::ErrorsEncountered;
 	}
 	else {
 		t = report->Stop();
@@ -58,7 +58,7 @@ void CommonInterface::Run(Report* report) {
 				cout << "   ✕" << endl;
 				cout << "Output plan is not valid for reformulated domain and problem!" << endl;
 				t = report->Stop();
-				return;
+				return CommonInterface::RunResult::ErrorsEncountered;
 			}
 			t = report->Stop();
 			cout << "   ✓ " << t << "ms" << endl;
@@ -97,10 +97,11 @@ void CommonInterface::Run(Report* report) {
 				cout << "   ✕" << endl;
 				cout << "Output plan is not valid for original domain and problem!" << endl;
 				t = report->Stop();
-				return;
+				return CommonInterface::RunResult::ErrorsEncountered;
 			}
 			t = report->Stop();
 			cout << "   ✓" << t << "ms" << endl;
 		}
 	}
+	return CommonInterface::RunResult::RanWithoutErrors;
 }

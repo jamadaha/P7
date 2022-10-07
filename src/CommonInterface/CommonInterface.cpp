@@ -48,17 +48,19 @@ void CommonInterface::Run(Report* report) {
 		t = report->Stop();
 		cout << "   ✓ " << t << "ms" << endl;
 
-		// Check to make sure the reformulated plan also matches the reformulated problem and domain
-		cout << "Validate reformulated SAS plan...";
-		report->Begin("Validating reformulated SAS plan");
-		auto reformulatedSASValidatorResult = PlanValidator::ValidatePlan(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, CommonInterface::FastDownwardSASName);
-		if (reformulatedSASValidatorResult != PlanValidator::PlanMatch) {
-			cout << "   ✕" << endl;
-			cout << "Output plan is not valid for reformulated domain and problem!" << endl;
-			return;
+		if (config.validatePlans) {
+			// Check to make sure the reformulated plan also matches the reformulated problem and domain
+			cout << "Validate reformulated SAS plan...";
+			report->Begin("Validating reformulated SAS plan");
+			auto reformulatedSASValidatorResult = PlanValidator::ValidatePlan(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, CommonInterface::FastDownwardSASName);
+			if (reformulatedSASValidatorResult != PlanValidator::PlanMatch) {
+				cout << "   ✕" << endl;
+				cout << "Output plan is not valid for reformulated domain and problem!" << endl;
+				return;
+			}
+			t = report->Stop();
+			cout << "   ✓ " << t << "ms" << endl;
 		}
-		t = report->Stop();
-		cout << "   ✓ " << t << "ms" << endl;
 
 		// Parse the output SAS plan
 		cout << "Parse SAS Plan...";
@@ -84,16 +86,18 @@ void CommonInterface::Run(Report* report) {
 		t = report->Stop();
 		cout << "   ✓ " << t << "ms" << endl;
 
-		// Validate reformulated plan works with original domain and problem
-		cout << "Validate new SAS plan...";
-		report->Begin("Validate new SAS plan");
-		auto newSASValidatorResult = PlanValidator::ValidatePlan(config, config.domainFile, config.problemFile, CommonInterface::OutputSASName);
-		if (newSASValidatorResult != PlanValidator::PlanMatch) {
-			cout << "   ✕" << endl;
-			cout << "Output plan is not valid for original domain and problem!" << endl;
-			return;
+		if (config.validatePlans) {
+			// Validate reformulated plan works with original domain and problem
+			cout << "Validate new SAS plan...";
+			report->Begin("Validate new SAS plan");
+			auto newSASValidatorResult = PlanValidator::ValidatePlan(config, config.domainFile, config.problemFile, CommonInterface::OutputSASName);
+			if (newSASValidatorResult != PlanValidator::PlanMatch) {
+				cout << "   ✕" << endl;
+				cout << "Output plan is not valid for original domain and problem!" << endl;
+				return;
+			}
+			t = report->Stop();
+			cout << "   ✓" << t << "ms" << endl;
 		}
-		t = report->Stop();
-		cout << "   ✓" << t << "ms" << endl;
 	}
 }

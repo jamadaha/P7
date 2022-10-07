@@ -47,6 +47,9 @@ benchmarksfolder = args.benchmarks
 
 experiment = FastDownwardExperiment(evaluationfolder)
 
+run = experiment.add_run()
+run.add_command("solver", ["mysolver", "runP7.py"])
+
 experiment.add_step("build", experiment.build)
 experiment.add_step("start", experiment.start_runs)
 experiment.add_fetcher(name="fetch")

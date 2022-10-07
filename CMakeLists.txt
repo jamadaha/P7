@@ -33,9 +33,12 @@ set(SOURCES
 	"src/Heuristics/BaseHeuristics.hh" "src/Heuristics/RandomHeuristic.hh" "src/Heuristics/Contexts/BaseContext.h" "src/Heuristics/Contexts/PDDLContext.h"
 	# PDDL Types
 	"src/PDDLTypes/PDDLAction.hpp" "src/PDDLTypes/PDDLArg.hpp" "src/PDDLTypes/PDDLLiteral.hpp" "src/PDDLTypes/PDDLDomain.hpp" "src/PDDLTypes/PDDLPredicate.hpp" "src/PDDLTypes/PDDLProblem.hpp" "src/PDDLTypes/PDDLType.hpp" "src/PDDLTypes/PDDLInstance.hpp" "src/PDDLTypes/PDDLState.hpp"
+	# Depth Functions
+	"src/DepthFunctions/BaseDepthFunction.h" "src/DepthFunctions/ObjectActionDepthFunction.h" "src/DepthFunctions/ObjectActionDepthFunction.cpp" "src/DepthFunctions/ConstantDepthFunction.h" "src/DepthFunctions/ConstantDepthFunction.cpp"
+
 	# Something new
 
-)
+ )
 add_executable (P7 "src/P7.cpp" ${SOURCES})
 target_include_directories(P7 PRIVATE "PDDLParser")
 

@@ -37,6 +37,13 @@ sudo apt install g++ make flex bison
     && make
 ```
 
+### Lab
+Lab is used for evaluating Fast Downward on benchmark sets
+Install it by running the following commands:
+```bash
+pip install lab
+```
+
 ## Launch
 ### VSCode
 These are for debugging in VSCode. They aren't needed for anything else.

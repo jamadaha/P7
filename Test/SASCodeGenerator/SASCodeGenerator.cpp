@@ -14,23 +14,14 @@ bool checkTranslation(string test, string targetFile){
     //Get plan and generate file
     SASPlan plan = parser.Parse(test);
     gen.GenerateCode(plan, targetFile);
-
-    //Read file
-    ifstream fptr(targetFile);
-    string fcontent;
-    if (fptr) {
-        ostringstream ss;
-        ss << fptr.rdbuf();
-        fcontent = ss.str();
-    }
-
+    string fcontent = gen.GenerateCodeString(plan, targetFile);
     return test == fcontent;
 }
 
 TEST_CASE(tag + "Check generation"){
     //Test setup
     string test = "(task p1)\n; cost = 1 (general cost)\n";
-    string fname = "./TestFiles/params.txt";
+    string fname = "./Example";
     //Assertion
     REQUIRE(checkTranslation(test, fname));
 }
@@ -38,7 +29,7 @@ TEST_CASE(tag + "Check generation"){
 TEST_CASE(tag + "Multiparameters"){
     //Test setup
     string test = "(task p1 p2 p3 p4 p5)\n; cost = 1 (general cost)\n";
-    string fname = "./TestFiles/params.txt";
+    string fname = "./Example";
     //Assertion
     REQUIRE(checkTranslation(test, fname));
 }
@@ -46,7 +37,7 @@ TEST_CASE(tag + "Multiparameters"){
 TEST_CASE(tag + "Missing semicolon"){
     //Test setup
     string test = "(task p1)\n cost = 1 (general cost)\n";
-    string fname = "./TestFiles/params.txt";
+    string fname = "./Example";
     //Assertion
     REQUIRE(!checkTranslation(test, fname));
 }
@@ -54,7 +45,7 @@ TEST_CASE(tag + "Missing semicolon"){
 TEST_CASE(tag + "Illegal program 1"){
     //Test setup
     string test = ";cost = 1 (general cost)\n (task p1)";
-    string fname = "./TestFiles/params.txt";
+    string fname = "./Example";
     //Assertion
     REQUIRE(!checkTranslation(test, fname));
 }
@@ -62,7 +53,7 @@ TEST_CASE(tag + "Illegal program 1"){
 TEST_CASE(tag + "Illegal program 2"){
     //Test setup
     string test = "(task p1 p2 p3)\n";
-    string fname = "./TestFiles/params.txt";
+    string fname = "./Example";
     //Assertion
     REQUIRE(!checkTranslation(test, fname));
 }

@@ -25,15 +25,19 @@ int Config::parseArgs(Config* config, int argc, char** argv){
         return 1;
     }
 
-    const string domainPath = StringHelper::Trim(result["d"].as<string>());
-    const string problemPath = StringHelper::Trim(result["p"].as<string>());
-    const string downwardpath = StringHelper::Trim(result["f"].as<string>());
-    const string validatorPath = StringHelper::Trim(result["v"].as<string>());
+    string domainPath = StringHelper::Trim(result["domain"].as<string>());
+    StringHelper::RemoveCharacter(&domainPath, '\'');
+    string problemPath = StringHelper::Trim(result["problem"].as<string>());
+    StringHelper::RemoveCharacter(&problemPath, '\'');
+    string downwardpath = StringHelper::Trim(result["downwardpath"].as<string>());
+    StringHelper::RemoveCharacter(&downwardpath, '\'');
+    string validatorPath = StringHelper::Trim(result["validatorpath"].as<string>());
+    StringHelper::RemoveCharacter(&validatorPath, '\'');
     bool doValidate = false;
-    if (result["c"].count() != 0)
+    if (result["dovalidate"].count() != 0)
         doValidate = true;
-    const string searchmethod = result["s"].as<string>();
-    const string heuristicmethod = result["e"].as<string>();
+    const string searchmethod = result["search"].as<string>();
+    const string heuristicmethod = result["evaluator"].as<string>();
 
     config->path = downwardpath;
     config->validatorPath = validatorPath;

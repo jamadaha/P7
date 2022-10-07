@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 	cout << "Running reformulator..." << endl;	
 	std::shared_ptr<BaseReformulator> reformulator = std::make_shared<SameOutputReformulator>();
 	CommonInterface interface = CommonInterface(config, reformulator);
-	interface.Run(&report);
+	auto result = interface.Run(&report);
 	cout << "Done!" << endl;
 
 	//FileVerifier verifier;
@@ -43,6 +43,7 @@ int main(int argc, char** argv)
 	//	throw invalid_argument("Files not the same!");
 	//cout << "Done!" << endl;
 
-	report.Print();
+	if (result == CommonInterface::RunResult::RanWithoutErrors)
+		report.Print();
 	return 0;
 }

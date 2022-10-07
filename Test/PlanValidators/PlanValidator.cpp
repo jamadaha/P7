@@ -14,7 +14,8 @@ const filesystem::path validatorPath = filesystem::path("/root/downward-projects
 
 TEST_CASE(TAG + "ValidateGoodPlan") {
     if (!FileHelper::DoesFileExist(validatorPath)) {
-        WARN("Cannot run PlanValidator test. VAL was not found! Skipping test...");
+        // Seems like GitHub Actions cant figure out the WARN macro
+        // WARN("Cannot run PlanValidator test. VAL was not found! Skipping test...");
         REQUIRE(true);
     }
     else {
@@ -29,7 +30,8 @@ TEST_CASE(TAG + "ValidateGoodPlan") {
 
 TEST_CASE(TAG + "ValidateBadPlan") {
     if (!FileHelper::DoesFileExist(validatorPath)) {
-        WARN("Cannot run PlanValidator test. VAL was not found! Skipping test...");
+        // Seems like GitHub Actions cant figure out the WARN macro
+        // WARN("Cannot run PlanValidator test. VAL was not found! Skipping test...");
         REQUIRE(true);
     }
     else {

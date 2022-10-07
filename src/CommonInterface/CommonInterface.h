@@ -18,6 +18,12 @@
 #include "../PDDLTypes/PDDLProblem.hpp"
 #include "../PDDLTypes/PDDLInstance.hpp"
 
+
+// Note: If include of actiongenerator still exists here remove it
+// it was added for temp reasons
+#include "../Entangler/ActionGenerator.hpp"
+#include "../PDDLTypes/PDDLActionInstance.hpp"
+
 using namespace std;
 
 class CommonInterface {

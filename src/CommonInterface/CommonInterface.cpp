@@ -27,6 +27,9 @@ enum CommonInterface::RunResult CommonInterface::Run(Report* report) {
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
 
+	ActionGenerator ag = ActionGenerator(reformulatedInstance.domain);
+	std::vector<PDDLActionInstance> actionInstance = ag.GenerateActions(&problem.initState);
+
 	// Generate new PDDL files
 	cout << "Generating PDDL files...";
 	report->Begin("Generating PDDL");

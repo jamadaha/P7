@@ -22,6 +22,10 @@ public:
     std::vector<PDDLPredicate> predicates;
     std::vector<PDDLAction> actions;
 
+    PDDLDomain() {
+        name = "Not Set";
+    }
+
     PDDLDomain(Domain* domain) {
         name = domain->_name.c_str();
         // Get Requirements

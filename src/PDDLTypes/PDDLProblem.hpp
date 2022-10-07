@@ -20,6 +20,10 @@ public:
     PDDLState initState;
     PDDLState goalState;
 
+    PDDLProblem() {
+        name = "Not Set";
+    }
+
     PDDLProblem(Problem* problem, PDDLDomain *_domain) : name(problem->_name), domain(_domain) {
         for (auto const& object : *problem->_objects)
             objects.push_back(object);

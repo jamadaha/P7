@@ -7,7 +7,7 @@ void CommonInterface::Run(Report* report) {
 	report->Begin("Parsing PDDL");
 	PDDLDriver originalDriver;
 	originalDriver.parse(config.domainFile);
-	originalDriver.parse(config.problemFile);
+	originalDriver.parse(config.problemFile);	
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
 

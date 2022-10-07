@@ -10,11 +10,12 @@ const string domainFile = "./TestFiles/gripper.pddl";
 const string problemFile = "./TestFiles/gripper-4.pddl";
 const string goodPlan = "./TestFiles/good_plan";
 const string badPlan = "./TestFiles/bad_plan";
-const filesystem::path validatorPath = filesystem::path("/root/downward-projects/VAL/validate");
+const filesystem::path validatorPath = filesystem::path(ot/downward-projects/VAL/validate");
 
 TEST_CASE(TAG + "ValidateGoodPlan") {
     if (!FileHelper::DoesFileExist(validatorPath)) {
         WARN("Cannot run PlanValidator test. VAL was not found! Skipping test...");
+        REQUIRE(true);
     }
     else {
         Config config;
@@ -29,6 +30,7 @@ TEST_CASE(TAG + "ValidateGoodPlan") {
 TEST_CASE(TAG + "ValidateBadPlan") {
     if (!FileHelper::DoesFileExist(validatorPath)) {
         WARN("Cannot run PlanValidator test. VAL was not found! Skipping test...");
+        REQUIRE(true);
     }
     else {
         Config config;

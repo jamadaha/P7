@@ -42,7 +42,8 @@ These are for debugging in VSCode. They aren't needed for anything else.
             "args": ["-d Data/gripper.pddl",
             "-p Data/gripper-4.pddl",
             "-f $HOME/bin/downward-projects/downward/fast-downward.py",
-            "-v $HOME/bin/downward-projects/VAL/validate"],
+            "-v $HOME/bin/downward-projects/VAL/validate",
+            "-c"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build",
             "environment": [
@@ -76,18 +77,35 @@ To launch in Visual Studio (Note: This is the inferior version):
   "configurations": [
     {
       "type": "cppgdb",
-      "name": "P7",
+      "name": "P7 Args (Full)",
       "project": "CMakeLists.txt",
-      "projectTarget": "",
-      "comment": "",
+      "projectTarget": "P7",
+      "comment": "P7 With Args",
+      "debuggerConfiguration": "gdb",
+      "args": [
+        "-d Data/gripper.pddl",
+        "-p Data/gripper-4.pddl",
+        "-f $HOME/downward-projects/downward/fast-downward.py",
+        "-v $HOME/downward-projects/VAL/validate",
+        "-c"
+      ],
+      "env": {
+      }
+    },
+    {
+      "type": "cppgdb",
+      "name": "P7 Args (No Validation)",
+      "project": "CMakeLists.txt",
+      "projectTarget": "P7",
+      "comment": "P7 With Args",
       "debuggerConfiguration": "gdb",
       "args": [
         "-d Data/gripper.pddl",
         "-p Data/gripper-4.pddl",
         "-f $HOME/downward-projects/downward/fast-downward.py"
-        "-v $HOME/downward-projects/VAL/validate"
       ],
-      "env": {}
+      "env": {
+      }
     }
   ]
 }

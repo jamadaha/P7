@@ -1,7 +1,7 @@
 #include "LabDownwardRunner.h"
 #include <iostream>
 
-DownwardRunner::DownwardRunnerResult LabDownwardRunner::RunDownward(Config config, string reformulatedDomain, string reformulatedProblem)
+DownwardRunner::DownwardRunnerResult LabDownwardRunner::RunLab(Config config, string reformulatedDomain, string reformulatedProblem)
 {
 	string path = config.path;
 	string search = config.opt.search;

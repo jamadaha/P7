@@ -20,15 +20,13 @@ ARGPARSER.add_argument(
 
 ARGPARSER.add_argument(
     "--downward",
-    required=False,
-    default="$HOME/downward/fast-downward.py",
+    required=True,
     help="Path to Fast Downward"
 )
 
 ARGPARSER.add_argument(
     "--validate",
-    required=False,
-    default="$HOME/validate/validate",
+    required=True,
     help="Path to VAL"
 )
 
@@ -55,14 +53,14 @@ ARGPARSER.add_argument(
 ARGPARSER.add_argument(
     "--domain",
     required=False,
-    default="gripper.pddl",
+    default="gripper_domain.pddl",
     help="Domain pddl file"
 )
 
 ARGPARSER.add_argument(
     "--problem",
     required=False,
-    default="gripper-4.pddl",
+    default="gripper_problem.pddl",
     help="Problem pddl file"
 )
 
@@ -77,7 +75,7 @@ validatorfilepath = args.validate
 search = args.search
 evaluator = args.evaluator
 
-benchmarksfolder = args.benchmarks if args.benchmarks else os.path.join(os.path.dirname(os.path.abspath(__file__)),"Data/")
+benchmarksfolder = args.benchmarks if args.benchmarks else os.path.join(os.path.dirname(os.path.abspath(__file__)),"Data/Classical tracks/Gripper/")
 domain = args.domain
 problem = args.problem
 

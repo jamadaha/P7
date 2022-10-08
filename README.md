@@ -27,7 +27,7 @@ sudo apt install g++ make flex bison && git clone https://github.com/KCL-Plannin
 ```
 
 ### Lab
-Lab is used for evaluating Fast Downward on benchmark sets.
+Lab is used for evaluating solvers on benchmark sets.
 Install it by running the following commands:
 ```bash
 pip install lab

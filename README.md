@@ -1,15 +1,13 @@
 # P7
 ## Requirements
+You can run `./installScript` in bash or install each requirement yourself.
+
 ### Catch2
 Catch2 is used for testing.
 In order to install run the following
 
 ```bash
-cd ~/bin
-    && git clone https://github.com/catchorg/Catch2.git
-    && cd Catch2
-    && cmake -Bbuild -H. -DBUILD_TESTING=OFF
-    && sudo cmake --build build/ --target install
+git clone https://github.com/catchorg/Catch2.git Catch2 && cd Catch2 && cmake -Bbuild -H. -DBUILD_TESTING=OFF && sudo cmake --build build/ --target install && cd ..
 ```
 
 This downloads the library, builds it, and installs it to path
@@ -18,23 +16,14 @@ This downloads the library, builds it, and installs it to path
 Fast Downward is used as a planner for this project.
 Install it by running the following commands:
 ```bash
-sudo apt install cmake g++ git make python3
-    && git clone https://github.com/aibasel/downward.git
-    && cd downward
-    && ./build.py
+sudo apt install cmake g++ git make python3 && git clone https://github.com/aibasel/downward.git && cd downward && ./build.py
 ```
 
 ### VAL
 VAL is used for validating Fast Downward plans.
 Install it by running the following commands:
 ```bash
-sudo apt install g++ make flex bison 
-    && git clone https://github.com/KCL-Planning/VAL.git 
-    && cd VAL 
-    && git checkout a5565396007eee73ac36527fbf904142b3077c74 
-    && make clean 
-    && sed -i 's/-Werror //g' Makefile 
-    && make
+sudo apt install g++ make flex bison && git clone https://github.com/KCL-Planning/VAL.git && cd VAL && git checkout a5565396007eee73ac36527fbf904142b3077c74 && make clean && sed -i 's/-Werror //g' Makefile && make
 ```
 
 ### Lab
@@ -57,10 +46,12 @@ These are for debugging in VSCode. They aren't needed for anything else.
             "request": "launch",
             // Resolved by CMake Tools:
             "program": "${command:cmake.launchTargetPath}",
-            "args": ["-d Data/gripper.pddl",
-            "-p Data/gripper-4.pddl",
+            "args": [
+            "-d 'Data/Classical tracks/Gripper/gripper_domain.pddl'",
+            "-p 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
             "-f $HOME/bin/downward-projects/downward/fast-downward.py",
-            "-v $HOME/bin/downward-projects/VAL/validate"],
+            "-v $HOME/bin/downward-projects/VAL/validate",
+            "-c"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build",
             "environment": [
@@ -94,18 +85,35 @@ To launch in Visual Studio (Note: This is the inferior version):
   "configurations": [
     {
       "type": "cppgdb",
-      "name": "P7",
+      "name": "P7 Args (Full)",
       "project": "CMakeLists.txt",
-      "projectTarget": "",
-      "comment": "",
+      "projectTarget": "P7",
+      "comment": "P7 With Args",
       "debuggerConfiguration": "gdb",
       "args": [
-        "-d Data/gripper.pddl",
-        "-p Data/gripper-4.pddl",
-        "-f $HOME/downward-projects/downward/fast-downward.py"
-        "-v $HOME/downward-projects/VAL/validate"
+        "-d 'Data/Classical tracks/Gripper/gripper_domain.pddl'",
+        "-p 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
+        "-f $HOME/downward-projects/downward/fast-downward.py",
+        "-v $HOME/downward-projects/VAL/validate",
+        "-c"
       ],
-      "env": {}
+      "env": {
+      }
+    },
+    {
+      "type": "cppgdb",
+      "name": "P7 Args (No Validation)",
+      "project": "CMakeLists.txt",
+      "projectTarget": "P7",
+      "comment": "P7 With Args",
+      "debuggerConfiguration": "gdb",
+      "args": [
+        "-d 'Data/Classical tracks/Gripper/gripper_domain.pddl'",
+        "-p 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
+        "-f $HOME/downward-projects/downward/fast-downward.py"
+      ],
+      "env": {
+      }
     }
   ]
 }

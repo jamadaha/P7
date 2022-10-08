@@ -3,7 +3,16 @@
 const string ValidatorLogName = "validatorLog";
 
 enum PlanValidator::ValidatorResult PlanValidator::ValidatePlan(Config config, string domainFile, string problemFile, string planFile) {
-	string command = config.validatorPath + " " + domainFile + " " + problemFile + " " + planFile + " > " + ValidatorLogName;
+	if (!FileHelper::DoesFileExist(filesystem::path(domainFile)))
+		return PlanValidator::ValidatorResult::MissingDomainFile;
+	if (!FileHelper::DoesFileExist(filesystem::path(problemFile)))
+		return PlanValidator::ValidatorResult::MissingProblemFile;
+	if (!FileHelper::DoesFileExist(filesystem::path(planFile)))
+		return PlanValidator::ValidatorResult::MissingPlanFile;
+
+	if (!FileHelper::DoesFileExist(filesystem::path(config.validatorPath)))
+		return PlanValidator::ValidatorResult::MissingVAL;
+	string command = config.validatorPath + " '" + domainFile + "' '" + problemFile + "' '" + planFile + "' > " + ValidatorLogName;
 	system(command.c_str());
 
 	ifstream stream(ValidatorLogName);

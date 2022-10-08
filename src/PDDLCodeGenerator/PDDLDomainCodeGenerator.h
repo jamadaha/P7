@@ -1,7 +1,7 @@
 #ifndef PDDLCodeGenerator_Domain_H
 #define PDDLCodeGenerator_Domain_H
 
-#include "../PDDLParser/pddldriver.hh"
+#include "../PDDLTypes/PDDLDomain.hpp"
 #include "BasePDDLCodeGenerator.h"
 #include <fstream>
 
@@ -9,16 +9,14 @@ using namespace std;
 
 class PDDLDomainCodeGenerator : public BasePDDLCodeGenerator {
 public:
-	void GenerateDomainFile(Domain* domain, string domainFile);
-	string GenerateDomainString(Domain* domain);
+	void GenerateDomainFile(PDDLDomain* domain, string domainFile);
+	string GenerateDomainString(PDDLDomain* domain);
 
 private:
-	string GetRequirements(StringList* requirements);
-	string GetPredicates(PredicateList* predicates);
-	string GetActions(ActionList* actions);
-	string GetAction(Action* action);
-	string GetPrecondition(Literal* predicate);
-	string GetLiteralChain(const vector<pair<Predicate*, bool>*>* effects);
+	string GetRequirements(vector<std::string> requirements);
+	string GetPredicates(vector<PDDLPredicate> predicates);
+	string GetActions(vector<PDDLAction> actions);
+	string GetAction(PDDLAction action);
 };
 
 #endif

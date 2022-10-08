@@ -8,6 +8,10 @@
 #include "FileVerifier/FileVerifier.h"
 #include "CommonInterface/CommonInterface.h"
 #include "Reformulators/SameOutputReformulator.h"
+#include "Heuristics/BaseHeuristics.hh"
+#include "Heuristics/RandomHeuristic.hh"
+
+#include "Report.hh"
 
 using namespace std;
 
@@ -18,10 +22,12 @@ int main(int argc, char** argv)
 	if (config.parseArgs(&config, argc, argv))
 		return 0;
 
-	cout << "Running reformulator..." << endl;
+	Report report = Report();
+
+	cout << "Running reformulator..." << endl;	
 	std::shared_ptr<BaseReformulator> reformulator = std::make_shared<SameOutputReformulator>();
 	CommonInterface interface = CommonInterface(config, reformulator);
-	interface.Run();
+	auto result = interface.Run(&report);
 	cout << "Done!" << endl;
 
 	//FileVerifier verifier;
@@ -37,5 +43,7 @@ int main(int argc, char** argv)
 	//	throw invalid_argument("Files not the same!");
 	//cout << "Done!" << endl;
 
+	if (result == CommonInterface::RunResult::RanWithoutErrors)
+		report.Print();
 	return 0;
 }

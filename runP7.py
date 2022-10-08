@@ -9,7 +9,6 @@ import os
 ARGPARSER.add_argument(
     "--report",
     required=False,
-    default="LabReport",
     help="Foldername for report and eval"
 )
 
@@ -21,13 +20,15 @@ ARGPARSER.add_argument(
 
 ARGPARSER.add_argument(
     "--downward",
-    required=True,
+    required=False,
+    default="$HOME/downward/fast-downward.py",
     help="Path to Fast Downward"
 )
 
 ARGPARSER.add_argument(
     "--validate",
-    required=True,
+    required=False,
+    default="$HOME/validate/validate",
     help="Path to VAL"
 )
 
@@ -54,7 +55,7 @@ ARGPARSER.add_argument(
 ARGPARSER.add_argument(
     "--domain",
     required=False,
-    deafult="gripper.pddl",
+    default="gripper.pddl",
     help="Domain pddl file"
 )
 
@@ -67,7 +68,7 @@ ARGPARSER.add_argument(
 
 args = ARGPARSER.parse_args()
 
-reportfolder = args.report
+reportfolder = args.report if args.report else os.path.join(os.path.dirname(os.path.abspath(__file__)),"build/LabReport")
 
 projectfile = args.P7 if args.P7 else os.path.join(os.path.dirname(os.path.abspath(__file__)),"build/P7")
 downwardfilepath = args.downward
@@ -92,9 +93,9 @@ arguments += ["-e", evaluator]
 
 run = experiment.add_run()
 run.add_command("P7", arguments)
-run.set_property("id",["solver", domain,problem])
-run.set_property("domain", os.path.basename(domain))
-run.set_property("problem", os.path.basename(problem))
+run.set_property("id",[search, evaluator, domain, problem])
+run.set_property("domain", domain)
+run.set_property("problem", problem)
 run.set_property("algorithm", search + "(" + evaluator + ")")
 
 experiment.add_step("build", experiment.build)

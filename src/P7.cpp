@@ -8,8 +8,6 @@
 #include "FileVerifier/FileVerifier.h"
 #include "CommonInterface/CommonInterface.h"
 #include "Reformulators/SameOutputReformulator.h"
-#include "Heuristics/BaseHeuristics.hh"
-#include "Heuristics/RandomHeuristic.hh"
 
 #include "Report.hh"
 

@@ -1,7 +1,7 @@
 #ifndef ConstantDepthFunction_H
 #define ConstantDepthFunction_H
 
-#include "../PDDLTypes/PDDLInstance.hpp"
+#include "../../PDDLTypes/PDDLInstance.hpp"
 #include "BaseDepthFunction.h"
 
 using namespace std;

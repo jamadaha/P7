@@ -30,15 +30,15 @@ set(SOURCES
 	"src/CommonInterface/CommonInterface.h" "src/CommonInterface/CommonInterface.cpp" "src/Reformulators/SameOutputReformulator.h" 
 	# Plan Validator
 	"src/PlanValidators/PlanValidator.h" "src/PlanValidators/PlanValidator.cpp" 
-	# Heuristics
-	"src/Heuristics/BaseHeuristics.hh" "src/Heuristics/RandomHeuristic.hh" "src/Heuristics/Contexts/BaseContext.h" "src/Heuristics/Contexts/PDDLContext.h"
 	# PDDL Types
 	"src/PDDLTypes/PDDLAction.hpp" "src/PDDLTypes/PDDLArg.hpp" "src/PDDLTypes/PDDLLiteral.hpp" "src/PDDLTypes/PDDLDomain.hpp" "src/PDDLTypes/PDDLPredicate.hpp" "src/PDDLTypes/PDDLProblem.hpp" "src/PDDLTypes/PDDLType.hpp" "src/PDDLTypes/PDDLInstance.hpp" "src/PDDLTypes/PDDLState.hpp"
-	# Depth Functions
-	"src/DepthFunctions/BaseDepthFunction.h" "src/DepthFunctions/ObjectActionDepthFunction.h" "src/DepthFunctions/ObjectActionDepthFunction.cpp" "src/DepthFunctions/ConstantDepthFunction.h" "src/DepthFunctions/ConstantDepthFunction.cpp"
-
-	# Action Generator
-	"src/Entangler/ActionGenerator.cpp"
+	# Walker
+	"src/Walker/ActionGenerator.cpp"
+	## Heuristics
+	"src/Walker/Heuristics/BaseHeuristics.hh" "src/Walker/Heuristics/RandomHeuristic.hh" "src/Walker/Heuristics/Contexts/BaseContext.h" "src/Walker/Heuristics/Contexts/PDDLContext.h"
+	## Depth Functions
+	"src/Walker/DepthFunctions/BaseDepthFunction.h" "src/Walker/DepthFunctions/ObjectActionDepthFunction.h" "src/Walker/DepthFunctions/ObjectActionDepthFunction.cpp" "src/Walker/DepthFunctions/ConstantDepthFunction.h" "src/Walker/DepthFunctions/ConstantDepthFunction.cpp"
+	
 	# Something new
 
 

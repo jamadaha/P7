@@ -47,6 +47,7 @@ add_executable (P7 "src/P7.cpp" ${SOURCES})
 target_include_directories(P7 PRIVATE "PDDLParser")
 
 file(COPY Data DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY "runP7.py" DESTINATION ${CMAKE_BINARY_DIR})
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

@@ -30,7 +30,7 @@ sudo apt install g++ make flex bison && git clone https://github.com/KCL-Plannin
 Lab is used for evaluating solvers on benchmark sets.
 Install it by running the following command:
 ```bash
-pip install lab
+sudo apt install python3-pip && pip install lab
 ```
 
 ## Launch

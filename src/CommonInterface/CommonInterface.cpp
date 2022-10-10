@@ -2,6 +2,17 @@
 
 enum CommonInterface::RunResult CommonInterface::Run(Report* report) {
 	int64_t t;
+
+	if (config.DebugMode.Content) {
+		// Checking filepaths in the config file
+		cout << "Checking filepaths from the config...";
+		report->Begin("Checking Filepaths");
+		if (!PathsChecker::IsPathsOk(&config))
+			return CommonInterface::RunResult::ErrorsEncountered;
+		t = report->Stop();
+		cout << "   ✓ " << t << "ms" << endl;
+	}
+
 	// Parse original PDDL files
 	cout << "Parsing PDDL files...";
 	report->Begin("Parsing PDDL");
@@ -51,7 +62,7 @@ enum CommonInterface::RunResult CommonInterface::Run(Report* report) {
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
 
-	if (config.validatePlans.Content) {
+	if (config.DebugMode.Content) {
 		// Check to make sure the reformulated plan also matches the reformulated problem and domain
 		cout << "Validate reformulated SAS plan...";
 		report->Begin("Validating reformulated SAS plan");
@@ -90,7 +101,7 @@ enum CommonInterface::RunResult CommonInterface::Run(Report* report) {
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
 
-	if (config.validatePlans.Content) {
+	if (config.DebugMode.Content) {
 		// Validate reformulated plan works with original domain and problem
 		cout << "Validate new SAS plan...";
 		report->Begin("Validate new SAS plan");

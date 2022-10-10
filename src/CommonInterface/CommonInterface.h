@@ -1,6 +1,7 @@
 #ifndef CommonInterface_H
 #define CommonInterface_H
 
+#include "../PathCheckers/PathChecker.hh"
 #include "../Reformulators/BaseReformulator.h"
 #include "../PDDLParser/pddldriver.hh"
 #include "../PDDLCodeGenerator/PDDLCodeGenerator.h"
@@ -17,7 +18,6 @@
 #include "../PDDLTypes/PDDLDomain.hpp"
 #include "../PDDLTypes/PDDLProblem.hpp"
 #include "../PDDLTypes/PDDLInstance.hpp"
-
 
 // Note: If include of actiongenerator still exists here remove it
 // it was added for temp reasons

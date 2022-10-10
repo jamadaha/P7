@@ -40,7 +40,7 @@ set(SOURCES
 	# Action Generator
 	"src/Entangler/ActionGenerator.cpp"
 	# Path Checkers
-	"src/PathCheckers/PathChecker.hpp"
+	"src/PathCheckers/PathChecker.hh" "src/PathCheckers/PathChecker.cpp"
 
 	# Something new
 

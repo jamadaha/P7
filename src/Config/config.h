@@ -23,10 +23,10 @@ struct Options {
 
 class Config {
 public:
+    ConfigItem<bool> DebugMode = ConfigItem<bool>(false);
     ConfigItem<string> downwardPath = ConfigItem<string>("fast-downward.py");
     Options downwardOptions;
     ConfigItem<string> validatorPath = ConfigItem<string>("validate");
-    ConfigItem<bool> validatePlans = ConfigItem<bool>(false);
     ConfigItem<string> domainFile = ConfigItem<string>("gripper_domain.pddl");
     ConfigItem<string> problemFile = ConfigItem<string>("gripper_problem.pddl");
 

@@ -34,8 +34,6 @@ string StringHelper::Trim(string buffer) {
     StringHelper::Trim(&newBuffer);
     return newBuffer;
 }
-    return std::string(it, rit.base());
-}
 
 template<typename ... Args>
 std::string StringHelper::StringFormat(const std::string& format, Args ... args)

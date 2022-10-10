@@ -11,6 +11,8 @@ using namespace std;
 class StringHelper {
 public:
 	static void RemoveCharacter(string* buffer, char character);
+	static string RemoveCharacter(string buffer, char character);
+	static void Trim(string* buffer);
 	static string Trim(string buffer);
 	template<typename ... Args>
 	static string StringFormat(const string& format, Args ... args);

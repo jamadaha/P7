@@ -12,11 +12,9 @@ template <class T, class U>
 class BaseHeuristics {
 public:
 	U Context;
-	BaseHeuristics(U context) {
-		Context = context;
-	}
+	BaseHeuristics(U context) : Context(context) {}
 
-	virtual T NextChoice(vector<T> choices) = 0;
+	virtual T* NextChoice(vector<T> choices) = 0;
 };
 
 #endif

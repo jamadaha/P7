@@ -20,6 +20,16 @@ enum CommonInterface::RunResult CommonInterface::Run(Report* report) {
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
 
+	// Walk (Temp)
+	report->Begin("Walk");
+	RandomHeuristic<PDDLActionInstance> *heu = new RandomHeuristic<PDDLActionInstance>(PDDLContext(&domain, &problem));
+	Walker walker = Walker(&instance, 
+							ActionGenerator(&domain), 
+							heu,
+							new ConstantDepthFunction(1, instance));
+	walker.Walk();
+	t = report->Stop();
+
 	// Reformulate the PDDL file
 	cout << "Reformulating PDDL...";
 	report->Begin("Reformulation of PDDL");

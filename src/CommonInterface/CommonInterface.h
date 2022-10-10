@@ -21,8 +21,10 @@
 
 // Note: If include of actiongenerator still exists here remove it
 // it was added for temp reasons
-#include "../Walker/ActionGenerator.hpp"
-#include "../PDDLTypes/PDDLActionInstance.hpp"
+#include "../Walker/Walker.hpp"
+#include "../Walker/Heuristics/RandomHeuristic.hh"
+#include "../Walker/DepthFunctions/ConstantDepthFunction.h"
+
 
 using namespace std;
 

@@ -10,6 +10,7 @@ class PDDLContext : public BaseContext {
 public:
 	PDDLDomain* DomainContext;
 	PDDLProblem* ProblemContext;
+	PDDLContext(PDDLDomain* domain, PDDLProblem* problem) : DomainContext(domain), ProblemContext(problem) {};
 };
 
 #endif

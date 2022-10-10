@@ -18,6 +18,8 @@ private:
     ActionGenerator actionGenerator;
     BaseHeuristics<PDDLActionInstance, PDDLContext>* heuristic;
     BaseDepthFunction* depthFunc;
+
+    PDDLState DoAction(PDDLState state, PDDLActionInstance action);
 };
 
 #endif

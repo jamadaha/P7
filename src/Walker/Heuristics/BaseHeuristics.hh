@@ -14,7 +14,7 @@ public:
 	U Context;
 	BaseHeuristics(U context) : Context(context) {}
 
-	virtual T* NextChoice(vector<T> choices) = 0;
+	virtual T NextChoice(vector<T> choices) = 0;
 };
 
 #endif

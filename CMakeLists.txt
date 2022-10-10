@@ -40,7 +40,7 @@ set(SOURCES
 	"src/Walker/DepthFunctions/BaseDepthFunction.h" "src/Walker/DepthFunctions/ObjectActionDepthFunction.h" "src/Walker/DepthFunctions/ObjectActionDepthFunction.cpp" "src/Walker/DepthFunctions/ConstantDepthFunction.h" "src/Walker/DepthFunctions/ConstantDepthFunction.cpp"
 	
 	# Something new
-
+	
 
 )
 add_executable (P7 "src/P7.cpp" ${SOURCES})

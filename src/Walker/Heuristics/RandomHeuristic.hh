@@ -13,15 +13,13 @@ public:
 	RandomHeuristic(PDDLContext context) : BaseHeuristics<T, PDDLContext>(context){
 		srand(time(NULL));
 	}
-	T* NextChoice(vector<T> choices) override;
+	T NextChoice(vector<T> choices) override;
 };
 
 template <class T>
-T* RandomHeuristic<T>::NextChoice(vector<T> choices) {
-	if (choices.size() == 0)
-		return nullptr;
+T RandomHeuristic<T>::NextChoice(vector<T> choices) {
 	int rndNum = rand() % choices.size();
-	return &choices[rndNum];
+	return choices[rndNum];
 }
 
 #endif

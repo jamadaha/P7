@@ -17,8 +17,8 @@ enum CommonInterface::RunResult CommonInterface::Run(Report* report) {
 	cout << "Parsing PDDL files...";
 	report->Begin("Parsing PDDL");
 	PDDLDriver originalDriver;
-	originalDriver.parse(config.domainFile.Content);
-	originalDriver.parse(config.problemFile.Content);	
+	originalDriver.parse(config.DomainFile.Content);
+	originalDriver.parse(config.ProblemFile.Content);	
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
 
@@ -105,7 +105,7 @@ enum CommonInterface::RunResult CommonInterface::Run(Report* report) {
 		// Validate reformulated plan works with original domain and problem
 		cout << "Validate new SAS plan...";
 		report->Begin("Validate new SAS plan");
-		auto newSASValidatorResult = PlanValidator::ValidatePlan(config, config.domainFile.Content, config.problemFile.Content, CommonInterface::OutputSASName);
+		auto newSASValidatorResult = PlanValidator::ValidatePlan(config, config.DomainFile.Content, config.ProblemFile.Content, CommonInterface::OutputSASName);
 		if (newSASValidatorResult != PlanValidator::PlanMatch) {
 			cout << "   ✕" << endl;
 			cout << "Output plan is not valid for original domain and problem!" << endl;

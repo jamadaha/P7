@@ -5,18 +5,18 @@
 #include "../../include/cxxopts.hpp"
 using namespace std;
 
-int Config::parseArgs(Config* config, int argc, char** argv){
+int Config::ParseArgs(Config* config, int argc, char** argv){
     cxxopts::Options options("P7","Pure magic reformulations :)");
 
     options.add_options()
         ("h,help", "Print usage")
-        ("d,domain", "Name of domain file", cxxopts::value<std::string>()->default_value(config->domainFile.DefaultContent))
-        ("p,problem", "Name of problem file", cxxopts::value<std::string>()->default_value(config->problemFile.DefaultContent))
-        ("f,downwardpath", "fast-downward.py filepath", cxxopts::value<std::string>()->default_value(config->downwardPath.DefaultContent))
+        ("d,domain", "Name of domain file", cxxopts::value<std::string>()->default_value(config->DomainFile.DefaultContent))
+        ("p,problem", "Name of problem file", cxxopts::value<std::string>()->default_value(config->ProblemFile.DefaultContent))
+        ("f,downwardpath", "fast-downward.py filepath", cxxopts::value<std::string>()->default_value(config->DownwardPath.DefaultContent))
         ("c,debugmode", "Enable additional debugging info and checks")
-        ("v,validatorpath", "validator filepath", cxxopts::value<std::string>()->default_value(config->validatorPath.DefaultContent))
-        ("s,search", GetSearchDesc().c_str(), cxxopts::value<std::string>()->default_value(config->downwardOptions.search.DefaultContent))
-        ("e,evaluator", GetEvaluatorDesc().c_str(), cxxopts::value<std::string>()->default_value(config->downwardOptions.heuristic.DefaultContent))
+        ("v,validatorpath", "validator filepath", cxxopts::value<std::string>()->default_value(config->ValidatorPath.DefaultContent))
+        ("s,search", GetSearchDesc().c_str(), cxxopts::value<std::string>()->default_value(config->DownwardOptions.Search.DefaultContent))
+        ("e,evaluator", GetEvaluatorDesc().c_str(), cxxopts::value<std::string>()->default_value(config->DownwardOptions.Heuristic.DefaultContent))
     ;
 
     auto result = options.parse(argc, argv);
@@ -39,13 +39,13 @@ int Config::parseArgs(Config* config, int argc, char** argv){
     const string searchmethod = result["search"].as<string>();
     const string heuristicmethod = result["evaluator"].as<string>();
 
-    config->downwardPath.Content = downwardpath;
-    config->validatorPath.Content = validatorPath;
+    config->DownwardPath.Content = downwardpath;
+    config->ValidatorPath.Content = validatorPath;
     config->DebugMode.Content = doValidate;
-    config->domainFile.Content = domainPath;
-    config->problemFile.Content = problemPath;
-    config->downwardOptions.search.Content = searchmethod;
-    config->downwardOptions.heuristic.Content = heuristicmethod;
+    config->DomainFile.Content = domainPath;
+    config->ProblemFile.Content = problemPath;
+    config->DownwardOptions.Search.Content = searchmethod;
+    config->DownwardOptions.Heuristic.Content = heuristicmethod;
 
     return 0;
 }

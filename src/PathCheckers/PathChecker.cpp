@@ -1,13 +1,13 @@
 #include "PathChecker.hh"
 
 bool PathsChecker::IsPathsOk(Config* config) {
-	if (!CheckItem(config->domainFile))
+	if (!CheckItem(config->DomainFile))
 		return false;
-	if (!CheckItem(config->problemFile))
+	if (!CheckItem(config->ProblemFile))
 		return false;
-	if (!CheckItem(config->downwardPath))
+	if (!CheckItem(config->DownwardPath))
 		return false;
-	if (!CheckItem(config->validatorPath))
+	if (!CheckItem(config->ValidatorPath))
 		return false;
 	return true;
 }

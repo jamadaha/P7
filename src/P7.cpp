@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 {
 	Config config;
 	// Do first as it quits on help
-	if (config.parseArgs(&config, argc, argv))
+	if (config.ParseArgs(&config, argc, argv))
 		return 0;
 
 	Report report = Report();

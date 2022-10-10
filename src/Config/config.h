@@ -17,20 +17,20 @@ struct ConfigItem {
 };
 
 struct Options {
-    ConfigItem<string> search = ConfigItem<string>("astar");
-    ConfigItem<string> heuristic = ConfigItem<string>("blind");
+    ConfigItem<string> Search = ConfigItem<string>("astar");
+    ConfigItem<string> Heuristic = ConfigItem<string>("blind");
 };
 
 class Config {
 public:
     ConfigItem<bool> DebugMode = ConfigItem<bool>(false);
-    ConfigItem<string> downwardPath = ConfigItem<string>("fast-downward.py");
-    Options downwardOptions;
-    ConfigItem<string> validatorPath = ConfigItem<string>("validate");
-    ConfigItem<string> domainFile = ConfigItem<string>("gripper_domain.pddl");
-    ConfigItem<string> problemFile = ConfigItem<string>("gripper_problem.pddl");
+    ConfigItem<string> DownwardPath = ConfigItem<string>("fast-downward.py");
+    Options DownwardOptions;
+    ConfigItem<string> ValidatorPath = ConfigItem<string>("validate");
+    ConfigItem<string> DomainFile = ConfigItem<string>("gripper_domain.pddl");
+    ConfigItem<string> ProblemFile = ConfigItem<string>("gripper_problem.pddl");
 
-    int parseArgs(Config* config, int argc, char** argv);
+    int ParseArgs(Config* config, int argc, char** argv);
 private:
     static string GetSearchDesc();
     static string GetEvaluatorDesc();

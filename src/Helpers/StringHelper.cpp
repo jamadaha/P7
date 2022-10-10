@@ -4,14 +4,33 @@ void StringHelper::RemoveCharacter(string* buffer, char character) {
 	buffer->erase(remove(buffer->begin(), buffer->end(), character), buffer->end());
 }
 
-string StringHelper::Trim(string buffer) {
-    std::string::const_iterator it = buffer.begin();
-    while (it != buffer.end() && isspace(*it))
+string StringHelper::RemoveCharacter(string buffer, char character) {
+    string newBuffer = buffer;
+    StringHelper::RemoveCharacter(&newBuffer, character);
+    return newBuffer;
+}
+
+void StringHelper::Trim(string* buffer) {
+    string::const_iterator it = buffer->begin();
+    int from = 0;
+    int length = buffer->size();
+
+    while (it != buffer->end() && isspace(*it)) {
         it++;
+        from++;
+    }
 
-    std::string::const_reverse_iterator rit = buffer.rbegin();
-    while (rit.base() != it && isspace(*rit))
+    string::const_reverse_iterator rit = buffer->rbegin();
+    while (rit.base() != it && isspace(*rit)) {
         rit++;
+        length--;
+    }
 
-    return std::string(it, rit.base());
+    *buffer = buffer->substr(from, length - from);
+}
+
+string StringHelper::Trim(string buffer) {
+    string newBuffer = buffer;
+    StringHelper::Trim(&newBuffer);
+    return newBuffer;
 }

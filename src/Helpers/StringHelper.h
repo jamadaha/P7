@@ -6,16 +6,14 @@
 #include <memory>
 #include <iostream>
 
-using namespace std;
-
 class StringHelper {
 public:
-	static void RemoveCharacter(string* buffer, char character);
-	static string RemoveCharacter(string buffer, char character);
-	static void Trim(string* buffer);
-	static string Trim(string buffer);
+	static void RemoveCharacter(std::string* buffer, char character);
+	static std::string RemoveCharacter(std::string buffer, char character);
+	static void Trim(std::string* buffer);
+	static std::string Trim(std::string buffer);
 	template<typename ... Args>
-	static string StringFormat(const string& format, Args ... args);
+	static std::string StringFormat(const std::string& format, Args ... args);
 };
 
 #endif

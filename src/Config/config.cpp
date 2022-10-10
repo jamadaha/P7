@@ -1,5 +1,7 @@
 #include "config.h"
 
+using namespace std;
+
 int Config::ParseArgs(Config* config, int argc, char** argv){
     cxxopts::Options options("P7","Pure magic reformulations :)");
 
@@ -50,18 +52,18 @@ int Config::ParseArgs(Config* config, int argc, char** argv){
 
 // Options from here https://www.fast-downward.org/Doc/SearchEngine
 string Config::GetSearchDesc() {
-    return "";
-    //return StringHelper::StringFormat("%s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n",
-    //    "Search Method",
-    //    "astar", "a* Search",
-    //    "eager", "eager best-first search",
-    //    "eager_greedy", "greedy search (eager)",
-    //    "eager_wastar", "eager weighted A*",
-    //    "ehc", "lazy enforced hill-climbing",
-    //    "iterated", "iterated search",
-    //    "lazy", "lazy best-first search",
-    //    "lazy_greedy", "greedy search (lazy)",
-    //    "lazy_wstar", "(weighted) A* search (lazy)");
+    //return "";
+    return StringHelper::StringFormat("%s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n",
+        "Search Method",
+        "astar", "a* Search",
+        "eager", "eager best-first search",
+        "eager_greedy", "greedy search (eager)",
+        "eager_wastar", "eager weighted A*",
+        "ehc", "lazy enforced hill-climbing",
+        "iterated", "iterated search",
+        "lazy", "lazy best-first search",
+        "lazy_greedy", "greedy search (lazy)",
+        "lazy_wstar", "(weighted) A* search (lazy)");
 }
 
 // Options from here https://www.fast-downward.org/Doc/Evaluator

@@ -5,11 +5,9 @@
 #include "../../include/cxxopts.hpp"
 #include "../Helpers/StringHelper.h"
 
-using namespace std;
-
 template <typename T>
 struct ConfigItem {
-    ConfigItem(string flag, string longFlag, string name, string description, T defaultContent) {
+    ConfigItem(std::string flag, std::string longFlag, std::string name, std::string description, T defaultContent) {
         Flag = flag;
         LongFlag = longFlag;
         Name = name;
@@ -17,33 +15,33 @@ struct ConfigItem {
         DefaultContent = defaultContent;
     }
 
-    string Name;
-    string Description;
-    string Flag;
-    string LongFlag;
+    std::string Name;
+    std::string Description;
+    std::string Flag;
+    std::string LongFlag;
     T Content;
     T DefaultContent;
 };
 
 struct Options {
-    ConfigItem<string> Search = ConfigItem<string>("s", "search", "Fast Downward Search", "", "astar");
-    ConfigItem<string> Heuristic = ConfigItem<string>("e", "evaluator", "Fast Downward Heuristic", "", "blind");
+    ConfigItem<std::string> Search = ConfigItem<std::string>("s", "search", "Fast Downward Search", "", "astar");
+    ConfigItem<std::string> Heuristic = ConfigItem<std::string>("e", "evaluator", "Fast Downward Heuristic", "", "blind");
 };
 
 class Config {
 public:
     ConfigItem<bool> DebugMode = ConfigItem<bool>("c", "debugmode", "Debug Mode", "Enable additional debugging info and checks", false);
-    ConfigItem<string> DownwardPath = ConfigItem<string>("f", "downwardpath", "Fast-Downward Path", "fast-downward.py filepath", "fast-downward.py");
+    ConfigItem<std::string> DownwardPath = ConfigItem<std::string>("f", "downwardpath", "Fast-Downward Path", "fast-downward.py filepath", "fast-downward.py");
     Options DownwardOptions;
-    ConfigItem<string> ValidatorPath = ConfigItem<string>("v", "validatorpath", "VAL validator Path", "validator filepath", "validate");
-    ConfigItem<string> DomainFile = ConfigItem<string>("d", "domain", "Domain File", "Path to domain file", "gripper_domain.pddl");
-    ConfigItem<string> ProblemFile = ConfigItem<string>("p", "problem", "Problem File", "Path to problem file", "gripper_problem.pddl");
+    ConfigItem<std::string> ValidatorPath = ConfigItem<std::string>("v", "validatorpath", "VAL validator Path", "validator filepath", "validate");
+    ConfigItem<std::string> DomainFile = ConfigItem<std::string>("d", "domain", "Domain File", "Path to domain file", "gripper_domain.pddl");
+    ConfigItem<std::string> ProblemFile = ConfigItem<std::string>("p", "problem", "Problem File", "Path to problem file", "gripper_problem.pddl");
 
     int ParseArgs(Config* config, int argc, char** argv);
 
 private:
-    string GetSearchDesc();
-    string GetEvaluatorDesc();
+    std::string GetSearchDesc();
+    std::string GetEvaluatorDesc();
 };
 
 #endif

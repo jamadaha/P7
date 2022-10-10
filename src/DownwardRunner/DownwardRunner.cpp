@@ -4,9 +4,9 @@
 const string RunnerLogName = "downwardLog";
 
 DownwardRunner::DownwardRunnerResult DownwardRunner::RunDownward(Config config, string reformulatedDomain, string reformulatedProblem) {
-    string path = config.path;
-    string search = config.opt.search;
-    string heuristic = config.opt.heuristic;
+    string path = config.downwardPath.Content;
+    string search = config.downwardOptions.search.Content;
+    string heuristic = config.downwardOptions.heuristic.Content;
 
     string command = path + " " + reformulatedDomain + " " + reformulatedProblem + " --search \"" + search + "(" + heuristic + "())\"" + " > " + RunnerLogName;
     system(command.c_str());

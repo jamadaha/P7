@@ -6,19 +6,29 @@
 
 using namespace std;
 
+template <typename T>
+struct ConfigItem {
+    ConfigItem(T defaultContent) {
+        DefaultContent = defaultContent;
+    }
+
+    T Content;
+    T DefaultContent;
+};
+
 struct Options {
-    string search;
-    string heuristic;
+    ConfigItem<string> search = ConfigItem<string>("astar");
+    ConfigItem<string> heuristic = ConfigItem<string>("blind");
 };
 
 class Config {
 public:
-    string path;
-    string validatorPath;
-    bool validatePlans;
-    string domainFile;
-    string problemFile;
-    Options opt;
+    ConfigItem<string> downwardPath = ConfigItem<string>("fast-downward.py");
+    Options downwardOptions;
+    ConfigItem<string> validatorPath = ConfigItem<string>("validate");
+    ConfigItem<bool> validatePlans = ConfigItem<bool>(false);
+    ConfigItem<string> domainFile = ConfigItem<string>("gripper_domain.pddl");
+    ConfigItem<string> problemFile = ConfigItem<string>("gripper_problem.pddl");
 
     int parseArgs(Config* config, int argc, char** argv);
 private:

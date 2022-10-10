@@ -2,6 +2,7 @@
 set (CMAKE_CXX_STANDARD 20)
 
 project(P7 VERSION 0.1.0)
+project(P7Lab VERSION 0.1.0)
 
 # Add source to this project's executable.
 set(SOURCES 
@@ -44,9 +45,11 @@ set(SOURCES
 
 )
 add_executable (P7 "src/P7.cpp" ${SOURCES})
+add_executable (P7Lab "src/P7Lab.cpp" ${SOURCES})
 target_include_directories(P7 PRIVATE "PDDLParser")
 
 file(COPY Data DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY "runP7.py" DESTINATION ${CMAKE_BINARY_DIR})
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

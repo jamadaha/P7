@@ -26,6 +26,13 @@ Install it by running the following commands:
 sudo apt install g++ make flex bison && git clone https://github.com/KCL-Planning/VAL.git && cd VAL && git checkout a5565396007eee73ac36527fbf904142b3077c74 && make clean && sed -i 's/-Werror //g' Makefile && make
 ```
 
+### Lab
+Lab is used for evaluating solvers on benchmark sets.
+Install it by running the following command:
+```bash
+sudo apt install python3-pip && pip install lab
+```
+
 ## Launch
 ### VSCode
 These are for debugging in VSCode. They aren't needed for anything else.
@@ -90,8 +97,7 @@ To launch in Visual Studio (Note: This is the inferior version):
         "-v $HOME/downward-projects/VAL/validate",
         "-c"
       ],
-      "env": {
-      }
+      "env": {}
     },
     {
       "type": "cppgdb",
@@ -105,8 +111,25 @@ To launch in Visual Studio (Note: This is the inferior version):
         "-p 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
         "-f $HOME/downward-projects/downward/fast-downward.py"
       ],
-      "env": {
-      }
+      "env": {}
+    },
+    {
+      "type": "cppgdb",
+      "name": "P7 With Lab",
+      "project": "CMakeLists.txt",
+      "projectTarget": "P7Lab",
+      "comment": "P7 with Lab",
+      "debuggerConfiguration": "gdb",
+      "cwd": "/root/.vs/P7/",
+      "args": [
+        "'--all'",
+        "--benchmarks '$HOME/.vs/P7/Data/Classical tracks/Gripper/'",
+        "--domain 'gripper_domain.pddl'",
+        "--problem 'gripper_problem.pddl'",
+        "--downward '$HOME/downward-projects/downward/fast-downward.py'",
+        "--validate '$HOME/downward-projects/VAL/validate'"
+      ],
+      "env": {}
     }
   ]
 }

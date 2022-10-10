@@ -1,12 +1,11 @@
 #include "DownwardRunner.h"
-#include <iostream>
 
 const string RunnerLogName = "downwardLog";
 
 DownwardRunner::DownwardRunnerResult DownwardRunner::RunDownward(Config config, string reformulatedDomain, string reformulatedProblem) {
-    string path = config.path;
-    string search = config.opt.search;
-    string heuristic = config.opt.heuristic;
+    string path = config.DownwardPath.Content;
+    string search = config.DownwardOptions.Search.Content;
+    string heuristic = config.DownwardOptions.Heuristic.Content;
 
     string command = path + " " + reformulatedDomain + " " + reformulatedProblem + " --search \"" + search + "(" + heuristic + "())\"" + " > " + RunnerLogName;
     system(command.c_str());

@@ -1,7 +1,6 @@
 #ifndef FileHelper_H
 #define FileHelper_H
 
-#include <string>
 #include <filesystem>
 
 using namespace std;

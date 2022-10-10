@@ -2,18 +2,19 @@
 #define StringHelper_H
 
 #include <string>
-#include <fstream>
 #include <streambuf>
-#include <vector>
-
-using namespace std;
+#include <memory>
+#include <iostream>
+#include <stdarg.h>  // For va_start, etc.
+#include <cstring>
 
 class StringHelper {
 public:
-	static void RemoveCharacter(string* buffer, char character);
-	static string RemoveCharacter(string buffer, char character);
-	static void Trim(string* buffer);
-	static string Trim(string buffer);
+	static void RemoveCharacter(std::string* buffer, char character);
+	static std::string RemoveCharacter(std::string buffer, char character);
+	static void Trim(std::string* buffer);
+	static std::string Trim(std::string buffer);
+	static std::string StringFormat(const std::string fmt_str, ...);
 };
 
 #endif

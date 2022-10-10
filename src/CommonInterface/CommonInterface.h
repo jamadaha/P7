@@ -1,15 +1,11 @@
 #ifndef CommonInterface_H
 #define CommonInterface_H
 
+#include "../PathCheckers/PathChecker.hh"
 #include "../Reformulators/BaseReformulator.h"
 #include "../PDDLParser/pddldriver.hh"
 #include "../PDDLCodeGenerator/PDDLCodeGenerator.h"
 #include "../SASCodeGenerator/SASCodeGenerator.h"
-#include <string>
-#include <fstream>
-#include <streambuf>
-#include <vector>
-#include <memory>
 #include "../Config/config.h"
 #include "../DownwardRunner/DownwardRunner.h"
 #include "../PlanValidators/PlanValidator.h"
@@ -17,7 +13,6 @@
 #include "../PDDLTypes/PDDLDomain.hpp"
 #include "../PDDLTypes/PDDLProblem.hpp"
 #include "../PDDLTypes/PDDLInstance.hpp"
-
 
 // Note: If include of actiongenerator still exists here remove it
 // it was added for temp reasons

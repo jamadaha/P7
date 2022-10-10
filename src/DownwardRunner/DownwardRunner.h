@@ -2,6 +2,7 @@
 #define DOWNWARDRUNNER
 
 #include <string>
+#include <fstream>
 #include "../Config/config.h"
 
 using namespace std;

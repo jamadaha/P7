@@ -97,8 +97,7 @@ To launch in Visual Studio (Note: This is the inferior version):
         "-v $HOME/downward-projects/VAL/validate",
         "-c"
       ],
-      "env": {
-      }
+      "env": {}
     },
     {
       "type": "cppgdb",
@@ -112,8 +111,7 @@ To launch in Visual Studio (Note: This is the inferior version):
         "-p 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
         "-f $HOME/downward-projects/downward/fast-downward.py"
       ],
-      "env": {
-      }
+      "env": {}
     },
     {
       "type": "cppgdb",
@@ -122,12 +120,14 @@ To launch in Visual Studio (Note: This is the inferior version):
       "projectTarget": "P7Lab",
       "comment": "P7 with Lab",
       "debuggerConfiguration": "gdb",
+      "cwd": "/root/.vs/P7/",
       "args": [
         "'--all'",
-        "--domain 'Data/Classical tracks/Gripper/gripper_domain.pddl'",
-        "--problem 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
-        "--downward $HOME/downward-projects/downward/fast-downward.py",
-        "--validate $HOME/downward-projects/VAL/validate"
+        "--benchmarks '$HOME/.vs/P7/Data/Classical tracks/Gripper/'",
+        "--domain 'gripper_domain.pddl'",
+        "--problem 'gripper_problem.pddl'",
+        "--downward '$HOME/downward-projects/downward/fast-downward.py'",
+        "--validate '$HOME/downward-projects/VAL/validate'"
       ],
       "env": {}
     }

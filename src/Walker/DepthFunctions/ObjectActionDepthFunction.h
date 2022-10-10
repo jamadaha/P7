@@ -8,8 +8,8 @@ using namespace std;
 
 class ObjectActionDepthFunction : public BaseDepthFunction {
 public:
-    ObjectActionDepthFunction(double modifier = 1) : BaseDepthFunction(modifier) {}
-    int GetDepth(PDDLInstance instance) override;
+    ObjectActionDepthFunction(PDDLInstance instance, double modifier = 1) : BaseDepthFunction(instance, modifier) {}
+    int GetDepth() override;
 };
 
 #endif

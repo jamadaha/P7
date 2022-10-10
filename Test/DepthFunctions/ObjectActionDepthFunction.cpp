@@ -29,8 +29,8 @@ TEST_CASE(TAG + "SimpleTest") {
         REQUIRE(pair.second == newProblem.objects.size());
 
         PDDLInstance emptyInstace(&newDomain, &newProblem);
-        BaseDepthFunction* function = new ObjectActionDepthFunction();
-        int actual = function->GetDepth(emptyInstace);
+        BaseDepthFunction* function = new ObjectActionDepthFunction(emptyInstace);
+        int actual = function->GetDepth();
         REQUIRE(expected == actual);
     }
 }
@@ -60,8 +60,8 @@ TEST_CASE(TAG + "WithModifier") {
         REQUIRE(pair.second == newProblem.objects.size());
 
         PDDLInstance emptyInstace(&newDomain, &newProblem);
-        BaseDepthFunction* function = new ObjectActionDepthFunction(modifier);
-        int actual = function->GetDepth(emptyInstace);
+        BaseDepthFunction* function = new ObjectActionDepthFunction(emptyInstace, modifier);
+        int actual = function->GetDepth();
         REQUIRE(expected == actual);
     }
 }

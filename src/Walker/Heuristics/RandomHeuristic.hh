@@ -10,18 +10,18 @@ using namespace std;
 template <class T>
 class RandomHeuristic : public BaseHeuristics<T, PDDLContext> {
 public:
-	RandomHeuristic(vector<T> choices, PDDLContext context) : BaseHeuristics<T, PDDLContext>(choices, context){
+	RandomHeuristic(PDDLContext context) : BaseHeuristics<T, PDDLContext>(context){
 		srand(time(NULL));
 	}
-	T NextChoice() override;
+	T NextChoice(vector<T> choices) override;
 };
 
 template <class T>
-T RandomHeuristic<T>::NextChoice() {
-	if (this->Choices.size() == 0)
+T RandomHeuristic<T>::NextChoice(vector<T> choices) {
+	if (choices.size() == 0)
 		return T();
-	int rndNum = rand() % this->Choices.size();
-	return this->Choices[rndNum];
+	int rndNum = rand() % choices.size();
+	return choices[rndNum];
 }
 
 #endif

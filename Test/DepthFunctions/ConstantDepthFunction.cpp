@@ -9,9 +9,9 @@ TEST_CASE(TAG + "SimpleTest") {
     vector<int> testCases = {1,2,10,75,1245623,0,1241};
     PDDLInstance emptyInstace(nullptr, nullptr);
     for (auto testCase : testCases) {
-        BaseDepthFunction* function = new ConstantDepthFunction(testCase);
+        BaseDepthFunction* function = new ConstantDepthFunction(testCase, emptyInstace);
         int expected = testCase;
-        int actual = function->GetDepth(emptyInstace);
+        int actual = function->GetDepth();
         REQUIRE(expected == actual);
     }
 }
@@ -21,9 +21,9 @@ TEST_CASE(TAG + "WithModifier") {
     vector<int> testCases = { 1,2,10,75,1245623,0,1241 };
     PDDLInstance emptyInstace(nullptr, nullptr);
     for (auto testCase : testCases) {
-        BaseDepthFunction* function = new ConstantDepthFunction(testCase, modifier);
+        BaseDepthFunction* function = new ConstantDepthFunction(testCase, emptyInstace, modifier);
         int expected = testCase * modifier;
-        int actual = function->GetDepth(emptyInstace);
+        int actual = function->GetDepth();
         REQUIRE(expected == actual);
     }
 }

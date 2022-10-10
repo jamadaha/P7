@@ -36,8 +36,7 @@ public:
         for (auto const& predicate : *domain->_predicates) {
             AddTypes(predicate->_types);
             predicates.push_back(PDDLPredicate(predicate->_name,  GetArguments(predicate->_args, predicate->_types)));
-        }
-            
+        }  
 
         // Get Actions
         for (auto const& action : *domain->_actions) {

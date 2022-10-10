@@ -2,7 +2,7 @@
 #define PDDLContext_H
 
 #include "BaseContext.h"
-#include "../../PDDLTypes/PDDLInstance.hpp"
+#include "../../../PDDLTypes/PDDLInstance.hpp"
 
 using namespace std;
 

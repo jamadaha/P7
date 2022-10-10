@@ -1,5 +1,5 @@
 #include "ConstantDepthFunction.h"
 
-int ConstantDepthFunction::GetDepth(PDDLInstance instance) {
+int ConstantDepthFunction::GetDepth() {
 	return ConstantDepth * Modifier;
 }

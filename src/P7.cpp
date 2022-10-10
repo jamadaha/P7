@@ -17,6 +17,10 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
+	PDDLDriver driver;
+    driver.parse("./TestFiles/action.pddl");
+    PDDLDomain *domain = new PDDLDomain(driver.domain);
+	/*
 	Config config;
 	// Do first as it quits on help
 	if (config.parseArgs(&config, argc, argv))
@@ -46,4 +50,5 @@ int main(int argc, char** argv)
 	if (result == CommonInterface::RunResult::RanWithoutErrors)
 		report.Print();
 	return 0;
+	*/
 }

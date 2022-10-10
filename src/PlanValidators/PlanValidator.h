@@ -2,6 +2,7 @@
 #define PlanValidator_H
 
 #include <string>
+#include <fstream>
 #include <iostream>
 #include "../Config/config.h"
 #include "../Helpers/FileHelper.h"

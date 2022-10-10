@@ -12,6 +12,7 @@ include(Test/PDDLCodeGenerator/CMakeLists.txt)
 include(Test/PDDLParser/CMakeLists.txt)
 include(Test/DepthFunctions/CMakeLists.txt)
 include(Test/PlanValidators/CMakeLists.txt)
+include(Test/Helpers/CMakeLists.txt)
 
 # To run all tests
 add_executable(Test-All 
@@ -22,5 +23,6 @@ add_executable(Test-All
 	"Test/DepthFunctions/ConstantDepthFunction.cpp"
 	"Test/DepthFunctions/ObjectActionDepthFunction.cpp"
 	"Test/PlanValidators/PlanValidator.cpp"
+	"Test/Helpers/StringHelper.cpp"
 	${SOURCES})
 target_link_libraries(Test-All PRIVATE Catch2::Catch2WithMain)

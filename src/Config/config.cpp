@@ -52,7 +52,6 @@ int Config::ParseArgs(Config* config, int argc, char** argv){
 
 // Options from here https://www.fast-downward.org/Doc/SearchEngine
 string Config::GetSearchDesc() {
-    //return "";
     return StringHelper::StringFormat("%s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n",
         "Search Method",
         "astar", "a* Search",
@@ -68,19 +67,18 @@ string Config::GetSearchDesc() {
 
 // Options from here https://www.fast-downward.org/Doc/Evaluator
 string Config::GetEvaluatorDesc() {
-    return "";
-    //return StringHelper::StringFormat("%s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n",
-    //    "Evaluator Method",
-    //    "add", "additive heuristic",
-    //    "blind", "blind heuristic",
-    //    "cea", "context-enchanced additive heuristic",
-    //    "cegar", "additive CEGAR heuristic",
-    //    "cg", "causal graph heuristic",
-    //    "ff", "FF heuristic",
-    //    "hm", "h^m heuristic",
-    //    "hmax", "Max heuristic",
-    //    "lmcut", "Landmark-cut heuristic",
-    //    "merge_and_shrink", "merge-and-shrink heuristic",
-    //    "operatorcounting", "Operator-counting heuristic",
-    //    "ipdb", "canonical pdb with hillclimbing algo");
+    return StringHelper::StringFormat("%s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n",
+        "Evaluator Method",
+        "add", "additive heuristic",
+        "blind", "blind heuristic",
+        "cea", "context-enchanced additive heuristic",
+        "cegar", "additive CEGAR heuristic",
+        "cg", "causal graph heuristic",
+        "ff", "FF heuristic",
+        "hm", "h^m heuristic",
+        "hmax", "Max heuristic",
+        "lmcut", "Landmark-cut heuristic",
+        "merge_and_shrink", "merge-and-shrink heuristic",
+        "operatorcounting", "Operator-counting heuristic",
+        "ipdb", "canonical pdb with hillclimbing algo");
 }

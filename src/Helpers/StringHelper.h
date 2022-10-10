@@ -5,6 +5,8 @@
 #include <streambuf>
 #include <memory>
 #include <iostream>
+#include <stdarg.h>  // For va_start, etc.
+#include <cstring>
 
 class StringHelper {
 public:
@@ -12,8 +14,7 @@ public:
 	static std::string RemoveCharacter(std::string buffer, char character);
 	static void Trim(std::string* buffer);
 	static std::string Trim(std::string buffer);
-	template<typename ... Args>
-	static std::string StringFormat(const std::string& format, Args ... args);
+	static std::string StringFormat(const std::string fmt_str, ...);
 };
 
 #endif

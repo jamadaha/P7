@@ -17,6 +17,8 @@ bool PathsChecker::CheckItem(ConfigItem<T> item) {
 	if (item.Content != "") {
 		if (!FileHelper::DoesFileExist(item.Content)) {
 			cout << "ERROR: File not found!" << endl;
+			cout << "Name: " + item.Name << endl;
+			cout << "Description: " + item.Description << endl;
 			cout << "Current Path: " + filesystem::current_path().string() << endl;
 			cout << "File path: " + item.Content << endl;
 			return false;
@@ -25,6 +27,8 @@ bool PathsChecker::CheckItem(ConfigItem<T> item) {
 	else {
 		if (!FileHelper::DoesFileExist(item.DefaultContent)) {
 			cout << "ERROR: File (USING DEFAULT) not found!" << endl;
+			cout << "Name: " + item.Name << endl;
+			cout << "Description: " + item.Description << endl;
 			cout << "Current Path: " + filesystem::current_path().string() << endl;
 			cout << "File path: " + item.DefaultContent << endl;
 			return false;

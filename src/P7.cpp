@@ -1,15 +1,8 @@
 ﻿#include <iostream>
-#include <memory>
-#include "PDDLParser/pddldriver.hh"
-#include "SASParser/SASParser.h"
-#include "PDDLCodeGenerator/PDDLCodeGenerator.h"
 #include "Config/config.h"
 #include "SASCodeGenerator/SASCodeGenerator.h"
-#include "FileVerifier/FileVerifier.h"
 #include "CommonInterface/CommonInterface.h"
 #include "Reformulators/SameOutputReformulator.h"
-#include "Heuristics/BaseHeuristics.hh"
-#include "Heuristics/RandomHeuristic.hh"
 
 #include "Report.hh"
 

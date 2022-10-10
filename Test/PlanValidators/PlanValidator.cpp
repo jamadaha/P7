@@ -13,7 +13,7 @@ const string badPlan = "./TestFiles/bad_plan";
 
 TEST_CASE(TAG + "MissingVAL") {
     Config config;
-    config.ValidatorPath = "Not Val Path";
+    config.ValidatorPath.Content = "Not Val Path";
 
     PlanValidator validator;
     PlanValidator::ValidatorResult res = validator.ValidatePlan(config, domainFile, problemFile, badPlan);

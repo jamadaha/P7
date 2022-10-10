@@ -114,6 +114,22 @@ To launch in Visual Studio (Note: This is the inferior version):
       ],
       "env": {
       }
+    },
+    {
+      "type": "cppgdb",
+      "name": "P7 With Lab",
+      "project": "CMakeLists.txt",
+      "projectTarget": "P7Lab",
+      "comment": "P7 with Lab",
+      "debuggerConfiguration": "gdb",
+      "args": [
+        "'--all'",
+        "--domain 'Data/Classical tracks/Gripper/gripper_domain.pddl'",
+        "--problem 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
+        "--downward $HOME/downward-projects/downward/fast-downward.py",
+        "--validate $HOME/downward-projects/VAL/validate"
+      ],
+      "env": {}
     }
   ]
 }

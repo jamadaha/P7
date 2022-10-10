@@ -3,8 +3,9 @@
 from lab.experiment import Experiment
 from lab.experiment import ARGPARSER
 from downward.reports.absolute import AbsoluteReport
-
+import shutil
 import os
+from os import path
 
 ARGPARSER.add_argument(
     "--report",
@@ -96,6 +97,10 @@ run.set_property("domain", domain)
 run.set_property("problem", problem)
 run.set_property("algorithm", search + "(" + evaluator + ")")
 
+if path.exists(reportfolder):
+    experiment.add_step("rm-exp-dir", shutil.rmtree, reportfolder)
+if path.exists(experiment.eval_dir):
+    experiment.add_step("rm-eval-dir", shutil.rmtree, experiment.eval_dir)
 experiment.add_step("build", experiment.build)
 experiment.add_step("start", experiment.start_runs)
 experiment.add_fetcher(name="fetch")

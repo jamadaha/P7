@@ -11,7 +11,7 @@ TEST_CASE(TAG + "SingleAction") {
     SASPlan plan = sasParser.Parse(testCase);
     REQUIRE(1 == plan.cost);
     REQUIRE(1 == plan.actions.size());
-    REQUIRE("test_action" == plan.actions[0].name);
+    REQUIRE("test_action_fail" == plan.actions[0].name);
     REQUIRE(0 == plan.actions[0].parameters.size());
 }
 

@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "../../src/PlanValidators/PlanValidator.h"
-#include "../../src/Helpers/FileHelper.h"
+#include "../../src/PlanValidators/PlanValidator.hh"
+#include "../../src/Helpers/FileHelper.hh"
 
 using namespace std;
 

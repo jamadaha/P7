@@ -1,5 +1,7 @@
 #include "PathChecker.hh"
 
+using namespace std;
+
 bool PathsChecker::IsPathsOk(Config* config) {
 	if (!CheckItem(config->DomainFile))
 		return false;

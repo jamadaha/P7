@@ -1,19 +1,18 @@
-#ifndef BaseHeuristics_H
-#define BaseHeuristics_H
+#ifndef BaseHeuristics_HH
+#define BaseHeuristics_HH
 
 #include <string>
 #include <iostream>
 #include <vector>
-#include "Contexts/BaseContext.h"
 
-using namespace std;
+#include "Contexts/BaseContext.h"
 
 template <class T, class U>
 class BaseHeuristics {
 public:
 	U Context;
-	vector<T> Choices;
-	BaseHeuristics(vector<T> choices, U context) {
+	std::vector<T> Choices;
+	BaseHeuristics(std::vector<T> choices, U context) {
 		Choices = choices;
 		Context = context;
 	}

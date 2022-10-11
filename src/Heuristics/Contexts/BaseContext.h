@@ -1,7 +1,5 @@
-#ifndef BaseContext_H
-#define BaseContext_H
-
-using namespace std;
+#ifndef BaseContext_HH
+#define BaseContext_HH
 
 class BaseContext {
 public:

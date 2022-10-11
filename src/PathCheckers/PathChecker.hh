@@ -1,5 +1,5 @@
-#ifndef PathChecker_H
-#define PathChecker_H
+#ifndef PathChecker_HH
+#define PathChecker_HH
 
 #include <iostream>
 

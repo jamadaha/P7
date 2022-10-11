@@ -5,10 +5,11 @@
 
 #include "../RunReport/RunReport.hh"
 #include "../PathCheckers/PathChecker.hh"
-#include "../Reformulators/BaseReformulator.h"
+#include "../Reformulators/BaseReformulator.hh"
 #include "../PDDLParser/pddldriver.hh"
 #include "../PDDLCodeGenerator/PDDLCodeGenerator.h"
-#include "../SASCodeGenerator/SASCodeGenerator.h"
+#include "../SASCodeGenerator/SASCodeGenerator.hh"
+#include "../SASParser/SASParser.h"
 #include "../Config/config.h"
 #include "../DownwardRunner/DownwardRunner.h"
 #include "../PlanValidators/PlanValidator.h"

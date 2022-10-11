@@ -10,7 +10,7 @@
 #include "../PDDLCodeGenerator/PDDLCodeGenerator.hh"
 #include "../SASCodeGenerator/SASCodeGenerator.hh"
 #include "../SASParser/SASParser.hh"
-#include "../Config/config.h"
+#include "../Config/config.hh"
 #include "../DownwardRunner/DownwardRunner.hh"
 #include "../PlanValidators/PlanValidator.hh"
 #include "../PDDLTypes/PDDLDomain.hpp"

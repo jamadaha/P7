@@ -4,7 +4,7 @@
 #include <string>
 #include <fstream>
 
-#include "../Config/config.h"
+#include "../Config/config.hh"
 
 struct DownwardRunner {
     enum DownwardRunnerResult { None, FoundPlan, DidNotFindPlan };

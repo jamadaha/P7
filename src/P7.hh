@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "Config/config.h"
+#include "Config/config.hh"
 #include "CommonInterface/CommonInterface.h"
 #include "Reformulators/SameOutputReformulator.hh"
 #include "RunReport/RunReport.hh"

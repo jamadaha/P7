@@ -1,13 +1,11 @@
-#ifndef FileHelper_H
-#define FileHelper_H
+#ifndef FileHelper_HH
+#define FileHelper_HH
 
 #include <filesystem>
 
-using namespace std;
-
 class FileHelper {
 public:
-	static bool DoesFileExist(filesystem::path fileName);
+	static bool DoesFileExist(std::filesystem::path fileName);
 };
 
 #endif

@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "../../src/Walker/DepthFunctions/ObjectActionDepthFunction.h"
+#include "../../../src/Walker/DepthFunctions/ObjectActionDepthFunction.h"
 
 using namespace std;
 const string TAG = "ObjectActionDepthFunction ";

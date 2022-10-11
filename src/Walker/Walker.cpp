@@ -27,7 +27,6 @@ PDDLState Walker::DoAction(PDDLState state, PDDLActionInstance action) {
                     }
                 }
                 if (isEqual) {
-                    printf("Index %d\n", stateIndex);
                     if (!effect.state)
                         state.state.erase(state.state.begin() + stateIndex);
                     else

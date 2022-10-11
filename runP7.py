@@ -3,6 +3,7 @@
 from lab.experiment import Experiment
 from lab.experiment import ARGPARSER
 from downward.reports.absolute import AbsoluteReport
+from downward.reports.taskwise import TaskwiseReport
 import shutil
 import os
 from os import path
@@ -91,7 +92,7 @@ arguments += ["-s", search]
 arguments += ["-e", evaluator]
 
 run = experiment.add_run()
-run.add_command("P7", arguments)
+run.add_command("planner", arguments)
 run.set_property("id",[search, evaluator, domain, problem])
 run.set_property("domain", domain)
 run.set_property("problem", problem)
@@ -105,17 +106,39 @@ experiment.add_step("build", experiment.build)
 experiment.add_step("start", experiment.start_runs)
 experiment.add_fetcher(name="fetch")
 
-ATTRIBUTES = [
-    "error",
-    "run_dir",
-    "search_start_time",
-    "search_start_memory",
-    "total_time",
-    "h_values",
-    "coverage",
-    "expansions",
-    "memory",
-]
+EXITCODE_PARSER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Lab/ExitcodeParser.py")
+TRANSLATOR_PARSER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Lab/TranslatorParser.py")
+SINGLE_SEARCH_PARSER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Lab/SingleSearchParser.py")
+PLANNER_PARSER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Lab/PlannerParser.py")
+ANYTIME_SEARCH_PARSER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Lab/AnytimeSearchParser.py")
+P7_LAB_PARSER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Lab/P7LabParser.py")
+
+experiment.add_parser(EXITCODE_PARSER)
+experiment.add_parser(TRANSLATOR_PARSER)
+experiment.add_parser(SINGLE_SEARCH_PARSER)
+experiment.add_parser(PLANNER_PARSER)
+experiment.add_parser(P7_LAB_PARSER)
+
+ERROR_ATTRIBUTES= ['domain', 'problem', 'algorithm', 'unexplained_errors', 'error', 'planner_wall_clock_time', 'raw_memory', 'node']
+PREDEFINED_ATTRIBUTES= ['cost', 'coverage', 'dead_ends', 'evaluations', 'expansions', 'generated', 'initial_h_value', 'plan_length', 'planner_time', 'quality', 'score_*', 'search_time', 'total_time', 'unsolvable']
+ATTRIBUTES = ERROR_ATTRIBUTES + PREDEFINED_ATTRIBUTES
+
+#format can be tex for reports
 experiment.add_report(AbsoluteReport(attributes=ATTRIBUTES), outfile="report.html")
+
+EXTRA = ["parsing_pddl", 
+              "converison_of_pddl_format", 
+              "reformulation_of_pddl", 
+              "generating_pddl",
+              "running_fastdownward",
+              "parse_sas_plan",
+              "rebuild_sas_plan",
+              "output_sas_plan"]
+
+MS = [x+"_ms" for x in EXTRA]
+PROCENT = [x+"_procent" for x in EXTRA]
+
+experiment.add_report(TaskwiseReport(attributes=(MS)), outfile="report_ms.html")
+experiment.add_report(TaskwiseReport(attributes=(PROCENT)), outfile="report_procent.html")
 
 experiment.run_steps()

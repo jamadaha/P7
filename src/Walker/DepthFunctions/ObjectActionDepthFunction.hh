@@ -1,10 +1,8 @@
-#ifndef ObjectActionDepthFunction_H
-#define ObjectActionDepthFunction_H
+#ifndef ObjectActionDepthFunction_HH
+#define ObjectActionDepthFunction_HH
 
 #include "../../PDDLTypes/PDDLInstance.hpp"
-#include "BaseDepthFunction.h"
-
-using namespace std;
+#include "BaseDepthFunction.hh"
 
 class ObjectActionDepthFunction : public BaseDepthFunction {
 public:

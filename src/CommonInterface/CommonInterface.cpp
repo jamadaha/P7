@@ -1,6 +1,8 @@
-﻿#include "CommonInterface.h"
+﻿#include "CommonInterface.hh"
 
-enum CommonInterface::RunResult CommonInterface::Run(Report* report) {
+using namespace std;
+
+enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	int64_t t;
 
 	if (config.DebugMode.Content) {

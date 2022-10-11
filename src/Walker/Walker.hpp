@@ -5,8 +5,8 @@
 
 #include "../PDDLTypes/PDDLActionInstance.hpp"
 #include "Heuristics/BaseHeuristics.hh"
-#include "Heuristics/Contexts/PDDLContext.h"
-#include "DepthFunctions/BaseDepthFunction.h"
+#include "Heuristics/Contexts/PDDLContext.hh"
+#include "DepthFunctions/BaseDepthFunction.hh"
 #include "ActionGenerator.hpp"
 
 class Walker {

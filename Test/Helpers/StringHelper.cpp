@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "../../src/Helpers/StringHelper.h"
+#include "../../src/Helpers/StringHelper.hh"
 
 using namespace std;
 const string TAG = "StringHelper ";

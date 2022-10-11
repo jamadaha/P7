@@ -1,4 +1,6 @@
-#include "ObjectActionDepthFunction.h"
+#include "ObjectActionDepthFunction.hh"
+
+using namespace std;
 
 int ObjectActionDepthFunction::GetDepth() {
 	int retValue = 0;

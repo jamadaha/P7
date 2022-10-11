@@ -1,4 +1,6 @@
-#include "SameOutputReformulator.h"
+#include "SameOutputReformulator.hh"
+
+using namespace std;
 
 PDDLInstance SameOutputReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	cout << "Note, this reformulator is only for testing! Simply gives the same result back." << endl;

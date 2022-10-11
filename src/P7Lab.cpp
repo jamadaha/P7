@@ -1,7 +1,4 @@
 #include <iostream>
-#include <memory>
-
-#include "Report.hh"
 
 using namespace std;
 

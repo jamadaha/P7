@@ -1,9 +1,7 @@
-#ifndef SameOutputReformulator_H
-#define SameOutputReformulator_H
+#ifndef SameOutputReformulator_HH
+#define SameOutputReformulator_HH
 
-using namespace std;
-
-#include "BaseReformulator.h"
+#include "BaseReformulator.hh"
 
 class SameOutputReformulator : public BaseReformulator {
 	PDDLInstance ReformulatePDDL(PDDLInstance* instance) override;

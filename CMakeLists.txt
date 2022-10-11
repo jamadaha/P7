@@ -13,9 +13,9 @@ set(SOURCES
 	# Fast Downward
 	"src/DownwardRunner/DownwardRunner.cpp"
 	# SAS Parser
-	"src/SASParser/SASParser.h" "src/SASParser/SASParser.cpp"
+	"src/SASParser/SASParser.cpp"
 	# Time Report
-	"src/Report.hh"
+	"src/RunReport/RunReport.cpp"
 	# PDDL Code Generator
 	"src/PDDLCodeGenerator/PDDLCodeGenerator.cpp" "src/PDDLCodeGenerator/PDDLDomainCodeGenerator.cpp" "src/PDDLCodeGenerator/PDDLProblemCodeGenerator.cpp" "src/PDDLCodeGenerator/BasePDDLCodeGenerator.cpp" 
 	# SAS Code Generator
@@ -30,14 +30,14 @@ set(SOURCES
 	"src/CommonInterface/CommonInterface.cpp"
 	# Plan Validator
 	"src/PlanValidators/PlanValidator.cpp" 
-	# PDDL Types
+    # PDDL Types
 	"src/PDDLTypes/PDDLAction.hpp" "src/PDDLTypes/PDDLArg.hpp" "src/PDDLTypes/PDDLLiteral.hpp" "src/PDDLTypes/PDDLDomain.hpp" "src/PDDLTypes/PDDLPredicate.hpp" "src/PDDLTypes/PDDLProblem.hpp" "src/PDDLTypes/PDDLType.hpp" "src/PDDLTypes/PDDLInstance.hpp" "src/PDDLTypes/PDDLState.hpp"
 	# Walker
 	"src/Walker/ActionGenerator.cpp" "src/Walker/Walker.cpp"
 	## Heuristics
-	"src/Walker/Heuristics/BaseHeuristics.hh" "src/Walker/Heuristics/RandomHeuristic.hh" "src/Walker/Heuristics/Contexts/BaseContext.h" "src/Walker/Heuristics/Contexts/PDDLContext.h"
+	"src/Walker/Heuristics/BaseHeuristics.hh" "src/Walker/Heuristics/RandomHeuristic.hh" "src/Walker/Heuristics/Contexts/BaseContext.hh" "src/Walker/Heuristics/Contexts/PDDLContext.hh"
 	## Depth Functions
-	"src/Walker/DepthFunctions/BaseDepthFunction.h" "src/Walker/DepthFunctions/ObjectActionDepthFunction.h" "src/Walker/DepthFunctions/ObjectActionDepthFunction.cpp" "src/Walker/DepthFunctions/ConstantDepthFunction.h" "src/Walker/DepthFunctions/ConstantDepthFunction.cpp"
+	"src/Walker/DepthFunctions/BaseDepthFunction.hh" "src/Walker/DepthFunctions/ObjectActionDepthFunction.hh" "src/Walker/DepthFunctions/ObjectActionDepthFunction.cpp" "src/Walker/DepthFunctions/ConstantDepthFunction.hh" "src/Walker/DepthFunctions/ConstantDepthFunction.cpp"
 	# Path Checkers
 	"src/PathCheckers/PathChecker.cpp"
 

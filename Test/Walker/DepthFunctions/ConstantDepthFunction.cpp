@@ -1,12 +1,11 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "../../../src/Walker/DepthFunctions/ConstantDepthFunction.h"
+#include "../../../src/Walker/DepthFunctions/ConstantDepthFunction.hh"
 
-using namespace std;
-const string TAG = "ConstantDepthFunction ";
+const std::string TAG = "ConstantDepthFunction ";
 
 TEST_CASE(TAG + "SimpleTest") {
-    vector<int> testCases = {1,2,10,75,1245623,0,1241};
+    std::vector<int> testCases = {1,2,10,75,1245623,0,1241};
     PDDLInstance emptyInstace(nullptr, nullptr);
     for (auto testCase : testCases) {
         BaseDepthFunction* function = new ConstantDepthFunction(testCase, emptyInstace);
@@ -18,7 +17,7 @@ TEST_CASE(TAG + "SimpleTest") {
 
 TEST_CASE(TAG + "WithModifier") {
     double modifier = 0.5;
-    vector<int> testCases = { 1,2,10,75,1245623,0,1241 };
+    std::vector<int> testCases = { 1,2,10,75,1245623,0,1241 };
     PDDLInstance emptyInstace(nullptr, nullptr);
     for (auto testCase : testCases) {
         BaseDepthFunction* function = new ConstantDepthFunction(testCase, emptyInstace, modifier);

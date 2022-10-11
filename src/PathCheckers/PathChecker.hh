@@ -1,10 +1,10 @@
-#ifndef PathChecker_H
-#define PathChecker_H
+#ifndef PathChecker_HH
+#define PathChecker_HH
 
 #include <iostream>
 
-#include "../Config/config.h"
-#include "../Helpers/FileHelper.h"
+#include "../Config/config.hh"
+#include "../Helpers/FileHelper.hh"
 
 class PathsChecker {
 public:

@@ -13,7 +13,7 @@ struct PDDLAction {
     std::vector<PDDLArg> parameters;
     std::vector<PDDLLiteral> preconditions;
     std::vector<PDDLLiteral> effects;
-    PDDLAction();
+    PDDLAction() {};
     PDDLAction(std::string name, std::vector<PDDLArg> parameters, std::vector<PDDLLiteral> preconditions, std::vector<PDDLLiteral> effects) :
     name(name), parameters(parameters), preconditions(preconditions), effects(effects) {};
 };

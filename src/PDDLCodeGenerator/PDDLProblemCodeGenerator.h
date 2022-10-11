@@ -1,20 +1,19 @@
-#ifndef PDDLCodeGenerator_Problem_H
-#define PDDLCodeGenerator_Problem_H
+#ifndef PDDLCodeGenerator_Problem_HH
+#define PDDLCodeGenerator_Problem_HH
 
-#include "BasePDDLCodeGenerator.h"
 #include <fstream>
 
-using namespace std;
+#include "BasePDDLCodeGenerator.h"
 
 class PDDLProblemCodeGenerator : public BasePDDLCodeGenerator {
 public:
-	void GenerateProblemFile(PDDLProblem* problem, string problemFile);
-	string GenerateProblemString(PDDLProblem* problem);
+	void GenerateProblemFile(PDDLProblem* problem, std::string problemFile);
+	std::string GenerateProblemString(PDDLProblem* problem);
 
 private:
-	string GetObjects(vector<string> objects);
-	string GetInits(PDDLState literals);
-	string GetGoals(PDDLState literals);
+	std::string GetObjects(std::vector<std::string> objects);
+	std::string GetInits(PDDLState literals);
+	std::string GetGoals(PDDLState literals);
 };
 
 #endif

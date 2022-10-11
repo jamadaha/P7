@@ -1,22 +1,21 @@
-#ifndef PDDLCodeGenerator_Domain_H
-#define PDDLCodeGenerator_Domain_H
+#ifndef PDDLCodeGenerator_Domain_HH
+#define PDDLCodeGenerator_Domain_HH
+
+#include <fstream>
 
 #include "../PDDLTypes/PDDLDomain.hpp"
 #include "BasePDDLCodeGenerator.h"
-#include <fstream>
-
-using namespace std;
 
 class PDDLDomainCodeGenerator : public BasePDDLCodeGenerator {
 public:
-	void GenerateDomainFile(PDDLDomain* domain, string domainFile);
-	string GenerateDomainString(PDDLDomain* domain);
+	void GenerateDomainFile(PDDLDomain* domain, std::string domainFile);
+	std::string GenerateDomainString(PDDLDomain* domain);
 
 private:
-	string GetRequirements(vector<std::string> requirements);
-	string GetPredicates(vector<PDDLPredicate> predicates);
-	string GetActions(vector<PDDLAction> actions);
-	string GetAction(PDDLAction action);
+	std::string GetRequirements(std::vector<std::string> requirements);
+	std::string GetPredicates(std::vector<PDDLPredicate> predicates);
+	std::string GetActions(std::vector<PDDLAction> actions);
+	std::string GetAction(PDDLAction action);
 };
 
 #endif

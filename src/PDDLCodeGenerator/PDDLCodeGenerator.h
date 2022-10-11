@@ -1,19 +1,18 @@
-#ifndef PDDLCodeGenerator_H
-#define PDDLCodeGenerator_H
+#ifndef PDDLCodeGenerator_HH
+#define PDDLCodeGenerator_HH
+
+#include <string>
+#include <fstream>
+#include <streambuf>
 
 #include "../PDDLParser/pddldriver.hh"
 #include "PDDLDomainCodeGenerator.h"
 #include "PDDLProblemCodeGenerator.h"
 #include "../PDDLTypes/PDDLInstance.hpp"
-#include <string>
-#include <fstream>
-#include <streambuf>
-
-using namespace std;
 
 class PDDLCodeGenerator {
 public:
-	void GenerateCode(PDDLInstance document, string domainFile, string problemFile);
+	void GenerateCode(PDDLInstance document, std::string domainFile, std::string problemFile);
 
 private:
 	PDDLDomainCodeGenerator domainGenerator;

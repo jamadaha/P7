@@ -1,16 +1,16 @@
-#ifndef PDDL_DOMAIN
-#define PDDL_DOMAIN
+#ifndef PDDL_DOMAIN_HH
+#define PDDL_DOMAIN_HH
 
 #include <vector>
 #include <string>
 #include <unordered_map>
 #include <map>
 
-#include "PDDLType.hpp"
-#include "PDDLArg.hpp"
-#include "PDDLPredicate.hpp"
-#include "PDDLLiteral.hpp"
-#include "PDDLAction.hpp"
+#include "PDDLType.hh"
+#include "PDDLArg.hh"
+#include "PDDLPredicate.hh"
+#include "PDDLLiteral.hh"
+#include "PDDLAction.hh"
 
 #include "../PDDLParser/domain.hh"
 
@@ -24,6 +24,9 @@ public:
 
     PDDLDomain() {
         name = "Not Set";
+    }
+
+    PDDLDomain(PDDLDomain* domain) {
     }
 
     PDDLDomain(Domain* domain) {
@@ -46,48 +49,11 @@ public:
         }
     };
 
-    PDDLDomain(PDDLDomain* domain) {
-        
-    }
-
-    std::vector<PDDLArg> GetArguments(const StringList* params, const TypeDict* types) {
-        std::vector<PDDLArg> args;
-        std::unordered_map<std::string, std::string> tempTypeDict;
-            // Get types
-            if (types != nullptr) {
-                for (auto const& [x, y] : *types) {
-                    tempTypeDict.emplace(x, y);
-                }
-            }
-
-            for (int i = 0; i < params->size(); i++) {
-                if (tempTypeDict.find((*params)[i]) == tempTypeDict.end())
-                    args.push_back(PDDLArg(i, (*params)[i], nullptr));
-                else
-                    args.push_back(PDDLArg(i, (*params)[i], typeDict[tempTypeDict[(*params)[i]]]));
-            }
-        return args;
-    }
+    std::vector<PDDLArg> GetArguments(const StringList* params, const TypeDict* types);
 
 private:
-    void AddTypes(const TypeDict* types) {
-        if (types != nullptr) {
-            for (auto const& [x, y] : *types) {
-                // Check if type already exists
-                if (typeDict.find(y) == typeDict.end())
-                    typeDict.emplace(y, new PDDLType(y));
-            }
-        }
-    }
-    
-    std::vector<PDDLLiteral> GetLogicalExpressions(const std::vector<std::pair<Predicate*,bool>*> *logExp) {
-        std::vector<PDDLLiteral> predicates;
-        for (auto const& exp : *logExp) {
-            std::vector<PDDLArg> args = GetArguments(exp->first->_args, exp->first->_types);
-            predicates.push_back(PDDLLiteral(PDDLPredicate(exp->first->_name, args), exp->second));
-        }
-        return predicates;
-    }
+    void AddTypes(const TypeDict* types);
+    std::vector<PDDLLiteral> GetLogicalExpressions(const std::vector<std::pair<Predicate*, bool>*>* logExp);
 };
 
 #endif

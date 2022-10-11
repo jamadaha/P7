@@ -1,10 +1,10 @@
-#ifndef PDDL_PREDICATE
-#define PDDL_PREDICATE
+#ifndef PDDL_PREDICATE_HH
+#define PDDL_PREDICATE_HH
 
 #include <string>
 #include <vector>
 
-#include "PDDLArg.hpp"
+#include "PDDLArg.hh"
 
 struct PDDLPredicate {
     std::string name;

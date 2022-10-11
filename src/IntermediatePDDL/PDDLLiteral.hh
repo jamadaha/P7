@@ -1,9 +1,9 @@
-#ifndef PDDL_LITERAL
-#define PDDL_LITERAL
+#ifndef PDDL_LITERAL_HH
+#define PDDL_LITERAL_HH
 
 #include <string>
 
-#include "PDDLPredicate.hpp"
+#include "PDDLPredicate.hh"
 
 struct PDDLLiteral {
     PDDLPredicate predicate;

@@ -1,8 +1,8 @@
-#ifndef PDDL_INSTANCE
-#define PDDL_INSTANCE
+#ifndef PDDL_INSTANCE_HH
+#define PDDL_INSTANCE_HH
 
-#include "PDDLDomain.hpp"
-#include "PDDLProblem.hpp"
+#include "PDDLDomain.hh"
+#include "PDDLProblem.hh"
 
 class PDDLInstance {
 public:

@@ -1,11 +1,11 @@
-#ifndef SASCodeGenerator_H
-#define SASCodeGenerator_H
+#ifndef SASCodeGenerator_HH
+#define SASCodeGenerator_HH
 
 #include <string>
 #include <fstream>
 #include <streambuf>
 
-#include "../SASParser/SASParser.h"
+#include "../SASParser/SASParser.hh"
 
 class SASCodeGenerator {
 public:
@@ -14,7 +14,7 @@ public:
 
 private:
 	std::string GetAction(SASAction action);
-	std::string GetParameters(vector<string> parameters);
+	std::string GetParameters(std::vector<std::string> parameters);
 };
 
 #endif

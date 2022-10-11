@@ -9,7 +9,7 @@
 #include "../PDDLParser/pddldriver.hh"
 #include "../PDDLCodeGenerator/PDDLCodeGenerator.h"
 #include "../SASCodeGenerator/SASCodeGenerator.hh"
-#include "../SASParser/SASParser.h"
+#include "../SASParser/SASParser.hh"
 #include "../Config/config.h"
 #include "../DownwardRunner/DownwardRunner.h"
 #include "../PlanValidators/PlanValidator.h"

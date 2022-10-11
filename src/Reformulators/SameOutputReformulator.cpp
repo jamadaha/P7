@@ -1,4 +1,4 @@
-#include "SameOutputReformulator.h"
+#include "SameOutputReformulator.hh"
 
 using namespace std;
 

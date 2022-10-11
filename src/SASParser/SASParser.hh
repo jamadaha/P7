@@ -1,5 +1,5 @@
-#ifndef SAS_PARSER
-#define SAS_PARSER
+#ifndef SAS_PARSER_HH
+#define SAS_PARSER_HH
 
 #include <string>
 #include <vector>

@@ -1,4 +1,4 @@
-﻿#include "P7.hh"
+#include "P7.hh"
 
 using namespace std;
 

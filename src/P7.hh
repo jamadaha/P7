@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "Config/config.hh"
-#include "CommonInterface/CommonInterface.h"
+#include "CommonInterface/CommonInterface.hh"
 #include "Reformulators/SameOutputReformulator.hh"
 #include "RunReport/RunReport.hh"
 

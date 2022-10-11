@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-#include "Contexts/BaseContext.h"
+#include "Contexts/BaseContext.hh"
 
 template <class T, class U>
 class BaseHeuristics {

@@ -1,5 +1,7 @@
 ﻿#include "CommonInterface.h"
 
+using namespace std;
+
 enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	int64_t t;
 

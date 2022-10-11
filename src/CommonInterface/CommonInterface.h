@@ -11,7 +11,7 @@
 #include "../SASCodeGenerator/SASCodeGenerator.hh"
 #include "../SASParser/SASParser.hh"
 #include "../Config/config.h"
-#include "../DownwardRunner/DownwardRunner.h"
+#include "../DownwardRunner/DownwardRunner.hh"
 #include "../PlanValidators/PlanValidator.hh"
 #include "../PDDLTypes/PDDLDomain.hpp"
 #include "../PDDLTypes/PDDLProblem.hpp"
@@ -25,7 +25,7 @@
 class CommonInterface {
 public:
 	enum RunResult { None, RanWithoutErrors, ErrorsEncountered };
-	CommonInterface(Config config, std::shared_ptr<BaseReformulator> reformulator, string tempDomainName = "tempDomain.pddl", string tempProblemName = "tempProblem.pddl", string fastDownwardSASName = "sas_plan", string outputSASName = "real_sas_plan") :
+	CommonInterface(Config config, std::shared_ptr<BaseReformulator> reformulator, std::string tempDomainName = "tempDomain.pddl", std::string tempProblemName = "tempProblem.pddl", std::string fastDownwardSASName = "sas_plan", std::string outputSASName = "real_sas_plan") :
 	config(config), Reformulator(reformulator), TempDomainName(tempDomainName), TempProblemName(tempProblemName), FastDownwardSASName(fastDownwardSASName), OutputSASName(outputSASName){};
 
 	enum RunResult Run(RunReport* report);
@@ -33,10 +33,10 @@ public:
 private:
 	Config config;
 	std::shared_ptr<BaseReformulator> Reformulator;
-	string TempDomainName;
-	string TempProblemName;
-	string FastDownwardSASName;
-	string OutputSASName;
+	std::string TempDomainName;
+	std::string TempProblemName;
+	std::string FastDownwardSASName;
+	std::string OutputSASName;
 	
 };
 

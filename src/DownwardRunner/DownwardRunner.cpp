@@ -1,4 +1,4 @@
-#include "DownwardRunner.h"
+#include "DownwardRunner.hh"
 
 using namespace std;
 

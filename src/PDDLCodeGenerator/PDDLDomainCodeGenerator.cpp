@@ -1,4 +1,4 @@
-#include "PDDLDomainCodeGenerator.h"
+#include "PDDLDomainCodeGenerator.hh"
 
 using namespace std;
 

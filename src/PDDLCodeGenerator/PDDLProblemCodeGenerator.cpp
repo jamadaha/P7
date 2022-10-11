@@ -1,4 +1,4 @@
-#include "PDDLProblemCodeGenerator.h"
+#include "PDDLProblemCodeGenerator.hh"
 
 using namespace std;
 

@@ -11,7 +11,7 @@ include(Test/SASCodeGenerator/CMakeLists.txt)
 include(Test/PDDLCodeGenerator/CMakeLists.txt)
 include(Test/PDDLParser/CMakeLists.txt)
 include(Test/Walker/DepthFunctions/CMakeLists.txt)
-include(Test/PDDLTypes/CMakeLists.txt)
+include(Test/IntermediatePDDL/CMakeLists.txt)
 include(Test/PlanValidators/CMakeLists.txt)
 include(Test/Helpers/CMakeLists.txt)
 
@@ -19,7 +19,7 @@ include(Test/Helpers/CMakeLists.txt)
 add_executable(Test-All 
 	"Test/PDDLCodeGenerator/PDDLCodeGenerator.cpp"
 	"Test/PDDLParser/PDDLParser.cpp"
-	"Test/PDDLTypes/PDDLTypes.cpp"
+	"Test/IntermediatePDDL/IntermediatePDDL.cpp"
 	"Test/SASParser/SASParser.cpp"
 	"Test/SASCodeGenerator/SASCodeGenerator.cpp"
 	"Test/Walker/DepthFunctions/ConstantDepthFunction.cpp"

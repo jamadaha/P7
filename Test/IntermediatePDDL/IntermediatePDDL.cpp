@@ -2,13 +2,13 @@
 #include <string>
 #include <unordered_set>
 
-#include "../../src/PDDLTypes/PDDLDomain.hpp"
+#include "../../src/IntermediatePDDL/PDDLDomain.hh"
 #include "../../src/PDDLParser/pddldriver.hh"
 
 using namespace std;
 
 
-const string TAG = "PDDLTypes ";
+const string TAG = "IntermediatePDDL ";
 
 const string domainFile = "./TestFiles/gripper.pddl";
 const string exDomainName = "gripper";

@@ -16,7 +16,7 @@ PDDLState Walker::DoAction(PDDLState state, PDDLActionInstance action) {
     // For each action effect, change the state accordingly
     for (int i = 0; i < action.action.effects.size(); i++) {
         auto effect = action.action.effects[i];
-        state.Update(effect);
+        state.Update(&action.action, effect, action.arguments);
     }
     
     return state;

@@ -10,7 +10,9 @@ template <class T>
 class RandomHeuristic : public BaseHeuristics<T, PDDLContext> {
 public:
 	RandomHeuristic(PDDLContext context) : BaseHeuristics<T, PDDLContext>(context){
-		srand(time(NULL));
+		// 0 for debugging purposes
+		srand(0);
+		//srand(time(NULL));
 	}
 	T NextChoice(std::vector<T> choices) override;
 };

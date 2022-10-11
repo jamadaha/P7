@@ -40,11 +40,8 @@ public:
 
         // Get Actions
         for (auto const& action : *domain->_actions) {
-            PDDLAction newAction = PDDLAction();
-            newAction.name = action->_name;
-            newAction.parameters = GetArguments(action->_params, action->_types);
-            newAction.preconditions = GetLogicalExpressions(action->_precond);
-            newAction.effects = GetLogicalExpressions(action->_effects);
+            PDDLAction newAction = PDDLAction(action->_name, GetArguments(action->_params, action->_types),
+            GetLogicalExpressions(action->_precond), GetLogicalExpressions(action->_effects));
             actions.push_back(newAction);
         }
     };

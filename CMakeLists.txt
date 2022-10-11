@@ -15,7 +15,7 @@ set(SOURCES
 	# SAS Parser
 	"src/SASParser/SASParser.h" "src/SASParser/SASParser.cpp"
 	# Time Report
-	"src/Report.hh"
+	"src/RunReport/RunReport.cpp"
 	# PDDL Code Generator
 	"src/PDDLCodeGenerator/PDDLCodeGenerator.cpp" "src/PDDLCodeGenerator/PDDLDomainCodeGenerator.cpp" "src/PDDLCodeGenerator/PDDLProblemCodeGenerator.cpp" "src/PDDLCodeGenerator/BasePDDLCodeGenerator.cpp" 
 	# SAS Code Generator

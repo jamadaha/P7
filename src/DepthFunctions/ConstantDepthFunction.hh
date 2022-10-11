@@ -2,7 +2,7 @@
 #define ConstantDepthFunction_HH
 
 #include "../PDDLTypes/PDDLInstance.hpp"
-#include "BaseDepthFunction.h"
+#include "BaseDepthFunction.hh"
 
 class ConstantDepthFunction : public BaseDepthFunction {
 public:

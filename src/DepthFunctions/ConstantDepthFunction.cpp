@@ -1,4 +1,4 @@
-#include "ConstantDepthFunction.h"
+#include "ConstantDepthFunction.hh"
 
 using namespace std;
 

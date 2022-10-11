@@ -1,4 +1,4 @@
-#include "ObjectActionDepthFunction.h"
+#include "ObjectActionDepthFunction.hh"
 
 using namespace std;
 

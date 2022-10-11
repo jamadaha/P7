@@ -1,5 +1,5 @@
-#ifndef CommonInterface_H
-#define CommonInterface_H
+#ifndef CommonInterface_HH
+#define CommonInterface_HH
 
 #include <string>
 

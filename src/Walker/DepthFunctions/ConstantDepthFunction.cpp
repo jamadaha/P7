@@ -2,6 +2,6 @@
 
 using namespace std;
 
-int ConstantDepthFunction::GetDepth(PDDLInstance instance) {
+int ConstantDepthFunction::GetDepth() {
 	return ConstantDepth * Modifier;
 }

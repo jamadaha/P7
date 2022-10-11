@@ -11,13 +11,9 @@ template <class T, class U>
 class BaseHeuristics {
 public:
 	U Context;
-	std::vector<T> Choices;
-	BaseHeuristics(std::vector<T> choices, U context) {
-		Choices = choices;
-		Context = context;
-	}
+	BaseHeuristics(U context) : Context(context) {}
 
-	virtual T NextChoice() = 0;
+	virtual T NextChoice(std::vector<T> choices) = 0;
 };
 
 #endif

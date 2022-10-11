@@ -1,13 +1,12 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "../../src/DepthFunctions/ObjectActionDepthFunction.hh"
+#include "../../../src/Walker/DepthFunctions/ObjectActionDepthFunction.hh"
 
-using namespace std;
-const string TAG = "ObjectActionDepthFunction ";
+const std::string TAG = "ObjectActionDepthFunction ";
 
 TEST_CASE(TAG + "SimpleTest") {
     // Pairs of how many Actions (first) and Objects (second) to make.
-    vector<pair<int, int>> testCases = { 
+    std::vector<std::pair<int, int>> testCases = { 
         {1,1},
         {10,1},
         {2,5},
@@ -29,8 +28,8 @@ TEST_CASE(TAG + "SimpleTest") {
         REQUIRE(pair.second == newProblem.objects.size());
 
         PDDLInstance emptyInstace(&newDomain, &newProblem);
-        BaseDepthFunction* function = new ObjectActionDepthFunction();
-        int actual = function->GetDepth(emptyInstace);
+        BaseDepthFunction* function = new ObjectActionDepthFunction(emptyInstace);
+        int actual = function->GetDepth();
         REQUIRE(expected == actual);
     }
 }
@@ -38,7 +37,7 @@ TEST_CASE(TAG + "SimpleTest") {
 TEST_CASE(TAG + "WithModifier") {
     double modifier = 0.5;
     // Pairs of how many Actions (first) and Objects (second) to make.
-    vector<pair<int, int>> testCases = {
+    std::vector<std::pair<int, int>> testCases = {
         {1,1},
         {10,1},
         {2,5},
@@ -60,8 +59,8 @@ TEST_CASE(TAG + "WithModifier") {
         REQUIRE(pair.second == newProblem.objects.size());
 
         PDDLInstance emptyInstace(&newDomain, &newProblem);
-        BaseDepthFunction* function = new ObjectActionDepthFunction(modifier);
-        int actual = function->GetDepth(emptyInstace);
+        BaseDepthFunction* function = new ObjectActionDepthFunction(emptyInstace, modifier);
+        int actual = function->GetDepth();
         REQUIRE(expected == actual);
     }
 }

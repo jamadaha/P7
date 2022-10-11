@@ -19,8 +19,10 @@
 
 // Note: If include of actiongenerator still exists here remove it
 // it was added for temp reasons
-#include "../Entangler/ActionGenerator.hpp"
-#include "../PDDLTypes/PDDLActionInstance.hpp"
+#include "../Walker/Walker.hpp"
+#include "../Walker/Heuristics/RandomHeuristic.hh"
+#include "../Walker/DepthFunctions/ConstantDepthFunction.hh"
+
 
 class CommonInterface {
 public:

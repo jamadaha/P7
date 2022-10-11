@@ -5,8 +5,8 @@
 #include <vector>
 #include <unordered_map>
 
-#include "PDDLArg.hpp"
-#include "PDDLLiteral.hpp"
+#include "PDDLArg.hh"
+#include "PDDLLiteral.hh"
 
 struct PDDLAction {
     std::string name;

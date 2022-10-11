@@ -21,7 +21,7 @@ vector<PDDLArg> PDDLDomain::GetArguments(const StringList* params, const TypeDic
     return args;
 }
 
-void PDDLDomain:.AddTypes(const TypeDict* types) {
+void PDDLDomain::AddTypes(const TypeDict* types) {
     if (types != nullptr) {
         for (auto const& [x, y] : *types) {
             // Check if type already exists

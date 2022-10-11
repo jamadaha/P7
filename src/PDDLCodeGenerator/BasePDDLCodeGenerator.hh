@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 
-#include "../PDDLTypes/PDDLInstance.hpp"
+#include "../IntermediatePDDL/PDDLInstance.hh"
 
 class BasePDDLCodeGenerator {
 public:

@@ -13,9 +13,7 @@
 #include "../Config/config.hh"
 #include "../DownwardRunner/DownwardRunner.hh"
 #include "../PlanValidators/PlanValidator.hh"
-#include "../PDDLTypes/PDDLDomain.hpp"
-#include "../PDDLTypes/PDDLProblem.hpp"
-#include "../PDDLTypes/PDDLInstance.hpp"
+#include "../IntermediatePDDL/PDDLInstance.hh"
 
 // Note: If include of actiongenerator still exists here remove it
 // it was added for temp reasons

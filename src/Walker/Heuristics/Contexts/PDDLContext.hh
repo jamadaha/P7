@@ -2,7 +2,7 @@
 #define PDDLContext_HH
 
 #include "BaseContext.hh"
-#include "../../../PDDLTypes/PDDLInstance.hpp"
+#include "../../../IntermediatePDDL/PDDLInstance.hh"
 
 class PDDLContext : public BaseContext {
 public:

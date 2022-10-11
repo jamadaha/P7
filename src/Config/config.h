@@ -1,7 +1,8 @@
-#ifndef CONFIG_h
-#define CONFIG_h
+#ifndef CONFIG_HH
+#define CONFIG_HH
 
 #include <string>
+
 #include "../../include/cxxopts.hpp"
 #include "../Helpers/StringHelper.hh"
 

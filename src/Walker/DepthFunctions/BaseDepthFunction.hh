@@ -5,11 +5,12 @@
 
 class BaseDepthFunction {
 public:
-    BaseDepthFunction(double modifier = 1) {
-        Modifier = modifier;
+    BaseDepthFunction(PDDLInstance instance, double modifier = 1) : instance(instance), Modifier(modifier) {
     }
     double Modifier;
-    virtual int GetDepth(PDDLInstance instance) = 0;
+    virtual int GetDepth() = 0;
+protected:
+    PDDLInstance instance;
 };
 
 #endif

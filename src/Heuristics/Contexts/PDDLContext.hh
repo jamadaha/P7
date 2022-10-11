@@ -1,10 +1,8 @@
-#ifndef PDDLContext_H
-#define PDDLContext_H
+#ifndef PDDLContext_HH
+#define PDDLContext_HH
 
 #include "BaseContext.h"
 #include "../../PDDLTypes/PDDLInstance.hpp"
-
-using namespace std;
 
 class PDDLContext : public BaseContext {
 public:

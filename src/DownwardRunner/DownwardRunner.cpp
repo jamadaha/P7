@@ -1,4 +1,6 @@
-#include "DownwardRunner.h"
+#include "DownwardRunner.hh"
+
+using namespace std;
 
 const string RunnerLogName = "downwardLog";
 

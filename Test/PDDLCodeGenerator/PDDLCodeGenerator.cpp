@@ -1,9 +1,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include <string>
 
-#include "../../src/PDDLCodeGenerator/PDDLCodeGenerator.h"
-#include "../../src/PDDLCodeGenerator/PDDLDomainCodeGenerator.h"
-#include "../../src/PDDLCodeGenerator/PDDLProblemCodeGenerator.h"
+#include "../../src/PDDLCodeGenerator/PDDLCodeGenerator.hh"
+#include "../../src/PDDLCodeGenerator/PDDLDomainCodeGenerator.hh"
+#include "../../src/PDDLCodeGenerator/PDDLProblemCodeGenerator.hh"
 
 using namespace std;
 

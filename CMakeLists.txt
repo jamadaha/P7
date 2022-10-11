@@ -13,9 +13,9 @@ set(SOURCES
 	# Fast Downward
 	"src/DownwardRunner/DownwardRunner.cpp"
 	# SAS Parser
-	"src/SASParser/SASParser.h" "src/SASParser/SASParser.cpp"
+	"src/SASParser/SASParser.cpp"
 	# Time Report
-	"src/Report.hh"
+	"src/RunReport/RunReport.cpp"
 	# PDDL Code Generator
 	"src/PDDLCodeGenerator/PDDLCodeGenerator.cpp" "src/PDDLCodeGenerator/PDDLDomainCodeGenerator.cpp" "src/PDDLCodeGenerator/PDDLProblemCodeGenerator.cpp" "src/PDDLCodeGenerator/BasePDDLCodeGenerator.cpp" 
 	# SAS Code Generator
@@ -31,7 +31,7 @@ set(SOURCES
 	# Plan Validator
 	"src/PlanValidators/PlanValidator.cpp" 
 	# Heuristics
-	"src/Heuristics/BaseHeuristics.hh" "src/Heuristics/RandomHeuristic.hh" "src/Heuristics/Contexts/BaseContext.h" "src/Heuristics/Contexts/PDDLContext.h"
+	"src/Heuristics/BaseHeuristics.hh" "src/Heuristics/RandomHeuristic.hh" "src/Heuristics/Contexts/BaseContext.hh" "src/Heuristics/Contexts/PDDLContext.hh"
 	# PDDL Types
 	"src/PDDLTypes/PDDLAction.hpp" "src/PDDLTypes/PDDLArg.hpp" "src/PDDLTypes/PDDLLiteral.hpp" "src/PDDLTypes/PDDLDomain.hpp" "src/PDDLTypes/PDDLPredicate.hpp" "src/PDDLTypes/PDDLProblem.hpp" "src/PDDLTypes/PDDLType.hpp" "src/PDDLTypes/PDDLInstance.hpp" "src/PDDLTypes/PDDLState.hpp"
 	# Depth Functions

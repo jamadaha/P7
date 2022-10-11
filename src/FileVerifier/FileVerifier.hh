@@ -1,5 +1,5 @@
-#ifndef FileVerifier_H
-#define FileVerifier_H
+#ifndef FileVerifier_HH
+#define FileVerifier_HH
 
 #include <string>
 #include <fstream>

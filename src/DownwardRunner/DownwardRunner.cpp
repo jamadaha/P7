@@ -1,5 +1,7 @@
 #include "DownwardRunner.h"
 
+using namespace std;
+
 const string RunnerLogName = "downwardLog";
 
 DownwardRunner::DownwardRunnerResult DownwardRunner::RunDownward(Config config, string reformulatedDomain, string reformulatedProblem) {

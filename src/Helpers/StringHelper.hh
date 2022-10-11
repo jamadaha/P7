@@ -1,5 +1,5 @@
-#ifndef StringHelper_H
-#define StringHelper_H
+#ifndef StringHelper_HH
+#define StringHelper_HH
 
 #include <string>
 #include <streambuf>

@@ -20,7 +20,7 @@ private:
     //// Note: at some point make this static
     std::vector<PDDLLiteral> GetPreconditions(PDDLAction action, PDDLArg *param);
     // Find those objects that match the given unary preconditions
-    std::vector<std::string> GetCandidateObjects(PDDLState *state, std::vector<PDDLLiteral> preconditions);
+    std::vector<std::string> GetCandidateObjects(PDDLAction* action, PDDLState *state, std::vector<PDDLLiteral> preconditions);
     void RemoveInvalidObjects();
 
     void SplitLiterals(std::vector<PDDLLiteral> literals, std::vector<PDDLLiteral> *unaryLiterals, std::vector<PDDLLiteral> *multiLiterals);

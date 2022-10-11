@@ -13,10 +13,11 @@ vector<PDDLArg> PDDLDomain::GetArguments(const StringList* params, const TypeDic
     }
 
     for (int i = 0; i < params->size(); i++) {
+        auto p = (*params)[i];
         if (tempTypeDict.find((*params)[i]) == tempTypeDict.end())
-            args.push_back(PDDLArg(i, (*params)[i], nullptr));
+            args.push_back(PDDLArg((*params)[i], nullptr));
         else
-            args.push_back(PDDLArg(i, (*params)[i], typeDict[tempTypeDict[(*params)[i]]]));
+            args.push_back(PDDLArg((*params)[i], typeDict[tempTypeDict[(*params)[i]]]));
     }
     return args;
 }

@@ -6,6 +6,7 @@
 
 #include "PDDLPredicate.hh"
 #include "PDDLLiteral.hh"
+#include "PDDLAction.hh"
 
 // This is a seperate class for future proofing
 class PDDLState {
@@ -14,10 +15,12 @@ public:
     std::vector<std::string> *objects;
     std::vector<PDDLPredicate> state;
 
-    bool IsUnaryLiteralTrue(PDDLLiteral literal, std::string object);
-    bool IsMultiLiteralTrue(PDDLLiteral literal, std::vector<std::string> objects);
+    bool IsUnaryLiteralTrue(PDDLAction *action, PDDLLiteral literal, std::string object);
+    bool IsMultiLiteralTrue(PDDLAction *action, PDDLLiteral literal, std::vector<std::string> objects);
+    // Changes the state to be in accordance to the literal
+    bool Update(PDDLLiteral literal);
 private:
-    bool HasPredicate(PDDLPredicate predicate, std::vector<std::string> objects);
+    bool HasPredicate(PDDLAction *action, PDDLPredicate predicate, std::vector<std::string> objects);
     bool AreEqual(std::string arg1, std::string arg2);
 };
 

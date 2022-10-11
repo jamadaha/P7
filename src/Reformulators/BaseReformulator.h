@@ -4,8 +4,6 @@
 #include "../PDDLTypes/PDDLInstance.hpp"
 #include "../SASParser/SASParser.h"
 
-using namespace std;
-
 class BaseReformulator {
 public:
 	virtual PDDLInstance ReformulatePDDL(PDDLInstance* instance) = 0;

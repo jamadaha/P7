@@ -1,5 +1,7 @@
 #include "SameOutputReformulator.h"
 
+using namespace std;
+
 PDDLInstance SameOutputReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	cout << "Note, this reformulator is only for testing! Simply gives the same result back." << endl;
 	// Do Something and transform the input PDDL into a new PDDL format

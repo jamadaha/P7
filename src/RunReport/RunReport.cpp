@@ -8,14 +8,10 @@ int RunReport::Begin(string desc) {
     return steps.size() - 1;
 }
 
-// Returns time taken
-// Default is in ms
 int64_t RunReport::Stop(RunReport::TimeScale ts) {
     return Stop(steps.size() - 1, ts);
 }
 
-// Returns time taken
-// Default is in ms
 int64_t RunReport::Stop(int i, RunReport::TimeScale ts) {
     steps[i].eTime = chrono::steady_clock::now();
     steps[i].time = chrono::duration_cast<chrono::nanoseconds>(steps[i].eTime - steps[i].iTime).count();

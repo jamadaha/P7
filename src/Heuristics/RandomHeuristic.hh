@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "BaseHeuristics.hh"
-#include "Contexts/PDDLContext.h"
+#include "Contexts/PDDLContext.hh"
 
 template <class T>
 class RandomHeuristic : public BaseHeuristics<T, PDDLContext> {

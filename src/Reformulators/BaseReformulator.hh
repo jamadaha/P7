@@ -1,13 +1,8 @@
-#ifndef BaseReformulator_H
-#define BaseReformulator_H
+#ifndef BaseReformulator_HH
+#define BaseReformulator_HH
 
 #include "../PDDLTypes/PDDLInstance.hpp"
-#include "../SASParser/SASParser.h"
-#include <string>
-#include <fstream>
-#include <streambuf>
-
-using namespace std;
+#include "../SASParser/SASParser.hh"
 
 class BaseReformulator {
 public:

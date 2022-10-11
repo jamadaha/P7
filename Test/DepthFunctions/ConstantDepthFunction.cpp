@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "../../src/DepthFunctions/ConstantDepthFunction.h"
+#include "../../src/DepthFunctions/ConstantDepthFunction.hh"
 
 using namespace std;
 const string TAG = "ConstantDepthFunction ";

@@ -2,51 +2,55 @@
 set (CMAKE_CXX_STANDARD 20)
 
 project(P7 VERSION 0.1.0)
+project(P7Lab VERSION 0.1.0)
 
 # Add source to this project's executable.
 set(SOURCES 
     # PDDL Parser
-	"src/PDDLParser/action.cc" "src/PDDLParser/action.hh" "src/PDDLParser/pddldriver.cc" "src/PDDLParser/pddldriver.hh" "src/PDDLParser/domain.cc" "src/PDDLParser/domain.hh" "src/PDDLParser/location.hh" "src/PDDLParser/pddllex.yy.cc" "src/PDDLParser/pddlparser.tab.cc" "src/PDDLParser/pddlparser.tab.hh" "src/PDDLParser/position.hh" "src/PDDLParser/predicate.cc" "src/PDDLParser/predicate.hh" "src/PDDLParser/problem.cc" "src/PDDLParser/problem.hh" "src/PDDLParser/stack.hh"
+	"src/PDDLParser/action.cc" "src/PDDLParser/pddldriver.cc" "src/PDDLParser/domain.cc" "src/PDDLParser/pddllex.yy.cc" "src/PDDLParser/pddlparser.tab.cc" "src/PDDLParser/predicate.cc" "src/PDDLParser/problem.cc"
 	# Config
 	"src/Config/config.cpp"
 	# Fast Downward
 	"src/DownwardRunner/DownwardRunner.cpp"
 	# SAS Parser
-	"src/SASParser/SASParser.h" "src/SASParser/SASParser.cpp"
+	"src/SASParser/SASParser.cpp"
 	# Time Report
-	"src/Report.hh"
+	"src/RunReport/RunReport.cpp"
 	# PDDL Code Generator
-	"src/PDDLCodeGenerator/PDDLCodeGenerator.h" "src/PDDLCodeGenerator/PDDLCodeGenerator.cpp" "src/PDDLCodeGenerator/PDDLDomainCodeGenerator.h" "src/PDDLCodeGenerator/PDDLDomainCodeGenerator.cpp" "src/PDDLCodeGenerator/PDDLProblemCodeGenerator.h" "src/PDDLCodeGenerator/PDDLProblemCodeGenerator.cpp" "src/PDDLCodeGenerator/BasePDDLCodeGenerator.h" "src/PDDLCodeGenerator/BasePDDLCodeGenerator.cpp" 
+	"src/PDDLCodeGenerator/PDDLCodeGenerator.cpp" "src/PDDLCodeGenerator/PDDLDomainCodeGenerator.cpp" "src/PDDLCodeGenerator/PDDLProblemCodeGenerator.cpp" "src/PDDLCodeGenerator/BasePDDLCodeGenerator.cpp" 
 	# SAS Code Generator
-	"src/SASCodeGenerator/SASCodeGenerator.h" "src/SASCodeGenerator/SASCodeGenerator.cpp" 
+	"src/SASCodeGenerator/SASCodeGenerator.cpp" 
 	# File Verifier
-	"src/FileVerifier/FileVerifier.h" "src/FileVerifier/FileVerifier.cpp" 
+	"src/FileVerifier/FileVerifier.cpp" 
 	# Helpers
-	"src/Helpers/StringHelper.h" "src/Helpers/StringHelper.cpp" 
-	"src/Helpers/FileHelper.h" "src/Helpers/FileHelper.cpp" 
+	"src/Helpers/StringHelper.cpp" "src/Helpers/FileHelper.cpp" 
 	# Reformulators
-	"src/Reformulators/BaseReformulator.h" "src/Reformulators/SameOutputReformulator.cpp" 
+	"src/Reformulators/SameOutputReformulator.cpp" 
 	# Common Interface
-	"src/CommonInterface/CommonInterface.h" "src/CommonInterface/CommonInterface.cpp" "src/Reformulators/SameOutputReformulator.h" 
+	"src/CommonInterface/CommonInterface.cpp"
 	# Plan Validator
-	"src/PlanValidators/PlanValidator.h" "src/PlanValidators/PlanValidator.cpp" 
+	"src/PlanValidators/PlanValidator.cpp" 
 	# Heuristics
-	"src/Heuristics/BaseHeuristics.hh" "src/Heuristics/RandomHeuristic.hh" "src/Heuristics/Contexts/BaseContext.h" "src/Heuristics/Contexts/PDDLContext.h"
+	"src/Heuristics/BaseHeuristics.hh" "src/Heuristics/RandomHeuristic.hh" "src/Heuristics/Contexts/BaseContext.hh" "src/Heuristics/Contexts/PDDLContext.hh"
 	# PDDL Types
 	"src/PDDLTypes/PDDLAction.hpp" "src/PDDLTypes/PDDLArg.hpp" "src/PDDLTypes/PDDLLiteral.hpp" "src/PDDLTypes/PDDLDomain.hpp" "src/PDDLTypes/PDDLPredicate.hpp" "src/PDDLTypes/PDDLProblem.hpp" "src/PDDLTypes/PDDLType.hpp" "src/PDDLTypes/PDDLInstance.hpp" "src/PDDLTypes/PDDLState.hpp"
 	# Depth Functions
-	"src/DepthFunctions/BaseDepthFunction.h" "src/DepthFunctions/ObjectActionDepthFunction.h" "src/DepthFunctions/ObjectActionDepthFunction.cpp" "src/DepthFunctions/ConstantDepthFunction.h" "src/DepthFunctions/ConstantDepthFunction.cpp"
-
+	"src/DepthFunctions/ObjectActionDepthFunction.cpp" "src/DepthFunctions/ConstantDepthFunction.cpp"
 	# Action Generator
 	"src/Entangler/ActionGenerator.cpp"
+	# Path Checkers
+	"src/PathCheckers/PathChecker.cpp"
+
 	# Something new
 
 
 )
 add_executable (P7 "src/P7.cpp" ${SOURCES})
+add_executable (P7Lab "src/P7Lab.cpp" ${SOURCES})
 target_include_directories(P7 PRIVATE "PDDLParser")
 
 file(COPY Data DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY "runP7.py" DESTINATION ${CMAKE_BINARY_DIR})
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

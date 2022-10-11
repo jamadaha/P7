@@ -1,4 +1,4 @@
-#include "BasePDDLCodeGenerator.h"
+#include "BasePDDLCodeGenerator.hh"
 
 using namespace std;
 

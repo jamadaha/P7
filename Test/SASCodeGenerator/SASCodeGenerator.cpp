@@ -1,6 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
-#include "../../src/SASCodeGenerator/SASCodeGenerator.h"
 #include <iostream>
+
+#include "../../src/SASCodeGenerator/SASCodeGenerator.hh"
 
 using namespace std;
 

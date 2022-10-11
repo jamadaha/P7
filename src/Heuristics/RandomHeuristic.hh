@@ -1,16 +1,15 @@
-#ifndef RandomHeuristics_H
-#define RandomHeuristics_H
-
-using namespace std;
+#ifndef RandomHeuristics_HH
+#define RandomHeuristics_HH
 
 #include <vector>
+
 #include "BaseHeuristics.hh"
-#include "Contexts/PDDLContext.h"
+#include "Contexts/PDDLContext.hh"
 
 template <class T>
 class RandomHeuristic : public BaseHeuristics<T, PDDLContext> {
 public:
-	RandomHeuristic(vector<T> choices, PDDLContext context) : BaseHeuristics<T, PDDLContext>(choices, context){
+	RandomHeuristic(std::vector<T> choices, PDDLContext context) : BaseHeuristics<T, PDDLContext>(choices, context){
 		srand(time(NULL));
 	}
 	T NextChoice() override;

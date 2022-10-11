@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "../../src/PlanValidators/PlanValidator.h"
-#include "../../src/Helpers/FileHelper.h"
+#include "../../src/PlanValidators/PlanValidator.hh"
+#include "../../src/Helpers/FileHelper.hh"
 
 using namespace std;
 
@@ -13,7 +13,7 @@ const string badPlan = "./TestFiles/bad_plan";
 
 TEST_CASE(TAG + "MissingVAL") {
     Config config;
-    config.validatorPath = "Not Val Path";
+    config.ValidatorPath.Content = "Not Val Path";
 
     PlanValidator validator;
     PlanValidator::ValidatorResult res = validator.ValidatePlan(config, domainFile, problemFile, badPlan);

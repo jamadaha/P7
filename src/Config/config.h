@@ -3,7 +3,7 @@
 
 #include <string>
 #include "../../include/cxxopts.hpp"
-#include "../Helpers/StringHelper.h"
+#include "../Helpers/StringHelper.hh"
 
 template <typename T>
 struct ConfigItem {

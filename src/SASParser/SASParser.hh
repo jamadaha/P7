@@ -10,7 +10,7 @@
 #include <iterator>
 #include <filesystem>
 
-#include "../Helpers/StringHelper.h"
+#include "../Helpers/StringHelper.hh"
 
 struct SASAction {
 public:

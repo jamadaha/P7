@@ -6,7 +6,7 @@
 #include <iostream>
 
 #include "../Config/config.h"
-#include "../Helpers/FileHelper.h"
+#include "../Helpers/FileHelper.hh"
 
 class PlanValidator {
 public:

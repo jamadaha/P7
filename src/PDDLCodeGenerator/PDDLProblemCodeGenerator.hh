@@ -3,7 +3,7 @@
 
 #include <fstream>
 
-#include "BasePDDLCodeGenerator.h"
+#include "BasePDDLCodeGenerator.hh"
 
 class PDDLProblemCodeGenerator : public BasePDDLCodeGenerator {
 public:

@@ -4,7 +4,7 @@
 #include <fstream>
 
 #include "../PDDLTypes/PDDLDomain.hpp"
-#include "BasePDDLCodeGenerator.h"
+#include "BasePDDLCodeGenerator.hh"
 
 class PDDLDomainCodeGenerator : public BasePDDLCodeGenerator {
 public:

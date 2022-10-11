@@ -6,8 +6,8 @@
 #include <streambuf>
 
 #include "../PDDLParser/pddldriver.hh"
-#include "PDDLDomainCodeGenerator.h"
-#include "PDDLProblemCodeGenerator.h"
+#include "PDDLDomainCodeGenerator.hh"
+#include "PDDLProblemCodeGenerator.hh"
 #include "../PDDLTypes/PDDLInstance.hpp"
 
 class PDDLCodeGenerator {

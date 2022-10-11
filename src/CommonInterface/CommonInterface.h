@@ -7,7 +7,7 @@
 #include "../PathCheckers/PathChecker.hh"
 #include "../Reformulators/BaseReformulator.hh"
 #include "../PDDLParser/pddldriver.hh"
-#include "../PDDLCodeGenerator/PDDLCodeGenerator.h"
+#include "../PDDLCodeGenerator/PDDLCodeGenerator.hh"
 #include "../SASCodeGenerator/SASCodeGenerator.hh"
 #include "../SASParser/SASParser.hh"
 #include "../Config/config.h"

@@ -1,7 +1,7 @@
 #ifndef BaseDepthFunction_HH
 #define BaseDepthFunction_HH
 
-#include "../../PDDLTypes/PDDLInstance.hpp"
+#include "../../IntermediatePDDL/PDDLInstance.hh"
 
 class BaseDepthFunction {
 public:

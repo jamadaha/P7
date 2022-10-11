@@ -1,10 +1,10 @@
-#ifndef PDDL_ACTION_INSTANCE
-#define PDDL_ACTION_INSTANCE
+#ifndef PDDL_ACTION_INSTANCE_HH
+#define PDDL_ACTION_INSTANCE_HH
 
 #include <vector>
 #include <string>
 
-#include "PDDLAction.hpp"
+#include "PDDLAction.hh"
 
 class PDDLActionInstance {
 public:

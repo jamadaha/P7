@@ -1,5 +1,5 @@
-#ifndef PDDL_TYPE
-#define PDDL_TYPE
+#ifndef PDDL_TYPE_HH
+#define PDDL_TYPE_HH
 
 #include <string>
 

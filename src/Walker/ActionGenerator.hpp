@@ -5,8 +5,8 @@
 #include <string>
 #include <map>
 
-#include "../PDDLTypes/PDDLActionInstance.hpp"
-#include "../PDDLTypes/PDDLInstance.hpp"
+#include "../IntermediatePDDL/PDDLActionInstance.hh"
+#include "../IntermediatePDDL/PDDLInstance.hh"
 
 class ActionGenerator {
 public:

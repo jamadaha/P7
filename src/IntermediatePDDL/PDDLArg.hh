@@ -1,9 +1,9 @@
-#ifndef PDDL_ARG
-#define PDDL_ARG
+#ifndef PDDL_ARG_HH
+#define PDDL_ARG_HH
 
 #include <string>
 
-#include "PDDLType.hpp"
+#include "PDDLType.hh"
 
 struct PDDLArg {
     int index;

@@ -3,7 +3,7 @@
 
 #include <fstream>
 
-#include "../PDDLTypes/PDDLDomain.hpp"
+#include "../IntermediatePDDL/PDDLDomain.hh"
 #include "BasePDDLCodeGenerator.hh"
 
 class PDDLDomainCodeGenerator : public BasePDDLCodeGenerator {

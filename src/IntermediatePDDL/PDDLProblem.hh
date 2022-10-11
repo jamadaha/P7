@@ -1,15 +1,15 @@
-#ifndef PDDL_PROBLEM
-#define PDDL_PROBLEM
+#ifndef PDDL_PROBLEM_HH
+#define PDDL_PROBLEM_HH
 
 #include <string>
 #include <vector>
 
 #include "../PDDLParser/problem.hh"
-#include "PDDLArg.hpp"
-#include "PDDLLiteral.hpp"
-#include "PDDLPredicate.hpp"
-#include "PDDLDomain.hpp"
-#include "PDDLState.hpp"
+#include "PDDLArg.hh"
+#include "PDDLLiteral.hh"
+#include "PDDLPredicate.hh"
+#include "PDDLDomain.hh"
+#include "PDDLState.hh"
 
 class PDDLProblem {
 public:

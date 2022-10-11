@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "../PDDLTypes/PDDLActionInstance.hpp"
+#include "../IntermediatePDDL/PDDLActionInstance.hh"
 #include "Heuristics/BaseHeuristics.hh"
 #include "Heuristics/Contexts/PDDLContext.hh"
 #include "DepthFunctions/BaseDepthFunction.hh"

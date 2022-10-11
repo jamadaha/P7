@@ -1,7 +1,7 @@
 #ifndef BaseReformulator_HH
 #define BaseReformulator_HH
 
-#include "../PDDLTypes/PDDLInstance.hpp"
+#include "../IntermediatePDDL/PDDLInstance.hh"
 #include "../SASParser/SASParser.hh"
 
 class BaseReformulator {

@@ -8,7 +8,7 @@
 #include "../PDDLParser/pddldriver.hh"
 #include "PDDLDomainCodeGenerator.hh"
 #include "PDDLProblemCodeGenerator.hh"
-#include "../PDDLTypes/PDDLInstance.hpp"
+#include "../IntermediatePDDL/PDDLInstance.hh"
 
 class PDDLCodeGenerator {
 public:

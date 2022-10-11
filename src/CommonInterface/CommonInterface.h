@@ -12,7 +12,7 @@
 #include "../SASParser/SASParser.hh"
 #include "../Config/config.h"
 #include "../DownwardRunner/DownwardRunner.h"
-#include "../PlanValidators/PlanValidator.h"
+#include "../PlanValidators/PlanValidator.hh"
 #include "../PDDLTypes/PDDLDomain.hpp"
 #include "../PDDLTypes/PDDLProblem.hpp"
 #include "../PDDLTypes/PDDLInstance.hpp"

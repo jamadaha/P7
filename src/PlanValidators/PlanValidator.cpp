@@ -1,5 +1,7 @@
 #include "PlanValidator.h"
 
+using namespace std;
+
 const string ValidatorLogName = "validatorLog";
 
 enum PlanValidator::ValidatorResult PlanValidator::ValidatePlan(Config config, string domainFile, string problemFile, string planFile) {

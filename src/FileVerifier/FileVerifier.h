@@ -6,12 +6,12 @@
 #include <streambuf>
 #include <vector>
 
-using namespace std;
+#include "../Helpers/StringHelper.hh"
 
 class FileVerifier {
 public:
-	bool VerifyFiles(string sourceFile, string targetFile);
-	bool VerifyFiles(string sourceFile, string targetFile, vector<char> purgeChars);
+	bool VerifyFiles(std::string sourceFile, std::string targetFile);
+	bool VerifyFiles(std::string sourceFile, std::string targetFile, std::vector<char> purgeChars);
 };
 
 #endif

@@ -1,5 +1,4 @@
 #include "FileVerifier.h"
-#include "../Helpers/StringHelper.hh"
 
 using namespace std;
 

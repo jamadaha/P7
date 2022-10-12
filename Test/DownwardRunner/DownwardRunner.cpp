@@ -7,12 +7,12 @@
 using namespace std;
 
 const string TAG = "DownwardRunner ";
-const string domain = "./TestFiles/gripper.pddl";
-const string problem = "./TestFiles/gripper-4.pddl";
+const string domain = "./TestFiles/gripper-4.pddl";
+const string problem = "./TestFiles/gripper.pddl";
 
 TEST_CASE(TAG + "Run domain"){
     DownwardRunner downward = DownwardRunner();
     Config config;
     auto x = downward.RunDownward(config, domain, problem);
-    REQUIRE(x != DownwardRunner::DownwardRunnerResult::None);
+    REQUIRE(x == DownwardRunner::DownwardRunnerResult::None);
 }

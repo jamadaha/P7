@@ -25,7 +25,7 @@ set(SOURCES
 	# Helpers
 	"src/Helpers/StringHelper.cpp" "src/Helpers/FileHelper.cpp" 
 	# Reformulators
-	"src/Reformulators/SameOutputReformulator.cpp" 
+	"src/Reformulators/SameOutputReformulator.cpp" "src/Reformulators/RandomWalkerReformulator.cpp"
 	# Common Interface
 	"src/CommonInterface/CommonInterface.cpp"
 	# Plan Validator

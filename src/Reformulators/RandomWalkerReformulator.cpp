@@ -2,15 +2,22 @@
 
 using namespace std;
 
-PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
+// Move this to config?
+#define RUN_COUNT 10
 
-	// Walk (Temp)
+
+PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	RandomHeuristic<PDDLActionInstance>* heu = new RandomHeuristic<PDDLActionInstance>(PDDLContext(instance->domain, instance->problem));
-	Walker walker = Walker(instance,
+	std::vector<Path> paths;
+	for (int i = 0; i < RUN_COUNT; i++) {
+		Walker walker = Walker(instance,
 		ActionGenerator(instance->domain),
 		heu,
-		new ConstantDepthFunction(1, *instance));
-	walker.Walk();
+		new ObjectActionDepthFunction(*instance));
+		Path path = walker.Walk();
+		paths.push_back(path);
+	}
+	
 
 	// Do Something and transform the input PDDL into a new PDDL format
 	PDDLInstance newInstance(instance->domain, instance->problem);

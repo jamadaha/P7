@@ -2,15 +2,15 @@
 
 using namespace std;
 
-// Move this to config?
-// Or generate it based on something?
-#define RUN_COUNT 10
+// Move this...
+#define WIDTH 10
 
 
 PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	RandomHeuristic<PDDLActionInstance>* heu = new RandomHeuristic<PDDLActionInstance>(PDDLContext(instance->domain, instance->problem));
+	ConstantWidthFunction widthFunc = ConstantWidthFunction(WIDTH, *instance);
 	std::vector<Path> paths;
-	for (int i = 0; i < RUN_COUNT; i++) {
+	for (int i = 0; i < widthFunc.GetWidth(); i++) {
 		Walker walker = Walker(instance,
 		ActionGenerator(instance->domain),
 		heu,

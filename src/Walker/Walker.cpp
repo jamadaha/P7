@@ -1,15 +1,22 @@
 #include "Walker.hpp"
 
-void Walker::Walk() {
+Path Walker::Walk() {
+    return Walk(instance->problem->initState);
+}
+
+Path Walker::Walk(PDDLState state) {
     int depth = depthFunc->GetDepth();
-    PDDLState state = instance->problem->initState;
+    Path path = Path();
     for (int i = 0; i < depth; i++) {
         auto actions = actionGenerator.GenerateActions(&state);
+        // Should this be handled?
         if (actions.size() == 0)
-            return;
+            break;
+        auto chosenAction = heuristic->NextChoice(actions);
+        path.AddStep(chosenAction);
         state = DoAction(state, heuristic->NextChoice(actions));
-
     }
+    return path;
 }
 
 PDDLState Walker::DoAction(PDDLState state, PDDLActionInstance action) {

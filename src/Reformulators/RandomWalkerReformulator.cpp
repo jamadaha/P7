@@ -3,6 +3,7 @@
 using namespace std;
 
 // Move this to config?
+// Or generate it based on something?
 #define RUN_COUNT 10
 
 

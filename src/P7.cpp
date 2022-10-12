@@ -1,5 +1,11 @@
 #include "P7.hh"
 
+#include <catch2/catch_test_macros.hpp>
+#include <string>
+
+#include "Config/config.hh"
+#include "DownwardRunner/DownwardRunner.hh"
+
 using namespace std;
 
 int main(int argc, char** argv)

@@ -30,12 +30,12 @@ public:
         
         for (auto const& init : *problem->_init) {
             std::vector<PDDLArg> args = domain->GetArguments(init->first->_args, init->first->_types);
-            initState.state.push_back(PDDLLiteral(PDDLPredicate(init->first->_name, args), init->second));
+            initState.state.push_back(PDDLPredicate(init->first->_name, args));
         }
             
         for (auto const& goal : *problem->_goal) {
             std::vector<PDDLArg> args = domain->GetArguments(goal->first->_args, goal->first->_types);
-            goalState.state.push_back(PDDLLiteral(PDDLPredicate(goal->first->_name, args), goal->second));
+            goalState.state.push_back(PDDLPredicate(goal->first->_name, args));
         }
         initState.objects = &objects;
         goalState.objects = &objects;

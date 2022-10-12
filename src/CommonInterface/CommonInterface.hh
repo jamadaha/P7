@@ -6,6 +6,8 @@
 #include "../RunReport/RunReport.hh"
 #include "../PathCheckers/PathChecker.hh"
 #include "../Reformulators/BaseReformulator.hh"
+#include "../Reformulators/SameOutputReformulator.hh"
+#include "../Reformulators/RandomWalkerReformulator.hh"
 #include "../PDDLParser/pddldriver.hh"
 #include "../PDDLCodeGenerator/PDDLCodeGenerator.hh"
 #include "../SASCodeGenerator/SASCodeGenerator.hh"
@@ -15,24 +17,16 @@
 #include "../PlanValidators/PlanValidator.hh"
 #include "../IntermediatePDDL/PDDLInstance.hh"
 
-// Note: If include of actiongenerator still exists here remove it
-// it was added for temp reasons
-#include "../Walker/Walker.hpp"
-#include "../Walker/Heuristics/RandomHeuristic.hh"
-#include "../Walker/DepthFunctions/ConstantDepthFunction.hh"
-
-
 class CommonInterface {
 public:
 	enum RunResult { None, RanWithoutErrors, ErrorsEncountered };
-	CommonInterface(Config config, std::shared_ptr<BaseReformulator> reformulator, std::string tempDomainName = "tempDomain.pddl", std::string tempProblemName = "tempProblem.pddl", std::string fastDownwardSASName = "sas_plan", std::string outputSASName = "real_sas_plan") :
-	config(config), Reformulator(reformulator), TempDomainName(tempDomainName), TempProblemName(tempProblemName), FastDownwardSASName(fastDownwardSASName), OutputSASName(outputSASName){};
+	CommonInterface(Config config, std::string tempDomainName = "tempDomain.pddl", std::string tempProblemName = "tempProblem.pddl", std::string fastDownwardSASName = "sas_plan", std::string outputSASName = "real_sas_plan") :
+	config(config), TempDomainName(tempDomainName), TempProblemName(tempProblemName), FastDownwardSASName(fastDownwardSASName), OutputSASName(outputSASName){};
 
 	enum RunResult Run(RunReport* report);
 
 private:
 	Config config;
-	std::shared_ptr<BaseReformulator> Reformulator;
 	std::string TempDomainName;
 	std::string TempProblemName;
 	std::string FastDownwardSASName;

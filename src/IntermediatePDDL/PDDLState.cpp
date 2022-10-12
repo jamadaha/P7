@@ -2,26 +2,60 @@
 
 using namespace std;
 
-bool PDDLState::IsUnaryLiteralTrue(PDDLLiteral literal, string object) {
-    for (int i = 0; i < state.size(); i++)
-        if (literal.predicate.name == state[i].predicate.name && object == state[i].predicate.args[0].name)
-            return (literal.state == state[i].state);
-    return false;
+bool PDDLState::IsUnaryLiteralTrue(PDDLAction *action, PDDLLiteral literal, string object) {
+    if (this->HasPredicate(action, literal.predicate, object) != -1)
+        return literal.state;
+    else
+        return !literal.state;
 }
 
-bool PDDLState::IsMultiLiteralTrue(PDDLLiteral literal, vector<string> objects) {
+bool PDDLState::IsMultiLiteralTrue(PDDLAction *action, PDDLLiteral literal, vector<string> objects) {
     if (literal.predicate.name == "=")
-        return (objects[literal.predicate.args[0].index] == objects[literal.predicate.args[1].index]) == literal.state;
+        return AreEqual(objects[action->GetParamIndex(literal.predicate.args[0].name)], objects[action->GetParamIndex(literal.predicate.args[1].name)]) == literal.state;
+    if (HasPredicate(action, literal.predicate, objects) != -1)
+        return literal.state;
+    else
+        return !literal.state;
+}
 
+bool PDDLState::Update(PDDLAction *action, PDDLLiteral literal, std::vector<std::string> objects) {
+    int predicateIndex = HasPredicate(action, literal.predicate, objects);
+    if (predicateIndex == -1) {
+        for (int i = 0; i < literal.predicate.args.size(); i++)
+            literal.predicate.args[i].name = objects[action->GetParamIndex(literal.predicate.args[i].name)];
+        state.push_back(literal.predicate);
+        return true;
+    } else {
+        state.erase(state.begin() + predicateIndex);
+        return false;
+    }
+}
+
+int PDDLState::HasPredicate(PDDLAction *action, PDDLPredicate predicate, std::string object) {
+    for (int i = 0; i < state.size(); i++)
+        if (predicate.name == state[i].name && object == state[i].args[0].name)
+            return i;
+    return -1;
+}
+
+int PDDLState::HasPredicate(PDDLAction *action, PDDLPredicate predicate, std::vector<std::string> objects) {
     for (int i = 0; i < state.size(); i++) {
-        if (literal.predicate.name == state[i].predicate.name) {
-            bool sameObjects = true;
-            for (int objectIndex = 0; objectIndex < objects.size(); objectIndex++)
-                if (objects[i] != state[i].predicate.args[i].name)
-                    sameObjects == false;
-            if (sameObjects) return (literal.state == state[i].state);
+        if (state[i].name == predicate.name && state[i].args.size() == predicate.args.size()) {
+            bool found = true;
+            for (int o = 0; o < predicate.args.size(); o++) {
+                int index = action->GetParamIndex(predicate.args[o].name);
+                if (objects[index] != state[i].args[o].name) {
+                    found = false;
+                    break;
+                }
+            }
+            if (found)
+                return i;
         }
     }
+    return -1;
+}
 
-    return false;
+bool PDDLState::AreEqual(std::string arg1, std::string arg2) {
+    return arg1 == arg2;
 }

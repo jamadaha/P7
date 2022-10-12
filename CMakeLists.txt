@@ -25,13 +25,13 @@ set(SOURCES
 	# Helpers
 	"src/Helpers/StringHelper.cpp" "src/Helpers/FileHelper.cpp" 
 	# Reformulators
-	"src/Reformulators/SameOutputReformulator.cpp" 
+	"src/Reformulators/SameOutputReformulator.cpp" "src/Reformulators/RandomWalkerReformulator.cpp"
 	# Common Interface
 	"src/CommonInterface/CommonInterface.cpp"
 	# Plan Validator
 	"src/PlanValidators/PlanValidator.cpp" 
     # PDDL Types
-	"src/IntermediatePDDL/PDDLAction.hh" "src/IntermediatePDDL/PDDLArg.hh" "src/IntermediatePDDL/PDDLLiteral.hh" "src/IntermediatePDDL/PDDLDomain.cpp" "src/IntermediatePDDL/PDDLPredicate.hh" "src/IntermediatePDDL/PDDLProblem.hh" "src/IntermediatePDDL/PDDLType.hh" "src/IntermediatePDDL/PDDLInstance.hh" "src/IntermediatePDDL/PDDLState.cpp"
+	"src/IntermediatePDDL/PDDLAction.cpp" "src/IntermediatePDDL/PDDLArg.hh" "src/IntermediatePDDL/PDDLLiteral.hh" "src/IntermediatePDDL/PDDLDomain.cpp" "src/IntermediatePDDL/PDDLPredicate.hh" "src/IntermediatePDDL/PDDLProblem.hh" "src/IntermediatePDDL/PDDLType.hh" "src/IntermediatePDDL/PDDLInstance.hh" "src/IntermediatePDDL/PDDLState.cpp"
 	# Walker
 	"src/Walker/ActionGenerator.cpp" "src/Walker/Walker.cpp"
 	## Heuristics

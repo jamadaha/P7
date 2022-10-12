@@ -35,7 +35,7 @@ string PDDLProblemCodeGenerator::GetInits(PDDLState literals) {
 	string retStr = GetTabs(1) + "(:init\n";
 	retStr += GetTabs(2);
 	for (auto i : literals.state) {
-		retStr += GetLiteral(i);
+		retStr += GetPredicate(i);
 	}
 	retStr += "\n";
 	retStr += GetTabs(1) + ")";
@@ -47,7 +47,7 @@ string PDDLProblemCodeGenerator::GetGoals(PDDLState literals) {
 	retStr += GetTabs(2) + "(and \n";
 	retStr += GetTabs(3);
 	for (auto i : literals.state) {
-		retStr += GetLiteral(i);
+		retStr += GetPredicate(i);
 	}
 	retStr += "\n";
 	retStr += GetTabs(2) + ")\n";

@@ -37,6 +37,7 @@ public:
     ConfigItem<std::string> ValidatorPath = ConfigItem<std::string>("v", "validatorpath", "VAL validator Path", "validator filepath", "validate");
     ConfigItem<std::string> DomainFile = ConfigItem<std::string>("d", "domain", "Domain File", "Path to domain file", "gripper_domain.pddl");
     ConfigItem<std::string> ProblemFile = ConfigItem<std::string>("p", "problem", "Problem File", "Path to problem file", "gripper_problem.pddl");
+    ConfigItem<std::string> Reformulator = ConfigItem<std::string>("r", "reformulator", "Reformulator Algorithm", "What reformulator algorithm to use", "SameOutput");
 
     int ParseArgs(Config* config, int argc, char** argv);
 

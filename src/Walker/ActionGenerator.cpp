@@ -27,7 +27,7 @@ std::vector<PDDLActionInstance> ActionGenerator::GenerateLegal(PDDLAction action
 
     std::vector<std::string> candidateObjects[parameterCount];
     for (int i = 0; i < parameterCount; i++)
-        candidateObjects[i] = GetCandidateObjects(state, unaryLiterals[i]);
+        candidateObjects[i] = GetCandidateObjects(&action, state, unaryLiterals[i]);
     
     // if some parameter doesn't have any candidate object, the action is not possible
     for (int i = 0; i < parameterCount; i++)
@@ -43,7 +43,7 @@ std::vector<PDDLActionInstance> ActionGenerator::GenerateLegal(PDDLAction action
         bool legalAction = true;
         for (int i = 0; i < parameterCount; i++) {
             for (auto literal : multiLiterals[i]) {
-                if (!state->IsMultiLiteralTrue(literal, objects)) {
+                if (!state->IsMultiLiteralTrue(&action, literal, objects)) {
                     legalAction = false;
                     break;
                 }  
@@ -70,12 +70,12 @@ std::vector<PDDLLiteral> ActionGenerator::GetPreconditions(PDDLAction action, PD
     return preconditions;
 }
 
-std::vector<std::string> ActionGenerator::GetCandidateObjects(PDDLState *state, std::vector<PDDLLiteral> preconditions) {
+std::vector<std::string> ActionGenerator::GetCandidateObjects(PDDLAction* action, PDDLState *state, std::vector<PDDLLiteral> preconditions) {
     std::vector<std::string> candidateObjects;
     for (const auto& object : *state->objects) {
         bool validObject = true;
         for (const auto& precondition : preconditions) {
-            if (!state->IsUnaryLiteralTrue(precondition, object)) {
+            if (!state->IsUnaryLiteralTrue(action, precondition, object)) {
                 validObject = false;
                 break;
             }

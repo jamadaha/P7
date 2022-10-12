@@ -38,6 +38,8 @@ set(SOURCES
 	"src/Walker/Heuristics/BaseHeuristics.hh" "src/Walker/Heuristics/RandomHeuristic.hh" "src/Walker/Heuristics/Contexts/BaseContext.hh" "src/Walker/Heuristics/Contexts/PDDLContext.hh"
 	## Depth Functions
 	"src/Walker/DepthFunctions/BaseDepthFunction.hh" "src/Walker/DepthFunctions/ObjectActionDepthFunction.hh" "src/Walker/DepthFunctions/ObjectActionDepthFunction.cpp" "src/Walker/DepthFunctions/ConstantDepthFunction.hh" "src/Walker/DepthFunctions/ConstantDepthFunction.cpp"
+	# Width Functions
+	"src/Walker/WidthFunctions/ConstantWidthFunction.cpp"
 	# Path Checkers
 	"src/PathCheckers/PathChecker.cpp"
 

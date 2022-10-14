@@ -130,6 +130,24 @@ To launch in Visual Studio (Note: This is the inferior version):
         "--validate '$HOME/downward-projects/VAL/validate'"
       ],
       "env": {}
+    },
+    {
+        "type": "cppgdb",
+        "name": "P7 With Lab (Multiple benchmarks)",
+        "project": "CMakeLists.txt",
+        "projectTarget": "P7Lab",
+        "comment": "P7 with Lab",
+        "debuggerConfiguration": "gdb",
+        "cwd": "/home/pc/.vs/P7/",
+        "args": [
+            "'--all'",
+            "--benchmarks '$HOME/.vs/P7/Data/benchmarks/'",
+            "--domain 'gripper:trucks'",
+            "--problem 'prob01.pddl,prob02.pddl,prob09.pddl:p03.pddl'",
+            "--downward $HOME/downward/fast-downward.py",
+            "--validate $HOME/validate/validate"
+        ],
+        "env": {}
     }
   ]
 }

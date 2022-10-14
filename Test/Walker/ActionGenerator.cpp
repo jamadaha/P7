@@ -147,4 +147,50 @@ TEST_CASE(TAG + "NotEqual") {
     REQUIRE(6 == actions.size());
 }
 
+TEST_CASE(TAG + "Multi") {
+    PDDLDomain domain = GenerateDomain(std::vector<PDDLAction>{
+            PDDLAction("Action", 
+            std::vector<PDDLArg>{
+                PDDLArg("arg1"),
+                PDDLArg("arg2")
+            },
+            std::vector<PDDLLiteral>{
+                PDDLLiteral(PDDLPredicate("IsTrue2", std::vector<PDDLArg>{ PDDLArg("arg1"), PDDLArg("arg2") }), true)
+            },
+            std::vector<PDDLLiteral>())
+    });
+    PDDLProblem problem = GenerateProblem(std::vector<std::string>{ "o1", "o2", "o3", "o4", "o5" }, std::vector<PDDLPredicate>{
+        PDDLPredicate("IsTrue2", std::vector<PDDLArg>{ PDDLArg("o1"), PDDLArg("o2") })
+    });
+
+    PDDLInstance instance = PDDLInstance(&domain, &problem);
+    ActionGenerator AG = ActionGenerator(instance.domain);
+    std::vector<PDDLActionInstance> actions = AG.GenerateActions(&(instance.problem->initState));
+    REQUIRE(1 == actions.size());
+}
+
+TEST_CASE(TAG + "MultiAndUnary") {
+    PDDLDomain domain = GenerateDomain(std::vector<PDDLAction>{
+            PDDLAction("Action", 
+            std::vector<PDDLArg>{
+                PDDLArg("arg1"),
+                PDDLArg("arg2")
+            },
+            std::vector<PDDLLiteral>{
+                PDDLLiteral(PDDLPredicate("IsTrue", std::vector<PDDLArg>{ PDDLArg("arg1") }), true),
+                PDDLLiteral(PDDLPredicate("IsTrue2", std::vector<PDDLArg>{ PDDLArg("arg1"), PDDLArg("arg2") }), true)
+            },
+            std::vector<PDDLLiteral>())
+    });
+    PDDLProblem problem = GenerateProblem(std::vector<std::string>{ "o1", "o2", "o3", "o4", "o5" }, std::vector<PDDLPredicate>{
+        PDDLPredicate("IsTrue", std::vector<PDDLArg>{ PDDLArg("o1") }),
+        PDDLPredicate("IsTrue2", std::vector<PDDLArg>{ PDDLArg("o1"), PDDLArg("o2") })
+    });
+
+    PDDLInstance instance = PDDLInstance(&domain, &problem);
+    ActionGenerator AG = ActionGenerator(instance.domain);
+    std::vector<PDDLActionInstance> actions = AG.GenerateActions(&(instance.problem->initState));
+    REQUIRE(1 == actions.size());
+}
+
 #pragma endregion Precondition

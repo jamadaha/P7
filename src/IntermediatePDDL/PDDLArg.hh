@@ -8,6 +8,7 @@
 struct PDDLArg {
     std::string name;
     PDDLType* typeRef;
+    PDDLArg(std::string name) : name(name), typeRef(nullptr) {};
     PDDLArg(std::string name, PDDLType* typeRef) : name(name), typeRef(typeRef) {};
 };
 

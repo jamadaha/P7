@@ -3,10 +3,10 @@
 std::vector<PDDLActionInstance> ActionGenerator::GenerateActions(PDDLState *state) {
     std::vector<PDDLAction> domainActions = domain->actions;
     std::vector<PDDLActionInstance> legalActions;
-    for (const auto& action : domainActions) {
-        auto tempActions = GenerateLegal(action, state);
-        for (const auto& tempAction : tempActions)
-            legalActions.push_back(tempAction);
+    for (int i = 0; i < domainActions.size(); i++) {
+        std::vector<PDDLActionInstance> tempActions = GenerateLegal(domainActions[i], state);
+        for (int t = 0; t < tempActions.size(); t++)
+            legalActions.push_back(tempActions[t]);
     }
     return legalActions;
 }
@@ -42,8 +42,8 @@ std::vector<PDDLActionInstance> ActionGenerator::GenerateLegal(PDDLAction action
         // test whether any multi literals do not match these objects
         bool legalAction = true;
         for (int i = 0; i < parameterCount; i++) {
-            for (auto literal : multiLiterals[i]) {
-                if (!state->IsMultiLiteralTrue(&action, literal, objects)) {
+            for (int l = 0; l < multiLiterals[i].size(); l++) {
+                if (!state->IsMultiLiteralTrue(&action, multiLiterals[i][l], objects)) {
                     legalAction = false;
                     break;
                 }  
@@ -61,10 +61,10 @@ std::vector<PDDLActionInstance> ActionGenerator::GenerateLegal(PDDLAction action
 
 std::vector<PDDLLiteral> ActionGenerator::GetPreconditions(PDDLAction action, PDDLArg *param) {
     std::vector<PDDLLiteral> preconditions;
-    for (auto precondition : action.preconditions)
-        for (auto arg : precondition.predicate.args)
-            if (arg.name == param->name) {
-                preconditions.push_back(precondition);
+    for (int p = 0; p < action.preconditions.size(); p++)
+        for (int i = 0; i < action.preconditions[p].predicate.args.size(); i++)
+            if (action.preconditions[p].predicate.args[i].name == param->name) {
+                preconditions.push_back(action.preconditions[p]);
                 break;
             }
     return preconditions;
@@ -72,26 +72,26 @@ std::vector<PDDLLiteral> ActionGenerator::GetPreconditions(PDDLAction action, PD
 
 std::vector<std::string> ActionGenerator::GetCandidateObjects(PDDLAction* action, PDDLState *state, std::vector<PDDLLiteral> preconditions) {
     std::vector<std::string> candidateObjects;
-    for (const auto& object : *state->objects) {
+    for (int o = 0; o < state->objects->size(); o++) {
         bool validObject = true;
-        for (const auto& precondition : preconditions) {
-            if (!state->IsUnaryLiteralTrue(action, precondition, object)) {
+        for (int p = 0; p < preconditions.size(); p++) {
+            if (!state->IsUnaryLiteralTrue(action, preconditions[p], state->objects[0][o])) {
                 validObject = false;
                 break;
             }
         }  
         if (validObject)
-            candidateObjects.push_back(object);
+            candidateObjects.push_back(state->objects[0][o]);
     }
     return candidateObjects;    
 }
 
 void ActionGenerator::SplitLiterals(std::vector<PDDLLiteral> literals, std::vector<PDDLLiteral> *unaryLiterals, std::vector<PDDLLiteral> *multiLiterals) {
-    for (auto literal : literals)
-        if (literal.predicate.args.size() > 1)
-            (*multiLiterals).push_back(literal);
+    for (int i = 0; i < literals.size(); i++)
+        if (literals[i].predicate.args.size() > 1)
+            (*multiLiterals).push_back(literals[i]);
         else
-            (*unaryLiterals).push_back(literal);
+            (*unaryLiterals).push_back(literals[i]);
 }
 
 bool ActionGenerator::Increment(std::vector<int> *indexes, std::vector<std::string> objects[]) {

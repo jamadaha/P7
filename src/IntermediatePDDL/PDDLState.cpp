@@ -3,23 +3,29 @@
 using namespace std;
 
 bool PDDLState::IsUnaryLiteralTrue(PDDLAction *action, PDDLLiteral literal, string object) {
-    if (this->HasPredicate(action, literal.predicate, object) != -1)
+    printf("FIX THIS !!!!\n");
+    /* if (this->HasPredicate(action, literal.predicate, object) != -1)
         return literal.state;
     else
-        return !literal.state;
+        return !literal.state; */
+        return true;
 }
 
 bool PDDLState::IsMultiLiteralTrue(PDDLAction *action, PDDLLiteral literal, vector<string> objects) {
-    if (literal.predicate.name == "=")
+    printf("FIX THIS !!!!\n");
+    /* if (literal.predicate.name == "=")
         return AreEqual(objects[action->GetParamIndex(literal.predicate.args[0].name)], objects[action->GetParamIndex(literal.predicate.args[1].name)]) == literal.state;
     if (HasPredicate(action, literal.predicate, objects) != -1)
         return literal.state;
     else
-        return !literal.state;
+        return !literal.state; */
+        return true;
 }
 
 bool PDDLState::Update(PDDLAction *action, PDDLLiteral literal, std::vector<std::string> objects) {
-    int predicateIndex = HasPredicate(action, literal.predicate, objects);
+    printf("FIX THIS !!!!\n");
+    return true;
+    /* int predicateIndex = HasPredicate(action, literal.predicate, objects);
     if (predicateIndex == -1) {
         for (int i = 0; i < literal.predicate.args.size(); i++)
             literal.predicate.args[i].name = objects[action->GetParamIndex(literal.predicate.args[i].name)];
@@ -28,7 +34,7 @@ bool PDDLState::Update(PDDLAction *action, PDDLLiteral literal, std::vector<std:
     } else {
         state.erase(state.begin() + predicateIndex);
         return false;
-    }
+    } */
 }
 
 int PDDLState::HasPredicate(PDDLAction *action, PDDLPredicate predicate, std::string object) {

@@ -26,13 +26,15 @@ string BasePDDLCodeGenerator::GetStringList(vector<string> list) {
 }
 
 string BasePDDLCodeGenerator::GetLiteral(PDDLLiteral predicate) {
-	if (!predicate.state) {
+	printf("FIX SHIT!!!!\n");
+	return "";
+	/* if (!predicate.state) {
 		return "(not" + GetPredicate(predicate.predicate) + ")";
 	}
 	else
 	{
 		return GetPredicate(predicate.predicate);
-	}
+	} */
 }
 
 string BasePDDLCodeGenerator::GetTabs(int count) {

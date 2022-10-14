@@ -15,10 +15,10 @@ public:
 private:
     PDDLDomain* domain;
     // Given some action generate all legal parameter variations
-    std::vector<PDDLActionInstance> GenerateLegal(PDDLAction action, PDDLState *state);
+    std::vector<PDDLActionInstance> GenerateLegal(PDDLAction *action, PDDLState *state);
     // Get relevant preconditions for given parameter
     //// Note: at some point make this static
-    std::vector<PDDLLiteral> GetPreconditions(PDDLAction action, PDDLArg *param);
+    std::vector<PDDLLiteral> GetPreconditions(PDDLAction *action, PDDLArg *param);
     // Find those objects that match the given unary preconditions
     std::vector<std::string> GetCandidateObjects(PDDLAction* action, PDDLState *state, std::vector<PDDLLiteral> preconditions);
     void RemoveInvalidObjects();

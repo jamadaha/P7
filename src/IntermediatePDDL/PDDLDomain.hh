@@ -19,7 +19,9 @@ public:
     std::string name;
     std::unordered_map<std::string, PDDLType*> typeDict;
     std::vector<std::string> requirements;
-    std::vector<PDDLPredicate> predicates;
+    std::vector<PDDLPredicate> predicates = std::vector<PDDLPredicate>{
+        PDDLPredicate("=", std::vector<PDDLArg>())
+    };
     std::vector<PDDLAction> actions;
 
     PDDLDomain() {
@@ -43,17 +45,24 @@ public:
 
         // Get Actions
         for (auto const& action : *domain->_actions) {
-            PDDLAction newAction = PDDLAction(action->_name, GetArguments(action->_params, action->_types),
-            GetLogicalExpressions(action->_precond), GetLogicalExpressions(action->_effects));
+            PDDLAction newAction = PDDLAction();
+            newAction.name = action->_name;
+            newAction.parameters = GetArguments(action->_params, action->_types);
+            newAction.preconditions = GetLogicalExpressions(action->_precond, &(newAction.parameters));
+            newAction.effects = GetLogicalExpressions(action->_precond, &(newAction.parameters));
+            //PDDLAction newAction = PDDLAction(action->_name, GetArguments(action->_params, action->_types),
+            //GetLogicalExpressions(action->_precond), GetLogicalExpressions(action->_effects));
             actions.push_back(newAction);
         }
     };
 
     std::vector<PDDLArg> GetArguments(const StringList* params, const TypeDict* types);
+    std::vector<PDDLArg*> GetActionParameterRef(std::vector<PDDLArg> args, std::vector<PDDLArg> *params);
+    PDDLPredicate* GetPredicate(std::string name);
 
 private:
     void AddTypes(const TypeDict* types);
-    std::vector<PDDLLiteral> GetLogicalExpressions(const std::vector<std::pair<Predicate*, bool>*>* logExp);
+    std::vector<PDDLLiteral> GetLogicalExpressions(const std::vector<std::pair<Predicate*, bool>*>* logExp, std::vector<PDDLArg> *params);
 };
 
 #endif

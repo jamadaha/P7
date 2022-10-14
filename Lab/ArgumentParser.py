@@ -51,14 +51,14 @@ def set_arguments():
         "--domain",
         required=False,
         default="gripper_domain.pddl",
-        help="Domain pddl file"
+        help="Domain pddl file or domain folders. --domain gripper_domain.pddl --domain gripper --domain gripper:trucks"
     )
 
     ARGPARSER.add_argument(
         "--problem",
         required=False,
         default="gripper_problem.pddl",
-        help="Problem pddl file"
+        help="Problem pddl file(s). --problem gripper_problem.pddl --problem pb1.pddl,pb2.pddl (same domain) --problem pb1.pddl:pb1.pddl (different domain)"
     )
 
     return ARGPARSER.parse_args()

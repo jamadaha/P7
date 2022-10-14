@@ -17,6 +17,7 @@ public:
     void AddStep(PDDLActionInstance step) {
         steps.push_back(step);
     }
+    
     std::vector<PDDLActionInstance> GetSteps() {
         return steps;
     }

@@ -1,4 +1,4 @@
-add_executable(Tests-Walker Test/Walker/CMakeLists.txt ${SOURCES})
-target_link_libraries(Tests-Walker PRIVATE Catch2::Catch2WithMain)
+add_executable(Tests-ActionGenerator Test/Walker/ActionGenerator.cpp ${SOURCES})
+target_link_libraries(Tests-ActionGenerator PRIVATE Catch2::Catch2WithMain)
 
-catch_discover_tests(Tests-Walker)
+catch_discover_tests(Tests-ActionGenerator)

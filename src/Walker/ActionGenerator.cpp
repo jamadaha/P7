@@ -5,7 +5,6 @@ std::vector<PDDLActionInstance> ActionGenerator::GenerateActions(PDDLState *stat
     std::vector<PDDLActionInstance> legalActions;
     for (const auto& action : domainActions) {
         auto tempActions = GenerateLegal(action, state);
-        printf("3\n");
         for (const auto& tempAction : tempActions)
             legalActions.push_back(tempAction);
     }

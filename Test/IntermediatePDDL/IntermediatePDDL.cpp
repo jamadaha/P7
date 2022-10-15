@@ -6,7 +6,7 @@
 #include "../../src/PDDLParser/pddldriver.hh"
 
 using namespace std;
-
+/*
 
 const string TAG = "IntermediatePDDL ";
 
@@ -87,4 +87,4 @@ TEST_CASE(TAG + "PDDLDomain arguments"){
 		argString.push_back(a);
     
     REQUIRE(cmp(argString, exArgs));
-}
+}*/

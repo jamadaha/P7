@@ -4,12 +4,11 @@
 #include <string>
 #include <vector>
 
-#include "PDDLArg.hh"
-
 struct PDDLPredicate {
-    std::string name;
-    std::vector<PDDLArg> args;
-    PDDLPredicate(std::string name, std::vector<PDDLArg> args) : name(name), args(args) {};
+    const std::string name;
+    const int argumentCount;
+    
+    PDDLPredicate(std::string name, int argumentCount) : name(name), argumentCount(argumentCount) {}
 };
 
 #endif

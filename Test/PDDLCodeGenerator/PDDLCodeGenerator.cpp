@@ -6,7 +6,7 @@
 #include "../../src/PDDLCodeGenerator/PDDLProblemCodeGenerator.hh"
 
 using namespace std;
-
+/*
 const string TAG = "PDDLCodeGenerator ";
 const string domainFile = "./TestFiles/gripper.pddl";
 const string problemFile = "./TestFiles/gripper-4.pddl";
@@ -57,3 +57,5 @@ TEST_CASE(TAG + "PDDLProblemGenerator") {
     REQUIRE(generatedProblem.initState.state.size() == problem.initState.state.size());
     REQUIRE(generatedProblem.goalState.state.size() == problem.goalState.state.size());
 }
+
+*/

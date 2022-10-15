@@ -16,6 +16,8 @@
 #include "../DownwardRunner/DownwardRunner.hh"
 #include "../PlanValidators/PlanValidator.hh"
 #include "../IntermediatePDDL/PDDLInstance.hh"
+#include "../IntermediatePDDL/PDDLConverter.hh"
+
 
 class CommonInterface {
 public:

@@ -9,7 +9,7 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	cout << "Finding reformulator algorithm...";
 	report->Begin("Finding Reformulator");
 	if (config.Reformulator.Content == "SameOutput") {
-		reformulator = new SameOutputReformulator();
+		//reformulator = new SameOutputReformulator();
 	} else 	if (config.Reformulator.Content == "RandomWalker") {
 		reformulator = new RandomWalkerReformulator();
 	}
@@ -41,22 +41,22 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
 
-	// Convert PDDL format
+	 // Convert PDDL format
 	cout << "Converting PDDL format...";
 	report->Begin("Converison of PDDL format");
-	PDDLDomain domain = PDDLDomain(originalDriver.domain);
-	PDDLProblem problem = PDDLProblem(originalDriver.problem, &domain);
+	PDDLDomain domain = PDDLConverter::Convert(originalDriver.domain);
+	PDDLProblem problem = PDDLConverter::Convert(&domain, originalDriver.problem);
 	PDDLInstance instance = PDDLInstance(&domain, &problem);
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
-
+	
 	// Reformulate the PDDL file
 	cout << "Reformulating PDDL...";
 	report->Begin("Reformulation of PDDL");
 	PDDLInstance reformulatedInstance = reformulator->ReformulatePDDL(&instance);
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
-
+	/*
 	// Generate new PDDL files
 	cout << "Generating PDDL files...";
 	report->Begin("Generating PDDL");
@@ -130,7 +130,7 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 		}
 		t = report->Stop();
 		cout << "   ✓" << t << "ms" << endl;
-	}
+	} */
 	
 	return CommonInterface::RunResult::RanWithoutErrors;
 }

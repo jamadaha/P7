@@ -6,27 +6,15 @@
 #include <unordered_map>
 #include <stdexcept>
 
-#include "PDDLArg.hh"
 #include "PDDLLiteral.hh"
 
-class PDDLAction {
-public:
-    std::string name;
-    std::vector<PDDLArg> parameters;
-    
-    std::vector<PDDLLiteral> preconditions;
-    std::vector<PDDLLiteral> effects;
-    PDDLAction() {};
-    PDDLAction(std::string name, std::vector<PDDLArg> parameters, std::vector<PDDLLiteral> preconditions, std::vector<PDDLLiteral> effects) :
-        name(name), parameters(parameters), preconditions(preconditions), effects(effects) {
-            for (int i = 0; i < this->parameters.size(); i++)
-                paramIndexMap.emplace(this->parameters[i].name, i);
-    };
-
-    int GetParamIndex(std::string paramName);
-
-private:
-    std::unordered_map<std::string, int> paramIndexMap;
+struct PDDLAction {
+    const std::string name;
+    const unsigned int parameterCount;
+    const std::vector<PDDLLiteral> preconditions;
+    const std::vector<PDDLLiteral> effects;
+    PDDLAction(std::string name, unsigned int parameterCount, std::vector<PDDLLiteral> preconditions, std::vector<PDDLLiteral> effects) : 
+        name(name), parameterCount(parameterCount), preconditions(preconditions), effects(effects) {};
 };
 
 #endif

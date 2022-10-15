@@ -8,9 +8,9 @@
 
 class PDDLActionInstance {
 public:
-    PDDLAction action;
+    /* PDDLAction action;
     std::vector<std::string> arguments;
-    PDDLActionInstance(PDDLAction action, std::vector<std::string> arguments) : action(action), arguments(arguments) {};
+    PDDLActionInstance(PDDLAction action, std::vector<std::string> arguments) : action(action), arguments(arguments) {}; */
 private:
 };
 

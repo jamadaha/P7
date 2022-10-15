@@ -14,11 +14,10 @@ Path Walker::Walk(PDDLState state) {
             break;
         auto chosenAction = heuristic->NextChoice(actions);
         path.AddStep(chosenAction);
-        state = DoAction(state, heuristic->NextChoice(actions));
     }
     return path;
 }
-
+/*
 PDDLState Walker::DoAction(PDDLState state, PDDLActionInstance action) {
     // For each action effect, change the state accordingly
     for (int i = 0; i < action.action.effects.size(); i++) {
@@ -28,3 +27,4 @@ PDDLState Walker::DoAction(PDDLState state, PDDLActionInstance action) {
     
     return state;
 }
+*/ 

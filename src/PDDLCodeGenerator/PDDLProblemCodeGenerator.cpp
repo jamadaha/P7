@@ -1,7 +1,7 @@
 #include "PDDLProblemCodeGenerator.hh"
 
 using namespace std;
-
+/* 
 void PDDLProblemCodeGenerator::GenerateProblemFile(PDDLProblem* problem, string problemFile) {
 	ofstream file;
 	file.open(problemFile);
@@ -53,4 +53,4 @@ string PDDLProblemCodeGenerator::GetGoals(PDDLState literals) {
 	retStr += GetTabs(2) + ")\n";
 	retStr += GetTabs(1) + ")";
 	return retStr;
-}
+} */

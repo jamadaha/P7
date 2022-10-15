@@ -23,11 +23,11 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	// Do Something and transform the input PDDL into a new PDDL format
 	PDDLInstance newInstance(instance->domain, instance->problem);
 
-	return newInstance;
+	return *instance;
 }
 
 SASPlan RandomWalkerReformulator::RebuildSASPlan(SASPlan* reformulatedSAS) {
 	// Do Something and give a "corrected" SAS plan back
 	SASPlan newPlan(reformulatedSAS->actions, reformulatedSAS->cost);
 	return newPlan;
-}
+} 

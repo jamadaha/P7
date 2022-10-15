@@ -1,5 +1,5 @@
 #include "PDDLDomainCodeGenerator.hh"
-
+/* 
 using namespace std;
 
 void PDDLDomainCodeGenerator::GenerateDomainFile(PDDLDomain* domain, string domainFile) {
@@ -75,4 +75,4 @@ string PDDLDomainCodeGenerator::GetAction(PDDLAction action) {
 	retStr += GetTabs(2) + ")\n";
 	retStr += GetTabs(1) + ")\n";
 	return retStr;
-}
+} */

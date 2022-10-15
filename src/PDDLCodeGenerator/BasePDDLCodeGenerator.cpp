@@ -1,7 +1,7 @@
 #include "BasePDDLCodeGenerator.hh"
 
 using namespace std;
-
+/* 
 string BasePDDLCodeGenerator::GetPredicate(PDDLPredicate predicate) {
 	return " (" + predicate.name + GetPDDLArgs(predicate.args) + ")";
 }
@@ -34,13 +34,13 @@ string BasePDDLCodeGenerator::GetLiteral(PDDLLiteral predicate) {
 	else
 	{
 		return GetPredicate(predicate.predicate);
-	} */
+	} 
 }
 
-string BasePDDLCodeGenerator::GetTabs(int count) {
+/* string BasePDDLCodeGenerator::GetTabs(int count) {
 	string retStr = "";
 	for (int i = 0; i < count; i++) {
 		retStr += "\t";
 	}
 	return retStr;
-}
+}  */

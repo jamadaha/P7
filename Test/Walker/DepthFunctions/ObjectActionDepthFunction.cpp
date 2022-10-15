@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "../../../src/Walker/DepthFunctions/ObjectActionDepthFunction.hh"
-
+/*
 const std::string TAG = "ObjectActionDepthFunction ";
 
 TEST_CASE(TAG + "SimpleTest") {
@@ -64,3 +64,4 @@ TEST_CASE(TAG + "WithModifier") {
         REQUIRE(expected == actual);
     }
 }
+*/

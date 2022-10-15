@@ -37,7 +37,7 @@ private:
     BaseHeuristics<PDDLActionInstance, PDDLContext>* heuristic;
     BaseDepthFunction* depthFunc;
 
-    PDDLState DoAction(PDDLState state, PDDLActionInstance action);
+    //PDDLState DoAction(PDDLState state, PDDLActionInstance action);
 };
 
 #endif

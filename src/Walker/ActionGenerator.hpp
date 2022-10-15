@@ -14,8 +14,10 @@ public:
     std::vector<PDDLActionInstance> GenerateActions(PDDLState *state);
 private:
     PDDLDomain* domain;
-    // Given some action generate all legal parameter variations
-    std::vector<PDDLActionInstance> GenerateLegal(PDDLAction *action, PDDLState *state);
+     // Given some action generate all legal parameter variations
+    std::vector<PDDLActionInstance> GenerateLegal(const PDDLAction *action, PDDLState *state);
+    std::unordered_set<unsigned int> GetCandidateObjects(std::unordered_set<const PDDLLiteral*> literals, PDDLState *state);
+    /*
     // Get relevant preconditions for given parameter
     //// Note: at some point make this static
     std::vector<PDDLLiteral> GetPreconditions(PDDLAction *action, PDDLArg *param);
@@ -25,7 +27,7 @@ private:
 
     void SplitLiterals(std::vector<PDDLLiteral> literals, std::vector<PDDLLiteral> *unaryLiterals, std::vector<PDDLLiteral> *multiLiterals);
     // returns false on no increment possible
-    bool Increment(std::vector<int> *indexes, std::vector<std::string> objects[]);
+    bool Increment(std::vector<int> *indexes, std::vector<std::string> objects[]); */
 };
 
 #endif

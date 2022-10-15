@@ -3,27 +3,22 @@
 
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 
-#include "PDDLPredicate.hh"
-#include "PDDLLiteral.hh"
-#include "PDDLAction.hh"
+struct MultiFact {
+    const std::vector<unsigned int> fact;
+    MultiFact(std::vector<unsigned int> fact) : fact(fact) {};
+};
 
-// This is a seperate class for future proofing
-class PDDLState {
-public:
-    // Refers to the given problems objects
-    std::vector<std::string> *objects;
-    std::vector<PDDLPredicate> state;
+struct PDDLState {
+    // Key - Index of predicate | Value - Set of objects which the predicate is true for
+    const std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts;
+    // Key - Index of predicate | Value - List of combinations of objcets which the predicate is true for (Should be a set, but cpp has a stroke trying to has a vector)
+    const std::unordered_map<unsigned int, std::vector<MultiFact>> multiFacts;
 
-    bool IsUnaryLiteralTrue(PDDLAction *action, PDDLLiteral literal, std::string object);
-    bool IsMultiLiteralTrue(PDDLAction *action, PDDLLiteral literal, std::vector<std::string> objects);
-    // Changes the state to be in accordance to the literal
-    // Returns true if it inserts a new state
-    bool Update(PDDLAction *action, PDDLLiteral literal, std::vector<std::string> objects);
-private:
-    int HasPredicate(PDDLAction *action, PDDLPredicate predicate, std::string object);
-    int HasPredicate(PDDLAction *action, PDDLPredicate predicate, std::vector<std::string> objects);
-    bool AreEqual(std::string arg1, std::string arg2);
+    PDDLState() {};
+    PDDLState(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts, std::unordered_map<unsigned int, std::vector<MultiFact>> multiFacts) :
+        unaryFacts(unaryFacts), multiFacts(multiFacts) {};
 };
 
 #endif

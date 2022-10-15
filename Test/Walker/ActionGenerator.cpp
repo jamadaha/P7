@@ -47,16 +47,23 @@ TEST_CASE(TAG + "Unary") {
         PDDLAction("Action 1", 
         1, 
         std::vector<PDDLLiteral>{
-            PDDLLiteral(1, std::vector<unsigned int>{ 0 }, true)
+            PDDLLiteral(0, std::vector<unsigned int>{ 0 }, true)
         },
         std::vector<PDDLLiteral>{})
     });
-    PDDLProblem problem = GenerateProblem();
+    PDDLProblem problem = GenerateProblem(std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{
+        { 0, { 0 } }
+    }, std::unordered_map<unsigned int, std::vector<MultiFact>>{
+
+    }, &domain,
+    std::vector<std::string> {
+        "O1"
+    });
 
     PDDLInstance instance = PDDLInstance(&domain, &problem);
     ActionGenerator AG = ActionGenerator(instance.domain);
     std::vector<PDDLActionInstance> actions = AG.GenerateActions(&(instance.problem->initState));
-    REQUIRE(0 == actions.size());
+    REQUIRE(1 == actions.size());
 }
 /*
 TEST_CASE(TAG + "Unary - 1 legal") {

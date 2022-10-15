@@ -1,48 +1,37 @@
-/* #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>
 
-#include "../../src/IntermediatePDDL/PDDLArg.hh"
 #include "../../src/IntermediatePDDL/PDDLInstance.hh"
 #include "../../src/Walker/ActionGenerator.hpp"
 
 const std::string TAG = "ActionGenerator ";
 
 PDDLDomain GenerateDomain(std::vector<PDDLAction> actions = std::vector<PDDLAction>()) {
-    PDDLDomain domain = PDDLDomain();
-    domain.predicates = std::vector<PDDLPredicate>{
-        PDDLPredicate("IsTrue", std::vector<PDDLArg>{
-            PDDLArg("SomeObject", nullptr)
-        }),
-        PDDLPredicate("IsTrue2", std::vector<PDDLArg>{
-            PDDLArg("SomeObject", nullptr),
-            PDDLArg("SomeOtherObject", nullptr)
-        })
-    };
-    if (actions.size() == 0)
-        domain.actions = std::vector<PDDLAction>{
-            PDDLAction("Action", 
-            std::vector<PDDLArg>{
-                PDDLArg("arg1", nullptr)
-            },
-            std::vector<PDDLLiteral>{
-                PDDLLiteral(PDDLPredicate("IsTrue", std::vector<PDDLArg>{ PDDLArg("arg1", nullptr) }), false)
-            },
-            std::vector<PDDLLiteral>())
-        };
-    else
-        domain.actions = actions;
-    return domain;
+    return PDDLDomain("Test",
+    std::vector<std::string>{},
+    std::vector<PDDLPredicate>{
+        PDDLPredicate("P1", 1),
+        PDDLPredicate("P2", 2),
+        PDDLPredicate("P3", 3)
+    },
+    std::unordered_map<std::string, unsigned int> {
+        {"P1", 0},
+        {"P2", 1},
+        {"P3", 2}
+    },
+    actions);
 }
 
-PDDLProblem GenerateProblem(std::vector<std::string> objects = std::vector<std::string>(), std::vector<PDDLPredicate> state = std::vector<PDDLPredicate>()) {
-    PDDLProblem problem = PDDLProblem();
-    problem.objects = objects;
-    problem.initState = PDDLState();
-    problem.initState.objects = &problem.objects;
-    problem.initState.state = state;
-    return problem;
+PDDLProblem GenerateProblem(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts = std::unordered_map<unsigned int, std::unordered_set<unsigned int>> {}, std::unordered_map<unsigned int, std::vector<MultiFact>> multiFacts = std::unordered_map<unsigned int, std::vector<MultiFact>> {}, 
+PDDLDomain *domain = nullptr, std::vector<std::string> objects = std::vector<std::string>()) {
+    return PDDLProblem("Test", 
+    domain, 
+    objects, 
+    std::unordered_map<std::string, unsigned int>{}, 
+    PDDLState(unaryFacts, multiFacts), 
+    PDDLState(unaryFacts, multiFacts));
 }
 
-#pragma region Precondition
+//#pragma region Precondition
 
 TEST_CASE(TAG + "Empty") {
     PDDLInstance instance = PDDLInstance(new PDDLDomain(), new PDDLProblem());
@@ -53,16 +42,23 @@ TEST_CASE(TAG + "Empty") {
     free(instance.problem);
 }
 
-TEST_CASE(TAG + "Unary - 0 legal") {
-    PDDLDomain domain = GenerateDomain();
-    PDDLProblem problem = GenerateProblem(std::vector<std::string>{  });
+TEST_CASE(TAG + "Unary") {
+    PDDLDomain domain = GenerateDomain(std::vector<PDDLAction>{
+        PDDLAction("Action 1", 
+        1, 
+        std::vector<PDDLLiteral>{
+            PDDLLiteral(1, std::vector<unsigned int>{ 0 }, true)
+        },
+        std::vector<PDDLLiteral>{})
+    });
+    PDDLProblem problem = GenerateProblem();
 
     PDDLInstance instance = PDDLInstance(&domain, &problem);
     ActionGenerator AG = ActionGenerator(instance.domain);
     std::vector<PDDLActionInstance> actions = AG.GenerateActions(&(instance.problem->initState));
     REQUIRE(0 == actions.size());
 }
-
+/*
 TEST_CASE(TAG + "Unary - 1 legal") {
     PDDLDomain domain = GenerateDomain();
     PDDLProblem problem = GenerateProblem(std::vector<std::string>{ "o1" });
@@ -72,7 +68,7 @@ TEST_CASE(TAG + "Unary - 1 legal") {
     std::vector<PDDLActionInstance> actions = AG.GenerateActions(&(instance.problem->initState));
     REQUIRE(1 == actions.size());
 }
-
+/*
 TEST_CASE(TAG + "Unary - 2 legal") {
     PDDLDomain domain = GenerateDomain();
     PDDLProblem problem = GenerateProblem(std::vector<std::string>{ "o1", "o2" });

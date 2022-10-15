@@ -13,11 +13,11 @@
 class ActionGenerator {
 public:
     ActionGenerator(PDDLDomain* domain) : domain(domain) {};
-    std::vector<PDDLActionInstance> GenerateActions(PDDLState *state);
+    std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state);
 private:
     PDDLDomain* domain;
      // Given some action generate all legal parameter variations
-    std::vector<PDDLActionInstance> GenerateLegal(const PDDLAction *action, PDDLState *state);
+    std::vector<PDDLActionInstance> GenerateLegal(const PDDLAction *action, const PDDLState *state);
     std::unordered_set<unsigned int> GetCandidateObjects(std::unordered_set<const PDDLLiteral*> literals, const PDDLState *state);
     bool IsLegal(const std::vector<PDDLLiteral> *literals, const PDDLState *state, std::vector<unsigned int> *objects);
     bool Iterate(std::vector<std::unordered_set<unsigned int>::iterator> *iteration, std::vector<std::unordered_set<unsigned int>> *candidateObjects);

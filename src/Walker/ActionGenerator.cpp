@@ -1,6 +1,6 @@
 #include "ActionGenerator.hpp"
 
-std::vector<PDDLActionInstance> ActionGenerator::GenerateActions(PDDLState *state) {
+std::vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *state) {
     std::vector<PDDLActionInstance> legalActions;
     for (int i = 0; i < domain->actions.size(); i++) {
         std::vector<PDDLActionInstance> tempActions = GenerateLegal(&(domain->actions[i]), state);
@@ -10,7 +10,7 @@ std::vector<PDDLActionInstance> ActionGenerator::GenerateActions(PDDLState *stat
     return legalActions;
 }
 
-std::vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction *action, PDDLState *state) {
+std::vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction *action, const PDDLState *state) {
     std::vector<PDDLActionInstance> legalActions;
 
     std::vector<std::unordered_set<const PDDLLiteral*>> applicableLiterals;

@@ -3,7 +3,7 @@
 #include "../../../src/Walker/DepthFunctions/ConstantDepthFunction.hh"
 
 const std::string TAG = "ConstantDepthFunction ";
-/*
+
 TEST_CASE(TAG + "SimpleTest") {
     std::vector<int> testCases = {1,2,10,75,1245623,0,1241};
     PDDLInstance emptyInstace(nullptr, nullptr);
@@ -25,4 +25,4 @@ TEST_CASE(TAG + "WithModifier") {
         int actual = function->GetDepth();
         REQUIRE(expected == actual);
     }
-}*/
+}

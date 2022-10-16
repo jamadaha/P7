@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "../../../src/Walker/DepthFunctions/ObjectActionDepthFunction.hh"
-/*
+
 const std::string TAG = "ObjectActionDepthFunction ";
 
 TEST_CASE(TAG + "SimpleTest") {
@@ -15,14 +15,19 @@ TEST_CASE(TAG + "SimpleTest") {
 
     for (auto pair : testCases) {
         int expected = pair.first * pair.second;
-        PDDLDomain newDomain;
-        PDDLProblem newProblem;
 
-        for(int i = 0; i < pair.first; i++)
-            newDomain.actions.push_back(PDDLAction());
-
+        std::vector<PDDLAction> actions;
+        actions.reserve(pair.first);
+        for (int i = 0; i < pair.first; i++)
+            actions.push_back(PDDLAction());
+        std::vector<std::string> objects;
+        objects.reserve(pair.second);
         for (int i = 0; i < pair.second; i++)
-            newProblem.objects.push_back("ObjName");
+            objects.push_back(std::to_string(i));
+        
+
+        PDDLDomain newDomain = PDDLDomain(actions);
+        PDDLProblem newProblem = PDDLProblem(objects);
 
         REQUIRE(pair.first == newDomain.actions.size());
         REQUIRE(pair.second == newProblem.objects.size());
@@ -46,14 +51,19 @@ TEST_CASE(TAG + "WithModifier") {
 
     for (auto pair : testCases) {
         int expected = (pair.first * pair.second) * modifier;
-        PDDLDomain newDomain;
-        PDDLProblem newProblem;
-
+        
+        std::vector<PDDLAction> actions;
+        actions.reserve(pair.first);
         for (int i = 0; i < pair.first; i++)
-            newDomain.actions.push_back(PDDLAction());
-
+            actions.push_back(PDDLAction());
+        std::vector<std::string> objects;
+        objects.reserve(pair.second);
         for (int i = 0; i < pair.second; i++)
-            newProblem.objects.push_back("ObjName");
+            objects.push_back(std::to_string(i));
+        
+
+        PDDLDomain newDomain = PDDLDomain(actions);
+        PDDLProblem newProblem = PDDLProblem(objects);
 
         REQUIRE(pair.first == newDomain.actions.size());
         REQUIRE(pair.second == newProblem.objects.size());
@@ -64,4 +74,3 @@ TEST_CASE(TAG + "WithModifier") {
         REQUIRE(expected == actual);
     }
 }
-*/

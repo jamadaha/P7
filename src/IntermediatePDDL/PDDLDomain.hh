@@ -19,6 +19,7 @@ struct PDDLDomain {
     const std::unordered_map<std::string, unsigned int> predicateMap;
     const std::vector<PDDLAction> actions;
     PDDLDomain() : name("Not Set") {};
+    PDDLDomain(std::vector<PDDLAction> actions) : name("Only actions"), actions(actions) {};
     PDDLDomain(std::string name, std::vector<std::string> requirements, std::vector<PDDLPredicate> predicates, 
     std::unordered_map<std::string, unsigned int> predicateMap, std::vector<PDDLAction> actions) :
     name(name), requirements(requirements), predicates(predicates), 

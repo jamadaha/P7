@@ -4,9 +4,10 @@
 
 #include "../../src/IntermediatePDDL/PDDLDomain.hh"
 #include "../../src/PDDLParser/pddldriver.hh"
+#include "../../src/IntermediatePDDL/PDDLConverter.hh"
 
 using namespace std;
-/*
+
 
 const string TAG = "IntermediatePDDL ";
 
@@ -29,25 +30,25 @@ bool cmp(vector<string> as, vector<string> bs){
 TEST_CASE(TAG + "PDDLDomain domain name") {
     PDDLDriver driver;
     driver.parse(domainFile);
-    PDDLDomain *domain = new PDDLDomain(driver.domain);
+    PDDLDomain domain = PDDLConverter::Convert(driver.domain);
 
-    REQUIRE(domain->name == exDomainName);
+    REQUIRE(domain.name == exDomainName);
 }
 
 TEST_CASE(TAG + "PDDLDomain requirements") {
     PDDLDriver driver;
     driver.parse(domainFile);
-    PDDLDomain *domain = new PDDLDomain(driver.domain);
+    PDDLDomain domain = PDDLConverter::Convert(driver.domain);
 
-    REQUIRE(cmp(domain->requirements, exDomainReq));
+    REQUIRE(cmp(domain.requirements, exDomainReq));
 }
 
 TEST_CASE(TAG + "PDDLDomain preconditions"){
     PDDLDriver driver;
     driver.parse(domainFile);
-    PDDLDomain *domain = new PDDLDomain(driver.domain);
+    PDDLDomain domain = PDDLConverter::Convert(driver.domain);
 
-    auto preds = domain->predicates;
+    auto preds = domain.predicates;
     vector<string> predStrings;
 
     for (auto p : preds)
@@ -59,9 +60,9 @@ TEST_CASE(TAG + "PDDLDomain preconditions"){
 TEST_CASE(TAG + "PDDLDomain action names"){
     PDDLDriver driver;
     driver.parse(domainFile);
-    PDDLDomain *domain = new PDDLDomain(driver.domain);
+    PDDLDomain domain = PDDLConverter::Convert(driver.domain);
 
-    auto acts = domain->actions;
+    auto acts = domain.actions;
     vector<string> actStrings;
 
     for (auto a : acts)
@@ -73,18 +74,18 @@ TEST_CASE(TAG + "PDDLDomain action names"){
 TEST_CASE(TAG + "PDDLDomain arguments"){
     PDDLDriver driver;
     driver.parse(domainFile);
-    PDDLDomain *domain = new PDDLDomain(driver.domain);
+    PDDLDomain domain = PDDLConverter::Convert(driver.domain);
 
-    auto acts = domain->actions;
+    auto acts = domain.actions;
     unordered_set<string> args;
 	vector<string> argString;
 
     for (auto a : acts)
         for (auto arg : a.parameters)
-            args.insert(arg.name);
+            args.insert(arg);
 
 	for (string a : args)
 		argString.push_back(a);
     
     REQUIRE(cmp(argString, exArgs));
-}*/
+}

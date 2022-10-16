@@ -21,11 +21,11 @@ PDDLDomain PDDLConverter::Convert(Domain *domain) {
         predicates.push_back(predicate);
     };
 
-    AddPredicate(PDDLPredicate("=", 2));
+    AddPredicate(PDDLPredicate("=", std::vector<std::string>{}, 2));
 
     for (int i = 0; i < domain->_predicates->size(); i++) {
         auto predicate = (*domain->_predicates)[i];
-        AddPredicate(PDDLPredicate(predicate->_name, predicate->_args->size()));
+        AddPredicate(PDDLPredicate(predicate->_name, (*predicate->_args), predicate->_args->size()));
     }    
 
     // Get Actions
@@ -79,18 +79,23 @@ std::vector<PDDLLiteral> PDDLConverter::GetLiteralList(std::unordered_map<std::s
 }
 
 PDDLAction PDDLConverter::GenerateAction(std::string name, const StringList *parameters, const PreconditionList *preconditions, const EffectList *effects, std::unordered_map<std::string, unsigned int> predicateMap) {
+    std::vector<std::string> tempParameters;
+    tempParameters.reserve(parameters->size());
+    
     std::unordered_map<std::string, unsigned int> parameterIndex;
     parameterIndex.reserve(parameters->size());
     
     // Get index of each paramter
     // ?x, ?y ... => 0, 1
-    for (int i = 0; i < parameters->size(); i++)
+    for (int i = 0; i < parameters->size(); i++) {
         parameterIndex.emplace((*parameters)[i], i);
+        tempParameters.push_back((*parameters)[i]);
+    }
     
     std::vector<PDDLLiteral> tempPreconditions = GetLiteralList(predicateMap, parameterIndex, preconditions);
     std::vector<PDDLLiteral> tempEffects = GetLiteralList(predicateMap, parameterIndex, effects);
 
-    return PDDLAction(name, parameters->size(), tempPreconditions, tempEffects);
+    return PDDLAction(name, tempParameters, tempPreconditions, tempEffects);
 }
 
 std::unordered_map<unsigned int, std::unordered_set<unsigned int>> PDDLConverter::GetUnaryFacts(PDDLDomain *domain, std::unordered_map<std::string, unsigned int> *objectMap, LiteralList *literalList) {

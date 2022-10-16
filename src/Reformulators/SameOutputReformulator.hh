@@ -4,8 +4,8 @@
 #include "BaseReformulator.hh"
 
 class SameOutputReformulator : public BaseReformulator {
-	/* PDDLInstance ReformulatePDDL(PDDLInstance* instance) override;
-	SASPlan RebuildSASPlan(SASPlan* reformulatedSAS) override; */
+	PDDLInstance ReformulatePDDL(PDDLInstance* instance) override;
+	SASPlan RebuildSASPlan(SASPlan* reformulatedSAS) override;
 };
 
 #endif

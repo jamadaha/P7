@@ -45,7 +45,7 @@ TEST_CASE(TAG + "Empty") {
 TEST_CASE(TAG + "Unary") {
     PDDLDomain domain = GenerateDomain(std::vector<PDDLAction>{
         PDDLAction("Action 1", 
-        1, 
+        {"?x"}, 
         std::vector<PDDLLiteral>{
             PDDLLiteral(0, std::vector<unsigned int>{ 0 }, true)
         },

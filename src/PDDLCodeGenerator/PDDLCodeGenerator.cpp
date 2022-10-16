@@ -2,8 +2,7 @@
 
 using namespace std;
 
-/* void PDDLCodeGenerator::GenerateCode(PDDLInstance document, string domainFile, string problemFile) {
-	domainGenerator.GenerateDomainFile(document.domain, domainFile);
-	problemGenerator.GenerateProblemFile(document.problem, problemFile);
+void PDDLCodeGenerator::GenerateCode(PDDLInstance document, string domainFile, string problemFile) {
+	domainGenerator.GenerateDomainFile(domainFile);
+	problemGenerator.GenerateProblemFile(problemFile);
 }
- */

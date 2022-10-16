@@ -10,11 +10,11 @@
 
 struct PDDLAction {
     const std::string name;
-    const unsigned int parameterCount;
+    const std::vector<std::string> parameters;
     const std::vector<PDDLLiteral> preconditions;
     const std::vector<PDDLLiteral> effects;
-    PDDLAction(std::string name, unsigned int parameterCount, std::vector<PDDLLiteral> preconditions, std::vector<PDDLLiteral> effects) : 
-        name(name), parameterCount(parameterCount), preconditions(preconditions), effects(effects) {};
+    PDDLAction(std::string name, std::vector<std::string> parameters, std::vector<PDDLLiteral> preconditions, std::vector<PDDLLiteral> effects) : 
+        name(name), parameters(parameters), preconditions(preconditions), effects(effects) {};
 };
 
 #endif

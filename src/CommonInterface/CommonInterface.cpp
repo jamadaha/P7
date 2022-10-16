@@ -56,11 +56,11 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	PDDLInstance reformulatedInstance = reformulator->ReformulatePDDL(&instance);
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
-	/*
+	
 	// Generate new PDDL files
 	cout << "Generating PDDL files...";
 	report->Begin("Generating PDDL");
-	PDDLCodeGenerator pddlGenerator;
+	PDDLCodeGenerator pddlGenerator = PDDLCodeGenerator(PDDLDomainCodeGenerator(&domain), PDDLProblemCodeGenerator(&domain, &problem));
 	pddlGenerator.GenerateCode(reformulatedInstance, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
 	report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
@@ -130,7 +130,7 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 		}
 		t = report->Stop();
 		cout << "   ✓" << t << "ms" << endl;
-	} */
+	} 
 	
 	return CommonInterface::RunResult::RanWithoutErrors;
 }

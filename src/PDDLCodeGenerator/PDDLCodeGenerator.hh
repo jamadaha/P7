@@ -12,11 +12,12 @@
 
 class PDDLCodeGenerator {
 public:
-	/* void GenerateCode(PDDLInstance document, std::string domainFile, std::string problemFile); */
+	PDDLCodeGenerator(PDDLDomainCodeGenerator domainGenerator, PDDLProblemCodeGenerator problemGenerator) : domainGenerator(domainGenerator), problemGenerator(problemGenerator) {};
+	void GenerateCode(PDDLInstance document, std::string domainFile, std::string problemFile);
 
 private:
-	/* PDDLDomainCodeGenerator domainGenerator;
-	PDDLProblemCodeGenerator problemGenerator; */
+	PDDLDomainCodeGenerator domainGenerator;
+	PDDLProblemCodeGenerator problemGenerator;
 };
 
 #endif

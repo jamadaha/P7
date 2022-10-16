@@ -14,10 +14,10 @@ std::vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction 
     std::vector<PDDLActionInstance> legalActions;
 
     std::vector<std::unordered_set<const PDDLLiteral*>> applicableLiterals;
-    applicableLiterals.reserve(action->parameterCount);
+    applicableLiterals.reserve(action->parameters.size());
 
     // Init vector for each parameter
-    for (int i = 0; i < action->parameterCount; i++)
+    for (int i = 0; i < action->parameters.size(); i++)
         applicableLiterals.push_back(std::unordered_set<const PDDLLiteral*>());
 
     // Find what preconditions are applicible to what arguments
@@ -28,13 +28,13 @@ std::vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction 
 
     // Object which fulfill the unary literals of the action preconditions
     std::vector<std::unordered_set<unsigned int>> candidateObjects;
-    candidateObjects.reserve(action->parameterCount);
-    for (int i = 0; i < action->parameterCount; i++)
+    candidateObjects.reserve(action->parameters.size());
+    for (int i = 0; i < action->parameters.size(); i++)
         candidateObjects.push_back(GetCandidateObjects(applicableLiterals[i], state));
     
     
     // if some parameter doesn't have any candidate object, the action is not possible
-    for (int i = 0; i < action->parameterCount; i++)
+    for (int i = 0; i < action->parameters.size(); i++)
         if (candidateObjects[i].size() == 0)
             return legalActions;
 
@@ -49,7 +49,7 @@ std::vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction 
     // Those that match all are added as a legal action
     do {
         std::vector<unsigned int> objects;
-        objects.reserve(action->parameterCount);
+        objects.reserve(action->parameters.size());
         for (int i = 0; i < iteration.size(); i++)
             objects.push_back((*iteration[i]));
 

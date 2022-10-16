@@ -63,8 +63,8 @@ std::vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction 
 
 std::unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(std::unordered_set<const PDDLLiteral*> literals, const PDDLState *state) {
     std::unordered_set<unsigned int> candidateObjects;
-
-    bool first = true;
+    for (int i = 0; i < problem->objects.size(); i++)
+        candidateObjects.emplace(i);
 
     // Check what objects match all literals
     for (auto literal = literals.begin(); literal != literals.end(); literal++) {
@@ -72,18 +72,12 @@ std::unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(std::unord
         if ((*literal)->args.size() != 1)
             continue;
         
-        if (first) {
-            // Set candidateobjects equal to those objects that fulfill first literal
-            candidateObjects = state->unaryFacts.at((*literal)->predicateIndex);
-            first = false;
-        } else {
-            // Find intersection of candidateobjects and the new literal
-            auto newObjectRef = &(state->unaryFacts.at((*literal)->predicateIndex));
-            // Returns true, i.e. object should be deleted, if newobject ref does not contain it
-            const auto NewObjectNegContains = [&](auto const& x) { return !newObjectRef->contains(x); };
-            // Remove those which are not contained in both
-            std::erase_if(candidateObjects, NewObjectNegContains);
-        }
+        // Find intersection of candidateobjects and the new literal
+        auto newObjectRef = &(state->unaryFacts.at((*literal)->predicateIndex));
+        // Returns true, i.e. object should be deleted, depending on the literal state
+        const auto NewObjectNegContains = [&](auto const& x) { return newObjectRef->contains(x) != (*literal)->value; };
+        // Remove those which are(n't) contained in both depending on literal value
+        std::erase_if(candidateObjects, NewObjectNegContains);
     }
 
     return candidateObjects;

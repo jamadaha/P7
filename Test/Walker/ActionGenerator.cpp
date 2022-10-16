@@ -35,14 +35,14 @@ PDDLDomain *domain = nullptr, std::vector<std::string> objects = std::vector<std
 
 TEST_CASE(TAG + "Empty") {
     PDDLInstance instance = PDDLInstance(new PDDLDomain(), new PDDLProblem());
-    ActionGenerator AG = ActionGenerator(instance.domain);
+    ActionGenerator AG = ActionGenerator(instance.domain, instance.problem);
     std::vector<PDDLActionInstance> actions = AG.GenerateActions(&instance.problem->initState);
     REQUIRE(actions.size() == 0);
     free(instance.domain);
     free(instance.problem);
 }
 
-TEST_CASE(TAG + "Unary") {
+TEST_CASE(TAG + "Unary - 1 Legal") {
     PDDLDomain domain = GenerateDomain(std::vector<PDDLAction>{
         PDDLAction("Action 1", 
         {"?x"}, 
@@ -61,9 +61,33 @@ TEST_CASE(TAG + "Unary") {
     });
 
     PDDLInstance instance = PDDLInstance(&domain, &problem);
-    ActionGenerator AG = ActionGenerator(instance.domain);
+    ActionGenerator AG = ActionGenerator(instance.domain, instance.problem);
     std::vector<PDDLActionInstance> actions = AG.GenerateActions(&(instance.problem->initState));
     REQUIRE(1 == actions.size());
+}
+
+TEST_CASE(TAG + "Unary - 0 Legal") {
+    PDDLDomain domain = GenerateDomain(std::vector<PDDLAction>{
+        PDDLAction("Action 1", 
+        {"?x"}, 
+        std::vector<PDDLLiteral>{
+            PDDLLiteral(0, std::vector<unsigned int>{ 0 }, false)
+        },
+        std::vector<PDDLLiteral>{})
+    });
+    PDDLProblem problem = GenerateProblem(std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{
+        { 0, { 0 } }
+    }, std::unordered_map<unsigned int, std::vector<MultiFact>>{
+
+    }, &domain,
+    std::vector<std::string> {
+        "O1"
+    });
+
+    PDDLInstance instance = PDDLInstance(&domain, &problem);
+    ActionGenerator AG = ActionGenerator(instance.domain, instance.problem);
+    std::vector<PDDLActionInstance> actions = AG.GenerateActions(&(instance.problem->initState));
+    REQUIRE(0 == actions.size());
 }
 /*
 TEST_CASE(TAG + "Unary - 1 legal") {

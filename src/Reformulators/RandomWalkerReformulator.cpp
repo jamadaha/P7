@@ -14,7 +14,7 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	unsigned int totalStepCount = 0;
 	for (int i = 0; i < widthFunc.GetWidth(); i++) {
 		Walker walker = Walker(instance,
-		ActionGenerator(instance->domain),
+		ActionGenerator(instance->domain, instance->problem),
 		heu,
 		new ObjectActionDepthFunction(*instance));
 		Path path = walker.Walk();

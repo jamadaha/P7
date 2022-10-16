@@ -18,7 +18,6 @@
 #include "../IntermediatePDDL/PDDLInstance.hh"
 #include "../IntermediatePDDL/PDDLConverter.hh"
 
-
 class CommonInterface {
 public:
 	enum RunResult { None, RanWithoutErrors, ErrorsEncountered };

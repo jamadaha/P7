@@ -21,14 +21,3 @@ Path Walker::Walk(PDDLState state) {
     }
     return Path(steps, actionCount, stepCount);
 }
-/*
-PDDLState Walker::DoAction(PDDLState state, PDDLActionInstance action) {
-    // For each action effect, change the state accordingly
-    for (int i = 0; i < action.action.effects.size(); i++) {
-        auto effect = action.action.effects[i];
-        state.Update(&action.action, effect, action.arguments);
-    }
-    
-    return state;
-}
-*/ 

@@ -9,7 +9,7 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	cout << "Finding reformulator algorithm...";
 	report->Begin("Finding Reformulator");
 	if (config.Reformulator.Content == "SameOutput") {
-		//reformulator = new SameOutputReformulator();
+		reformulator = new SameOutputReformulator();
 	} else 	if (config.Reformulator.Content == "RandomWalker") {
 		reformulator = new RandomWalkerReformulator();
 	}
@@ -41,7 +41,7 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
 
-	 // Convert PDDL format
+	// Convert PDDL format
 	cout << "Converting PDDL format...";
 	report->Begin("Converison of PDDL format");
 	PDDLDomain domain = PDDLConverter::Convert(originalDriver.domain);
@@ -130,7 +130,7 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 		}
 		t = report->Stop();
 		cout << "   ✓" << t << "ms" << endl;
-	} 
+	}
 	
 	return CommonInterface::RunResult::RanWithoutErrors;
 }

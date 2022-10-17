@@ -10,5 +10,5 @@ int TimeWidthFunction::GetWidth() {
 	auto ellapsed = chrono::duration_cast<chrono::seconds>(chrono::steady_clock::now() - StartTime).count();
 	if (ellapsed >= LimitSec)
 		return 0;
-	return INT_MAX;
+	return INT32_MAX;
 }

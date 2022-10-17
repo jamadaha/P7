@@ -3,7 +3,7 @@
 using namespace std;
 
 // Move this...
-#define WIDTH 1000
+#define WIDTH 1
 
 
 PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {

@@ -1,4 +1,5 @@
 (define (domain movie-strips)
+    (:requirements :strips)
   (:predicates (movie-rewound)
                (counter-at-two-hours)
 	       (counter-at-other-than-two-hours)
@@ -23,7 +24,6 @@
            :parameters ()
 	   :precondition (counter-at-other-than-two-hours)
            :effect (and (movie-rewound)
-                        ;; Let's assume that the movie is 2 hours long
                         (not (counter-at-zero))))
 
   (:action reset-counter
@@ -31,8 +31,6 @@
            :precondition (and)
            :effect (counter-at-zero))
 
-
-  ;;; Get the food and snacks for the movie
   (:action get-chips
 
            :parameters (?x)

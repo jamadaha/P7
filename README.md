@@ -114,7 +114,7 @@ These are for debugging in VSCode. They aren't needed for anything else.
                 "--downward '$HOME/downward-projects/downward/fast-downward.py'",
                 "--validate '$HOME/downward-projects/VAL/validate'"],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
+            "cwd": "${workspaceFolder}",
             "environment": [
                 {
                     // add the directory where our target was built to the PATHs
@@ -145,7 +145,7 @@ These are for debugging in VSCode. They aren't needed for anything else.
                 "--downward $HOME/downward/fast-downward.py",
                 "--validate $HOME/validate/validate"],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
+            "cwd": "${workspaceFolder}",
             "environment": [
                 {
                     // add the directory where our target was built to the PATHs

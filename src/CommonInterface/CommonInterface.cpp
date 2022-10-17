@@ -36,8 +36,14 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	cout << "Parsing PDDL files...";
 	report->Begin("Parsing PDDL");
 	PDDLDriver originalDriver;
-	originalDriver.parse(config.DomainFile.Content);
-	originalDriver.parse(config.ProblemFile.Content);	
+	if (originalDriver.parse(config.DomainFile.Content)) {
+		cout << "Error parsing the domain file!" << endl;
+		return CommonInterface::RunResult::ErrorsEncountered;
+	}
+	if (originalDriver.parse(config.ProblemFile.Content)) {
+		cout << "Error parsing the problem file!" << endl;
+		return CommonInterface::RunResult::ErrorsEncountered;
+	}
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
 

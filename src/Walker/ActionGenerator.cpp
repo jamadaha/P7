@@ -96,9 +96,10 @@ bool ActionGenerator::IsLegal(const std::vector<PDDLLiteral> *literals, const PD
             bool found = false;
             for (int f = 0; f < state->multiFacts.at(literal.predicateIndex).size(); f++) {
                 bool valid = true;
-                for (int a = 0; a < state->multiFacts.at(literal.predicateIndex).at(f).fact.size(); a++)
-                    if (objects->at(a) != state->multiFacts.at(literal.predicateIndex).at(f).fact[a])
+                for (int a = 0; a < state->multiFacts.at(literal.predicateIndex).at(f).fact.size(); a++) {
+                    if (objects->at(a) != state->multiFacts.at(literal.predicateIndex).at(f).fact.at(a))
                         valid = false;
+                }
 
                 if (valid) {
                     found = true;

@@ -4,9 +4,10 @@
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
+#include "PDDLActionInstance.hh"
 
 struct MultiFact {
-    const std::vector<unsigned int> fact;
+    std::vector<unsigned int> fact;
     MultiFact(std::vector<unsigned int> fact) : fact(fact) {};
 };
 

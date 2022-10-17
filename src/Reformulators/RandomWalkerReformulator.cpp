@@ -14,12 +14,8 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 		heu,
 		new ObjectActionDepthFunction(*instance));
 		Path path = walker.Walk();
-		totalActionCount += path.actionCount;
-		totalStepCount += path.stepCount;
 		paths.push_back(path);
 	}
-	
-	printf(" Total Actions: %d | Total Steps: %d ", totalActionCount, totalStepCount);
 
 	// Do Something and transform the input PDDL into a new PDDL format
 	PDDLInstance newInstance(instance->domain, instance->problem);

@@ -13,9 +13,7 @@
 
 struct Path {
     const std::vector<PDDLActionInstance> steps;
-    const unsigned int actionCount;
-    const unsigned int stepCount;
-    Path(std::vector<PDDLActionInstance> steps, unsigned int actionCount, unsigned int stepCount) : steps(steps), actionCount(actionCount), stepCount(stepCount) {};
+    Path(std::vector<PDDLActionInstance> steps) : steps(steps) {};
 };
 
 class Walker {
@@ -30,7 +28,7 @@ private:
     BaseHeuristics<PDDLActionInstance, PDDLContext>* heuristic;
     BaseDepthFunction* depthFunc;
 
-    //PDDLState DoAction(PDDLState state, PDDLActionInstance action);
+   PDDLState* DoAction(PDDLState *state, const PDDLActionInstance *action);
 };
 
 #endif

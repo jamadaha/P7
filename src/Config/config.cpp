@@ -16,6 +16,7 @@ int Config::ParseArgs(Config* config, int argc, char** argv){
         (config->DebugMode.Flag + "," + config->DebugMode.LongFlag, config->DebugMode.Description)
         (config->ValidatorPath.Flag + "," + config->ValidatorPath.LongFlag, config->ValidatorPath.Description, cxxopts::value<std::string>()->default_value(config->ValidatorPath.DefaultContent))
         (config->Reformulator.Flag + "," + config->Reformulator.LongFlag, config->Reformulator.Description, cxxopts::value<std::string>()->default_value(config->Reformulator.DefaultContent))
+        (config->ReformulatorTime.Flag + "," + config->ReformulatorTime.LongFlag, config->ReformulatorTime.Description, cxxopts::value<int>())
         (config->DownwardOptions.Search.Flag + "," + config->DownwardOptions.Search.LongFlag, config->DownwardOptions.Search.Description, cxxopts::value<std::string>()->default_value(config->DownwardOptions.Search.DefaultContent))
         (config->DownwardOptions.Heuristic.Flag + "," + config->DownwardOptions.Heuristic.LongFlag, config->DownwardOptions.Heuristic.Description, cxxopts::value<std::string>()->default_value(config->DownwardOptions.Heuristic.DefaultContent))
     ;
@@ -41,6 +42,8 @@ int Config::ParseArgs(Config* config, int argc, char** argv){
     const string heuristicmethod = result[config->DownwardOptions.Heuristic.LongFlag].as<string>();
     string reformulatorAlgorithm = result[config->Reformulator.LongFlag].as<string>();
     StringHelper::Trim(&reformulatorAlgorithm);
+    int reformulatorTime = result[config->ReformulatorTime.LongFlag].as<int>();
+
 
     config->DownwardPath.Content = downwardpath;
     config->ValidatorPath.Content = validatorPath;
@@ -48,6 +51,7 @@ int Config::ParseArgs(Config* config, int argc, char** argv){
     config->DomainFile.Content = domainPath;
     config->ProblemFile.Content = problemPath;
     config->Reformulator.Content = reformulatorAlgorithm;
+    config->ReformulatorTime.Content = reformulatorTime;
     config->DownwardOptions.Search.Content = searchmethod;
     config->DownwardOptions.Heuristic.Content = heuristicmethod;
 

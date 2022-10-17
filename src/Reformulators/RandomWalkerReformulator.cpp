@@ -2,12 +2,9 @@
 
 using namespace std;
 
-// Move this...
-#define TIME_LIMIT_MS 500
-
 PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	RandomHeuristic<PDDLActionInstance>* heu = new RandomHeuristic<PDDLActionInstance>(PDDLContext(instance->domain, instance->problem));
-	TimeWidthFunction widthFunc = TimeWidthFunction(TIME_LIMIT_MS);
+	TimeWidthFunction widthFunc = TimeWidthFunction(Configs->ReformulatorTime.Content);
 	std::vector<Path> paths;
 	unsigned int totalActionCount = 0;
 	unsigned int totalStepCount = 0;

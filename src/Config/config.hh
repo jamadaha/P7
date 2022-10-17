@@ -38,6 +38,7 @@ public:
     ConfigItem<std::string> DomainFile = ConfigItem<std::string>("d", "domain", "Domain File", "Path to domain file", "gripper_domain.pddl");
     ConfigItem<std::string> ProblemFile = ConfigItem<std::string>("p", "problem", "Problem File", "Path to problem file", "gripper_problem.pddl");
     ConfigItem<std::string> Reformulator = ConfigItem<std::string>("r", "reformulator", "Reformulator Algorithm", "What reformulator algorithm to use", "SameOutput");
+    ConfigItem<int> ReformulatorTime = ConfigItem<int>("t", "timelimit", "Reformulator time limiter", "How much time in ms that the reformulator is allowed to walk in", 500);
 
     int ParseArgs(Config* config, int argc, char** argv);
 

@@ -9,9 +9,9 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	cout << "Finding reformulator algorithm...";
 	report->Begin("Finding Reformulator");
 	if (config.Reformulator.Content == "SameOutput") {
-		reformulator = new SameOutputReformulator();
+		reformulator = new SameOutputReformulator(&config);
 	} else 	if (config.Reformulator.Content == "RandomWalker") {
-		reformulator = new RandomWalkerReformulator();
+		reformulator = new RandomWalkerReformulator(&config);
 	}
 	else{
 		cout << "   ✕" << endl;

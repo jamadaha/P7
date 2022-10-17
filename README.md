@@ -172,7 +172,8 @@ To launch in Visual Studio (Note: This is the inferior version):
 ```json
 {
   "version": "0.2.1",
-  "defaults": {},
+  "defaults": {
+  },
   "configurations": [
     {
       "type": "cppgdb",
@@ -188,7 +189,8 @@ To launch in Visual Studio (Note: This is the inferior version):
         "-v $HOME/downward-projects/VAL/validate",
         "-c"
       ],
-      "env": {}
+      "env": {
+      }
     },
     {
       "type": "cppgdb",
@@ -202,7 +204,8 @@ To launch in Visual Studio (Note: This is the inferior version):
         "-f $HOME/downward-projects/downward/fast-downward.py",
         "-r RandomWalker"
       ],
-      "env": {}
+      "env": {
+      }
     },
     {
       "type": "cppgdb",
@@ -217,27 +220,31 @@ To launch in Visual Studio (Note: This is the inferior version):
         "--domain 'gripper_domain.pddl'",
         "--problem 'gripper_problem.pddl'",
         "--downward '$HOME/downward-projects/downward/fast-downward.py'",
-        "--validate '$HOME/downward-projects/VAL/validate'"
+        "--validate '$HOME/downward-projects/VAL/validate'",
+        "--reformulator RandomWalker"
       ],
-      "env": {}
+      "env": {
+      }
     },
     {
-        "type": "cppgdb",
-        "name": "P7 With Lab (Multiple benchmarks)",
-        "project": "CMakeLists.txt",
-        "projectTarget": "P7Lab",
-        "comment": "P7 with Lab",
-        "debuggerConfiguration": "gdb",
-        "cwd": "/home/pc/.vs/P7/",
-        "args": [
-            "'--all'",
-            "--benchmarks '$HOME/.vs/P7/Data/benchmarks/'",
-            "--domain 'gripper:trucks'",
-            "--problem 'prob01.pddl,prob02.pddl,prob09.pddl:p03.pddl'",
-            "--downward $HOME/downward/fast-downward.py",
-            "--validate $HOME/validate/validate"
-        ],
-        "env": {}
+      "type": "cppgdb",
+      "name": "P7 With Lab (Multiple benchmarks)",
+      "project": "CMakeLists.txt",
+      "projectTarget": "P7Lab",
+      "comment": "P7 with Lab",
+      "debuggerConfiguration": "gdb",
+      "cwd": "/root/.vs/P7/",
+      "args": [
+        "'--all'",
+        "--benchmarks '$HOME/.vs/P7/Data/benchmarks/'",
+        "--domain 'gripper:depot'",
+        "--problem 'prob01.pddl,prob02.pddl,prob09.pddl:p01.pddl,p02.pddl'",
+        "--downward $HOME/downward-projects/downward/fast-downward.py",
+        "--validate $HOME/downward-projects/validate/validate",
+        "--reformulator RandomWalker"
+      ],
+      "env": {
+      }
     }
   ]
 }

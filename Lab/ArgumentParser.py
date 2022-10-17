@@ -61,6 +61,13 @@ def set_arguments():
         help="Problem pddl file(s). --problem gripper_problem.pddl --problem pb1.pddl,pb2.pddl (same domain) --problem pb1.pddl:pb1.pddl (different domain)"
     )
 
+    ARGPARSER.add_argument(
+        "--reformulator",
+        required=True,
+        default="SameOutput",
+        help="What reformulator algorithm to use"
+    )
+
     return ARGPARSER.parse_args()
 
 def abs_path(filelocation,folder):

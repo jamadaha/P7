@@ -17,6 +17,7 @@ downwardfilepath = args.downward
 validatorfilepath = args.validate
 search = args.search
 evaluator = args.evaluator
+reformulator = args.reformulator
 
 lab_build_suite = False
 folder = ""
@@ -47,6 +48,7 @@ for task in tasks:
     arguments += ["-v", validatorfilepath]
     arguments += ["-s", search]
     arguments += ["-e", evaluator]
+    arguments += ["-r", reformulator]
 
     arguments += ["-d", task.domain_file]
     arguments += ["-p", task.problem_file]

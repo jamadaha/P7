@@ -8,12 +8,13 @@
 
 class BasePDDLCodeGenerator {
 public:
+	BasePDDLCodeGenerator(const PDDLDomain *domain) : domain(domain) {};
 	std::string GetPredicate(PDDLPredicate predicate);
 	std::string GetStringList(std::vector<std::string> list);
 	std::string GetTabs(int count);
-	std::string GetPDDLArgs(std::vector<PDDLArg> args);
-	std::string GetPDDLArg(PDDLArg arg);
-	std::string GetLiteral(PDDLLiteral predicate);
+	std::string GetLiteral(PDDLAction action, PDDLLiteral predicate);
+protected:
+	const PDDLDomain *domain;
 };
 
 #endif

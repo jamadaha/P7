@@ -4,28 +4,24 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <set>
+#include <iterator>
 
 #include "../IntermediatePDDL/PDDLActionInstance.hh"
 #include "../IntermediatePDDL/PDDLInstance.hh"
 
 class ActionGenerator {
 public:
-    ActionGenerator(PDDLDomain* domain) : domain(domain) {};
-    std::vector<PDDLActionInstance> GenerateActions(PDDLState *state);
+    ActionGenerator(PDDLDomain *domain, PDDLProblem *problem) : domain(domain), problem(problem) {};
+    std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state);
 private:
-    PDDLDomain* domain;
-    // Given some action generate all legal parameter variations
-    std::vector<PDDLActionInstance> GenerateLegal(PDDLAction action, PDDLState *state);
-    // Get relevant preconditions for given parameter
-    //// Note: at some point make this static
-    std::vector<PDDLLiteral> GetPreconditions(PDDLAction action, PDDLArg *param);
-    // Find those objects that match the given unary preconditions
-    std::vector<std::string> GetCandidateObjects(PDDLAction* action, PDDLState *state, std::vector<PDDLLiteral> preconditions);
-    void RemoveInvalidObjects();
-
-    void SplitLiterals(std::vector<PDDLLiteral> literals, std::vector<PDDLLiteral> *unaryLiterals, std::vector<PDDLLiteral> *multiLiterals);
-    // returns false on no increment possible
-    bool Increment(std::vector<int> *indexes, std::vector<std::string> objects[]);
+    PDDLDomain *domain;
+    PDDLProblem *problem;
+     // Given some action generate all legal parameter variations
+    std::vector<PDDLActionInstance> GenerateLegal(const PDDLAction *action, const PDDLState *state);
+    std::unordered_set<unsigned int> GetCandidateObjects(std::unordered_set<const PDDLLiteral*> literals, const PDDLState *state);
+    bool IsLegal(const std::vector<PDDLLiteral> *literals, const PDDLState *state, std::vector<unsigned int> *objects);
+    bool Iterate(std::vector<std::unordered_set<unsigned int>::iterator> *iteration, std::vector<std::unordered_set<unsigned int>> *candidateObjects);
 };
 
 #endif

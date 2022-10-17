@@ -8,8 +8,9 @@
 
 class PDDLDomainCodeGenerator : public BasePDDLCodeGenerator {
 public:
-	void GenerateDomainFile(PDDLDomain* domain, std::string domainFile);
-	std::string GenerateDomainString(PDDLDomain* domain);
+	PDDLDomainCodeGenerator(const PDDLDomain *domain) : BasePDDLCodeGenerator(domain) {};
+	void GenerateDomainFile(std::string domainFile);
+	std::string GenerateDomainString();
 
 private:
 	std::string GetRequirements(std::vector<std::string> requirements);

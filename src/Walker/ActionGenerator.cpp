@@ -1,109 +1,128 @@
 #include "ActionGenerator.hpp"
 
-std::vector<PDDLActionInstance> ActionGenerator::GenerateActions(PDDLState *state) {
-    std::vector<PDDLAction> domainActions = domain->actions;
+std::vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *state) {
     std::vector<PDDLActionInstance> legalActions;
-    for (const auto& action : domainActions) {
-        auto tempActions = GenerateLegal(action, state);
-        for (const auto& tempAction : tempActions)
-            legalActions.push_back(tempAction);
+    for (int i = 0; i < domain->actions.size(); i++) {
+        std::vector<PDDLActionInstance> tempActions = GenerateLegal(&(domain->actions[i]), state);
+        for (int t = 0; t < tempActions.size(); t++)
+            legalActions.push_back(tempActions[t]);
     }
     return legalActions;
 }
 
-std::vector<PDDLActionInstance> ActionGenerator::GenerateLegal(PDDLAction action, PDDLState *state) {
+std::vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction *action, const PDDLState *state) {
     std::vector<PDDLActionInstance> legalActions;
-    int parameterCount = action.parameters.size();
-    PDDLArg *parameters[parameterCount];
-    for (int i = 0; i < parameterCount; i++)
-        parameters[i] = &action.parameters[i];
-    std::vector<PDDLLiteral> parameterLiterals[parameterCount];
-    for (int i = 0; i < parameterCount; i++)
-        parameterLiterals[i] = GetPreconditions(action, parameters[i]);
-    std::vector<PDDLLiteral> unaryLiterals[parameterCount];
-    std::vector<PDDLLiteral> multiLiterals[parameterCount];
-    for (int i = 0; i < parameterCount; i++)
-        SplitLiterals(parameterLiterals[i], &unaryLiterals[i], &multiLiterals[i]);
 
-    std::vector<std::string> candidateObjects[parameterCount];
-    for (int i = 0; i < parameterCount; i++)
-        candidateObjects[i] = GetCandidateObjects(&action, state, unaryLiterals[i]);
+    std::vector<std::unordered_set<const PDDLLiteral*>> applicableLiterals;
+    applicableLiterals.reserve(action->parameters.size());
+
+    // Init vector for each parameter
+    for (int i = 0; i < action->parameters.size(); i++)
+        applicableLiterals.push_back(std::unordered_set<const PDDLLiteral*>());
+
+    // Find what preconditions are applicible to what arguments
+    // Should likely be static somehow
+    for (int i = 0; i < action->preconditions.size(); i++)
+        for (int a = 0; a < action->preconditions[i].args.size(); a++)
+            applicableLiterals.at(action->preconditions[i].args[a]).emplace(&(action->preconditions[i]));
+
+    // Object which fulfill the unary literals of the action preconditions
+    std::vector<std::unordered_set<unsigned int>> candidateObjects;
+    candidateObjects.reserve(action->parameters.size());
+    for (int i = 0; i < action->parameters.size(); i++)
+        candidateObjects.push_back(GetCandidateObjects(applicableLiterals[i], state));
+    
     
     // if some parameter doesn't have any candidate object, the action is not possible
-    for (int i = 0; i < parameterCount; i++)
+    for (int i = 0; i < action->parameters.size(); i++)
         if (candidateObjects[i].size() == 0)
             return legalActions;
 
-    std::vector<int> indexes(parameterCount, 0);
-    do {
-        std::vector<std::string> objects;
-        for (int i = 0; i < parameterCount; i++) 
-            objects.push_back(candidateObjects[i][indexes[i]]);
-        // test whether any multi literals do not match these objects
-        bool legalAction = true;
-        for (int i = 0; i < parameterCount; i++) {
-            for (auto literal : multiLiterals[i]) {
-                if (!state->IsMultiLiteralTrue(&action, literal, objects)) {
-                    legalAction = false;
-                    break;
-                }  
-            }
-            if (!legalAction)
-                break;
-        }
-        if (legalAction)
-                legalActions.push_back(PDDLActionInstance(action, objects));
-        
-    } while (Increment(&indexes, candidateObjects));
+    std::vector<std::unordered_set<unsigned int>::iterator> iteration;
+    iteration.reserve(candidateObjects.size());
+    for (int i = 0; i < candidateObjects.size(); i++)
+        iteration.push_back(candidateObjects[i].begin());
 
+
+    // Iterate over each pairing of candidate objects
+    // Then remove those that do not match non-unary preconditions
+    // Those that match all are added as a legal action
+    do {
+        std::vector<unsigned int> objects;
+        objects.reserve(action->parameters.size());
+        for (int i = 0; i < iteration.size(); i++)
+            objects.push_back((*iteration[i]));
+
+        if (IsLegal(&action->preconditions, state, &objects))
+            legalActions.push_back(PDDLActionInstance(action, objects));
+                //legalActions.push_back(PDDLActionInstance(action, objects));
+    } while (Iterate(&iteration, &candidateObjects));
+ 
     return legalActions;
 }
 
-std::vector<PDDLLiteral> ActionGenerator::GetPreconditions(PDDLAction action, PDDLArg *param) {
-    std::vector<PDDLLiteral> preconditions;
-    for (auto precondition : action.preconditions)
-        for (auto arg : precondition.predicate.args)
-            if (arg.name == param->name) {
-                preconditions.push_back(precondition);
-                break;
-            }
-    return preconditions;
-}
+std::unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(std::unordered_set<const PDDLLiteral*> literals, const PDDLState *state) {
+    std::unordered_set<unsigned int> candidateObjects;
+    for (int i = 0; i < problem->objects.size(); i++)
+        candidateObjects.emplace(i);
 
-std::vector<std::string> ActionGenerator::GetCandidateObjects(PDDLAction* action, PDDLState *state, std::vector<PDDLLiteral> preconditions) {
-    std::vector<std::string> candidateObjects;
-    for (const auto& object : *state->objects) {
-        bool validObject = true;
-        for (const auto& precondition : preconditions) {
-            if (!state->IsUnaryLiteralTrue(action, precondition, object)) {
-                validObject = false;
-                break;
-            }
-        }  
-        if (validObject)
-            candidateObjects.push_back(object);
+    // Check what objects match all literals
+    for (auto literal = literals.begin(); literal != literals.end(); literal++) {
+        // Ignore if non unary literal
+        if ((*literal)->args.size() != 1)
+            continue;
+        
+        // Find intersection of candidateobjects and the new literal
+        auto newObjectRef = &(state->unaryFacts.at((*literal)->predicateIndex));
+        // Returns true, i.e. object should be deleted, depending on the literal state
+        const auto NewObjectNegContains = [&](auto const& x) { return newObjectRef->contains(x) != (*literal)->value; };
+        // Remove those which are(n't) contained in both depending on literal value
+        std::erase_if(candidateObjects, NewObjectNegContains);
     }
-    return candidateObjects;    
+
+    return candidateObjects;
 }
 
-void ActionGenerator::SplitLiterals(std::vector<PDDLLiteral> literals, std::vector<PDDLLiteral> *unaryLiterals, std::vector<PDDLLiteral> *multiLiterals) {
-    for (auto literal : literals)
-        if (literal.predicate.args.size() > 1)
-            (*multiLiterals).push_back(literal);
-        else
-            (*unaryLiterals).push_back(literal);
+bool ActionGenerator::IsLegal(const std::vector<PDDLLiteral> *literals, const PDDLState *state, std::vector<unsigned int> *objects) {
+    for (int i = 0; i < literals->size(); i++) {
+        if (literals->at(i).args.size() < 2)
+            continue;
+        auto literal = literals->at(i);
+        if (literal.predicateIndex == 0) {
+            bool areEqual = (objects->at(0) == objects->at(1));
+            if (areEqual != literal.value)
+                return false;
+        } else {
+            bool found = false;
+            for (int f = 0; f < state->multiFacts.at(literal.predicateIndex).size(); f++) {
+                bool valid = true;
+                for (int a = 0; a < state->multiFacts.at(literal.predicateIndex).at(f).fact.size(); a++)
+                    if (objects->at(a) != state->multiFacts.at(literal.predicateIndex).at(f).fact[a])
+                        valid = false;
+
+                if (valid) {
+                    found = true;
+                    break;
+                }                
+            }
+            if (found != literal.value)
+                return false;
+        }
+    }
+    return true;
 }
 
-bool ActionGenerator::Increment(std::vector<int> *indexes, std::vector<std::string> objects[]) {
+bool ActionGenerator::Iterate(std::vector<std::unordered_set<unsigned int>::iterator> *iteration, std::vector<std::unordered_set<unsigned int>> *candidateObjects) {
     int incrementIndex = -1;
-    for (int i = 0; i < indexes->size(); i++) {
-        if ((*indexes)[i] + 1 < objects[i].size()) {
-            (*indexes)[i]++;
+    for (int i = 0; i < iteration->size(); i++) {
+        auto next = std::next((*iteration)[i], 1);
+        if (next != (*candidateObjects)[i].end()) {
+            (*iteration)[i]++;
             incrementIndex = i;
             break;
         }
     }
     for (int i = 0; i < incrementIndex; i++)
-        (*indexes)[i] = 0;
+        (*iteration)[i] = (*candidateObjects)[i].begin();
     return (incrementIndex != -1);
 }

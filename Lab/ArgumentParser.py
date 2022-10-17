@@ -68,6 +68,13 @@ def set_arguments():
         help="What reformulator algorithm to use"
     )
 
+    ARGPARSER.add_argument(
+        "--timelimit",
+        required=True,
+        default=500,
+        help="Time limit for the reformulator"
+    )
+
     return ARGPARSER.parse_args()
 
 def abs_path(filelocation,folder):

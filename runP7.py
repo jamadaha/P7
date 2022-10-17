@@ -18,6 +18,7 @@ validatorfilepath = args.validate
 search = args.search
 evaluator = args.evaluator
 reformulator = args.reformulator
+reformulatorTime = args.timelimit
 
 lab_build_suite = False
 folder = ""
@@ -44,14 +45,15 @@ for task in tasks:
     print(task.problem_file)
 
     arguments = [abs_path(__file__,projectfile)]
-    arguments += ["-f", downwardfilepath]
-    arguments += ["-v", validatorfilepath]
-    arguments += ["-s", search]
-    arguments += ["-e", evaluator]
-    arguments += ["-r", reformulator]
+    arguments += ["--downwardpath=" + downwardfilepath]
+    arguments += ["--validatorpath=" + validatorfilepath]
+    arguments += ["--search=" + search]
+    arguments += ["--evaluator=" + evaluator]
+    arguments += ["--reformulator=" + reformulator]
+    arguments += ["--timelimit=" + reformulatorTime]
 
-    arguments += ["-d", task.domain_file]
-    arguments += ["-p", task.problem_file]
+    arguments += ["--domain=" + task.domain_file]
+    arguments += ["--problem=" + task.problem_file]
 
     run = experiment.add_run()
     run.add_command("planner", arguments)

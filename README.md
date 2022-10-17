@@ -41,7 +41,7 @@ These are for debugging in VSCode. They aren't needed for anything else.
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(gdb) Launch",
+            "name": "Debug",
             "type": "cppdbg",
             "request": "launch",
             // Resolved by CMake Tools:
@@ -53,6 +53,97 @@ These are for debugging in VSCode. They aren't needed for anything else.
             "-r RandomWalker",
             "-v $HOME/bin/downward-projects/VAL/validate",
             "-c"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build",
+            "environment": [
+                {
+                    // add the directory where our target was built to the PATHs
+                    // it gets resolved by CMake Tools:
+                    "name": "PATH",
+                    "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
+                }
+            ],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }, {
+            "name": "Release",
+            "type": "cppdbg",
+            "request": "launch",
+            // Resolved by CMake Tools:
+            "program": "${command:cmake.launchTargetPath}",
+            "args": [
+            "-d 'Data/Classical tracks/Gripper/gripper_domain.pddl'",
+            "-p 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
+            "-f $HOME/bin/downward-projects/downward/fast-downward.py",
+            "-r RandomWalker"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build",
+            "environment": [
+                {
+                    // add the directory where our target was built to the PATHs
+                    // it gets resolved by CMake Tools:
+                    "name": "PATH",
+                    "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
+                }
+            ],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }, {
+            "name": "Lab",
+            "type": "cppdbg",
+            "request": "launch",
+            // Resolved by CMake Tools:
+            "program": "${command:cmake.launchTargetPath}",
+            "args": [
+                "'--all'",
+                "--benchmarks 'Data/Classical tracks/Gripper/'",
+                "--domain 'gripper_domain.pddl'",
+                "--problem 'gripper_problem.pddl'",
+                "--downward '$HOME/downward-projects/downward/fast-downward.py'",
+                "--validate '$HOME/downward-projects/VAL/validate'"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build",
+            "environment": [
+                {
+                    // add the directory where our target was built to the PATHs
+                    // it gets resolved by CMake Tools:
+                    "name": "PATH",
+                    "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
+                }
+            ],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }, {
+            "name": "Lab All",
+            "type": "cppdbg",
+            "request": "launch",
+            // Resolved by CMake Tools:
+            "program": "${command:cmake.launchTargetPath}",
+            "args": [
+                "'--all'",
+                "--benchmarks 'Data/benchmarks/'",
+                "--domain 'gripper:trucks'",
+                "--problem 'prob01.pddl,prob02.pddl,prob09.pddl:p03.pddl'",
+                "--downward $HOME/downward/fast-downward.py",
+                "--validate $HOME/validate/validate"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build",
             "environment": [

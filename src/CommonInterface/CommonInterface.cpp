@@ -62,7 +62,7 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	report->Begin("Generating PDDL");
 	PDDLCodeGenerator pddlGenerator = PDDLCodeGenerator(PDDLDomainCodeGenerator(&domain), PDDLProblemCodeGenerator(&domain, &problem));
 	pddlGenerator.GenerateCode(reformulatedInstance, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
-	report->Stop();
+	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
 
 	// Throw the new pddl files into Fast Downward

@@ -41,7 +41,7 @@ These are for debugging in VSCode. They aren't needed for anything else.
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(gdb) Launch",
+            "name": "Debug",
             "type": "cppdbg",
             "request": "launch",
             // Resolved by CMake Tools:
@@ -71,6 +71,96 @@ These are for debugging in VSCode. They aren't needed for anything else.
                     "ignoreFailures": true
                 }
             ]
+        }, {
+            "name": "Release",
+            "type": "cppdbg",
+            "request": "launch",
+            // Resolved by CMake Tools:
+            "program": "${command:cmake.launchTargetPath}",
+            "args": [
+            "-d 'Data/Classical tracks/Gripper/gripper_domain.pddl'",
+            "-p 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
+            "-f $HOME/bin/downward-projects/downward/fast-downward.py",
+            "-r RandomWalker"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build",
+            "environment": [
+                {
+                    // add the directory where our target was built to the PATHs
+                    // it gets resolved by CMake Tools:
+                    "name": "PATH",
+                    "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
+                }
+            ],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }, {
+            "name": "Lab",
+            "type": "cppdbg",
+            "request": "launch",
+            // Resolved by CMake Tools:
+            "program": "${command:cmake.launchTargetPath}",
+            "args": [
+                "--benchmarks '${workspaceFolder}/Data/Classical tracks/Gripper/'",
+                "--domain 'gripper_domain.pddl'",
+                "--problem 'gripper_problem.pddl'",
+                "--downward '${workspaceFolder}/P7Requirements/downward/fast-downward.py'",
+                "--validate '${workspaceFolder}/P7Requirements/VAL/validate'"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [
+                {
+                    // add the directory where our target was built to the PATHs
+                    // it gets resolved by CMake Tools:
+                    "name": "PATH",
+                    "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
+                }
+            ],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }, {
+            "name": "Lab All",
+            "type": "cppdbg",
+            "request": "launch",
+            // Resolved by CMake Tools:
+            "program": "${command:cmake.launchTargetPath}",
+            "args": [
+                "'--all'",
+                "--benchmarks '${workspaceFolder}/Data/Classical tracks/Gripper/'",
+                "--domain 'gripper_domain.pddl'",
+                "--problem 'gripper_problem.pddl'",
+                "--downward '${workspaceFolder}/P7Requirements/downward/fast-downward.py'",
+                "--validate '${workspaceFolder}/P7Requirements/VAL/validate'"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [
+                {
+                    // add the directory where our target was built to the PATHs
+                    // it gets resolved by CMake Tools:
+                    "name": "PATH",
+                    "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
+                }
+            ],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
         }
     ]
 }
@@ -82,7 +172,8 @@ To launch in Visual Studio (Note: This is the inferior version):
 ```json
 {
   "version": "0.2.1",
-  "defaults": {},
+  "defaults": {
+  },
   "configurations": [
     {
       "type": "cppgdb",
@@ -91,14 +182,16 @@ To launch in Visual Studio (Note: This is the inferior version):
       "projectTarget": "P7",
       "debuggerConfiguration": "gdb",
       "args": [
-        "-d 'Data/Classical tracks/Gripper/gripper_domain.pddl'",
-        "-p 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
-        "-f $HOME/downward-projects/downward/fast-downward.py",
-        "-r RandomWalker",
-        "-v $HOME/downward-projects/VAL/validate",
-        "-c"
+        "--domain='Data/Classical tracks/Gripper/gripper_domain.pddl'",
+        "--problem='Data/Classical tracks/Gripper/gripper_problem.pddl'",
+        "--downwardpath=$HOME/downward-projects/downward/fast-downward.py",
+        "--reformulator=RandomWalker",
+        "--validatorpath=$HOME/downward-projects/VAL/validate",
+        "--timelimit=500",
+        "--debugmode"
       ],
-      "env": {}
+      "env": {
+      }
     },
     {
       "type": "cppgdb",
@@ -107,12 +200,14 @@ To launch in Visual Studio (Note: This is the inferior version):
       "projectTarget": "P7",
       "debuggerConfiguration": "gdb",
       "args": [
-        "-d 'Data/Classical tracks/Gripper/gripper_domain.pddl'",
-        "-p 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
-        "-f $HOME/downward-projects/downward/fast-downward.py",
-        "-r RandomWalker"
+        "--domain='Data/Classical tracks/Gripper/gripper_domain.pddl'",
+        "--problem='Data/Classical tracks/Gripper/gripper_problem.pddl'",
+        "--downwardpath=$HOME/downward-projects/downward/fast-downward.py",
+        "--reformulator=RandomWalker",
+        "--timelimit=500",
       ],
-      "env": {}
+      "env": {
+      }
     },
     {
       "type": "cppgdb",
@@ -127,9 +222,31 @@ To launch in Visual Studio (Note: This is the inferior version):
         "--domain 'gripper_domain.pddl'",
         "--problem 'gripper_problem.pddl'",
         "--downward '$HOME/downward-projects/downward/fast-downward.py'",
-        "--validate '$HOME/downward-projects/VAL/validate'"
+        "--validate '$HOME/downward-projects/VAL/validate'",
+        "--reformulator RandomWalker"
       ],
-      "env": {}
+      "env": {
+      }
+    },
+    {
+      "type": "cppgdb",
+      "name": "P7 With Lab (Multiple benchmarks)",
+      "project": "CMakeLists.txt",
+      "projectTarget": "P7Lab",
+      "comment": "P7 with Lab",
+      "debuggerConfiguration": "gdb",
+      "cwd": "/root/.vs/P7/",
+      "args": [
+        "'--all'",
+        "--benchmarks '$HOME/.vs/P7/Data/benchmarks/'",
+        "--domain 'gripper:depot'",
+        "--problem 'prob01.pddl,prob02.pddl,prob09.pddl:p01.pddl,p02.pddl'",
+        "--downward $HOME/downward-projects/downward/fast-downward.py",
+        "--validate $HOME/downward-projects/validate/validate",
+        "--reformulator RandomWalker"
+      ],
+      "env": {
+      }
     }
   ]
 }

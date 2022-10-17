@@ -39,7 +39,7 @@ set(SOURCES
 	## Depth Functions
 	"src/Walker/DepthFunctions/BaseDepthFunction.hh" "src/Walker/DepthFunctions/ObjectActionDepthFunction.hh" "src/Walker/DepthFunctions/ObjectActionDepthFunction.cpp" "src/Walker/DepthFunctions/ConstantDepthFunction.hh" "src/Walker/DepthFunctions/ConstantDepthFunction.cpp"
 	# Width Functions
-	"src/Walker/WidthFunctions/ConstantWidthFunction.cpp"
+	"src/Walker/WidthFunctions/ConstantWidthFunction.cpp" "src/Walker/WidthFunctions/TimeWidthFunction.cpp"
 	# Path Checkers
 	"src/PathCheckers/PathChecker.cpp"
 

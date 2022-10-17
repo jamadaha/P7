@@ -50,6 +50,7 @@ These are for debugging in VSCode. They aren't needed for anything else.
             "-d 'Data/Classical tracks/Gripper/gripper_domain.pddl'",
             "-p 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
             "-f $HOME/bin/downward-projects/downward/fast-downward.py",
+            "-r RandomWalker",
             "-v $HOME/bin/downward-projects/VAL/validate",
             "-c"],
             "stopAtEntry": false,
@@ -85,15 +86,15 @@ To launch in Visual Studio (Note: This is the inferior version):
   "configurations": [
     {
       "type": "cppgdb",
-      "name": "P7 Args (Full)",
+      "name": "P7 Debug",
       "project": "CMakeLists.txt",
       "projectTarget": "P7",
-      "comment": "P7 With Args",
       "debuggerConfiguration": "gdb",
       "args": [
         "-d 'Data/Classical tracks/Gripper/gripper_domain.pddl'",
         "-p 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
         "-f $HOME/downward-projects/downward/fast-downward.py",
+        "-r RandomWalker",
         "-v $HOME/downward-projects/VAL/validate",
         "-c"
       ],
@@ -101,15 +102,15 @@ To launch in Visual Studio (Note: This is the inferior version):
     },
     {
       "type": "cppgdb",
-      "name": "P7 Args (No Validation)",
+      "name": "P7 Fast",
       "project": "CMakeLists.txt",
       "projectTarget": "P7",
-      "comment": "P7 With Args",
       "debuggerConfiguration": "gdb",
       "args": [
         "-d 'Data/Classical tracks/Gripper/gripper_domain.pddl'",
         "-p 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
-        "-f $HOME/downward-projects/downward/fast-downward.py"
+        "-f $HOME/downward-projects/downward/fast-downward.py",
+        "-r RandomWalker"
       ],
       "env": {}
     },
@@ -118,7 +119,6 @@ To launch in Visual Studio (Note: This is the inferior version):
       "name": "P7 With Lab",
       "project": "CMakeLists.txt",
       "projectTarget": "P7Lab",
-      "comment": "P7 with Lab",
       "debuggerConfiguration": "gdb",
       "cwd": "/root/.vs/P7/",
       "args": [

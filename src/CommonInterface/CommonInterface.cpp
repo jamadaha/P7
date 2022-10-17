@@ -4,6 +4,23 @@ using namespace std;
 
 enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	int64_t t;
+	BaseReformulator* reformulator;
+
+	cout << "Finding reformulator algorithm...";
+	report->Begin("Finding Reformulator");
+	if (config.Reformulator.Content == "SameOutput") {
+		reformulator = new SameOutputReformulator();
+	} else 	if (config.Reformulator.Content == "RandomWalker") {
+		reformulator = new RandomWalkerReformulator();
+	}
+	else{
+		cout << "   ✕" << endl;
+		cout << "Reformulator not found!" << endl;
+		cout << "Reformulator: " + config.Reformulator.Content << endl;
+		return CommonInterface::RunResult::ErrorsEncountered;
+	}
+	t = report->Stop();
+	cout << "   ✓ " << t << "ms" << endl;
 
 	if (config.DebugMode.Content) {
 		// Checking filepaths in the config file
@@ -27,26 +44,23 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	// Convert PDDL format
 	cout << "Converting PDDL format...";
 	report->Begin("Converison of PDDL format");
-	PDDLDomain domain = PDDLDomain(originalDriver.domain);
-	PDDLProblem problem = PDDLProblem(originalDriver.problem, &domain);
+	PDDLDomain domain = PDDLConverter::Convert(originalDriver.domain);
+	PDDLProblem problem = PDDLConverter::Convert(&domain, originalDriver.problem);
 	PDDLInstance instance = PDDLInstance(&domain, &problem);
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
-
+	
 	// Reformulate the PDDL file
 	cout << "Reformulating PDDL...";
 	report->Begin("Reformulation of PDDL");
-	PDDLInstance reformulatedInstance = Reformulator->ReformulatePDDL(&instance);
+	PDDLInstance reformulatedInstance = reformulator->ReformulatePDDL(&instance);
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
-
-	ActionGenerator ag = ActionGenerator(reformulatedInstance.domain);
-	std::vector<PDDLActionInstance> actionInstance = ag.GenerateActions(&problem.initState);
-
+	
 	// Generate new PDDL files
 	cout << "Generating PDDL files...";
 	report->Begin("Generating PDDL");
-	PDDLCodeGenerator pddlGenerator;
+	PDDLCodeGenerator pddlGenerator = PDDLCodeGenerator(PDDLDomainCodeGenerator(&domain), PDDLProblemCodeGenerator(&domain, &problem));
 	pddlGenerator.GenerateCode(reformulatedInstance, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
 	report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
@@ -91,7 +105,7 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	// Rebuild the SAS Plan
 	cout << "Rebuild the SAS plan...";
 	report->Begin("Rebuild SAS plan");
-	SASPlan outputPlan = Reformulator->RebuildSASPlan(&reformulatedSASPlan);
+	SASPlan outputPlan = reformulator->RebuildSASPlan(&reformulatedSASPlan);
 	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
 

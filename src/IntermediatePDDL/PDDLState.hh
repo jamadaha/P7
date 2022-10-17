@@ -4,9 +4,10 @@
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
+#include "PDDLActionInstance.hh"
 
 struct MultiFact {
-    const std::vector<unsigned int> fact;
+    std::vector<unsigned int> fact;
     MultiFact(std::vector<unsigned int> fact) : fact(fact) {};
 };
 
@@ -19,6 +20,8 @@ struct PDDLState {
     PDDLState() {};
     PDDLState(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts, std::unordered_map<unsigned int, std::vector<MultiFact>> multiFacts) :
         unaryFacts(unaryFacts), multiFacts(multiFacts) {};
+    // Returns the state that would occur when applying the actioninstance to this state
+    PDDLState *Do(const PDDLActionInstance* actionInstance);
 };
 
 #endif

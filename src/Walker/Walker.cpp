@@ -7,17 +7,24 @@ Path Walker::Walk() {
 Path Walker::Walk(PDDLState state) {
     int depth = depthFunc->GetDepth();
     std::vector<PDDLActionInstance> steps;
+    steps.reserve(depth);
     unsigned int actionCount = 0;
     unsigned int stepCount = 0;
+    PDDLState *tempState = new PDDLState(state.unaryFacts, state.multiFacts);
     for (int i = 0; i < depth; i++) {
-        auto actions = actionGenerator.GenerateActions(&state);
+        auto actions = actionGenerator.GenerateActions(tempState);
         actionCount += actions.size();
-        // Should this be handled?
-        if (actions.size() == 0)
-            break;
-        auto chosenAction = heuristic->NextChoice(actions);
+        auto action = heuristic->NextChoice(actions);
+        steps.push_back(action);
         stepCount++;
-        steps.push_back(chosenAction);
+        tempState = DoAction(tempState, &action);
     }
+    free(tempState);    
     return Path(steps, actionCount, stepCount);
+}
+
+PDDLState* Walker::DoAction(PDDLState *state, const PDDLActionInstance *action) {
+    PDDLState *newState = state->Do(action);
+    free(state);
+    return newState;
 }

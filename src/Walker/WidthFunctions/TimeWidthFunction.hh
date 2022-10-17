@@ -7,10 +7,10 @@
 
 class TimeWidthFunction : public BaseWidthFunction {
 public:
-    TimeWidthFunction(int limitmSec) : LimitmSec(limitmSec), BaseWidthFunction() {}
+    TimeWidthFunction(int limitms) : Limitms(limitms), BaseWidthFunction() {}
     int GetWidth() override;
 private:
-    int64_t LimitmSec = 0;
+    int64_t Limitms = 0;
     bool IsStarted = false;
     std::chrono::_V2::steady_clock::time_point StartTime;
 };

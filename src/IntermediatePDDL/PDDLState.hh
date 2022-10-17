@@ -20,8 +20,6 @@ struct PDDLState {
     PDDLState() {};
     PDDLState(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts, std::unordered_map<unsigned int, std::vector<MultiFact>> multiFacts) :
         unaryFacts(unaryFacts), multiFacts(multiFacts) {};
-    // Returns the state that would occur when applying the actioninstance to this state
-    PDDLState *Do(const PDDLActionInstance* actionInstance);
 };
 
 #endif

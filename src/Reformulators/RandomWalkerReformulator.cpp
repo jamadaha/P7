@@ -2,13 +2,9 @@
 
 using namespace std;
 
-// Move this...
-#define WIDTH 1
-
-
 PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	RandomHeuristic<PDDLActionInstance>* heu = new RandomHeuristic<PDDLActionInstance>(PDDLContext(instance->domain, instance->problem));
-	ConstantWidthFunction widthFunc = ConstantWidthFunction(WIDTH, *instance);
+	TimeWidthFunction widthFunc = TimeWidthFunction(Configs->ReformulatorTime.Content);
 	std::vector<Path> paths;
 	unsigned int totalActionCount = 0;
 	unsigned int totalStepCount = 0;

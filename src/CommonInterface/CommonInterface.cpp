@@ -9,9 +9,9 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	cout << "Finding reformulator algorithm...";
 	report->Begin("Finding Reformulator");
 	if (config.Reformulator.Content == "SameOutput") {
-		reformulator = new SameOutputReformulator();
+		reformulator = new SameOutputReformulator(&config);
 	} else 	if (config.Reformulator.Content == "RandomWalker") {
-		reformulator = new RandomWalkerReformulator();
+		reformulator = new RandomWalkerReformulator(&config);
 	}
 	else{
 		cout << "   ✕" << endl;
@@ -68,7 +68,7 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	report->Begin("Generating PDDL");
 	PDDLCodeGenerator pddlGenerator = PDDLCodeGenerator(PDDLDomainCodeGenerator(&domain), PDDLProblemCodeGenerator(&domain, &problem));
 	pddlGenerator.GenerateCode(reformulatedInstance, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
-	report->Stop();
+	t = report->Stop();
 	cout << "   ✓ " << t << "ms" << endl;
 
 	// Throw the new pddl files into Fast Downward

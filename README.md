@@ -107,12 +107,11 @@ These are for debugging in VSCode. They aren't needed for anything else.
             // Resolved by CMake Tools:
             "program": "${command:cmake.launchTargetPath}",
             "args": [
-                "'--all'",
-                "--benchmarks 'Data/Classical tracks/Gripper/'",
+                "--benchmarks '${workspaceFolder}/Data/Classical tracks/Gripper/'",
                 "--domain 'gripper_domain.pddl'",
                 "--problem 'gripper_problem.pddl'",
-                "--downward '$HOME/downward-projects/downward/fast-downward.py'",
-                "--validate '$HOME/downward-projects/VAL/validate'"],
+                "--downward '${workspaceFolder}/P7Requirements/downward/fast-downward.py'",
+                "--validate '${workspaceFolder}/P7Requirements/VAL/validate'"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [
@@ -139,11 +138,11 @@ These are for debugging in VSCode. They aren't needed for anything else.
             "program": "${command:cmake.launchTargetPath}",
             "args": [
                 "'--all'",
-                "--benchmarks 'Data/benchmarks/'",
-                "--domain 'gripper:trucks'",
-                "--problem 'prob01.pddl,prob02.pddl,prob09.pddl:p03.pddl'",
-                "--downward $HOME/downward/fast-downward.py",
-                "--validate $HOME/validate/validate"],
+                "--benchmarks '${workspaceFolder}/Data/Classical tracks/Gripper/'",
+                "--domain 'gripper_domain.pddl'",
+                "--problem 'gripper_problem.pddl'",
+                "--downward '${workspaceFolder}/P7Requirements/downward/fast-downward.py'",
+                "--validate '${workspaceFolder}/P7Requirements/VAL/validate'"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [

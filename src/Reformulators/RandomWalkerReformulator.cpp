@@ -3,7 +3,7 @@
 using namespace std;
 
 // Move this...
-#define TIMELIMITSEC 10
+#define TIMELIMITSEC 1
 
 PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	RandomHeuristic<PDDLActionInstance>* heu = new RandomHeuristic<PDDLActionInstance>(PDDLContext(instance->domain, instance->problem));

@@ -9,7 +9,7 @@ using namespace std;
 const string TAG = "DownwardRunner ";
 const string domain = "./TestFiles/gripper-4.pddl";
 const string problem = "./TestFiles/gripper.pddl";
-
+/*
 TEST_CASE(TAG + "Run a legal domain"){
     DownwardRunner downward = DownwardRunner();
     Config config;
@@ -30,3 +30,4 @@ TEST_CASE(TAG + "Run illegal domain"){
     auto x = downward.RunDownward(config, domain, problem);
     REQUIRE(x == DownwardRunner::DownwardRunnerResult::None);
 }
+*/

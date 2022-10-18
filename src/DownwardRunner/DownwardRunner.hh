@@ -6,9 +6,12 @@
 
 #include "../Config/config.hh"
 
-struct DownwardRunner {
+class DownwardRunner {
+public:
     enum DownwardRunnerResult { None, FoundPlan, DidNotFindPlan };
-    static enum DownwardRunnerResult RunDownward(Config config, std::string reformulatedDomain, std::string reformulatedProblem);
+    enum DownwardRunnerResult RunDownward(Config config, std::string reformulatedDomain, std::string reformulatedProblem);
+
+    std::string RunnerLogName = "downwardLog";
 };
 
 #endif

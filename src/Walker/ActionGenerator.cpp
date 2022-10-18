@@ -13,18 +13,13 @@ std::vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState
 std::vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction *action, const PDDLState *state) {
     std::vector<PDDLActionInstance> legalActions;
 
-    std::vector<std::unordered_set<const PDDLLiteral*>> applicableLiterals;
-    applicableLiterals.reserve(action->parameters.size());
-
-    // Init vector for each parameter
-    for (int i = 0; i < action->parameters.size(); i++)
-        applicableLiterals.push_back(std::unordered_set<const PDDLLiteral*>());
+    std::unordered_set<const PDDLLiteral*> applicableLiterals[action->parameters.size()];
 
     // Find what preconditions are applicible to what arguments
     // Should likely be static somehow
     for (int i = 0; i < action->preconditions.size(); i++)
         for (int a = 0; a < action->preconditions[i].args.size(); a++)
-            applicableLiterals.at(action->preconditions[i].args[a]).emplace(&(action->preconditions[i]));
+            applicableLiterals[action->preconditions[i].args[a]].emplace(&(action->preconditions[i]));
 
     // Object which fulfill the unary literals of the action preconditions
     std::vector<std::unordered_set<unsigned int>> candidateObjects;

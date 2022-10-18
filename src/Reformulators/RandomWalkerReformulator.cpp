@@ -6,7 +6,7 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	RandomHeuristic<PDDLActionInstance>* heu = new RandomHeuristic<PDDLActionInstance>(PDDLContext(instance->domain, instance->problem));
 	BaseWidthFunction *widthFunc;
 	if (Configs->ReformulatorTime.Content == -1)
-		widthFunc = new ConstantWidthFunction(1000);
+		widthFunc = new ConstantWidthFunction(10000);
 	else
 		widthFunc = new TimeWidthFunction(Configs->ReformulatorTime.Content);
 	std::vector<Path> paths;

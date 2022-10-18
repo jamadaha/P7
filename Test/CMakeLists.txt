@@ -15,6 +15,7 @@ include(Test/Walker/DepthFunctions/CMakeLists.txt)
 include(Test/IntermediatePDDL/CMakeLists.txt)
 include(Test/PlanValidators/CMakeLists.txt)
 include(Test/Helpers/CMakeLists.txt)
+include(Test/DownwardRunner/CMakeLists.txt)
 
 # To run all tests
 add_executable(Test-All 
@@ -28,5 +29,6 @@ add_executable(Test-All
 	"Test/Walker/DepthFunctions/ObjectActionDepthFunction.cpp"
 	"Test/PlanValidators/PlanValidator.cpp"
 	"Test/Helpers/StringHelper.cpp"
+	"Test/DownwardRunner/DownwardRunner.cpp"
 	${SOURCES})
 target_link_libraries(Test-All PRIVATE Catch2::Catch2WithMain)

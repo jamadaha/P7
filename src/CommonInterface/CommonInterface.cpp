@@ -74,7 +74,8 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	// Throw the new pddl files into Fast Downward
 	cout << "Run new PDDL files with Fast Downward...";
 	report->Begin("Running FastDownward");
-	auto runRes = DownwardRunner::RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
+	DownwardRunner runner = DownwardRunner();
+	auto runRes = runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
 	if (runRes != DownwardRunner::FoundPlan) {
 		cout << "   ✕" << endl;
 		cout << "No solution could be found for the plan" << endl;

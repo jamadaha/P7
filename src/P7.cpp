@@ -2,8 +2,7 @@
 
 using namespace std;
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv){
 	Config config;
 	// Do first as it quits on help
 	if (config.ParseArgs(&config, argc, argv))

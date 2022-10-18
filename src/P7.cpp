@@ -27,9 +27,8 @@ int main(int argc, char** argv){
 
 	RunReport report = RunReport();
 
-	cout << "Running reformulator..." << endl;	
-	std::shared_ptr<BaseReformulator> reformulator = std::make_shared<SameOutputReformulator>();
-	CommonInterface interface = CommonInterface(config, reformulator);
+	cout << "Running reformulator..." << endl;
+	CommonInterface interface = CommonInterface(config);
 	auto result = interface.Run(&report);
 	cout << "Done!" << endl;
 	if (result == CommonInterface::RunResult::RanWithoutErrors)

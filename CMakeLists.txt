@@ -25,24 +25,26 @@ set(SOURCES
 	# Helpers
 	"src/Helpers/StringHelper.cpp" "src/Helpers/FileHelper.cpp" 
 	# Reformulators
-	"src/Reformulators/SameOutputReformulator.cpp" 
+	"src/Reformulators/SameOutputReformulator.cpp" "src/Reformulators/RandomWalkerReformulator.cpp"
 	# Common Interface
 	"src/CommonInterface/CommonInterface.cpp"
 	# Plan Validator
 	"src/PlanValidators/PlanValidator.cpp" 
-	# Heuristics
-	"src/Heuristics/BaseHeuristics.hh" "src/Heuristics/RandomHeuristic.hh" "src/Heuristics/Contexts/BaseContext.hh" "src/Heuristics/Contexts/PDDLContext.hh"
-	# PDDL Types
-	"src/PDDLTypes/PDDLAction.hpp" "src/PDDLTypes/PDDLArg.hpp" "src/PDDLTypes/PDDLLiteral.hpp" "src/PDDLTypes/PDDLDomain.hpp" "src/PDDLTypes/PDDLPredicate.hpp" "src/PDDLTypes/PDDLProblem.hpp" "src/PDDLTypes/PDDLType.hpp" "src/PDDLTypes/PDDLInstance.hpp" "src/PDDLTypes/PDDLState.hpp"
-	# Depth Functions
-	"src/DepthFunctions/ObjectActionDepthFunction.cpp" "src/DepthFunctions/ConstantDepthFunction.cpp"
-	# Action Generator
-	"src/Entangler/ActionGenerator.cpp"
+    # PDDL Types
+	"src/IntermediatePDDL/PDDLConverter.cpp" "src/IntermediatePDDL/PDDLAction.hh" "src/IntermediatePDDL/PDDLLiteral.hh" "src/IntermediatePDDL/PDDLDomain.hh" "src/IntermediatePDDL/PDDLPredicate.hh" "src/IntermediatePDDL/PDDLProblem.hh" "src/IntermediatePDDL/PDDLInstance.hh" "src/IntermediatePDDL/PDDLState.hh"
+	# Walker
+	"src/Walker/ActionGenerator.cpp" "src/Walker/Walker.cpp"
+	## Heuristics
+	"src/Walker/Heuristics/BaseHeuristics.hh" "src/Walker/Heuristics/RandomHeuristic.hh" "src/Walker/Heuristics/Contexts/BaseContext.hh" "src/Walker/Heuristics/Contexts/PDDLContext.hh"
+	## Depth Functions
+	"src/Walker/DepthFunctions/BaseDepthFunction.hh" "src/Walker/DepthFunctions/ObjectActionDepthFunction.hh" "src/Walker/DepthFunctions/ObjectActionDepthFunction.cpp" "src/Walker/DepthFunctions/ConstantDepthFunction.hh" "src/Walker/DepthFunctions/ConstantDepthFunction.cpp"
+	# Width Functions
+	"src/Walker/WidthFunctions/ConstantWidthFunction.cpp" "src/Walker/WidthFunctions/TimeWidthFunction.cpp"
 	# Path Checkers
 	"src/PathCheckers/PathChecker.cpp"
 
 	# Something new
-
+	
 
 )
 add_executable (P7 "src/P7.cpp" ${SOURCES})

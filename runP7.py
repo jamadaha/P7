@@ -1,102 +1,67 @@
 #! /usr/bin/env python
 
 from lab.experiment import Experiment
-from lab.experiment import ARGPARSER
-from downward.reports.absolute import AbsoluteReport
+from downward import suites
 import shutil
-import os
 from os import path
+from Lab.ArgumentParser import *
+from Lab.Reports import add_reports
+from Lab.Benchmarks import get_suite, make_tasks
 
-ARGPARSER.add_argument(
-    "--report",
-    required=False,
-    help="Foldername for report and eval"
-)
+args = set_arguments()
 
-ARGPARSER.add_argument(
-    "--P7",
-    required=False,
-    help="Path to project P7 executable"
-)
+reportfolder = get_from_argument(args.report,__file__, "build/LabReport")
+projectfile = get_from_argument(args.P7,__file__, "build/P7")
 
-ARGPARSER.add_argument(
-    "--downward",
-    required=True,
-    help="Path to Fast Downward"
-)
-
-ARGPARSER.add_argument(
-    "--validate",
-    required=True,
-    help="Path to VAL"
-)
-
-ARGPARSER.add_argument(
-    "--search",
-    required=False,
-    default="astar",
-    help="Search Fast Downward should use. Ex. astar"
-)
-
-ARGPARSER.add_argument(
-    "--evaluator",
-    required=False,
-    default="blind",
-    help="Evaluator Fast Downward should use. Ex. blind"
-)
-
-ARGPARSER.add_argument(
-    "--benchmarks",
-    required=False,
-    help="Folder where problems are in"
-)
-
-ARGPARSER.add_argument(
-    "--domain",
-    required=False,
-    default="gripper_domain.pddl",
-    help="Domain pddl file"
-)
-
-ARGPARSER.add_argument(
-    "--problem",
-    required=False,
-    default="gripper_problem.pddl",
-    help="Problem pddl file"
-)
-
-args = ARGPARSER.parse_args()
-
-reportfolder = args.report if args.report else os.path.join(os.path.dirname(os.path.abspath(__file__)),"build/LabReport")
-
-projectfile = args.P7 if args.P7 else os.path.join(os.path.dirname(os.path.abspath(__file__)),"build/P7")
 downwardfilepath = args.downward
 validatorfilepath = args.validate
-
 search = args.search
 evaluator = args.evaluator
+reformulator = args.reformulator
+reformulatorTime = args.timelimit
 
-benchmarksfolder = args.benchmarks if args.benchmarks else os.path.join(os.path.dirname(os.path.abspath(__file__)),"Data/Classical tracks/Gripper/")
-domain = args.domain
-problem = args.problem
+lab_build_suite = False
+folder = ""
+if ".pddl" in args.domain:
+    folder = "Data/Classical tracks/Gripper/"
+else:
+    lab_build_suite = True
+    folder = "Data/benchmarks/"
+benchmarksfolder = get_from_argument(args.benchmarks,__file__, folder)
+
+domains = args.domain.split(":")
+problemsindomains = args.problem.split(":")
 
 experiment = Experiment(reportfolder)
 
-arguments = [os.path.join(os.path.dirname(os.path.abspath(__file__)), projectfile)]
-arguments += ["-d", benchmarksfolder + domain]
-arguments += ["-p", benchmarksfolder + problem]
-arguments += ["-f", downwardfilepath]
-arguments += ["-v", validatorfilepath]
-arguments += ["-s", search]
-arguments += ["-e", evaluator]
+tasks = []
+if lab_build_suite:
+    tasks = suites.build_suite(benchmarksfolder, get_suite(domains, problemsindomains))
+else:
+    tasks = make_tasks(benchmarksfolder, domains, problemsindomains)
 
-run = experiment.add_run()
-run.add_command("P7", arguments)
-run.set_property("id",[search, evaluator, domain, problem])
-run.set_property("domain", domain)
-run.set_property("problem", problem)
-run.set_property("algorithm", search + "(" + evaluator + ")")
+for task in tasks:
+    print(task.domain_file)
+    print(task.problem_file)
 
+    arguments = [abs_path(__file__,projectfile)]
+    arguments += ["--downwardpath=" + downwardfilepath]
+    arguments += ["--validatorpath=" + validatorfilepath]
+    arguments += ["--search=" + search]
+    arguments += ["--evaluator=" + evaluator]
+    arguments += ["--reformulator=" + reformulator]
+    arguments += ["--timelimit=" + reformulatorTime]
+
+    arguments += ["--domain=" + task.domain_file]
+    arguments += ["--problem=" + task.problem_file]
+
+    run = experiment.add_run()
+    run.add_command("planner", arguments)
+    run.set_property("id",[search, evaluator, task.domain, task.problem])
+    run.set_property("domain", task.domain)
+    run.set_property("problem", task.problem)
+    run.set_property("algorithm", search + "(" + evaluator + ")")
+    
 if path.exists(reportfolder):
     experiment.add_step("rm-exp-dir", shutil.rmtree, reportfolder)
 if path.exists(experiment.eval_dir):
@@ -105,17 +70,6 @@ experiment.add_step("build", experiment.build)
 experiment.add_step("start", experiment.start_runs)
 experiment.add_fetcher(name="fetch")
 
-ATTRIBUTES = [
-    "error",
-    "run_dir",
-    "search_start_time",
-    "search_start_memory",
-    "total_time",
-    "h_values",
-    "coverage",
-    "expansions",
-    "memory",
-]
-experiment.add_report(AbsoluteReport(attributes=ATTRIBUTES), outfile="report.html")
+add_reports(experiment)
 
 experiment.run_steps()

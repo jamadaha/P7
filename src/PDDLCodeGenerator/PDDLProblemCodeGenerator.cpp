@@ -1,15 +1,15 @@
 #include "PDDLProblemCodeGenerator.hh"
 
 using namespace std;
-
-void PDDLProblemCodeGenerator::GenerateProblemFile(PDDLProblem* problem, string problemFile) {
+ 
+void PDDLProblemCodeGenerator::GenerateProblemFile(string problemFile) {
 	ofstream file;
 	file.open(problemFile);
-	file << GenerateProblemString(problem);
+	file << GenerateProblemString();
 	file.close();
 }
 
-string PDDLProblemCodeGenerator::GenerateProblemString(PDDLProblem* problem) {
+string PDDLProblemCodeGenerator::GenerateProblemString() {
 	string out = "(define (problem " + problem->name + ")\n";
 	out += GetTabs(1) + "(:domain " + problem->domain->name + ")\n";
 	out += "\n";
@@ -34,9 +34,7 @@ string PDDLProblemCodeGenerator::GetObjects(vector<string> objects) {
 string PDDLProblemCodeGenerator::GetInits(PDDLState literals) {
 	string retStr = GetTabs(1) + "(:init\n";
 	retStr += GetTabs(2);
-	for (auto i : literals.state) {
-		retStr += GetLiteral(i);
-	}
+	retStr += GetFacts(literals);
 	retStr += "\n";
 	retStr += GetTabs(1) + ")";
 	return retStr;
@@ -46,11 +44,34 @@ string PDDLProblemCodeGenerator::GetGoals(PDDLState literals) {
 	string retStr = GetTabs(1) + "(:goal\n";
 	retStr += GetTabs(2) + "(and \n";
 	retStr += GetTabs(3);
-	for (auto i : literals.state) {
-		retStr += GetLiteral(i);
-	}
+	retStr += GetFacts(literals);
 	retStr += "\n";
 	retStr += GetTabs(2) + ")\n";
 	retStr += GetTabs(1) + ")";
+	return retStr;
+}
+
+std::string PDDLProblemCodeGenerator::GetFacts(PDDLState literals) {
+	string retStr = "";
+	auto AddParen = [](std::string x) {
+		return "(" + x + ") ";
+	};
+
+	// Unary Facts
+	for (auto uItr = literals.unaryFacts.begin(); uItr != literals.unaryFacts.end(); uItr++) {
+		for (auto itr = (*uItr).second.begin(); itr != (*uItr).second.end(); itr++) {
+			std::string tempString = domain->predicates.at((*uItr).first).name + " " + problem->objects.at(*itr);
+			retStr += AddParen(tempString);
+		}
+	}
+	for (auto uItr = literals.multiFacts.begin(); uItr != literals.multiFacts.end(); uItr++) {
+		for (auto itr = (*uItr).second.begin(); itr != (*uItr).second.end(); itr++) {
+			std::string tempString = domain->predicates.at((*uItr).first).name;
+			for (int i = 0; i < (*itr).fact.size(); i++)
+				tempString += " " + problem->objects.at((*itr).fact.at(i));
+			retStr += AddParen(tempString);
+		}
+	}
+
 	return retStr;
 }

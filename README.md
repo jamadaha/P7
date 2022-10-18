@@ -35,7 +35,7 @@ sudo apt install python3-pip && pip install lab
 
 ## Launch
 ### VSCode
-These are for debugging in VSCode. They aren't needed for anything else.
+These are for debugging in VSCode.
 ```json
 {
     "version": "0.2.0",

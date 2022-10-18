@@ -31,3 +31,4 @@ TEST_CASE(TAG + "Run illegal domain"){
     auto x = downward.RunDownward(config, "", "");
     REQUIRE(x == DownwardRunner::DownwardRunnerResult::None);
 }
+*/

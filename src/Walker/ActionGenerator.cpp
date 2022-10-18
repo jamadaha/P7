@@ -30,7 +30,7 @@ std::vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction 
     std::vector<std::unordered_set<unsigned int>> candidateObjects;
     candidateObjects.reserve(action->parameters.size());
     for (int i = 0; i < action->parameters.size(); i++)
-        candidateObjects.push_back(GetCandidateObjects(applicableLiterals[i], state));
+        candidateObjects.push_back(GetCandidateObjects(&(applicableLiterals[i]), state));
     
     
     // if some parameter doesn't have any candidate object, the action is not possible
@@ -61,11 +61,11 @@ std::vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction 
     return legalActions;
 }
 
-std::unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(std::unordered_set<const PDDLLiteral*> literals, const PDDLState *state) {
+std::unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(std::unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) {
     std::unordered_set<unsigned int> candidateObjects;
 
     // Find first positive literal, and set candidate objects to those applicable
-    for (auto iter = literals.begin(); iter != literals.end(); iter++) {
+    for (auto iter = literals->begin(); iter != literals->end(); iter++) {
         if ((*iter)->args.size() > 1)
             continue;
         if ((*iter)->value == true) {
@@ -81,7 +81,7 @@ std::unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(std::unord
     }
 
     // Check what objects match all literals
-    for (auto literal = literals.begin(); literal != literals.end(); literal++) {
+    for (auto literal = literals->begin(); literal != literals->end(); literal++) {
         // Ignore if non unary literal
         if ((*literal)->args.size() != 1)
             continue;

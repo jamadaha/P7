@@ -12,6 +12,7 @@ Path Walker::Walk(PDDLState state) {
     for (int i = 0; i < depth; i++) {
         auto actions = actionGenerator.GenerateActions(tempState);
         auto action = heuristic->NextChoice(actions);
+        totalActions += actions.size();
         steps.push_back(action);
         tempState = DoAction(tempState, &action);
     }

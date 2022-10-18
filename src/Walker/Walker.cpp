@@ -20,24 +20,21 @@ Path Walker::Walk(PDDLState state) {
 }
 
 PDDLState* Walker::DoAction(PDDLState *state, const PDDLActionInstance *action) {
-    auto unaryFacts = state->unaryFacts;
-    auto multiFacts = state->multiFacts;
-
     for (int i = 0; i < action->action->effects.size(); i++) {
         auto effect = action->action->effects.at(i);
         if (effect.args.size() == 1) {
             // Handle unary effect
             if (effect.value)
-                unaryFacts.at(effect.predicateIndex).emplace(action->objects.at(effect.args.at(0)));
+                state->unaryFacts.at(effect.predicateIndex).emplace(action->objects.at(effect.args.at(0)));
             else
-                unaryFacts.at(effect.predicateIndex).erase(action->objects.at(effect.args.at(0)));
+                state->unaryFacts.at(effect.predicateIndex).erase(action->objects.at(effect.args.at(0)));
         } else {
             // Handle multi effect
             int index = -1;
-            for (int f = 0; f < multiFacts.at(effect.predicateIndex).size(); f++) {
+            for (int f = 0; f < state->multiFacts.at(effect.predicateIndex).size(); f++) {
                 bool equal = true;
                 for (int e = 0; e < effect.args.size(); e++) {
-                    if (multiFacts.at(effect.predicateIndex).at(f).fact.at(e) !=
+                    if (state->multiFacts.at(effect.predicateIndex).at(f).fact.at(e) !=
                         action->objects.at(effect.args.at(e))) {
                             equal = false;
                             break;
@@ -54,16 +51,15 @@ PDDLState* Walker::DoAction(PDDLState *state, const PDDLActionInstance *action) 
                     factArgs.reserve(effect.args.size());
                     for (int i = 0; i < effect.args.size(); i++)
                         factArgs.push_back(action->objects.at(effect.args.at(i)));
-                    multiFacts.at(effect.predicateIndex).push_back(MultiFact(factArgs));
+                    state->multiFacts.at(effect.predicateIndex).push_back(MultiFact(factArgs));
                 }
             } else {
                 if (index != -1) {
-                    auto fact = multiFacts.at(effect.predicateIndex);
+                    auto fact = state->multiFacts.at(effect.predicateIndex);
                     fact.erase(fact.begin());
                 }
             }
         }
     }
-    free(state);
-    return new PDDLState(unaryFacts, multiFacts);
+    return state;
 }

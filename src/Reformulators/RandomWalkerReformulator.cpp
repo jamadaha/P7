@@ -4,17 +4,22 @@ using namespace std;
 
 PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	RandomHeuristic<PDDLActionInstance>* heu = new RandomHeuristic<PDDLActionInstance>(PDDLContext(instance->domain, instance->problem));
-	TimeWidthFunction widthFunc = TimeWidthFunction(Configs->ReformulatorTime.Content);
+	BaseWidthFunction *widthFunc;
+	if (Configs->ReformulatorTime.Content == -1)
+		widthFunc = new ConstantWidthFunction(10000);
+	else
+		widthFunc = new TimeWidthFunction(Configs->ReformulatorTime.Content);
+	auto depthFunction = new ObjectActionDepthFunction(*instance);
 	std::vector<Path> paths;
 	unsigned int totalActionCount = 0;
 	unsigned int totalStepCount = 0;
-	for (int i = 0; i < widthFunc.GetWidth(); i++) {
+	for (int i = 0; i < widthFunc->GetWidth(); i++) {
 		Walker walker = Walker(instance,
 		ActionGenerator(instance->domain, instance->problem),
 		heu,
-		new ObjectActionDepthFunction(*instance));
-		Path path = walker.Walk();
-		paths.push_back(path);
+		depthFunction);
+		paths.push_back(walker.Walk());
+		totalActionCount += walker.totalActions;
 	}
 
 	// Do Something and transform the input PDDL into a new PDDL format

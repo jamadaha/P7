@@ -18,6 +18,7 @@ struct Path {
 
 class Walker {
 public:
+    unsigned int totalActions = 0;
     Walker(PDDLInstance* instance, ActionGenerator actionGenerator, BaseHeuristics<PDDLActionInstance, PDDLContext>* heuristic, BaseDepthFunction* depthFunc) : 
     instance(instance), actionGenerator(actionGenerator), heuristic(heuristic), depthFunc(depthFunc) {}
     Path Walk();

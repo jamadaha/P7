@@ -13,9 +13,9 @@ struct MultiFact {
 
 struct PDDLState {
     // Key - Index of predicate | Value - Set of objects which the predicate is true for
-    const std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts;
+    std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts;
     // Key - Index of predicate | Value - List of combinations of objcets which the predicate is true for (Should be a set, but cpp has a stroke trying to has a vector)
-    const std::unordered_map<unsigned int, std::vector<MultiFact>> multiFacts;
+    std::unordered_map<unsigned int, std::vector<MultiFact>> multiFacts;
 
     PDDLState() {};
     PDDLState(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts, std::unordered_map<unsigned int, std::vector<MultiFact>> multiFacts) :

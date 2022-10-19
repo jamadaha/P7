@@ -84,7 +84,7 @@ These are for debugging in VSCode.
                 "--problem='Data/Classical tracks/Gripper/gripper_problem.pddl'",
                 "--downwardpath=${workspaceFolder}/P7Requirements/downward/fast-downward.py",
                 "--reformulator=RandomWalker",
-                "--validatorpath=${workspaceFolder}/P7Requirements//VAL/validate",
+                "--validatorpath=${workspaceFolder}/P7Requirements/VAL/validate",
                 "--timelimit=1000"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build",

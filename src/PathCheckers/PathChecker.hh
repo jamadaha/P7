@@ -8,7 +8,7 @@
 
 class PathsChecker {
 public:
-	static bool IsPathsOk(Config* config);
+	static std::string IsPathsOk(Config* config);
 private:
 	template <typename T>
 	static bool CheckItem(ConfigItem<T> item);

@@ -3,6 +3,7 @@
 
 #include "BaseReformulator.hh"
 #include "../Config/config.hh"
+#include "../Helpers/ConsoleHelper.hh"
 
 class SameOutputReformulator : public BaseReformulator {
 public:

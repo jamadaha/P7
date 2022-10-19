@@ -23,7 +23,7 @@ set(SOURCES
 	# File Verifier
 	"src/FileVerifier/FileVerifier.cpp" 
 	# Helpers
-	"src/Helpers/StringHelper.cpp" "src/Helpers/FileHelper.cpp" 
+	"src/Helpers/StringHelper.cpp" "src/Helpers/FileHelper.cpp" "src/Helpers/ConsoleHelper.cpp"
 	# Reformulators
 	"src/Reformulators/SameOutputReformulator.cpp" "src/Reformulators/RandomWalkerReformulator.cpp"
 	# Common Interface

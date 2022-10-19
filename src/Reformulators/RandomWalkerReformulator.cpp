@@ -12,7 +12,6 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	auto depthFunction = new ObjectActionDepthFunction(*instance);
 	std::vector<Path> paths;
 	unsigned int totalActionCount = 0;
-	unsigned int totalStepCount = 0;
 	for (int i = 0; i < widthFunc->GetWidth(); i++) {
 		Walker walker = Walker(instance,
 		ActionGenerator(instance->domain, instance->problem),
@@ -20,6 +19,9 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 		depthFunction);
 		paths.push_back(walker.Walk());
 		totalActionCount += walker.totalActions;
+	}
+	if (Configs->DebugMode.Content) {
+		ConsoleHelper::PrintDebugInfo("[Walker] Total actions performed: " + to_string(totalActionCount), 1);
 	}
 
 	// Do Something and transform the input PDDL into a new PDDL format

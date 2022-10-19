@@ -11,23 +11,20 @@ const string TAG = "DownwardRunner ";
 TEST_CASE(TAG + "Run a legal domain"){
     DownwardRunner downward = DownwardRunner();
     downward.RunnerLogName = "./TestFiles/downwardLog_good";
-    Config config;
-    auto x = downward.RunDownward(config, "", "");
+    auto x = downward.ParseDownwardLog();
     REQUIRE(x == DownwardRunner::DownwardRunnerResult::FoundPlan);
 }
 
 TEST_CASE(TAG + "Run impossible domain"){
     DownwardRunner downward = DownwardRunner();
     downward.RunnerLogName = "./TestFiles/downwardLog_bad";
-    Config config;
-    auto x = downward.RunDownward(config, "", "");
+    auto x = downward.ParseDownwardLog();
     REQUIRE(x == DownwardRunner::DownwardRunnerResult::DidNotFindPlan);
 }
 
 TEST_CASE(TAG + "Run illegal domain"){
     DownwardRunner downward = DownwardRunner();
     downward.RunnerLogName = "./TestFiles/downwardLog_none";
-    Config config;
-    auto x = downward.RunDownward(config, "", "");
+    auto x = downward.ParseDownwardLog();
     REQUIRE(x == DownwardRunner::DownwardRunnerResult::None);
 }

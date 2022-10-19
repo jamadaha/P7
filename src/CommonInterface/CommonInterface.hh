@@ -17,6 +17,7 @@
 #include "../PlanValidators/PlanValidator.hh"
 #include "../IntermediatePDDL/PDDLInstance.hh"
 #include "../IntermediatePDDL/PDDLConverter.hh"
+#include "../Helpers/ConsoleHelper.hh"
 
 class CommonInterface {
 public:

@@ -1,6 +1,8 @@
 #ifndef RandomWalkerReformulator_HH
 #define RandomWalkerReformulator_HH
 
+#include <chrono>
+
 #include "BaseReformulator.hh"
 #include "../Walker/Walker.hpp"
 #include "../Walker/Heuristics/RandomHeuristic.hh"
@@ -8,6 +10,7 @@
 #include "../Walker/WidthFunctions/ConstantWidthFunction.hh"
 #include "../Walker/WidthFunctions/TimeWidthFunction.hh"
 #include "../Config/config.hh"
+#include "../Helpers/ConsoleHelper.hh"
 
 class RandomWalkerReformulator : public BaseReformulator {
 public:

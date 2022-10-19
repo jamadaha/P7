@@ -47,12 +47,14 @@ These are for debugging in VSCode.
             // Resolved by CMake Tools:
             "program": "${command:cmake.launchTargetPath}",
             "args": [
-            "-d 'Data/Classical tracks/Gripper/gripper_domain.pddl'",
-            "-p 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
-            "-f $HOME/bin/downward-projects/downward/fast-downward.py",
-            "-r RandomWalker",
-            "-v $HOME/bin/downward-projects/VAL/validate",
-            "-c"],
+                "--domain='Data/Classical tracks/Gripper/gripper_domain.pddl'",
+                "--problem='Data/Classical tracks/Gripper/gripper_problem.pddl'",
+                "--downwardpath=${workspaceFolder}/P7Requirements/downward/fast-downward.py",
+                "--reformulator=RandomWalker",
+                "--validatorpath=${workspaceFolder}/P7Requirements/VAL/validate",
+                "--timelimit=1000",
+                "--debugmode"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build",
             "environment": [
@@ -78,10 +80,12 @@ These are for debugging in VSCode.
             // Resolved by CMake Tools:
             "program": "${command:cmake.launchTargetPath}",
             "args": [
-            "-d 'Data/Classical tracks/Gripper/gripper_domain.pddl'",
-            "-p 'Data/Classical tracks/Gripper/gripper_problem.pddl'",
-            "-f $HOME/bin/downward-projects/downward/fast-downward.py",
-            "-r RandomWalker"],
+                "--domain='Data/Classical tracks/Gripper/gripper_domain.pddl'",
+                "--problem='Data/Classical tracks/Gripper/gripper_problem.pddl'",
+                "--downwardpath=${workspaceFolder}/P7Requirements/downward/fast-downward.py",
+                "--reformulator=RandomWalker",
+                "--validatorpath=${workspaceFolder}/P7Requirements//VAL/validate",
+                "--timelimit=1000"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build",
             "environment": [

@@ -12,16 +12,31 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	auto depthFunction = new ObjectActionDepthFunction(*instance);
 	std::vector<Path> paths;
 	unsigned int totalActionCount = 0;
+	unsigned int totalIterations = 0;
+	auto startTime = chrono::steady_clock::now();
 	for (int i = 0; i < widthFunc->GetWidth(); i++) {
 		Walker walker = Walker(instance,
-		ActionGenerator(instance->domain, instance->problem),
-		heu,
-		depthFunction);
+			ActionGenerator(instance->domain, instance->problem),
+			heu,
+			depthFunction);
 		paths.push_back(walker.Walk());
-		totalActionCount += walker.totalActions;
+
+		// Debug info
+		if (Configs->DebugMode.Content) {
+			totalActionCount += walker.totalActions;
+			totalIterations++;
+		}
 	}
+	auto endTime = chrono::steady_clock::now();
+
+	// Print debug info
 	if (Configs->DebugMode.Content) {
-		ConsoleHelper::PrintDebugInfo("[Walker] Total actions performed: " + to_string(totalActionCount), 1);
+		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count();
+		ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + to_string(ellapsed) + "ms", 1);
+		double iterationsPrSecond = (totalIterations * 1000) / ellapsed;
+		ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + to_string(totalIterations) + " [" + to_string(iterationsPrSecond) + "/s]", 1);
+		double actionsPrSecond = (totalActionCount * 1000) / ellapsed;
+		ConsoleHelper::PrintDebugInfo("[Walker] Total actions performed: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", 1);
 	}
 
 	// Do Something and transform the input PDDL into a new PDDL format

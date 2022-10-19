@@ -1,6 +1,8 @@
 #ifndef RandomWalkerReformulator_HH
 #define RandomWalkerReformulator_HH
 
+#include <chrono>
+
 #include "BaseReformulator.hh"
 #include "../Walker/Walker.hpp"
 #include "../Walker/Heuristics/RandomHeuristic.hh"

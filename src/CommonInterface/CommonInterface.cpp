@@ -70,7 +70,8 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	ConsoleHelper::PrintInfo("Run new PDDL files with Fast Downward...");
 	report->Begin("Running FastDownward");
 	DownwardRunner runner = DownwardRunner();
-	auto runRes = runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
+	runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
+	auto runRes = runner.ParseDownwardLog();
 	if (runRes != DownwardRunner::FoundPlan) {
 		ConsoleHelper::PrintError("No solution could be found for the plan");
 		t = report->Stop();

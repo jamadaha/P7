@@ -115,32 +115,44 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(unordered_set<c
 }
 
 bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLState *state, vector<unsigned int> *objects) {
-    for (int i = 0; i < literals->size(); i++) {
-        auto literal = &(literals->at(i));
+    const int literalsLength = literals->size();
+    for (int i = 0; i < literalsLength; i++) {
+        const PDDLLiteral* literal = &(literals->at(i));
         if (literal->args.size() < 2)
             continue;
         if (literal->predicateIndex == 0) {
-            bool areEqual = (objects->at(0) == objects->at(1));
-            if (areEqual != literal->value)
-                return false;
-        } else {
+            if (objects->size() > 1) {
+                bool areEqual = (objects->at(0) == objects->at(1));
+                if (areEqual != literal->value)
+                    return false;
+            }
+        }
+        else
+        {
+            const auto multiFact = &state->multiFacts.at(literal->predicateIndex);
+
             bool found = false;
-            for (int f = 0; f < state->multiFacts.at(literal->predicateIndex).size(); f++) {
+            const int multifactsLenght = multiFact->size();
+            for (int f = 0; f < multifactsLenght; f++) {
                 bool valid = true;
-                auto multiFact = &(state->multiFacts.at(literal->predicateIndex).at(f).fact);
-                for (int a = 0; a < multiFact->size(); a++) {
-                    if (objects->at(a) != multiFact->at(a))
+                auto multiFactFact = &multiFact->at(f).fact;
+                auto multiFactFactLength = multiFactFact->size();
+                for (int a = 0; a < multiFactFactLength; a++) {
+                    if (objects->at(a) != multiFactFact->at(a)) {
                         valid = false;
+                        break;
+                    }
                 }
 
                 if (valid) {
                     found = true;
                     break;
-                }                
+                }
             }
-            if (found != literals->at(i).   value)
+            if (found != literal->value)
                 return false;
         }
+        
     }
     return true;
 }

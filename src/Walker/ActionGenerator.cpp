@@ -106,14 +106,6 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(unordered_set<c
                 break;
             }
         }
-
-        //if (!IsSubsetOf<unsigned int>(newObjectRef, &candidateObjects, (*literal)->value)) {
-        //    candidateObjects.erase(1);
-        //}
-        //// Returns true, i.e. object should be deleted, depending on the literal state
-        //const auto NewObjectNegContains = [&](auto const& x) { return newObjectRef->contains(x) != (*literal)->value; };
-        //// Remove those which are(n't) contained in both depending on literal value
-        //erase_if(candidateObjects, NewObjectNegContains);
     }
 
     return candidateObjects;

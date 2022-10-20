@@ -93,15 +93,27 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(unordered_set<c
     }
 
     // Check what objects match all literals
-    const int candidateObjectsLength = candidateObjects.size();
     for (auto literal = literals->begin(); literal != literals->end(); literal++) {
-        // Find intersection of candidateobjects and the new literal
-        auto newObjectRef = &(state->unaryFacts.at((*literal)->predicateIndex));
+        // If candidtate objects are emtpy, dont keep looking
+        if (candidateObjects.size() == 0)
+            break;
 
-        // Returns true, i.e. object should be deleted, depending on the literal state
-        const auto NewObjectNegContains = [&](auto const& x) { return newObjectRef->contains(x) != (*literal)->value; };
-        // Remove those which are(n't) contained in both depending on literal value
-        erase_if(candidateObjects, NewObjectNegContains);
+        // Find intersection of candidateobjects and the new literal
+        auto newObjectsRef = &(state->unaryFacts.at((*literal)->predicateIndex));
+        for (auto candidtateObject = candidateObjects.begin(); candidtateObject != candidateObjects.end(); candidtateObject++) {
+            if (newObjectsRef->contains(*candidtateObject) != (*literal)->value) {
+                candidateObjects.erase(candidtateObject);
+                break;
+            }
+        }
+
+        //if (!IsSubsetOf<unsigned int>(newObjectRef, &candidateObjects, (*literal)->value)) {
+        //    candidateObjects.erase(1);
+        //}
+        //// Returns true, i.e. object should be deleted, depending on the literal state
+        //const auto NewObjectNegContains = [&](auto const& x) { return newObjectRef->contains(x) != (*literal)->value; };
+        //// Remove those which are(n't) contained in both depending on literal value
+        //erase_if(candidateObjects, NewObjectNegContains);
     }
 
     return candidateObjects;

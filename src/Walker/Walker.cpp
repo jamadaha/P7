@@ -11,6 +11,8 @@ Path Walker::Walk(PDDLState state) {
     PDDLState *tempState = new PDDLState(state.unaryFacts, state.multiFacts);
     for (int i = 0; i < depth; i++) {
         std::vector<PDDLActionInstance*> actions = actionGenerator.GenerateActions(tempState);
+        if (actions.size() == 0)
+            break;
         PDDLActionInstance* action = heuristic->NextChoice(actions);
         totalActions += actions.size();
         steps.push_back(action);

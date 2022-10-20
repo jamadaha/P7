@@ -99,13 +99,16 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(unordered_set<c
             break;
 
         // Find intersection of candidateobjects and the new literal
+        vector<unsigned int> deleteList;
         auto newObjectsRef = &(state->unaryFacts.at((*literal)->predicateIndex));
         for (auto candidtateObject = candidateObjects.begin(); candidtateObject != candidateObjects.end(); candidtateObject++) {
             if (newObjectsRef->contains(*candidtateObject) != (*literal)->value) {
-                candidateObjects.erase(candidtateObject);
-                break;
+                deleteList.push_back(*candidtateObject);
             }
         }
+        const int deleteListLength = deleteList.size();
+        for (int i = 0; i < deleteListLength; i++)
+            candidateObjects.erase(deleteList[i]);
     }
 
     return candidateObjects;

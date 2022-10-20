@@ -113,18 +113,20 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(unordered_set<c
 
 bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLState *state, vector<unsigned int> *objects) {
     for (int i = 0; i < literals->size(); i++) {
-        if (literals->at(i).args.size() < 2)
+        auto literal = &(literals->at(i));
+        if (literal->args.size() < 2)
             continue;
-        if (literals->at(i).predicateIndex == 0) {
+        if (literal->predicateIndex == 0) {
             bool areEqual = (objects->at(0) == objects->at(1));
-            if (areEqual != literals->at(i).value)
+            if (areEqual != literal->value)
                 return false;
         } else {
             bool found = false;
-            for (int f = 0; f < state->multiFacts.at(literals->at(i).predicateIndex).size(); f++) {
+            for (int f = 0; f < state->multiFacts.at(literal->predicateIndex).size(); f++) {
                 bool valid = true;
-                for (int a = 0; a < state->multiFacts.at(literals->at(i).predicateIndex).at(f).fact.size(); a++) {
-                    if (objects->at(a) != state->multiFacts.at(literals->at(i).predicateIndex).at(f).fact.at(a))
+                auto multiFact = &(state->multiFacts.at(literal->predicateIndex).at(f).fact);
+                for (int a = 0; a < multiFact->size(); a++) {
+                    if (objects->at(a) != multiFact->at(a))
                         valid = false;
                 }
 

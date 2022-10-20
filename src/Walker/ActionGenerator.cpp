@@ -109,8 +109,10 @@ bool ActionGenerator::IsLegal(const std::vector<PDDLLiteral> *literals, const PD
                 bool valid = true;
                 auto multiFact = &(state->multiFacts.at(literal->predicateIndex).at(f).fact);
                 for (int a = 0; a < multiFact->size(); a++) {
-                    if (objects->at(a) != multiFact->at(a))
+                    if (objects->at(a) != multiFact->at(a)) {
                         valid = false;
+                        break;
+                    }
                 }
 
                 if (valid) {

@@ -6,10 +6,10 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	RandomHeuristic<PDDLActionInstance>* heu = new RandomHeuristic<PDDLActionInstance>(PDDLContext(instance->domain, instance->problem));
 	BaseWidthFunction *widthFunc;
 	if (Configs->ReformulatorTime.Content == -1)
-		widthFunc = new ConstantWidthFunction(10000);
+		widthFunc = new ConstantWidthFunction(5000);
 	else
 		widthFunc = new TimeWidthFunction(Configs->ReformulatorTime.Content);
-	auto depthFunction = new ObjectActionDepthFunction(*instance);
+	auto depthFunction = new ConstantDepthFunction(100, *instance);
 	std::vector<Path> paths;
 	unsigned int totalActionCount = 0;
 	unsigned int totalIterations = 0;

@@ -62,17 +62,20 @@ std::vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction 
 std::unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(std::unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) {
     std::unordered_set<unsigned int> candidateObjects;
 
-    // Find first positive literal, and set candidate objects to those applicable
+    // Firs is setting candidate objects to the smallest set from some predicate
+    int sPredicateIndex = -1;
+    unsigned int smallestCount = 99999;
     for (auto iter = literals->begin(); iter != literals->end(); iter++) {
-        if ((*iter)->args.size() > 1)
-            continue;
-        if ((*iter)->value == true) {
-            candidateObjects = state->unaryFacts.at((*iter)->predicateIndex);
-            break;
+        if (state->unaryFacts.at((*iter)->predicateIndex).size() < smallestCount) {
+            sPredicateIndex = (*iter)->predicateIndex;
+            smallestCount = state->unaryFacts.at((*iter)->predicateIndex).size();
         }
     }
 
-    if (candidateObjects.size() == 0) {
+    // If some unary action applies to this, set it, else set to all objects
+    if (sPredicateIndex != -1)
+        candidateObjects = state->unaryFacts.at(sPredicateIndex);
+    else {
         candidateObjects.reserve(problem->objects.size());
         for (int i = 0; i < problem->objects.size(); i++)
             candidateObjects.emplace(i);

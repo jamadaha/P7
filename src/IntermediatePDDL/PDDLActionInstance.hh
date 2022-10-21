@@ -42,7 +42,7 @@ public:
 
             for (int i = 0; i < literal.args.size(); i++)
             {
-                temp += objectnames[literal.args[i]];
+                temp += objectnames[objects[literal.args[i]]];
                 if (i + 1 < literal.args.size()) {
                     temp += " ";
                 }
@@ -59,6 +59,38 @@ public:
         temp += ")\n";
 
         //Print effect
+        temp += "effect(";
+        for (int i = 0; i < action->effects.size(); i++)
+        {
+            temp += "(";
+            PDDLLiteral literal = action->effects[i];
+
+            if (!literal.value) {
+                temp += "not ";
+            }
+            auto predicate = domain->predicates[literal.predicateIndex];
+            temp += predicate.name + " ";
+            //temp += objectnames[literal.predicateIndex] + " ";
+
+            for (int i = 0; i < literal.args.size(); i++)
+            {
+                temp += objectnames[objects[literal.args[i]]];
+                if (i + 1 < literal.args.size()) {
+                    temp += " ";
+                }
+            }
+
+
+            temp += ")";
+
+            if (i + 1 < action->effects.size()) {
+                temp += " ";
+            }
+
+        }
+        temp += ")\n";
+
+
         return temp;
     };
 private:

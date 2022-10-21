@@ -12,7 +12,7 @@
 #include "../PDDLCodeGenerator/PDDLCodeGenerator.hh"
 #include "../SASCodeGenerator/SASCodeGenerator.hh"
 #include "../SASParser/SASParser.hh"
-#include "../Config/config.hh"
+#include "../Config/Config.hh"
 #include "../DownwardRunner/DownwardRunner.hh"
 #include "../PlanValidators/PlanValidator.hh"
 #include "../IntermediatePDDL/PDDLInstance.hh"

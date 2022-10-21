@@ -9,7 +9,7 @@
 #include "../Walker/DepthFunctions/ConstantDepthFunction.hh"
 #include "../Walker/WidthFunctions/ConstantWidthFunction.hh"
 #include "../Walker/WidthFunctions/TimeWidthFunction.hh"
-#include "../Config/config.hh"
+#include "../Config/Config.hh"
 #include "../Helpers/ConsoleHelper.hh"
 
 class RandomWalkerReformulator : public BaseReformulator {

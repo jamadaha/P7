@@ -123,7 +123,7 @@ bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLSta
             const auto multiFact = &state->multiFacts.at(literal->predicateIndex);
 
             bool found = false;
-            const int multifactsLenght = multiFact->size();
+            const int multiFactLength = multiFact->size();
             for (int f = 0; f < multifactsLenght; f++) {
                 bool valid = true;
                 auto multiFactFact = &multiFact->at(f).fact;

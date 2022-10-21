@@ -17,6 +17,8 @@ Path Walker::Walk(PDDLState state) {
         totalActions += actions.size();
         steps.push_back(action);
         tempState = DoAction(tempState, action);
+
+        //std::cout << action->ToString(this->instance->problem, this->instance->domain);
     }
     free(tempState);
     return Path(steps);

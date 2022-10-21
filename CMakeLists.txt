@@ -4,6 +4,7 @@ set (CMAKE_CXX_STANDARD 20)
 project(P7 VERSION 0.1.0)
 project(P7Lab VERSION 0.1.0)
 
+
 add_subdirectory(src/Helpers/)
 add_subdirectory(src/RunReport/)
 add_subdirectory(src/Config/)
@@ -22,6 +23,7 @@ add_subdirectory(src/Walker/)
 add_subdirectory(src/Walker/DepthFunctions/)
 add_subdirectory(src/Walker/WidthFunctions/)
 add_subdirectory(src/)
+
 
 file(COPY Data DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY "runP7.py" DESTINATION ${CMAKE_BINARY_DIR})

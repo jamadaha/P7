@@ -11,7 +11,7 @@ from Lab.Benchmarks import get_suite, make_tasks
 args = set_arguments()
 
 reportfolder = get_from_argument(args.report,__file__, "build/LabReport")
-projectfile = get_from_argument(args.P7,__file__, "build/P7")
+projectfile = get_from_argument(args.P7,__file__, "build/src/P7")
 
 downwardfilepath = args.downward
 validatorfilepath = args.validate

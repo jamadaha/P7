@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "../Config/config.hh"
+#include "../Config/Config.hh"
 #include "../Helpers/FileHelper.hh"
 
 class PathsChecker {

@@ -4,7 +4,7 @@
 #include <string>
 #include <fstream>
 
-#include "../Config/config.hh"
+#include "../Config/Config.hh"
 
 class DownwardRunner {
 public:

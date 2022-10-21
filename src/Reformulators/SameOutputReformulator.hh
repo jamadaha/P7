@@ -2,7 +2,7 @@
 #define SameOutputReformulator_HH
 
 #include "BaseReformulator.hh"
-#include "../Config/config.hh"
+#include "../Config/Config.hh"
 #include "../Helpers/ConsoleHelper.hh"
 
 class SameOutputReformulator : public BaseReformulator {

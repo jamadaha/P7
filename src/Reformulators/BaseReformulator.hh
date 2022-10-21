@@ -3,7 +3,7 @@
 
 #include "../IntermediatePDDL/PDDLInstance.hh"
 #include "../SASParser/SASParser.hh"
-#include "../Config/config.hh"
+#include "../Config/Config.hh"
 
 class BaseReformulator {
 public:

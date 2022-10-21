@@ -158,6 +158,7 @@ To launch in Visual Studio (Note: This is the inferior version):
       "project": "CMakeLists.txt",
       "projectTarget": "P7",
       "debuggerConfiguration": "gdb",
+      "cwd": "/root/.vs/P7/",
       "args": [
         "--domain='Data/Classical tracks/Gripper/gripper_domain.pddl'",
         "--problem='Data/Classical tracks/Gripper/gripper_problem.pddl'",
@@ -176,6 +177,7 @@ To launch in Visual Studio (Note: This is the inferior version):
       "project": "CMakeLists.txt",
       "projectTarget": "P7",
       "debuggerConfiguration": "gdb",
+      "cwd": "/root/.vs/P7/",
       "args": [
         "--domain='Data/Classical tracks/Gripper/gripper_domain.pddl'",
         "--problem='Data/Classical tracks/Gripper/gripper_problem.pddl'",

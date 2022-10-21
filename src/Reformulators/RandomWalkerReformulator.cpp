@@ -3,10 +3,10 @@
 using namespace std;
 
 PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
-	RandomHeuristic<PDDLActionInstance>* heu = new RandomHeuristic<PDDLActionInstance>(PDDLContext(instance->domain, instance->problem));
+	RandomHeuristic<PDDLActionInstance*>* heu = new RandomHeuristic<PDDLActionInstance*>(PDDLContext(instance->domain, instance->problem));
 	BaseWidthFunction *widthFunc;
 	if (Configs->ReformulatorTime.Content == -1)
-		widthFunc = new ConstantWidthFunction(5000);
+		widthFunc = new ConstantWidthFunction(100);
 	else
 		widthFunc = new TimeWidthFunction(Configs->ReformulatorTime.Content);
 	auto depthFunction = new ConstantDepthFunction(100, *instance);
@@ -36,7 +36,7 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 		double iterationsPrSecond = (totalIterations * 1000) / ellapsed;
 		ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + to_string(totalIterations) + " [" + to_string(iterationsPrSecond) + "/s]", 1);
 		double actionsPrSecond = (totalActionCount * 1000) / ellapsed;
-		ConsoleHelper::PrintDebugInfo("[Walker] Total actions performed: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", 1);
+		ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", 1);
 	}
 
 	// Do Something and transform the input PDDL into a new PDDL format

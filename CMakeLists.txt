@@ -31,7 +31,7 @@ set(SOURCES
 	# Plan Validator
 	"src/PlanValidators/PlanValidator.cpp" 
     # PDDL Types
-	"src/IntermediatePDDL/PDDLConverter.cpp" "src/IntermediatePDDL/PDDLAction.hh" "src/IntermediatePDDL/PDDLLiteral.hh" "src/IntermediatePDDL/PDDLDomain.hh" "src/IntermediatePDDL/PDDLPredicate.hh" "src/IntermediatePDDL/PDDLProblem.hh" "src/IntermediatePDDL/PDDLInstance.hh" "src/IntermediatePDDL/PDDLState.hh"
+	"src/IntermediatePDDL/PDDLConverter.cpp" "src/IntermediatePDDL/PDDLAction.hh" "src/IntermediatePDDL/PDDLLiteral.hh" "src/IntermediatePDDL/PDDLDomain.hh" "src/IntermediatePDDL/PDDLPredicate.hh" "src/IntermediatePDDL/PDDLProblem.hh" "src/IntermediatePDDL/PDDLInstance.hh" "src/IntermediatePDDL/PDDLState.hh" "src/IntermediatePDDL/PDDLActionInstance.cpp"
 	# Walker
 	"src/Walker/ActionGenerator.cpp" "src/Walker/Walker.cpp"
 	## Heuristics
@@ -47,7 +47,7 @@ set(SOURCES
 	
 
 )
-add_executable (P7 "src/P7.cpp" ${SOURCES})
+add_executable (P7 "src/Walker/P7.cpp" ${SOURCES})
 add_executable (P7Lab "src/P7Lab.cpp" ${SOURCES})
 target_include_directories(P7 PRIVATE "PDDLParser")
 

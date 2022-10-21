@@ -4,95 +4,19 @@
 #include <vector>
 #include <string>
 
+#include "PDDLProblem.hh"
+#include "PDDLDomain.hh"
 #include "PDDLAction.hh"
 
-#include "PDDLDomain.hh"
+struct PDDLProblem;
 
 class PDDLActionInstance {
 public:
     const PDDLAction *action;
     const std::vector<unsigned int> objects;
     PDDLActionInstance(const PDDLAction *action, const std::vector<unsigned int> objects) : action(action), objects(objects) {}; 
-    std::string ToString(std::vector<std::string> objectnames, PDDLDomain* domain) {
-
-        //Print action
-        std::string temp = action->name + "(";
-        for (int i = 0; i < objects.size(); i++)
-        {
-            temp += objectnames[objects[i]];
-            if (i + 1 < objects.size()) {
-                temp += " ";
-            }
-        }
-        temp += ")\n";
-
-        //Print precondition
-        temp += "precondition(";
-        for (int i = 0; i < action->preconditions.size(); i++)
-        {
-            temp += "(";
-            PDDLLiteral literal = action->preconditions[i];
-            
-            if (!literal.value) {
-                temp += "not ";
-            }
-            auto predicate = domain->predicates[literal.predicateIndex];
-            temp += predicate.name + " ";
-            //temp += objectnames[literal.predicateIndex] + " ";
-
-            for (int i = 0; i < literal.args.size(); i++)
-            {
-                temp += objectnames[objects[literal.args[i]]];
-                if (i + 1 < literal.args.size()) {
-                    temp += " ";
-                }
-            }
-            
-            
-            temp += ")";
-
-            if (i + 1 < action->preconditions.size()) {
-                temp += " ";
-            }
-            
-        }
-        temp += ")\n";
-
-        //Print effect
-        temp += "effect(";
-        for (int i = 0; i < action->effects.size(); i++)
-        {
-            temp += "(";
-            PDDLLiteral literal = action->effects[i];
-
-            if (!literal.value) {
-                temp += "not ";
-            }
-            auto predicate = domain->predicates[literal.predicateIndex];
-            temp += predicate.name + " ";
-            //temp += objectnames[literal.predicateIndex] + " ";
-
-            for (int i = 0; i < literal.args.size(); i++)
-            {
-                temp += objectnames[objects[literal.args[i]]];
-                if (i + 1 < literal.args.size()) {
-                    temp += " ";
-                }
-            }
-
-
-            temp += ")";
-
-            if (i + 1 < action->effects.size()) {
-                temp += " ";
-            }
-
-        }
-        temp += ")\n";
-
-
-        return temp;
-    };
+    std::string ToString(const PDDLProblem* problem, const PDDLDomain* domain);
+    std::string LiteralsToString(std::vector<PDDLLiteral> literals, const PDDLDomain* domain, const PDDLProblem* problem);
 private:
 };
 

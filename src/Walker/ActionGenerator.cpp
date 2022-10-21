@@ -94,21 +94,12 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(unordered_set<c
 
     // Check what objects match all literals
     for (auto literal = literals->begin(); literal != literals->end(); literal++) {
-        // If candidtate objects are emtpy, dont keep looking
-        if (candidateObjects.size() == 0)
-            break;
-
         // Find intersection of candidateobjects and the new literal
-        vector<unsigned int> deleteList;
-        auto newObjectsRef = &(state->unaryFacts.at((*literal)->predicateIndex));
-        for (auto candidtateObject = candidateObjects.begin(); candidtateObject != candidateObjects.end(); candidtateObject++) {
-            if (newObjectsRef->contains(*candidtateObject) != (*literal)->value) {
-                deleteList.push_back(*candidtateObject);
-            }
-        }
-        const int deleteListLength = deleteList.size();
-        for (int i = 0; i < deleteListLength; i++)
-            candidateObjects.erase(deleteList[i]);
+        auto newObjectRef = &(state->unaryFacts.at((*literal)->predicateIndex));
+        // Returns true, i.e. object should be deleted, depending on the literal state
+        const auto NewObjectNegContains = [&](auto const& x) { return newObjectRef->contains(x) != (*literal)->value; };
+        // Remove those which are(n't) contained in both depending on literal value
+        std::erase_if(candidateObjects, NewObjectNegContains);
     }
 
     return candidateObjects;

@@ -1,4 +1,4 @@
-add_executable(Tests-ActionGenerator Test/Walker/ActionGenerator.cpp ${SOURCES})
+add_executable(Tests-ActionGenerator Test/Walker/ActionGenerator.cpp)
 target_link_libraries(Tests-ActionGenerator 
     PRIVATE 
         Catch2::Catch2WithMain

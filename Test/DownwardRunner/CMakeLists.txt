@@ -1,4 +1,4 @@
-add_executable(Tests-DownwardRunner Test/DownwardRunner/DownwardRunner.cpp ${SOURCES})
+add_executable(Tests-DownwardRunner Test/DownwardRunner/DownwardRunner.cpp)
 target_link_libraries(Tests-DownwardRunner 
     PRIVATE 
         Catch2::Catch2WithMain

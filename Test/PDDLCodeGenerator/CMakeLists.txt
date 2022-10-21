@@ -1,4 +1,4 @@
-add_executable(Tests-PDDLCodeGenerator Test/PDDLCodeGenerator/PDDLCodeGenerator.cpp ${SOURCES})
+add_executable(Tests-PDDLCodeGenerator Test/PDDLCodeGenerator/PDDLCodeGenerator.cpp)
 target_link_libraries(Tests-PDDLCodeGenerator 
     PRIVATE 
         Catch2::Catch2WithMain

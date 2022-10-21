@@ -1,4 +1,4 @@
-add_executable(Tests-PlanValidator Test/PlanValidators/PlanValidator.cpp ${SOURCES})
+add_executable(Tests-PlanValidator Test/PlanValidators/PlanValidator.cpp)
 target_link_libraries(Tests-PlanValidator 
     PRIVATE 
         Catch2::Catch2WithMain

@@ -1,4 +1,4 @@
-add_executable(Tests-Helpers Test/Helpers/StringHelper.cpp ${SOURCES})
+add_executable(Tests-Helpers Test/Helpers/StringHelper.cpp)
 target_link_libraries(Tests-Helpers 
     PRIVATE 
         Catch2::Catch2WithMain

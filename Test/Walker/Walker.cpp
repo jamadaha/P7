@@ -81,22 +81,21 @@ TEST_CASE(TAG + "Multi") {
             
         },
         std::unordered_map<unsigned int, std::vector<MultiFact>> {
-            {0, std::vector<MultiFact>{ MultiFact(std::vector<unsigned int>{ 0, 1 }), MultiFact(std::vector<unsigned int>{ 1, 2 })}},
-            {1, std::vector<MultiFact>{ MultiFact(std::vector<unsigned int>{ 0, 1 }), MultiFact(std::vector<unsigned int>{ 1, 2 })}},
-            {2, std::vector<MultiFact>{ MultiFact(std::vector<unsigned int>{ 0, 1, 2 })}},
+            {0, std::vector<MultiFact>{ MultiFact(std::vector<unsigned int>{ 0, 1 }), MultiFact(std::vector<unsigned int>{ 1, 2 }), MultiFact(std::vector<unsigned int>{ 0, 0 })}},
+            {1, std::vector<MultiFact>{ MultiFact(std::vector<unsigned int>{ 0, 1 }), MultiFact(std::vector<unsigned int>{ 1, 2 }), MultiFact(std::vector<unsigned int>{ 0, 0 })}},
+            {2, std::vector<MultiFact>{ MultiFact(std::vector<unsigned int>{ 0, 1, 2 }), MultiFact(std::vector<unsigned int>{ 1, 1, 0 })}},
             {3, std::vector<MultiFact>{}}
         }
     );
 
     SECTION("Adding") {
-        PDDLAction action = PDDLAction("Name",
-        std::vector<std::string>{ "?x", "?y" },
-        std::vector<PDDLLiteral>{},
-        std::vector<PDDLLiteral>{
-            PDDLLiteral(0, std::vector<unsigned int>{ 0, 1 }, true)
-        });
-        
         SECTION("Equality") {
+            PDDLAction action = PDDLAction("Name",
+            std::vector<std::string>{ "?x", "?y" },
+            std::vector<PDDLLiteral>{},
+            std::vector<PDDLLiteral>{
+                PDDLLiteral(0, std::vector<unsigned int>{ 0, 1 }, true)
+            });
             SECTION("Safe Overwrite") {
                 PDDLState before = state;
                 PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 0, 1 });
@@ -111,5 +110,134 @@ TEST_CASE(TAG + "Multi") {
             }
         }
         
+        SECTION("Two Arguments") {
+            PDDLAction action = PDDLAction("Name",
+            std::vector<std::string>{ "?x", "?y" },
+            std::vector<PDDLLiteral>{},
+            std::vector<PDDLLiteral>{
+                PDDLLiteral(1, std::vector<unsigned int>{ 0, 1 }, true)
+            });
+            SECTION("Safe Overwrite") {
+                PDDLState before = state;
+                PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 0, 1 });
+                Walker::DoAction(&state, &actionInstance);
+                REQUIRE(before == state);
+            }
+            SECTION("New") {
+                REQUIRE(!state.ContainsFact(1, MultiFact(std::vector<unsigned int>{ 2, 3 })));
+                PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 2, 3 });
+                Walker::DoAction(&state, &actionInstance);
+                REQUIRE(state.ContainsFact(1, MultiFact(std::vector<unsigned int>{ 2, 3 })));
+            }
+            SECTION("Duplicate Arguments") {
+                REQUIRE(!state.ContainsFact(1, MultiFact(std::vector<unsigned int>{ 1, 1 })));
+                PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 1, 1 });
+                Walker::DoAction(&state, &actionInstance);
+                REQUIRE(state.ContainsFact(1, MultiFact(std::vector<unsigned int>{ 1, 1 })));
+            }
+        }
+
+        SECTION("Three Arguments") {
+            PDDLAction action = PDDLAction("Name",
+            std::vector<std::string>{ "?x", "?y", "?z" },
+            std::vector<PDDLLiteral>{},
+            std::vector<PDDLLiteral>{
+                PDDLLiteral(2, std::vector<unsigned int>{ 0, 1, 2 }, true)
+            });
+            SECTION("Safe Overwrite") {
+                PDDLState before = state;
+                PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 0, 1, 2 });
+                Walker::DoAction(&state, &actionInstance);
+                REQUIRE(before == state);
+            }
+            SECTION("New") {
+                REQUIRE(!state.ContainsFact(2, MultiFact(std::vector<unsigned int>{ 2, 3, 4 })));
+                PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 2, 3, 4 });
+                Walker::DoAction(&state, &actionInstance);
+                REQUIRE(state.ContainsFact(2, MultiFact(std::vector<unsigned int>{ 2, 3, 4 })));
+            }
+            SECTION("Duplicate Arguments") {
+                REQUIRE(!state.ContainsFact(2, MultiFact(std::vector<unsigned int>{ 0, 0, 1 })));
+                PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 0, 0, 1 });
+                Walker::DoAction(&state, &actionInstance);
+                REQUIRE(state.ContainsFact(2, MultiFact(std::vector<unsigned int>{ 0, 0, 1 })));
+            }
+        }
+    };
+    SECTION("Subtracting") {
+        SECTION("Equality") {
+            PDDLAction action = PDDLAction("Name",
+            std::vector<std::string>{ "?x", "?y" },
+            std::vector<PDDLLiteral>{},
+            std::vector<PDDLLiteral>{
+                PDDLLiteral(0, std::vector<unsigned int>{ 0, 1 }, false)
+            });
+            SECTION("Safe Overwrite") {
+                PDDLState before = state;
+                PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 4, 5 });
+                Walker::DoAction(&state, &actionInstance);
+                REQUIRE(before == state);
+            }
+            SECTION("Removes") {
+                REQUIRE(state.ContainsFact(0, MultiFact(std::vector<unsigned int>{ 0, 1 })));
+                PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 0, 1 });
+                Walker::DoAction(&state, &actionInstance);
+                REQUIRE(!state.ContainsFact(0, MultiFact(std::vector<unsigned int>{ 0, 1 })));
+            }
+        }
+        
+        SECTION("Two Arguments") {
+            PDDLAction action = PDDLAction("Name",
+            std::vector<std::string>{ "?x", "?y" },
+            std::vector<PDDLLiteral>{},
+            std::vector<PDDLLiteral>{
+                PDDLLiteral(1, std::vector<unsigned int>{ 0, 1 }, false)
+            });
+            SECTION("Safe Overwrite") {
+                PDDLState before = state;
+                PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 4, 5 });
+                Walker::DoAction(&state, &actionInstance);
+                REQUIRE(before == state);
+            }
+            SECTION("Removes") {
+                REQUIRE(state.ContainsFact(1, MultiFact(std::vector<unsigned int>{ 0, 1 })));
+                PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 0, 1 });
+                Walker::DoAction(&state, &actionInstance);
+                REQUIRE(!state.ContainsFact(1, MultiFact(std::vector<unsigned int>{ 0, 1 })));
+            }
+            SECTION("Duplicate Arguments") {
+                REQUIRE(state.ContainsFact(1, MultiFact(std::vector<unsigned int>{ 0, 0 })));
+                PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 0, 0 });
+                Walker::DoAction(&state, &actionInstance);
+                REQUIRE(!state.ContainsFact(1, MultiFact(std::vector<unsigned int>{ 0, 0 })));
+            }
+        }
+
+        SECTION("Three Arguments") {
+            PDDLAction action = PDDLAction("Name",
+            std::vector<std::string>{ "?x", "?y", "?z" },
+            std::vector<PDDLLiteral>{},
+            std::vector<PDDLLiteral>{
+                PDDLLiteral(2, std::vector<unsigned int>{ 0, 1, 2 }, false)
+            });
+            SECTION("Safe Overwrite") {
+                PDDLState before = state;
+                PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 2, 3, 4 });
+                Walker::DoAction(&state, &actionInstance);
+                REQUIRE(before == state);
+            }
+            SECTION("Removes") {
+                REQUIRE(state.ContainsFact(2, MultiFact(std::vector<unsigned int>{ 0, 1, 2 })));
+                PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 0, 1, 2 });
+                Walker::DoAction(&state, &actionInstance);
+                REQUIRE(!state.ContainsFact(2, MultiFact(std::vector<unsigned int>{ 0, 1, 2 })));
+            }
+            SECTION("Duplicate Arguments") {
+                REQUIRE(state.ContainsFact(2, MultiFact(std::vector<unsigned int>{ 1, 1, 0 })));
+                PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 1, 1, 0 });
+                Walker::DoAction(&state, &actionInstance);
+                REQUIRE(!state.ContainsFact(2, MultiFact(std::vector<unsigned int>{ 1, 1, 0 })));
+            }
+        }
     };
 }

@@ -44,6 +44,10 @@ struct PDDLState {
         return true;
     };
 
+    bool ContainsFact(const unsigned int key, const std::vector<unsigned int> value) const {
+        return ContainsFact(key, MultiFact(value));
+    };
+
     // Very slow, please only use with caution
     friend bool operator== (const PDDLState &lhs, const PDDLState &rhs) {
         // Check unary facts

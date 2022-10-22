@@ -36,37 +36,15 @@ void Walker::DoAction(PDDLState *state, const PDDLActionInstance *action) {
                 state->unaryFacts.at(effect.predicateIndex).erase(action->objects.at(effect.args.at(0)));
         } else {
             // Handle multi effect
-            int index = -1;
-            int multiFactLength = state->multiFacts.at(effect.predicateIndex).size();
-            for (int f = 0; f < multiFactLength; f++) {
-                bool equal = true;
-                int argLength = effect.args.size();
-                for (int e = 0; e < argLength; e++) {
-                    if (state->multiFacts.at(effect.predicateIndex).at(f).fact.at(e) !=
-                        action->objects.at(effect.args.at(e))) {
-                            equal = false;
-                            break;
-                        }
-                }
-                if (equal) {
-                    index = f;
-                    break;
-                }
-            }
             if (effect.value) {
-                if (index == -1) {
-                    std::vector<unsigned int> factArgs;
-                    factArgs.reserve(effect.args.size());
-                    int argLength = effect.args.size();
-                    for (int i = 0; i < argLength; i++)
-                        factArgs.push_back(action->objects.at(effect.args.at(i)));
-                    state->multiFacts.at(effect.predicateIndex).push_back(MultiFact(factArgs));
-                }
+                if (state->ContainsFact(effect.predicateIndex, action->objects))
+                    continue;
+                state->multiFacts.at(effect.predicateIndex).push_back(MultiFact(action->objects));
             } else {
-                if (index != -1) {
-                    auto fact = state->multiFacts.at(effect.predicateIndex);
-                    fact.erase(fact.begin());
-                }
+                if (!state->ContainsFact(effect.predicateIndex, action->objects))
+                    continue;
+                auto factSet = &state->multiFacts.at(effect.predicateIndex);
+                factSet->erase(std::remove(factSet->begin(), factSet->end(), MultiFact(action->objects)), factSet->end());
             }
         }
     }

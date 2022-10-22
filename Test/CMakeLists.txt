@@ -24,6 +24,7 @@ add_executable(Test-All
 	"Test/SASParser/SASParser.cpp"
 	"Test/SASCodeGenerator/SASCodeGenerator.cpp"
 	"Test/Walker/ActionGenerator.cpp"
+	"Test/Walker/Walker.cpp"
 	"Test/Walker/DepthFunctions/ConstantDepthFunction.cpp"
 	"Test/Walker/DepthFunctions/ObjectActionDepthFunction.cpp"
 	"Test/PlanValidators/PlanValidator.cpp"

@@ -56,25 +56,26 @@ vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction *acti
 }
 
 unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) const {
-    unordered_set<unsigned int> candidateObjects;
-
-    for (auto iter = literals->begin(); iter != literals->end(); iter++) {
-        if ((*iter)->value == true) {
-            candidateObjects = state->unaryFacts.at((*iter)->predicateIndex);
-            break;
-        }
-    }
-
-    if (candidateObjects.size() == 0) {
-        const int problemObjectsSize = problem->objects.size();
-        candidateObjects.reserve(problemObjectsSize);
-        for (int i = 0; i < problemObjectsSize; i++)
+    if (literals->size() == 0) {
+        const int objectCount = problem->objects.size();
+        unordered_set<unsigned int> candidateObjects;
+        candidateObjects.reserve(objectCount);
+        for (int i = 0; i < problem->objects.size(); i++)
             candidateObjects.emplace(i);
+        return candidateObjects;
+    } else {
+        unordered_set<unsigned int> candidateObjects;
+
+        for (auto iter = literals->begin(); iter != literals->end(); iter++) {
+            if ((*iter)->value == true) {
+                candidateObjects = state->unaryFacts.at((*iter)->predicateIndex);
+                break;
+            }
+        }
+        RemoveIllegal(candidateObjects, literals, state);
+
+        return candidateObjects;
     }
-
-    RemoveIllegal(candidateObjects, literals, state);
-
-    return candidateObjects;
 }
 
 void ActionGenerator::RemoveIllegal(std::unordered_set<unsigned int> &set, const std::unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) {
@@ -105,7 +106,6 @@ bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLSta
             if (state->ContainsFact(literal->predicateIndex, objects) != literal->value)
                 return false;
         }
-        
     }
     return true;
 }

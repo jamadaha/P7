@@ -14,24 +14,26 @@ struct PDDLAction {
     const std::vector<std::string> parameters;
     const std::vector<PDDLLiteral> preconditions;
     const std::vector<PDDLLiteral> effects;
-    // For each parameter, what preconditions mention it
-    const std::unordered_map<unsigned int, const std::unordered_set<const PDDLLiteral*>> applicableLiterals;
+    // For each parameter, what unary preconditions mention it
+    const std::unordered_map<unsigned int, const std::unordered_set<const PDDLLiteral*>> applicableUnaryLiterals;
+    // For each parameter, what non unary preconditions mention it
+    const std::unordered_map<unsigned int, const std::unordered_set<const PDDLLiteral*>> applicableMultiLiterals;
     PDDLAction() : name("Not Set") {};
 
     PDDLAction(std::string name, std::vector<std::string> parameters, std::vector<PDDLLiteral> preconditions, std::vector<PDDLLiteral> effects) : 
-        name(name), parameters(parameters), preconditions(preconditions), effects(effects), applicableLiterals(GenerateApplicableLiterals()) {};
+        name(name), parameters(parameters), preconditions(preconditions), effects(effects), applicableUnaryLiterals(GenerateApplicableLiterals(true)), applicableMultiLiterals(GenerateApplicableLiterals(false)) {};
 
     PDDLAction(const PDDLAction &a) : 
-        name(a.name), parameters(a.parameters), preconditions(a.preconditions), effects(a.effects), applicableLiterals(GenerateApplicableLiterals()) {};
+        name(a.name), parameters(a.parameters), preconditions(a.preconditions), effects(a.effects), applicableUnaryLiterals(GenerateApplicableLiterals(true)), applicableMultiLiterals(GenerateApplicableLiterals(false)) {};
 
 private:
-    std::unordered_map<unsigned int, const std::unordered_set<const PDDLLiteral*>> GenerateApplicableLiterals() {
+    std::unordered_map<unsigned int, const std::unordered_set<const PDDLLiteral*>> GenerateApplicableLiterals(bool unary) {
         std::unordered_map<unsigned int, const std::unordered_set<const PDDLLiteral*>> set;
         for (int i = 0; i < parameters.size(); i++) {
             std::unordered_set<const PDDLLiteral*> tempSet;
             for (int literalIndex = 0; literalIndex < preconditions.size(); literalIndex++) {
-                auto literal = &preconditions.at(literalIndex);
-                if (literal->args.size() != 1)
+                const PDDLLiteral *literal = &preconditions.at(literalIndex);
+                if (unary ? (literal->args.size() != 1) : (literal->args.size() == 1))
                     continue;
                 for (int argIndex = 0; argIndex < literal->args.size(); argIndex++)
                     if (i == literal->args.at(argIndex))

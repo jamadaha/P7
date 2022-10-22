@@ -13,15 +13,24 @@
 class ActionGenerator {
 public:
     ActionGenerator(PDDLDomain *domain, PDDLProblem *problem) : domain(domain), problem(problem) {};
-    std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state);
+    std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state) const;
+    /// @brief Removes those in \p set which do not match the given literals
+    /// @param literals Some unary literals
+    static void RemoveIllegal(std::unordered_set<unsigned int> &set, const std::unordered_set<const PDDLLiteral*> *literals, const PDDLState *state);
+    /// @brief Removes those in \p set which do not match the given literal
+    /// @param literal Some unary literal
+    static void RemoveIllegal(std::unordered_set<unsigned int> &set, const PDDLLiteral *literal, const PDDLState *state);
+    /// @brief Finds next permutation of the \p iteration
+    /// @return Returns true if it hasn't reached the final permutation, and false if it has
+    static bool Iterate(std::vector<std::unordered_set<unsigned int>::iterator> *iteration, std::vector<std::unordered_set<unsigned int>> *candidateObjects);
 private:
     PDDLDomain *domain;
     PDDLProblem *problem;
      // Given some action generate all legal parameter variations
-    std::vector<PDDLActionInstance> GenerateLegal(const PDDLAction *action, const PDDLState *state);
-    std::unordered_set<unsigned int> GetCandidateObjects(const std::unordered_set<const PDDLLiteral*> &literals, const PDDLState *state);
-    bool IsLegal(const std::vector<PDDLLiteral> *literals, const PDDLState *state, std::vector<unsigned int> *objects);
-    bool Iterate(std::vector<std::unordered_set<unsigned int>::iterator> *iteration, std::vector<std::unordered_set<unsigned int>> *candidateObjects);
+    std::vector<PDDLActionInstance> GenerateLegal(const PDDLAction *action, const PDDLState *state) const;
+    std::unordered_set<unsigned int> GetCandidateObjects(const std::unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) const;
+    bool IsLegal(const std::vector<PDDLLiteral> *literals, const PDDLState *state, std::vector<unsigned int> *objects) const;
+    
 };
 
 #endif

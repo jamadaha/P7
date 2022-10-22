@@ -2,7 +2,7 @@
 
 using namespace std;
 
-vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *state) {
+vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *state) const {
     vector<PDDLActionInstance> legalActions;
     const int domainLength = domain->actions.size();
     for (int i = 0; i < domainLength; i++) {
@@ -14,7 +14,7 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *sta
     return legalActions;
 }
 
-vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction *action, const PDDLState *state) {
+vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction *action, const PDDLState *state) const {
     vector<PDDLActionInstance> legalActions;
 
     // Object which fulfill the unary literals of the action preconditions
@@ -22,7 +22,7 @@ vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction *acti
     candidateObjects.reserve(action->parameters.size());
     const int parameterLength = action->parameters.size();
     for (int i = 0; i < parameterLength; i++) {
-        std::unordered_set<unsigned int> candididateObjects = GetCandidateObjects(action->applicableUnaryLiterals.at(i), state);
+        std::unordered_set<unsigned int> candididateObjects = GetCandidateObjects(&action->applicableUnaryLiterals.at(i), state);
         // if some parameter doesn't have any candidate object, the action is not possible
         if (candididateObjects.size() == 0)
             return legalActions;
@@ -55,10 +55,10 @@ vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction *acti
     return legalActions;
 }
 
-unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered_set<const PDDLLiteral*> &literals, const PDDLState *state) {
+unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) const {
     unordered_set<unsigned int> candidateObjects;
 
-    for (auto iter = literals.begin(); iter != literals.end(); iter++) {
+    for (auto iter = literals->begin(); iter != literals->end(); iter++) {
         if ((*iter)->value == true) {
             candidateObjects = state->unaryFacts.at((*iter)->predicateIndex);
             break;
@@ -72,20 +72,27 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered
             candidateObjects.emplace(i);
     }
 
-    // Check what objects match all literals
-    for (auto literal = literals.begin(); literal != literals.end(); literal++) {
-        // Find intersection of candidateobjects and the new literal
-        auto newObjectRef = &(state->unaryFacts.at((*literal)->predicateIndex));
-        // Returns true, i.e. object should be deleted, depending on the literal state
-        const auto NewObjectNegContains = [&](auto const& x) { return newObjectRef->contains(x) != (*literal)->value; };
-        // Remove those which are(n't) contained in both depending on literal value
-        std::erase_if(candidateObjects, NewObjectNegContains);
-    }
+    RemoveIllegal(candidateObjects, literals, state);
 
     return candidateObjects;
 }
 
-bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLState *state, vector<unsigned int> *objects) {
+void ActionGenerator::RemoveIllegal(std::unordered_set<unsigned int> &set, const std::unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) {
+    for (auto literal = literals->begin(); literal != literals->end(); literal++) {
+        RemoveIllegal(set, (*literal), state);
+    }
+}
+
+void ActionGenerator::RemoveIllegal(std::unordered_set<unsigned int> &set, const PDDLLiteral *literal, const PDDLState *state) {
+    // Find intersection of candidateobjects and the new literal
+    const std::unordered_set<unsigned int> *newObjectRef = &(state->unaryFacts.at(literal->predicateIndex));
+    // Returns true, i.e. object should be deleted, depending on the literal state
+    const auto NewObjectNegContains = [&](auto const& x) { return newObjectRef->contains(x) != literal->value; };
+    // Remove those which are(n't) contained in both depending on literal value
+    std::erase_if(set, NewObjectNegContains);
+}
+
+bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLState *state, vector<unsigned int> *objects) const {
     const int literalsLength = literals->size();
     for (int i = 0; i < literalsLength; i++) {
         const PDDLLiteral* literal = &(literals->at(i));

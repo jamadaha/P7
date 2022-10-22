@@ -6,15 +6,13 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *sta
     vector<PDDLActionInstance> legalActions;
     const int domainLength = domain->actions.size();
     for (int i = 0; i < domainLength; i++) {
-        vector<PDDLActionInstance> tempActions = GenerateLegal(&(domain->actions[i]), state);
-        const int actionsLength = tempActions.size();
-        for (int t = 0; t < actionsLength; t++)
-            legalActions.push_back(tempActions[t]);
+        vector<PDDLActionInstance> tempActions = GenerateActions(&(domain->actions[i]), state);
+        copy(tempActions.begin(), tempActions.end(), back_inserter(legalActions));
     }
     return legalActions;
 }
 
-vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction *action, const PDDLState *state) const {
+vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *action, const PDDLState *state) const {
     vector<PDDLActionInstance> legalActions;
 
     // Object which fulfill the unary literals of the action preconditions
@@ -66,12 +64,11 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered
     } else {
         unordered_set<unsigned int> candidateObjects;
 
-        for (auto iter = literals->begin(); iter != literals->end(); iter++) {
+        for (auto iter = literals->begin(); iter != literals->end(); iter++)
             if ((*iter)->value == true) {
                 candidateObjects = state->unaryFacts.at((*iter)->predicateIndex);
                 break;
             }
-        }
         RemoveIllegal(candidateObjects, literals, state);
 
         return candidateObjects;
@@ -79,9 +76,8 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered
 }
 
 void ActionGenerator::RemoveIllegal(std::unordered_set<unsigned int> &set, const std::unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) {
-    for (auto literal = literals->begin(); literal != literals->end(); literal++) {
+    for (auto literal = literals->begin(); literal != literals->end(); literal++)
         RemoveIllegal(set, (*literal), state);
-    }
 }
 
 void ActionGenerator::RemoveIllegal(std::unordered_set<unsigned int> &set, const PDDLLiteral *literal, const PDDLState *state) {

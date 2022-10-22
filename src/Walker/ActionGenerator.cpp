@@ -58,7 +58,7 @@ vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction *acti
 unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered_set<const PDDLLiteral*> &literals, const PDDLState *state) {
     unordered_set<unsigned int> candidateObjects;
 
-    // Firs is setting candidate objects to the smallest set from some predicate
+    // First is setting candidate objects to the smallest set from some predicate
     int sPredicateIndex = -1;
     // Should be equal to inifinity to begin with
     unsigned int smallestCount = 99999;
@@ -95,7 +95,7 @@ bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLSta
     const int literalsLength = literals->size();
     for (int i = 0; i < literalsLength; i++) {
         const PDDLLiteral* literal = &(literals->at(i));
-        if (literal->args.size() < 2)
+        if (literal->args.size() == 1)
             continue;
         if (literal->predicateIndex == 0) {
             if (objects->size() > 1) {

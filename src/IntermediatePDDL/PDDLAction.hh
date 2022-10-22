@@ -27,22 +27,7 @@ struct PDDLAction {
         name(a.name), parameters(a.parameters), preconditions(a.preconditions), effects(a.effects), applicableUnaryLiterals(GenerateApplicableLiterals(true)), applicableMultiLiterals(GenerateApplicableLiterals(false)) {};
 
 private:
-    std::unordered_map<unsigned int, const std::unordered_set<const PDDLLiteral*>> GenerateApplicableLiterals(bool unary) {
-        std::unordered_map<unsigned int, const std::unordered_set<const PDDLLiteral*>> set;
-        for (int i = 0; i < parameters.size(); i++) {
-            std::unordered_set<const PDDLLiteral*> tempSet;
-            for (int literalIndex = 0; literalIndex < preconditions.size(); literalIndex++) {
-                const PDDLLiteral *literal = &preconditions.at(literalIndex);
-                if (unary ? (literal->args.size() != 1) : (literal->args.size() == 1))
-                    continue;
-                for (int argIndex = 0; argIndex < literal->args.size(); argIndex++)
-                    if (i == literal->args.at(argIndex))
-                        tempSet.emplace(literal);
-            }
-            set.emplace(i, tempSet);
-        }
-        return set;
-    };
+    std::unordered_map<unsigned int, const std::unordered_set<const PDDLLiteral*>> GenerateApplicableLiterals(bool unary);
 };
 
 #endif

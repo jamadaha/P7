@@ -3,7 +3,7 @@
 using namespace std;
 
 PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
-	RandomHeuristic<PDDLActionInstance*>* heu = new RandomHeuristic<PDDLActionInstance*>(PDDLContext(instance->domain, instance->problem));
+	RandomHeuristic<PDDLActionInstance> *heu = new RandomHeuristic<PDDLActionInstance>(PDDLContext(instance->domain, instance->problem));
 	BaseWidthFunction *widthFunc;
 	if (Configs->ReformulatorTime.Content == -1)
 		widthFunc = new ConstantWidthFunction(100);
@@ -41,6 +41,8 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 
 	// Do Something and transform the input PDDL into a new PDDL format
 	PDDLInstance newInstance(instance->domain, instance->problem);
+
+	free(heu); free(widthFunc); free(depthFunction);
 
 	return *instance;
 }

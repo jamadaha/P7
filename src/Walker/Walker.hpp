@@ -12,22 +12,22 @@
 #include "../RunReport/RunReport.hh"
 
 struct Path {
-    const std::vector<PDDLActionInstance*> steps;
-    Path(std::vector<PDDLActionInstance*> steps) : steps(steps) {};
+    const std::vector<PDDLActionInstance> steps;
+    Path(std::vector<PDDLActionInstance> steps) : steps(steps) {};
 };
 
 class Walker {
 public:
     unsigned int totalActions = 0;
-    Walker(PDDLInstance* instance, ActionGenerator actionGenerator, BaseHeuristics<PDDLActionInstance*, PDDLContext>* heuristic, BaseDepthFunction* depthFunc) : 
+    Walker(PDDLInstance* instance, ActionGenerator actionGenerator, BaseHeuristics<PDDLActionInstance, PDDLContext> *heuristic, BaseDepthFunction *depthFunc) : 
     instance(instance), actionGenerator(actionGenerator), heuristic(heuristic), depthFunc(depthFunc) {}
     Path Walk();
     Path Walk(PDDLState state);
 private:
     PDDLInstance* instance;
     ActionGenerator actionGenerator;
-    BaseHeuristics<PDDLActionInstance*, PDDLContext>* heuristic;
-    BaseDepthFunction* depthFunc;
+    BaseHeuristics<PDDLActionInstance, PDDLContext> *heuristic;
+    BaseDepthFunction *depthFunc;
 
    PDDLState* DoAction(PDDLState *state, const PDDLActionInstance *action);
 };

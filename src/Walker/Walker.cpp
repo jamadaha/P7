@@ -6,17 +6,17 @@ Path Walker::Walk() {
 
 Path Walker::Walk(PDDLState state) {
     int depth = depthFunc->GetDepth();
-    std::vector<PDDLActionInstance*> steps;
+    std::vector<PDDLActionInstance> steps;
     steps.reserve(depth);
     PDDLState *tempState = new PDDLState(state.unaryFacts, state.multiFacts);
     for (int i = 0; i < depth; i++) {
-        std::vector<PDDLActionInstance*> actions = actionGenerator.GenerateActions(tempState);
+        std::vector<PDDLActionInstance> actions = actionGenerator.GenerateActions(tempState);
         if (actions.size() == 0)
             break;
-        PDDLActionInstance* action = heuristic->NextChoice(actions);
+        PDDLActionInstance action = heuristic->NextChoice(actions);
         totalActions += actions.size();
         steps.push_back(action);
-        tempState = DoAction(tempState, action);
+        tempState = DoAction(tempState, &action);
 
         //std::cout << action->ToString(this->instance->problem, this->instance->domain);
     }

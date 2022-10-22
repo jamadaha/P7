@@ -2,11 +2,11 @@
 
 using namespace std;
 
-vector<PDDLActionInstance*> ActionGenerator::GenerateActions(const PDDLState *state) {
-    vector<PDDLActionInstance*> legalActions;
+vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *state) {
+    vector<PDDLActionInstance> legalActions;
     const int domainLength = domain->actions.size();
     for (int i = 0; i < domainLength; i++) {
-        vector<PDDLActionInstance*> tempActions = GenerateLegal(&(domain->actions[i]), state);
+        vector<PDDLActionInstance> tempActions = GenerateLegal(&(domain->actions[i]), state);
         const int actionsLength = tempActions.size();
         for (int t = 0; t < actionsLength; t++)
             legalActions.push_back(tempActions[t]);
@@ -14,8 +14,8 @@ vector<PDDLActionInstance*> ActionGenerator::GenerateActions(const PDDLState *st
     return legalActions;
 }
 
-vector<PDDLActionInstance*> ActionGenerator::GenerateLegal(const PDDLAction *action, const PDDLState *state) {
-    vector<PDDLActionInstance*> legalActions;
+vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction *action, const PDDLState *state) {
+    vector<PDDLActionInstance> legalActions;
 
     unordered_set<const PDDLLiteral*> unaryLiterals[action->parameters.size()];
 
@@ -65,7 +65,7 @@ vector<PDDLActionInstance*> ActionGenerator::GenerateLegal(const PDDLAction *act
             objects.push_back((*iteration[i]));
 
         if (IsLegal(&action->preconditions, state, &objects))
-            legalActions.push_back(new PDDLActionInstance(action, objects));
+            legalActions.push_back(PDDLActionInstance(action, objects));
 
     } while (Iterate(&iteration, &candidateObjects));
  

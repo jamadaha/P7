@@ -17,35 +17,18 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *sta
 vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction *action, const PDDLState *state) {
     vector<PDDLActionInstance> legalActions;
 
-    unordered_set<const PDDLLiteral*> unaryLiterals[action->parameters.size()];
-
-    // Find what preconditions are applicible to what arguments
-    // Should likely be static somehow
-    const int preconditionLength = action->preconditions.size();
-    for (int i = 0; i < preconditionLength; i++) {
-        const int preconditionArgsLength = action->preconditions[i].args.size();
-        for (int a = 0; a < preconditionArgsLength; a++) {
-            if (action->preconditions[i].args.size() == 1)
-                unaryLiterals[action->preconditions[i].args[a]].emplace(&(action->preconditions[i]));
-        }
-    }
-
     // Object which fulfill the unary literals of the action preconditions
     vector<unordered_set<unsigned int>> candidateObjects;
     candidateObjects.reserve(action->parameters.size());
     const int parameterLength = action->parameters.size();
     for (int i = 0; i < parameterLength; i++) {
-        auto candididateObjects = GetCandidateObjects(&(unaryLiterals[i]), state);
+        std::unordered_set<unsigned int> candididateObjects = GetCandidateObjects(action->applicableLiterals.at(i), state);
         // if some parameter doesn't have any candidate object, the action is not possible
         if (candididateObjects.size() == 0)
             return legalActions;
         candidateObjects.push_back(candididateObjects);
     }
     
-    // if some parameter doesn't have any candidate object, the action is not possible
-    //for (int i = 0; i < parameterLength; i++)
-    //    if (candidateObjects[i].size() == 0)
-    //        return legalActions;
 
     vector<unordered_set<unsigned int>::iterator> iteration;
     const int candidateObjectsLength = candidateObjects.size();
@@ -72,11 +55,11 @@ vector<PDDLActionInstance> ActionGenerator::GenerateLegal(const PDDLAction *acti
     return legalActions;
 }
 
-unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) {
+unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered_set<const PDDLLiteral*> &literals, const PDDLState *state) {
     unordered_set<unsigned int> candidateObjects;
 
     // Find first positive literal, and set candidate objects to those applicable
-    for (auto iter = literals->begin(); iter != literals->end(); iter++) {
+    for (auto iter = literals.begin(); iter != literals.end(); iter++) {
         if ((*iter)->args.size() > 1)
             continue;
         if ((*iter)->value == true) {
@@ -93,7 +76,7 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(unordered_set<c
     }
 
     // Check what objects match all literals
-    for (auto literal = literals->begin(); literal != literals->end(); literal++) {
+    for (auto literal = literals.begin(); literal != literals.end(); literal++) {
         // Find intersection of candidateobjects and the new literal
         auto newObjectRef = &(state->unaryFacts.at((*literal)->predicateIndex));
         // Returns true, i.e. object should be deleted, depending on the literal state

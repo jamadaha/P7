@@ -103,7 +103,12 @@ TEST_CASE(TAG + "Multi") {
                 Walker::DoAction(&state, &actionInstance);
                 REQUIRE(before == state);
             }
-
+            SECTION("New") {
+                REQUIRE(!state.ContainsFact(0, MultiFact(std::vector<unsigned int>{ 2, 3 })));
+                PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 2, 3 });
+                Walker::DoAction(&state, &actionInstance);
+                REQUIRE(state.ContainsFact(0, MultiFact(std::vector<unsigned int>{ 2, 3 })));
+            }
         }
         
     };

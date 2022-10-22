@@ -30,7 +30,20 @@ struct PDDLState {
     PDDLState() {};
     PDDLState(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts, std::unordered_map<unsigned int, std::vector<MultiFact>> multiFacts) :
         unaryFacts(unaryFacts), multiFacts(multiFacts) {};
-    
+
+    bool ContainsFact(const unsigned int key, const unsigned int value) const {
+        return (unaryFacts.at(key).contains(value));
+    };
+
+    bool ContainsFact(const unsigned int key, const MultiFact value) const {
+        auto AreEqual = [&value](const MultiFact &MF) {
+                    return value == MF;
+                };
+        if (!std::any_of(multiFacts.at(key).begin(), multiFacts.at(key).end(), AreEqual))
+            return false;
+        return true;
+    };
+
     // Very slow, please only use with caution
     friend bool operator== (const PDDLState &lhs, const PDDLState &rhs) {
         // Check unary facts
@@ -59,26 +72,20 @@ struct PDDLState {
         //// 
         //// Check that they contain the same values
         for (auto iter : lhs.multiFacts)
-            for (auto vIter : iter.second) {
-                auto AreEqual = [&vIter](const MultiFact &MF) {
-                    return vIter == MF;
-                };
-                if (!std::any_of(rhs.multiFacts.at(iter.first).begin(), rhs.multiFacts.at(iter.first).end(), AreEqual))
+            for (auto vIter : iter.second)
+                if (!rhs.ContainsFact(iter.first, vIter))
                     return false;
-            }
         for (auto iter : rhs.multiFacts)
-            for (auto vIter : iter.second) {
-                auto AreEqual = [&vIter](const MultiFact &MF) {
-                    return vIter == MF;
-                };
-                if (!std::any_of(lhs.multiFacts.at(iter.first).begin(), lhs.multiFacts.at(iter.first).end(), AreEqual))
+            for (auto vIter : iter.second)
+                if (!lhs.ContainsFact(iter.first, vIter))
                     return false;
-            }
         ////
         // 
 
         return true;
     };
+
+
 };
 
 #endif

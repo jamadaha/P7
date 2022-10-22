@@ -11,10 +11,8 @@ struct MultiFact {
     std::vector<unsigned int> fact;
     MultiFact(std::vector<unsigned int> fact) : fact(fact) {};
     friend bool operator== (const MultiFact &lhs, const MultiFact &rhs) {
-        size_t lhsSize = lhs.fact.size();
-        if (lhsSize != rhs.fact.size())
-            return false;
-        for (int i = 0; i < lhsSize; i++)
+        int min = std::min(lhs.fact.size(), rhs.fact.size());
+        for (int i = 0; i < min; i++)
             if (lhs.fact.at(i) != rhs.fact.at(i))
                 return false;
         return true;

@@ -98,35 +98,10 @@ bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLSta
         if (literal->args.size() == 1)
             continue;
         if (literal->predicateIndex == 0) {
-            if (objects->size() > 1) {
-                bool areEqual = (objects->at(0) == objects->at(1));
-                if (areEqual != literal->value)
+            if ((objects->at(0) == objects->at(1)) != literal->value)
                     return false;
-            }
-        }
-        else
-        {
-            const auto multiFact = &state->multiFacts.at(literal->predicateIndex);
-
-            bool found = false;
-            const int multiFactLength = multiFact->size();
-            for (int f = 0; f < multiFactLength; f++) {
-                bool valid = true;
-                auto multiFactFact = &multiFact->at(f).fact;
-                auto multiFactFactLength = multiFactFact->size();
-                for (int a = 0; a < multiFactFactLength; a++) {
-                    if (objects->at(a) != multiFactFact->at(a)) {
-                        valid = false;
-                        break;
-                    }
-                }
-
-                if (valid) {
-                    found = true;
-                    break;
-                }
-            }
-            if (found != literal->value)
+        } else {
+            if (state->ContainsFact(literal->predicateIndex, *objects) != literal->value)
                 return false;
         }
         

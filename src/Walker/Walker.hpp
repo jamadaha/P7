@@ -23,13 +23,14 @@ public:
     instance(instance), actionGenerator(actionGenerator), heuristic(heuristic), depthFunc(depthFunc) {}
     Path Walk();
     Path Walk(PDDLState state);
+    static void DoAction(PDDLState *state, const PDDLActionInstance *action);
 private:
     PDDLInstance* instance;
     ActionGenerator actionGenerator;
     BaseHeuristics<PDDLActionInstance, PDDLContext> *heuristic;
     BaseDepthFunction *depthFunc;
 
-   PDDLState* DoAction(PDDLState *state, const PDDLActionInstance *action);
+    
 };
 
 #endif

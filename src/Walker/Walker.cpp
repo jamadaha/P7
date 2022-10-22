@@ -16,7 +16,7 @@ Path Walker::Walk(PDDLState state) {
         PDDLActionInstance action = heuristic->NextChoice(actions);
         totalActions += actions.size();
         steps.push_back(action);
-        tempState = DoAction(tempState, &action);
+        DoAction(tempState, &action);
 
         //std::cout << action->ToString(this->instance->problem, this->instance->domain);
     }
@@ -24,7 +24,7 @@ Path Walker::Walk(PDDLState state) {
     return Path(steps);
 }
 
-PDDLState* Walker::DoAction(PDDLState *state, const PDDLActionInstance *action) {
+void Walker::DoAction(PDDLState *state, const PDDLActionInstance *action) {
     int actionEffectLength = action->action->effects.size();
     for (int i = 0; i < actionEffectLength; i++) {
         PDDLLiteral effect = action->action->effects.at(i);
@@ -70,5 +70,4 @@ PDDLState* Walker::DoAction(PDDLState *state, const PDDLActionInstance *action) 
             }
         }
     }
-    return state;
 }

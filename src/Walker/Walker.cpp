@@ -44,7 +44,7 @@ void Walker::DoAction(PDDLState *state, const PDDLActionInstance *action) {
                 if (!state->ContainsFact(effect.predicateIndex, action->objects))
                     continue;
                 auto factSet = &state->multiFacts.at(effect.predicateIndex);
-                factSet->erase(std::remove(factSet->begin(), factSet->end(), MultiFact(action->objects)), factSet->end());
+                factSet->erase(std::remove(factSet->begin(), factSet->end(), action->objects), factSet->end());
             }
         }
     }

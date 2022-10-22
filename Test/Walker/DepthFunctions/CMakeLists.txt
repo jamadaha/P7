@@ -2,6 +2,7 @@ add_executable(Tests-DepthFunctions Test/Walker/DepthFunctions/ConstantDepthFunc
 target_link_libraries(Tests-DepthFunctions 
     PRIVATE 
         Catch2::Catch2WithMain
-        DepthFunction)
+        DepthFunction
+        IntermediatePDDL)
 
 catch_discover_tests(Tests-DepthFunctions)

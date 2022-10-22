@@ -45,7 +45,7 @@ TEST_CASE(TAG + "Unary") {
         }
     };
 
-    SECTION("Substracting") {
+    SECTION("Subtracting") {
         PDDLAction action = PDDLAction("Name",
         std::vector<std::string>{ "?x" },
         std::vector<PDDLLiteral>{},
@@ -99,11 +99,11 @@ TEST_CASE(TAG + "Multi") {
         SECTION("Equality") {
             SECTION("Safe Overwrite") {
                 PDDLState before = state;
-                DDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 0, 1 });
+                PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 0, 1 });
                 Walker::DoAction(&state, &actionInstance);
                 REQUIRE(before == state);
             }
-            
+
         }
         
     };

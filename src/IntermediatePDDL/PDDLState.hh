@@ -17,6 +17,22 @@ struct MultiFact {
                 return false;
         return true;
     }
+
+    friend bool operator== (const MultiFact &lhs, const std::vector<unsigned int> &rhs) {
+        int min = std::min(lhs.fact.size(), rhs.size());
+        for (int i = 0; i < min; i++)
+            if (lhs.fact.at(i) != rhs.at(i))
+                return false;
+        return true;
+    }
+
+    friend bool operator== (const std::vector<unsigned int> &lhs, const MultiFact &rhs) {
+        int min = std::min(lhs.size(), rhs.fact.size());
+        for (int i = 0; i < min; i++)
+            if (lhs.at(i) != rhs.fact.at(i))
+                return false;
+        return true;
+    }
 };
 
 struct PDDLState {
@@ -42,8 +58,13 @@ struct PDDLState {
         return true;
     };
 
-    bool ContainsFact(const unsigned int key, const std::vector<unsigned int> value) const {
-        return ContainsFact(key, MultiFact(value));
+    bool ContainsFact(const unsigned int key, const std::vector<unsigned int> *value) const {
+        auto AreEqual = [&value](const MultiFact &MF) {
+                    return *value == MF;
+                };
+        if (!std::any_of(multiFacts.at(key).begin(), multiFacts.at(key).end(), AreEqual))
+            return false;
+        return true;
     };
 
     // Very slow, please only use with caution

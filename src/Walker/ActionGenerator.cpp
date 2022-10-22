@@ -59,8 +59,6 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered
     unordered_set<unsigned int> candidateObjects;
 
     for (auto iter = literals.begin(); iter != literals.end(); iter++) {
-        if ((*iter)->args.size() > 1)
-            continue;
         if ((*iter)->value == true) {
             candidateObjects = state->unaryFacts.at((*iter)->predicateIndex);
             break;
@@ -97,7 +95,7 @@ bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLSta
             if ((objects->at(0) == objects->at(1)) != literal->value)
                     return false;
         } else {
-            if (state->ContainsFact(literal->predicateIndex, *objects) != literal->value)
+            if (state->ContainsFact(literal->predicateIndex, objects) != literal->value)
                 return false;
         }
         

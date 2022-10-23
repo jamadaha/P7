@@ -5,7 +5,7 @@
 
 const std::string TAG = "Walker ";
 
-TEST_CASE(TAG + "Unary") {
+TEST_CASE(TAG + "DoAction Unary") {
     PDDLState state = PDDLState(
         std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{
             {0, std::unordered_set<unsigned int>{ }},
@@ -75,7 +75,7 @@ TEST_CASE(TAG + "Unary") {
     };
 }
 
-TEST_CASE(TAG + "Multi") {
+TEST_CASE(TAG + "DoAction Multi") {
     PDDLState state = PDDLState(
         std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{
             

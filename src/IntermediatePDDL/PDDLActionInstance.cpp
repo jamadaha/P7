@@ -54,3 +54,10 @@ std::string PDDLActionInstance::LiteralsToString(std::vector<PDDLLiteral> litera
     temp += ")\n";
     return temp;
 }
+
+size_t PDDLActionInstance::GetHash() {
+    if (Hash != 0)
+        return Hash;
+    Hash = std::hash<PDDLActionInstance>{}(*this);
+    return Hash;
+}

@@ -2,16 +2,16 @@
 #define EntanglementFinder_HH
 
 #include <string>
-#include <fstream>
-#include <streambuf>
 #include <vector>
+#include <math.h>
 
 #include "../IntermediatePDDL/PDDLInstance.hh"
 #include "../Walker/Walker.hpp"
+#include "EntangledActionsSet.hh"
 
 class EntanglementFinder {
 public:
-	std::vector<std::vector<PDDLActionInstance>> FindEntangledCandidates(std::vector<Path> paths);
+	std::vector<EntangledActionsSet> FindEntangledCandidates(PDDLInstance* instance, std::vector<Path> paths);
 };
 
 #endif

@@ -7,7 +7,7 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	auto paths = PerformWalk(instance);
 
 	// Find Entangelements
-	auto candidates = FindEntanglements(paths);
+	auto candidates = FindEntanglements(instance, paths);
 
 	// Generate new Macros
 	auto newInstance = GenerateMacros(candidates, instance);
@@ -58,19 +58,27 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 	return paths;
 }
 
-std::vector<std::vector<PDDLActionInstance>> RandomWalkerReformulator::FindEntanglements(std::vector<Path> paths) {
+vector<EntangledActionsSet> RandomWalkerReformulator::FindEntanglements(PDDLInstance* instance, vector<Path> paths) {
 	EntanglementFinder entFinder;
-	auto candidates = entFinder.FindEntangledCandidates(paths);
+	auto startTime = chrono::steady_clock::now();
+	auto candidates = entFinder.FindEntangledCandidates(instance, paths);
+	auto endTime = chrono::steady_clock::now();
 
 	// Print debug info
 	if (Configs->DebugMode.Content) {
-		
+		unsigned int totalActions = 0;
+		for (int i = 0; i < paths.size(); i++)
+			totalActions += paths[i].steps.size();
+
+		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count();
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + to_string(ellapsed) + "ms", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Found a total of " + to_string(candidates.size()) + " candidates out of " + to_string(paths.size()) + " paths that has " + to_string(totalActions) + " steps", 1);
 	}
 
 	return candidates;
 }
 
-PDDLInstance RandomWalkerReformulator::GenerateMacros(std::vector<std::vector<PDDLActionInstance>> candidates, PDDLInstance* instance) {
+PDDLInstance RandomWalkerReformulator::GenerateMacros(vector<EntangledActionsSet> candidates, PDDLInstance* instance) {
 	PDDLInstance newInstance(instance->domain, instance->problem);
 	return newInstance;
 }

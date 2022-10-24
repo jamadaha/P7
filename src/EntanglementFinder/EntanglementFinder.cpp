@@ -2,8 +2,8 @@
 
 using namespace std;
 
-unordered_set<EntanglementOccurance> EntanglementFinder::FindEntangledCandidates(vector<Path> paths) {
-	unordered_set<EntanglementOccurance> candidates;
+unordered_map<int, EntanglementOccurance> EntanglementFinder::FindEntangledCandidates(vector<Path> paths) {
+	unordered_map<int, EntanglementOccurance> candidates;
 
 	if (paths.size() == 0)
 		return candidates;
@@ -44,25 +44,25 @@ void EntanglementFinder::GenerateActionSet(vector<vector<PDDLActionInstance>> *c
 	}
 }
 
-void EntanglementFinder::AddCandidatesIfThere(unordered_set<EntanglementOccurance>* candidates, const std::vector<std::vector<PDDLActionInstance>> currentValues) {
+void EntanglementFinder::AddCandidatesIfThere(unordered_map<int, EntanglementOccurance>* candidates, const std::vector<std::vector<PDDLActionInstance>> currentValues) {
 	for (int i = 0; i < currentValues.size(); i++) {
 		vector<PDDLActionInstance> iValue = (currentValues.at(i));
 		for (int j = i + 1; j < currentValues.size(); j++) {
 			if (iValue == (currentValues.at(j))) {
-				EntanglementOccurance newOcc(iValue);
-				auto potentialItem = candidates->find(newOcc);
-				if (potentialItem != candidates->end()) {
-					auto existingItem = &(*potentialItem);
-					existingItem->Occurance++;
+				int key = hash<const vector<PDDLActionInstance>>{}(iValue);
+				if (candidates->contains(key)) {
+					candidates->at(key).Occurance++;
 				}
-				else
-					candidates->emplace(newOcc);
+				else {
+					EntanglementOccurance newOcc(iValue);
+					candidates->insert(make_pair(key, newOcc));
+				}
 			}
 		}
 	}
 }
 
-void EntanglementFinder::RemoveIfBelowMinimum(unordered_set<EntanglementOccurance>* candidates) {
-	const auto removeIfLessThan = [&](EntanglementOccurance const& x) { return x.Occurance < MinimumOccurance; };
+void EntanglementFinder::RemoveIfBelowMinimum(unordered_map<int, EntanglementOccurance>* candidates) {
+	const auto removeIfLessThan = [&](pair<int, EntanglementOccurance> const& x) { return x.second.Occurance < MinimumOccurance; };
 	std::erase_if(*candidates, removeIfLessThan);
 }

@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <math.h>
-#include <unordered_set>
+#include <unordered_map>
 
 #include "../IntermediatePDDL/PDDLInstance.hh"
 #include "../Walker/Walker.hpp"
@@ -37,12 +37,12 @@ public:
 	/// <summary>
 	/// Find entanglement candidates from a vector of paths
 	/// </summary>
-	std::unordered_set<EntanglementOccurance> FindEntangledCandidates(std::vector<Path> paths);
+	std::unordered_map<int ,EntanglementOccurance> FindEntangledCandidates(std::vector<Path> paths);
 
 private:
 	void GenerateActionSet(std::vector<std::vector<PDDLActionInstance>>* currentValues, const std::vector<Path>* paths, const int level);
-	void AddCandidatesIfThere(std::unordered_set<EntanglementOccurance>* candidates, const std::vector<std::vector<PDDLActionInstance>> currentValues);
-	void RemoveIfBelowMinimum(std::unordered_set<EntanglementOccurance>* candidates);
+	void AddCandidatesIfThere(std::unordered_map<int, EntanglementOccurance>* candidates, const std::vector<std::vector<PDDLActionInstance>> currentValues);
+	void RemoveIfBelowMinimum(std::unordered_map<int, EntanglementOccurance>* candidates);
 };
 
 #endif

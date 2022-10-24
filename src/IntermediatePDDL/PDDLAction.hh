@@ -26,6 +26,19 @@ struct PDDLAction {
     PDDLAction(const PDDLAction &a) : 
         name(a.name), parameters(a.parameters), preconditions(a.preconditions), effects(a.effects), applicableUnaryLiterals(GenerateApplicableLiterals(true)), applicableMultiLiterals(GenerateApplicableLiterals(false)) {};
 
+    /// @return Returns true if name, parameters and preconditions are the same, ignores parameter names
+    friend bool operator==(const PDDLAction& lhs, const PDDLAction& rhs) {
+        if (lhs.name.compare(rhs.name) != 0)
+            return false;
+        if (lhs.parameters.size() != rhs.parameters.size())
+            return false;
+        if (lhs.preconditions != rhs.preconditions)
+            return false;
+        if (lhs.effects != rhs.effects)
+            return false;
+        return true;
+    }
+
 private:
     std::unordered_map<unsigned int, const std::unordered_set<const PDDLLiteral*>> GenerateApplicableLiterals(bool unary);
 };

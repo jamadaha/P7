@@ -67,7 +67,7 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered
         for (int i = 0; i < problem->objects.size(); i++)
             candidateObjects.emplace(i);
         return candidateObjects;
-    } else {
+    } else if (state->unaryFacts.size() > 0) {
         unordered_set<unsigned int> candidateObjects;
 
         for (auto iter = literals->begin(); iter != literals->end(); iter++)
@@ -75,9 +75,18 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered
                 candidateObjects = state->unaryFacts.at((*iter)->predicateIndex);
                 break;
             }
+            
+        if (candidateObjects.size() == 0) {
+            candidateObjects.reserve(problem->objects.size());
+            for (int i = 0; i < problem->objects.size(); i++)
+                candidateObjects.emplace(i);
+        }
+        
         RemoveIllegal(candidateObjects, literals, state);
 
         return candidateObjects;
+    } else {
+        return unordered_set<unsigned int>();
     }
 }
 

@@ -313,6 +313,89 @@ TEST_CASE(TAG + "GenerateActions Multi - 1 Legal") {
 }
 
 #pragma endregion GenerateActions
+#pragma region GetCandidateObjects
+TEST_CASE(TAG + "GetCandidateObjects") {
+    //std::unordered_set<unsigned int> GetCandidateObjects(const std::unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) const;
+    PDDLDomain domain{"", {}, {
+        PDDLPredicate(1),
+        PDDLPredicate(1),
+        PDDLPredicate(1)
+    }, {}, {
+        PDDLAction("", { "", "", "", "" }, {
+            PDDLLiteral(0, {0}, true), 
+            PDDLLiteral(1, {1}, false), 
+            PDDLLiteral(2, {0}, true),
+            PDDLLiteral(0, {2}, true),
+            PDDLLiteral(2, {2}, true),
+            PDDLLiteral(0, {3}, false),
+            PDDLLiteral(1, {3}, true)
+        }, {})
+    }};
+    PDDLProblem problem{
+        "", &domain, { "O1", "O2", "O3" }, {}, {}, {}
+    };
+    ActionGenerator actionGenerator{&domain, &problem};
+
+    SECTION("No Facts") {
+        PDDLState state{
+            {}, {}
+        };
+        const PDDLAction *action = &domain.actions.at(0);
+        auto literals = &action->applicableUnaryLiterals.at(0);
+        std::unordered_set<unsigned int> candidateObjects = actionGenerator.GetCandidateObjects(literals, &state);
+        REQUIRE(candidateObjects.size() == 0);
+    }
+
+    SECTION("No Literals") {
+        PDDLState state{
+            {}, {}
+        };
+        const PDDLAction *action = &domain.actions.at(0);
+        std::unordered_set<const PDDLLiteral*> *literals = new std::unordered_set<const PDDLLiteral*>();
+        std::unordered_set<unsigned int> candidateObjects = actionGenerator.GetCandidateObjects(literals, &state);
+        free(literals);
+        REQUIRE(problem.objects.size() == candidateObjects.size());
+    }
+
+    SECTION("Single Fact") {
+        PDDLState state{
+            { { 0, { 0 } }, { 1, { 1 } }, { 2, { 0, 2 }} }, {}
+        };
+        const PDDLAction *action = &domain.actions.at(0);
+
+        SECTION("True") {
+            auto literals = &action->applicableUnaryLiterals.at(0);
+            std::unordered_set<unsigned int> candidateObjects = actionGenerator.GetCandidateObjects(literals, &state);
+            REQUIRE(candidateObjects.size() == 1);
+        }
+        
+        SECTION("False") {
+            auto literals = &action->applicableUnaryLiterals.at(1);
+            std::unordered_set<unsigned int> candidateObjects = actionGenerator.GetCandidateObjects(literals, &state);
+            REQUIRE(candidateObjects.size() == 2);
+        }
+    }
+
+    SECTION("Multi Fact") {
+        PDDLState state{
+            { { 0, { 0 } }, { 1, { 1 } }, { 2, { 0, 2 }} }, {}
+        };
+        const PDDLAction *action = &domain.actions.at(0);
+
+        SECTION("True") {
+            auto literals = &action->applicableUnaryLiterals.at(2);
+            std::unordered_set<unsigned int> candidateObjects = actionGenerator.GetCandidateObjects(literals, &state);
+            REQUIRE(candidateObjects.size() == 1);
+        }
+        
+        SECTION("False") {
+            auto literals = &action->applicableUnaryLiterals.at(3);
+            std::unordered_set<unsigned int> candidateObjects = actionGenerator.GetCandidateObjects(literals, &state);
+            REQUIRE(candidateObjects.size() == 1);
+        }
+    }
+}
+#pragma endregion GetCandidateObjects
 #pragma region RemoveIllegal
 //static void RemoveIllegal(std::unordered_set<unsigned int> &set, const PDDLLiteral *literal, const PDDLState *state);
 #pragma region SingleLiteral

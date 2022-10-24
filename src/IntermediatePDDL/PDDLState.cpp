@@ -4,7 +4,7 @@
 
 std::string PDDLState::ToString(const PDDLInstance* instance)
 {
-    std::string temp = "State\n";
+    std::string temp = "State ";
     for (auto unaryFact : unaryFacts)
     {
         if (unaryFact.second.size() > 0) {

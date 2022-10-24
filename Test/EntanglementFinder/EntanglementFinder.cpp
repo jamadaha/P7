@@ -18,7 +18,7 @@ TEST_CASE(TAG + "Can_FindLargeOccurance_1") {
         Path({ constantInstance,constantInstance,constantInstance,constantInstance }),
         Path({ constantInstance,constantInstance,constantInstance,constantInstance }) };
 
-    EntanglementFinder finder(4);
+    EntanglementFinder finder(4, -1, 2, 0);
     auto result = finder.FindEntangledCandidates(paths);
     REQUIRE(result.size() == 1);
     auto firstObject = *result.begin();
@@ -58,7 +58,7 @@ TEST_CASE(TAG + "Can_FindLargeOccurance_3") {
         Path({ constantInstance1,constantInstance2,constantInstance2,constantInstance1 }),
         Path({ constantInstance1,constantInstance2,constantInstance2,constantInstance1 }) };
 
-    EntanglementFinder finder(4);
+    EntanglementFinder finder(4, -1, 2, 0);
     auto result = finder.FindEntangledCandidates(paths);
     REQUIRE(result.size() == 2);
     for(auto i = result.begin(); i != result.end(); i++)

@@ -12,6 +12,11 @@ struct PDDLInstance;
 struct MultiFact {
     std::vector<unsigned int> fact;
     MultiFact(std::vector<unsigned int> fact) : fact(fact) {};
+    MultiFact(const std::vector<unsigned int> *indexes, const std::vector<unsigned int> *objects) {
+        fact.reserve(indexes->size());
+        for (int i = 0; i < indexes->size(); i++)
+            fact.push_back(objects->at(indexes->at(i)));
+    };
     friend bool operator== (const MultiFact &lhs, const MultiFact &rhs) {
         return lhs.fact == rhs.fact;
     }
@@ -23,6 +28,18 @@ struct MultiFact {
     friend bool operator== (const std::vector<unsigned int> &lhs, const MultiFact &rhs) {
         return lhs == rhs.fact;
     }
+    friend bool operator== (const MultiFact &lhs, const std::pair<const std::vector<unsigned int>*, const std::vector<unsigned int>*> &rhs) {
+        if (rhs.first->size() != lhs.fact.size())
+                return false;
+        for (int i = 0; i < rhs.first->size(); i++)
+            if (rhs.second->at(rhs.first->at(i)) != lhs.fact.at(i))
+                return false;
+        return true;
+    }
+    friend bool operator== (const std::pair<const std::vector<unsigned int>*, const std::vector<unsigned int>*> &lhs, const MultiFact &rhs) {
+        return rhs == lhs;
+    }
+private:
 };
 
 struct PDDLState {
@@ -57,14 +74,9 @@ struct PDDLState {
         return true;
     };
 
-    bool ContainsFact(const unsigned int &key, const std::vector<unsigned int> &indexes, const std::vector<unsigned int> *objects) const {
+    bool ContainsFact(const unsigned int &key, const std::vector<unsigned int> *indexes, const std::vector<unsigned int> *objects) const {
         auto AreEqual = [&indexes, &objects](const MultiFact &MF) {
-                    if (indexes.size() != MF.fact.size())
-                        return false;
-                    for (int i = 0; i < indexes.size(); i++)
-                        if (objects->at(indexes.at(i)) != MF.fact.at(i))
-                            return false;
-                    return true;
+                    return std::make_pair(indexes, objects) == MF;
                 };
         if (!std::any_of(multiFacts.at(key).begin(), multiFacts.at(key).end(), AreEqual))
             return false;

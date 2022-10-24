@@ -125,7 +125,7 @@ bool ActionGenerator::IsLegal(const PDDLLiteral *literal, const PDDLState *state
         else
             return true;
     } else {
-        if (state->ContainsFact(literal->predicateIndex, literal->args, objects) != literal->value)
+        if (state->ContainsFact(literal->predicateIndex, &literal->args, objects) != literal->value)
             return false;
         else
             return true;

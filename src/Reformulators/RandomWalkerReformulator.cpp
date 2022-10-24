@@ -58,8 +58,8 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 	return paths;
 }
 
-unordered_set<vector<PDDLActionInstance>> RandomWalkerReformulator::FindEntanglements(vector<Path> paths) {
-	EntanglementFinder entFinder(1);
+unordered_set<EntanglementOccurance> RandomWalkerReformulator::FindEntanglements(vector<Path> paths) {
+	EntanglementFinder entFinder;
 	auto startTime = chrono::steady_clock::now();
 	auto candidates = entFinder.FindEntangledCandidates(paths);
 	auto endTime = chrono::steady_clock::now();
@@ -68,7 +68,7 @@ unordered_set<vector<PDDLActionInstance>> RandomWalkerReformulator::FindEntangle
 	if (Configs->DebugMode.Content) {
 		vector<int> checkValues;
 		for (auto iter = candidates.begin(); iter != candidates.end(); iter++) {
-			auto value = std::hash<vector<PDDLActionInstance>>{}(*iter);
+			auto value = std::hash<EntanglementOccurance>{}(*iter);
 			for (int i = 0; i < checkValues.size(); i++)
 				if (checkValues[i] == value)
 					ConsoleHelper::PrintDebugError("[Entanglement Finder] Unexpected collision found!", 1);
@@ -87,7 +87,7 @@ unordered_set<vector<PDDLActionInstance>> RandomWalkerReformulator::FindEntangle
 	return candidates;
 }
 
-PDDLInstance RandomWalkerReformulator::GenerateMacros(unordered_set<vector<PDDLActionInstance>> candidates, PDDLInstance* instance) {
+PDDLInstance RandomWalkerReformulator::GenerateMacros(unordered_set<EntanglementOccurance> candidates, PDDLInstance* instance) {
 	PDDLInstance newInstance(instance->domain, instance->problem);
 	return newInstance;
 }

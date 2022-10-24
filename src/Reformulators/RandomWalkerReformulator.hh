@@ -12,6 +12,7 @@
 #include "../Config/Config.hh"
 #include "../Helpers/ConsoleHelper.hh"
 #include "../EntanglementFinder/EntanglementFinder.hh"
+#include "../EntanglementFinder/EntanglementOccurance.hh"
 
 class RandomWalkerReformulator : public BaseReformulator {
 public:
@@ -22,8 +23,8 @@ public:
 	SASPlan RebuildSASPlan(SASPlan* reformulatedSAS) override;
 private:
 	std::vector<Path> PerformWalk(PDDLInstance* instance);
-	std::unordered_set<std::vector<PDDLActionInstance>> FindEntanglements(std::vector<Path> paths);
-	PDDLInstance GenerateMacros(std::unordered_set<std::vector<PDDLActionInstance>> candidates, PDDLInstance* instance);
+	std::unordered_set<EntanglementOccurance> FindEntanglements(std::vector<Path> paths);
+	PDDLInstance GenerateMacros(std::unordered_set<EntanglementOccurance> candidates, PDDLInstance* instance);
 };
 
 #endif

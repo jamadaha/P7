@@ -35,8 +35,8 @@ public:
 	std::unordered_set<EntanglementOccurance> FindEntangledCandidates(std::vector<Path> paths);
 
 private:
-	std::vector<std::vector<PDDLActionInstance>> GenerateActionSet(std::vector<Path> paths, int level);
-	void AddCandidatesIfThere(std::unordered_set<EntanglementOccurance>* candidates, std::vector<std::vector<PDDLActionInstance>> currentValues);
+	void GenerateActionSet(std::vector<std::vector<PDDLActionInstance>>* currentValues, const std::vector<Path>* paths, const int level);
+	void AddCandidatesIfThere(std::unordered_set<EntanglementOccurance>* candidates, const std::vector<std::vector<PDDLActionInstance>>* currentValues);
 };
 
 #endif

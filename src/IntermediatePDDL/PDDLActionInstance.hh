@@ -53,7 +53,7 @@ namespace std {
     };
 
     template <>
-    struct hash<vector<PDDLActionInstance>> {
+    struct hash<const vector<PDDLActionInstance>> {
         auto operator()(const vector<PDDLActionInstance>& vec) const -> size_t {
             std::size_t seed = vec.size();
             for (auto& i : vec) {

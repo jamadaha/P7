@@ -5,7 +5,9 @@ using namespace std;
 unordered_set<EntanglementOccurance> EntanglementFinder::FindEntangledCandidates(vector<Path> paths) {
 	unordered_set<EntanglementOccurance> candidates;
 
-	int level = paths[0].steps.size();
+	if (paths.size() == 0)
+		return candidates;
+	int level = paths.at(0).steps.size();
 	if (SearchCeiling != -1)
 		level = SearchCeiling;
 	if (SearchFloor < 2)
@@ -13,10 +15,11 @@ unordered_set<EntanglementOccurance> EntanglementFinder::FindEntangledCandidates
 	if (LevelReductionFactor <= 1)
 		throw exception();
 
+	vector<vector<PDDLActionInstance>> currentValues;
 	while (level >= SearchFloor) {
-		vector<vector<PDDLActionInstance>> currentValues = GenerateActionSet(paths, level);
+		GenerateActionSet(&currentValues, &paths, level);
 
-		AddCandidatesIfThere(&candidates, currentValues);
+		AddCandidatesIfThere(&candidates, &currentValues);
 
 		level = ceil((double)level / 2);
 	}
@@ -24,32 +27,33 @@ unordered_set<EntanglementOccurance> EntanglementFinder::FindEntangledCandidates
 	return candidates;
 }
 
-vector<vector<PDDLActionInstance>> EntanglementFinder::GenerateActionSet(vector<Path> paths, int level) {
-	vector<vector<PDDLActionInstance>> currentValues;
-	for (int i = 0; i < paths.size(); i++) {
+void EntanglementFinder::GenerateActionSet(vector<vector<PDDLActionInstance>> *currentValues, const vector<Path>* paths, const int level) {
+	currentValues->clear();
+	for (int i = 0; i < paths->size(); i++) {
 		int counter = 0;
 		vector<PDDLActionInstance> currentSet;
-		for (int j = 0; j < paths[i].steps.size(); j++) {
-			auto aInstance = (paths[i].steps)[j];
+		for (int j = 0; j < paths->at(i).steps.size(); j++) {
+			PDDLActionInstance aInstance = ((paths->at(i)).steps.at(j));
 			currentSet.push_back(aInstance);
 			counter++;
 			if (counter >= level) {
-				currentValues.push_back(currentSet);
+				currentValues->push_back(currentSet);
 				currentSet.clear();
 				counter = 0;
 			}
 		}
 		if (currentSet.size() != 0)
-			currentValues.push_back(currentSet);
+			currentValues->push_back(currentSet);
 	}
-	return currentValues;
 }
 
-void EntanglementFinder::AddCandidatesIfThere(unordered_set<EntanglementOccurance>* candidates, std::vector<std::vector<PDDLActionInstance>> currentValues) {
-	for (int i = 0; i < currentValues.size(); i++) {
-		for (int j = i; j < currentValues.size(); j++) {
-			if (currentValues[i] == currentValues[j] && i != j) {
-				EntanglementOccurance newOcc(currentValues[i]);
+void EntanglementFinder::AddCandidatesIfThere(unordered_set<EntanglementOccurance>* candidates, const std::vector<std::vector<PDDLActionInstance>>* currentValues) {
+	for (int i = 0; i < currentValues->size(); i++) {
+		vector<PDDLActionInstance> iValue = (currentValues->at(i));
+		for (int j = i + 1; j < currentValues->size(); j++) {
+			vector<PDDLActionInstance> jValue = (currentValues->at(j));
+			if (iValue == jValue) {
+				EntanglementOccurance newOcc(iValue);
 				auto potentialItem = candidates->find(newOcc);
 				if (potentialItem != candidates->end()) {
 					auto existingItem = &(*potentialItem);

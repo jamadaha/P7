@@ -69,7 +69,7 @@ TEST_CASE(TAG + "Can_FindLargeOccurance_3") {
 
 #pragma region Cant_FindLargeOccurance
 
-TEST_CASE(TAG + "Cant_FindLargeOccurance_IfNotThere") {
+TEST_CASE(TAG + "Cant_FindLargeOccurance_IfNotThere_1") {
     PDDLAction constantAction1;
     PDDLActionInstance constantInstance1(&constantAction1, {});
     PDDLAction constantAction2;
@@ -78,6 +78,23 @@ TEST_CASE(TAG + "Cant_FindLargeOccurance_IfNotThere") {
     vector<Path> paths = {
         Path({ constantInstance1,constantInstance1,constantInstance2,constantInstance1 }),
         Path({ constantInstance1,constantInstance2,constantInstance1,constantInstance1 }) };
+
+    EntanglementFinder finder(4);
+    auto result = finder.FindEntangledCandidates(paths);
+    REQUIRE(result.size() == 0);
+}
+
+TEST_CASE(TAG + "Cant_FindLargeOccurance_IfNotThere_2") {
+    PDDLAction constantAction1;
+    PDDLActionInstance constantInstance1(&constantAction1, {});
+    PDDLAction constantAction2;
+    PDDLActionInstance constantInstance2(&constantAction2, {});
+
+    vector<Path> paths = {
+        Path({ constantInstance1,constantInstance1,constantInstance1,constantInstance2 }),
+        Path({ constantInstance1,constantInstance1,constantInstance2,constantInstance1 }),
+        Path({ constantInstance1,constantInstance2,constantInstance1,constantInstance1 }),
+        Path({ constantInstance2,constantInstance1,constantInstance1,constantInstance1 }) };
 
     EntanglementFinder finder(4);
     auto result = finder.FindEntangledCandidates(paths);

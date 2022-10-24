@@ -40,11 +40,11 @@ TEST_CASE(TAG + "IsLegal SingleLiteral") {
         std::vector<unsigned int> candidateSet{ 0, 1, 2 };
         SECTION("Equality") {
             const PDDLLiteral literal{0, { 0, 0 }, true};
-            REQUIRE(!ActionGenerator::IsLegal(&literal, &state, &candidateSet));
+            REQUIRE(ActionGenerator::IsLegal(&literal, &state, &candidateSet));
         }
         SECTION("Equality2") {
             const PDDLLiteral literal{0, { 1, 1 }, true};
-            REQUIRE(!ActionGenerator::IsLegal(&literal, &state, &candidateSet));
+            REQUIRE(ActionGenerator::IsLegal(&literal, &state, &candidateSet));
         }
         SECTION("2 parameters") {
             const PDDLLiteral literal{1, { 0, 1 }, true};

@@ -18,7 +18,8 @@ Path Walker::Walk(PDDLState state) {
         steps.push_back(action);
         DoAction(tempState, &action);
 
-
+        std::cout << action.ToString(this->instance);
+        std::cout << tempState->ToString(this->instance);
     }
     free(tempState);
     return Path(steps);

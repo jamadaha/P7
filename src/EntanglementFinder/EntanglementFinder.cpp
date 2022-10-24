@@ -32,9 +32,9 @@ unordered_set<EntanglementOccurance> EntanglementFinder::FindEntangledCandidates
 void EntanglementFinder::GenerateActionSet(vector<vector<PDDLActionInstance>> *currentValues, const vector<Path>* paths, const int level) {
 	currentValues->clear();
 	for (int i = 0; i < paths->size(); i++) {
-		for (int j = 0; j < level; j += level) {
+		for (int j = 0; j < paths->at(i).steps.size(); j += level) {
 			vector<PDDLActionInstance> currentSet;
-			for (int l = j; l < j + level - 1; l++) {
+			for (int l = j; l < j + level; l++) {
 				if (l >= paths->at(i).steps.size())
 					break;
 				currentSet.push_back(((paths->at(i)).steps.at(l)));
@@ -61,7 +61,6 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_set<EntanglementOccuranc
 		}
 	}
 }
-
 
 void EntanglementFinder::RemoveIfBelowMinimum(unordered_set<EntanglementOccurance>* candidates) {
 	const auto removeIfLessThan = [&](EntanglementOccurance const& x) { return x.Occurance < MinimumOccurance; };

@@ -5,7 +5,9 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <algorithm>
-#include "PDDLActionInstance.hh"
+#include <string>
+
+struct PDDLInstance;
 
 struct MultiFact {
     std::vector<unsigned int> fact;
@@ -91,7 +93,7 @@ struct PDDLState {
         return true;
     };
 
-
+    std::string ToString(const PDDLInstance* instance);
 };
 
 #endif

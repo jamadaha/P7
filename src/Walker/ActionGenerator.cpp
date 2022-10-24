@@ -95,7 +95,7 @@ void ActionGenerator::RemoveIllegal(std::unordered_set<unsigned int> &set, const
     std::erase_if(set, NewObjectNegContains);
 }
 
-bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLState *state, vector<unsigned int> *objects) {
+bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLState *state, const vector<unsigned int> *objects) {
     const int literalsLength = literals->size();
     for (int i = 0; i < literalsLength; i++) {
         const PDDLLiteral *literal = &(literals->at(i));
@@ -107,7 +107,7 @@ bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLSta
     return true;
 }
 
-bool ActionGenerator::IsLegal(const PDDLLiteral *literal, const PDDLState *state, std::vector<unsigned int> *objects) {
+bool ActionGenerator::IsLegal(const PDDLLiteral *literal, const PDDLState *state, const std::vector<unsigned int> *objects) {
     if (literal->predicateIndex == 0) {
         if ((objects->at(0) == objects->at(1)) != literal->value)
             return false;

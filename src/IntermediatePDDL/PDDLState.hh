@@ -11,27 +11,15 @@ struct MultiFact {
     std::vector<unsigned int> fact;
     MultiFact(std::vector<unsigned int> fact) : fact(fact) {};
     friend bool operator== (const MultiFact &lhs, const MultiFact &rhs) {
-        int min = std::min(lhs.fact.size(), rhs.fact.size());
-        for (int i = 0; i < min; i++)
-            if (lhs.fact.at(i) != rhs.fact.at(i))
-                return false;
-        return true;
+        return lhs.fact == rhs.fact;
     }
 
     friend bool operator== (const MultiFact &lhs, const std::vector<unsigned int> &rhs) {
-        int min = std::min(lhs.fact.size(), rhs.size());
-        for (int i = 0; i < min; i++)
-            if (lhs.fact.at(i) != rhs.at(i))
-                return false;
-        return true;
+        return lhs.fact == rhs;
     }
 
     friend bool operator== (const std::vector<unsigned int> &lhs, const MultiFact &rhs) {
-        int min = std::min(lhs.size(), rhs.fact.size());
-        for (int i = 0; i < min; i++)
-            if (lhs.at(i) != rhs.fact.at(i))
-                return false;
-        return true;
+        return lhs == rhs.fact;
     }
 };
 
@@ -95,13 +83,8 @@ struct PDDLState {
         //// 
         //// Check that they contain the same values
         for (auto iter : lhs.multiFacts)
-            for (auto vIter : iter.second)
-                if (!rhs.ContainsFact(iter.first, vIter))
-                    return false;
-        for (auto iter : rhs.multiFacts)
-            for (auto vIter : iter.second)
-                if (!lhs.ContainsFact(iter.first, vIter))
-                    return false;
+            if (lhs.multiFacts.at(iter.first) != rhs.multiFacts.at(iter.first))
+                return false;
         ////
         // 
 

@@ -4,8 +4,69 @@
 #include "../../src/Walker/ActionGenerator.hpp"
 
 const std::string TAG = "ActionGenerator ";
+#pragma region IsLegal
+#pragma region SingleLiteral
+//static bool IsLegal(const PDDLLiteral *literal, const PDDLState *state, std::vector<unsigned int> *objects);
+TEST_CASE(TAG + "IsLegal SingleLiteral") {
+    const PDDLState state {
+        std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{},
+        std::unordered_map<unsigned int, std::vector<MultiFact>>{
+            {0, {}},
+            {1, {MultiFact({ 0, 1 })}},
+            {2, {MultiFact({ 0, 1, 2 })}}
+        }
+    };
+    SECTION("Empty") {
+        std::vector<unsigned int> candidateSet{  };
+        const PDDLLiteral literal{1, { 0, 1 }, true};
+        REQUIRE(!ActionGenerator::IsLegal(&literal, &state, &candidateSet));
+    };
+    SECTION("Not Legal") {
+        std::vector<unsigned int> candidateSet{ 0, 1, 2 };
+        SECTION("2 parameters") {
+            const PDDLLiteral literal{1, { 1, 0 }, true};
+            REQUIRE(!ActionGenerator::IsLegal(&literal, &state, &candidateSet));
+        }
+        SECTION("3 parameters") {
+            const PDDLLiteral literal{2, { 2, 1, 0 }, true};
+            REQUIRE(!ActionGenerator::IsLegal(&literal, &state, &candidateSet));
+        }
+    };
+    SECTION("Legal") {
+        std::vector<unsigned int> candidateSet{ 0, 1, 2 };
+        SECTION("2 parameters") {
+            const PDDLLiteral literal{1, { 0, 1 }, true};
+            REQUIRE(ActionGenerator::IsLegal(&literal, &state, &candidateSet));
+        }
+        SECTION("3 parameters") {
+            const PDDLLiteral literal{2, { 0, 1, 2 }, true};
+            REQUIRE(ActionGenerator::IsLegal(&literal, &state, &candidateSet));
+        }
+    };
 
-
+}
+#pragma endregion SingleLiteral
+#pragma region MultipleLiterals
+TEST_CASE(TAG + "IsLegal MultiLiteral") {
+    PDDLState state {
+        std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{},
+        std::unordered_map<unsigned int, std::vector<MultiFact>>{
+            {0, {}},
+            {1, {MultiFact({ 0, 1 })}},
+            {2, {MultiFact({ 0, 1, 2 })}}
+        }
+    };
+    std::vector<unsigned int> set{ 0, 1, 2 };
+    std::vector<PDDLLiteral> literals{
+        PDDLLiteral(0, { 0, 1 }, false),
+        PDDLLiteral(0, { 0, 0 }, true),
+        PDDLLiteral(1, { 0, 1 }, true),
+        PDDLLiteral(2, { 0, 1, 2 }, true)
+    };
+    REQUIRE(ActionGenerator::IsLegal(&literals, &state, &set));
+}
+#pragma endregion MultipleLiterals
+#pragma endregion IsLegal
 #pragma region Iterate
 
 std::vector<std::unordered_set<unsigned int>> GetCandidateObjectsPlaceholder(const unsigned int setCount, const unsigned int setSize) {
@@ -239,7 +300,7 @@ TEST_CASE(TAG + "GenerateActions Multi - 1 Legal") {
 #pragma region RemoveIllegal
 //static void RemoveIllegal(std::unordered_set<unsigned int> &set, const PDDLLiteral *literal, const PDDLState *state);
 #pragma region SingleLiteral
-TEST_CASE(TAG + "IsIllegal SingleLiteral") {
+TEST_CASE(TAG + "RemoveIllegal SingleLiteral") {
     PDDLState state{
         std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{
             {0, std::unordered_set<unsigned int>{  }},
@@ -299,7 +360,7 @@ TEST_CASE(TAG + "IsIllegal SingleLiteral") {
 #pragma endregion SingleLiteral
 #pragma region MultipleLiterals
 //static void RemoveIllegal(std::unordered_set<unsigned int> &set, const std::unordered_set<const PDDLLiteral*> *literals, const PDDLState *state);
-TEST_CASE(TAG + "IsIllegal MultiLiteral") {
+TEST_CASE(TAG + "RemoveIllegal MultiLiteral") {
     PDDLState state {
         std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{
             {0, std::unordered_set<unsigned int>{  }},

@@ -12,29 +12,34 @@ struct PDDLInstance;
 struct MultiFact {
     std::vector<unsigned int> fact;
     MultiFact(std::vector<unsigned int> fact) : fact(fact) {};
+    MultiFact(const std::vector<unsigned int> *indexes, const std::vector<unsigned int> *objects) {
+        fact.reserve(indexes->size());
+        for (int i = 0; i < indexes->size(); i++)
+            fact.push_back(objects->at(indexes->at(i)));
+    };
     friend bool operator== (const MultiFact &lhs, const MultiFact &rhs) {
-        int min = std::min(lhs.fact.size(), rhs.fact.size());
-        for (int i = 0; i < min; i++)
-            if (lhs.fact.at(i) != rhs.fact.at(i))
-                return false;
-        return true;
+        return lhs.fact == rhs.fact;
     }
 
     friend bool operator== (const MultiFact &lhs, const std::vector<unsigned int> &rhs) {
-        int min = std::min(lhs.fact.size(), rhs.size());
-        for (int i = 0; i < min; i++)
-            if (lhs.fact.at(i) != rhs.at(i))
-                return false;
-        return true;
+        return lhs.fact == rhs;
     }
 
     friend bool operator== (const std::vector<unsigned int> &lhs, const MultiFact &rhs) {
-        int min = std::min(lhs.size(), rhs.fact.size());
-        for (int i = 0; i < min; i++)
-            if (lhs.at(i) != rhs.fact.at(i))
+        return lhs == rhs.fact;
+    }
+    friend bool operator== (const MultiFact &lhs, const std::pair<const std::vector<unsigned int>*, const std::vector<unsigned int>*> &rhs) {
+        if (rhs.first->size() != lhs.fact.size())
+                return false;
+        for (int i = 0; i < rhs.first->size(); i++)
+            if (rhs.second->at(rhs.first->at(i)) != lhs.fact.at(i))
                 return false;
         return true;
     }
+    friend bool operator== (const std::pair<const std::vector<unsigned int>*, const std::vector<unsigned int>*> &lhs, const MultiFact &rhs) {
+        return rhs == lhs;
+    }
+private:
 };
 
 struct PDDLState {
@@ -69,6 +74,15 @@ struct PDDLState {
         return true;
     };
 
+    bool ContainsFact(const unsigned int &key, const std::vector<unsigned int> *indexes, const std::vector<unsigned int> *objects) const {
+        auto AreEqual = [&indexes, &objects](const MultiFact &MF) {
+                    return std::make_pair(indexes, objects) == MF;
+                };
+        if (!std::any_of(multiFacts.at(key).begin(), multiFacts.at(key).end(), AreEqual))
+            return false;
+        return true;
+    }
+
     // Very slow, please only use with caution
     friend bool operator== (const PDDLState &lhs, const PDDLState &rhs) {
         // Check unary facts
@@ -97,13 +111,8 @@ struct PDDLState {
         //// 
         //// Check that they contain the same values
         for (auto iter : lhs.multiFacts)
-            for (auto vIter : iter.second)
-                if (!rhs.ContainsFact(iter.first, vIter))
-                    return false;
-        for (auto iter : rhs.multiFacts)
-            for (auto vIter : iter.second)
-                if (!lhs.ContainsFact(iter.first, vIter))
-                    return false;
+            if (lhs.multiFacts.at(iter.first) != rhs.multiFacts.at(iter.first))
+                return false;
         ////
         // 
 

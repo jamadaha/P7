@@ -34,10 +34,10 @@ public:
 
     /// @brief Checks whether the objects are valid for each of the \p literals
     /// @param literals Some multi literals
-    static bool IsLegal(const std::vector<PDDLLiteral> *literals, const PDDLState *state, std::vector<unsigned int> *objects);
+    static bool IsLegal(const std::vector<PDDLLiteral> *literals, const PDDLState *state, const std::vector<unsigned int> *objects);
     /// @brief Checks whether the objects are valid for the given \p literal
     /// @param literal Some multi literal
-    static bool IsLegal(const PDDLLiteral *literal, const PDDLState *state, std::vector<unsigned int> *objects);
+    static bool IsLegal(const PDDLLiteral *literal, const PDDLState *state, const std::vector<unsigned int> *objects);
 
     /// @brief Finds next permutation of the \p iteration
     /// @return Returns true if it hasn't reached the final permutation, and false if it has

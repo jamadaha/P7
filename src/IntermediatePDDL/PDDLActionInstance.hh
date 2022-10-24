@@ -27,6 +27,7 @@ public:
             return false;
         return true;
     }
+
 private:
     size_t Hash = 0;
 };

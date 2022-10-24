@@ -2,11 +2,16 @@
 
 using namespace std;
 
-unordered_set<vector<PDDLActionInstance>> EntanglementFinder::FindEntangledCandidates(PDDLInstance* instance, vector<Path> paths) {
+unordered_set<vector<PDDLActionInstance>> EntanglementFinder::FindEntangledCandidates(vector<Path> paths) {
 	unordered_set<vector<PDDLActionInstance>> candidates;
 
 	int level = paths[0].steps.size();
-	while (level > 1) {
+	if (SearchCeiling != -1)
+		level = SearchCeiling;
+	if (SearchFloor < 2)
+		throw exception();	
+
+	while (level >= SearchFloor) {
 		vector<vector<PDDLActionInstance>> currentValues;
 		for (int i = 0; i < paths.size(); i++) {
 			int counter = 0;

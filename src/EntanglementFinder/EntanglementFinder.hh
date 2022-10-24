@@ -11,7 +11,12 @@
 
 class EntanglementFinder {
 public:
-	std::unordered_set<std::vector<PDDLActionInstance>> FindEntangledCandidates(PDDLInstance* instance, std::vector<Path> paths);
+	const int SearchCeiling;
+	const int SearchFloor;
+
+	EntanglementFinder(int searchFloor = 2, int searchCeiling = -1) : SearchCeiling(searchCeiling), SearchFloor(searchFloor){};
+
+	std::unordered_set<std::vector<PDDLActionInstance>> FindEntangledCandidates(std::vector<Path> paths);
 };
 
 #endif

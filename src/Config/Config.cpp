@@ -19,6 +19,7 @@ int Config::ParseArgs(Config* config, int argc, char** argv){
         (config->ReformulatorTime.Flag + "," + config->ReformulatorTime.LongFlag, config->ReformulatorTime.Description, cxxopts::value<int>())
         (config->DownwardOptions.Search.Flag + "," + config->DownwardOptions.Search.LongFlag, config->DownwardOptions.Search.Description, cxxopts::value<std::string>()->default_value(config->DownwardOptions.Search.DefaultContent))
         (config->DownwardOptions.Heuristic.Flag + "," + config->DownwardOptions.Heuristic.LongFlag, config->DownwardOptions.Heuristic.Description, cxxopts::value<std::string>()->default_value(config->DownwardOptions.Heuristic.DefaultContent))
+        (config->PrintWalkerSteps.Flag + "," + config->PrintWalkerSteps.LongFlag, config->PrintWalkerSteps.Description)
     ;
 
     auto result = options.parse(argc, argv);
@@ -44,6 +45,11 @@ int Config::ParseArgs(Config* config, int argc, char** argv){
     StringHelper::Trim(&reformulatorAlgorithm);
     int reformulatorTime = result[config->ReformulatorTime.LongFlag].as<int>();
 
+    bool printactionandstates = false; 
+    if (result[config->PrintWalkerSteps.LongFlag].count() != 0) {
+        printactionandstates = true;
+    }
+
 
     config->DownwardPath.Content = downwardpath;
     config->ValidatorPath.Content = validatorPath;
@@ -54,6 +60,7 @@ int Config::ParseArgs(Config* config, int argc, char** argv){
     config->ReformulatorTime.Content = reformulatorTime;
     config->DownwardOptions.Search.Content = searchmethod;
     config->DownwardOptions.Heuristic.Content = heuristicmethod;
+    config->PrintWalkerSteps.Content = printactionandstates;
 
     return 0;
 }

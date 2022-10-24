@@ -21,7 +21,7 @@ unordered_map<int, EntanglementOccurance> EntanglementFinder::FindEntangledCandi
 
 		AddCandidatesIfThere(&candidates, currentValues);
 
-		level = ceil((double)level / 2);
+		level = ceil((double)level / LevelReductionFactor);
 	}
 
 	RemoveIfBelowMinimum(&candidates);

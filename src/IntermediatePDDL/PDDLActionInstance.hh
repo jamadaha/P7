@@ -20,7 +20,7 @@ public:
     std::string ToString(const PDDLInstance* instance);
     std::string LiteralsToString(std::vector<PDDLLiteral> literals, const PDDLInstance* instance);
 
-    friend bool operator==(const PDDLActionInstance lhs, const PDDLActionInstance rhs) {
+    friend bool operator==(const PDDLActionInstance& lhs, const PDDLActionInstance& rhs) {
         if (lhs.action != rhs.action)
             return false;
         if (lhs.objects != rhs.objects)

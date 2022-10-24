@@ -11,6 +11,8 @@
 #include "ActionGenerator.hpp"
 #include "../RunReport/RunReport.hh"
 
+#include "../Config/Config.hh"
+
 struct Path {
     const std::vector<PDDLActionInstance> steps;
     Path(std::vector<PDDLActionInstance> steps) : steps(steps) {};
@@ -21,8 +23,8 @@ public:
     unsigned int totalActions = 0;
     Walker(PDDLInstance* instance, ActionGenerator actionGenerator, BaseHeuristics<PDDLActionInstance, PDDLContext> *heuristic, BaseDepthFunction *depthFunc) : 
     instance(instance), actionGenerator(actionGenerator), heuristic(heuristic), depthFunc(depthFunc) {}
-    Path Walk();
-    Path Walk(PDDLState state);
+    Path Walk(Config* config);
+    Path Walk(Config* config, PDDLState state);
     static void DoAction(PDDLState *state, const PDDLActionInstance *action);
 private:
     PDDLInstance* instance;

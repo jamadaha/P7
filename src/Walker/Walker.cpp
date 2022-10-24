@@ -1,10 +1,10 @@
 #include "Walker.hpp"
 
-Path Walker::Walk() {
-    return Walk(instance->problem->initState);
+Path Walker::Walk(Config* config) {
+    return Walk(config, instance->problem->initState);
 }
 
-Path Walker::Walk(PDDLState state) {
+Path Walker::Walk(Config* config, PDDLState state) {
     int depth = depthFunc->GetDepth();
     std::vector<PDDLActionInstance> steps;
     steps.reserve(depth);
@@ -16,10 +16,16 @@ Path Walker::Walk(PDDLState state) {
         PDDLActionInstance action = heuristic->NextChoice(actions);
         totalActions += actions.size();
         steps.push_back(action);
-        DoAction(tempState, &action);
 
-        std::cout << action.ToString(this->instance);
-        std::cout << tempState->ToString(this->instance);
+        if (config->DebugMode.Content) {
+            std::cout << tempState->ToString(this->instance);
+
+            DoAction(tempState, &action);
+
+            std::cout << action.ToString(this->instance);
+        }
+        
+        
     }
     free(tempState);
     return Path(steps);
@@ -42,6 +48,7 @@ void Walker::DoAction(PDDLState *state, const PDDLActionInstance *action) {
             {
                 indexes.push_back(action->objects[index]);
             }
+            
             if (effect.value) {
                 
 

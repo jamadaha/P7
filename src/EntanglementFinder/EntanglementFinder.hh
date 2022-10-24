@@ -22,7 +22,12 @@ public:
 	/// </summary>
 	const int SearchFloor;
 
-	EntanglementFinder(int searchFloor = 2, int searchCeiling = -1) : SearchCeiling(searchCeiling), SearchFloor(searchFloor){};
+	/// <summary>
+	/// By how much the level should be reduced in each iteration.
+	/// </summary>
+	const double LevelReductionFactor;
+
+	EntanglementFinder(int searchFloor = 2, int searchCeiling = -1, double levelReductionFactor = 2) : SearchCeiling(searchCeiling), SearchFloor(searchFloor), LevelReductionFactor(levelReductionFactor) {};
 
 	/// <summary>
 	/// Find entanglement candidates from a vector of paths

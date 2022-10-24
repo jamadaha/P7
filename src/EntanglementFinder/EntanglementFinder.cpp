@@ -10,6 +10,8 @@ unordered_set<EntanglementOccurance> EntanglementFinder::FindEntangledCandidates
 		level = SearchCeiling;
 	if (SearchFloor < 2)
 		throw exception();	
+	if (LevelReductionFactor <= 1)
+		throw exception();
 
 	while (level >= SearchFloor) {
 		vector<vector<PDDLActionInstance>> currentValues = GenerateActionSet(paths, level);
@@ -45,7 +47,7 @@ vector<vector<PDDLActionInstance>> EntanglementFinder::GenerateActionSet(vector<
 
 void EntanglementFinder::AddCandidatesIfThere(unordered_set<EntanglementOccurance>* candidates, std::vector<std::vector<PDDLActionInstance>> currentValues) {
 	for (int i = 0; i < currentValues.size(); i++) {
-		for (int j = 0; j < currentValues.size(); j++) {
+		for (int j = i; j < currentValues.size(); j++) {
 			if (currentValues[i] == currentValues[j] && i != j) {
 				EntanglementOccurance newOcc(currentValues[i]);
 				auto potentialItem = candidates->find(newOcc);
@@ -58,3 +60,4 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_set<EntanglementOccuranc
 			}
 		}
 	}
+}

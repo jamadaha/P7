@@ -5,6 +5,7 @@
 
 const std::string TAG = "ActionGenerator ";
 
+
 #pragma region Iterate
 
 std::vector<std::unordered_set<unsigned int>> GetCandidateObjectsPlaceholder(const unsigned int setCount, const unsigned int setSize) {
@@ -235,3 +236,88 @@ TEST_CASE(TAG + "GenerateActions Multi - 1 Legal") {
 }
 
 #pragma endregion GenerateActions
+#pragma region RemoveIllegal
+//static void RemoveIllegal(std::unordered_set<unsigned int> &set, const PDDLLiteral *literal, const PDDLState *state);
+#pragma region SingleLiteral
+TEST_CASE(TAG + "IsIllegal SingleLiteral") {
+    PDDLState state{
+        std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{
+            {0, std::unordered_set<unsigned int>{  }},
+            {1, std::unordered_set<unsigned int>{ 0 }},
+            {2, std::unordered_set<unsigned int>{ 0, 1 }}
+        },
+        std::unordered_map<unsigned int, std::vector<MultiFact>>{}
+    };
+    SECTION("EmptySet") {
+        std::unordered_set<unsigned int> candidateSet{ };
+        auto before = candidateSet;
+        PDDLLiteral literal{1, { 0 }, true};
+        ActionGenerator::RemoveIllegal(candidateSet, &literal, &state);
+        REQUIRE(before == candidateSet);
+    }
+    SECTION("NoRemove") {
+        SECTION("TrueLiteral") {
+            std::unordered_set<unsigned int> candidateSet{ 0 };
+            auto before = candidateSet;
+            PDDLLiteral literal{1, { 0 }, true};
+            ActionGenerator::RemoveIllegal(candidateSet, &literal, &state);
+            REQUIRE(before == candidateSet);
+        }
+        SECTION("FalseLiteral") {
+            std::unordered_set<unsigned int> candidateSet{ 1 };
+            auto before = candidateSet;
+            PDDLLiteral literal{1, { 0 }, false};
+            ActionGenerator::RemoveIllegal(candidateSet, &literal, &state);
+            REQUIRE(before == candidateSet);
+        }
+    }
+    SECTION("Remove") {
+        SECTION("TrueLiteral") {
+            std::unordered_set<unsigned int> candidateSet{ 1 };
+            PDDLLiteral literal{1, { 0 }, true};
+            ActionGenerator::RemoveIllegal(candidateSet, &literal, &state);
+            REQUIRE(candidateSet.size() == 0);
+        }
+        SECTION("FalseLiteral") {
+            std::unordered_set<unsigned int> candidateSet{ 0 };
+            auto before = candidateSet;
+            PDDLLiteral literal{1, { 0 }, false};
+            ActionGenerator::RemoveIllegal(candidateSet, &literal, &state);
+            REQUIRE(candidateSet.size() == 0);
+        }
+    }
+    SECTION("Other Arg") {
+        SECTION("FalseLiteral") {
+            std::unordered_set<unsigned int> candidateSet{ 0 };
+            auto before = candidateSet;
+            PDDLLiteral literal{1, { 1 }, false};
+            ActionGenerator::RemoveIllegal(candidateSet, &literal, &state);
+            REQUIRE(candidateSet.size() == 0);
+        }
+    }
+}
+#pragma endregion SingleLiteral
+#pragma region MultipleLiterals
+//static void RemoveIllegal(std::unordered_set<unsigned int> &set, const std::unordered_set<const PDDLLiteral*> *literals, const PDDLState *state);
+TEST_CASE(TAG + "IsIllegal MultiLiteral") {
+    PDDLState state {
+        std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{
+            {0, std::unordered_set<unsigned int>{  }},
+            {1, std::unordered_set<unsigned int>{ 0 }},
+            {2, std::unordered_set<unsigned int>{ 0, 1 }}
+        },
+        std::unordered_map<unsigned int, std::vector<MultiFact>>{}
+    };
+    std::unordered_set<unsigned int> set{ 0, 1, 2 };
+    std::unordered_set<const PDDLLiteral*> literals{
+        new PDDLLiteral(0, { 0 }, false),
+        new PDDLLiteral(1, { 0 }, true),
+        new PDDLLiteral(2, { 0 }, true)
+    };
+    ActionGenerator::RemoveIllegal(set, &literals, &state);
+    REQUIRE(set.contains(0));
+    REQUIRE(!set.contains(1));
+    REQUIRE(!set.contains(2));
+}
+#pragma endregion MultipleLiterals
+#pragma endregion RemoveIllegal

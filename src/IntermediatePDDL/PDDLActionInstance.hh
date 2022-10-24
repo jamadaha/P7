@@ -15,8 +15,8 @@ public:
     const std::vector<unsigned int> objects;
     PDDLActionInstance() {};
     PDDLActionInstance(const PDDLAction *action, const std::vector<unsigned int> objects) : action(action), objects(objects) {}; 
-    std::string ToString(const PDDLProblem* problem, const PDDLDomain* domain);
-    std::string LiteralsToString(std::vector<PDDLLiteral> literals, const PDDLDomain* domain, const PDDLProblem* problem);
+    std::string ToString(const PDDLInstance* instance);
+    std::string LiteralsToString(std::vector<PDDLLiteral> literals, const PDDLInstance* instance);
 
     friend bool operator==(const PDDLActionInstance& lhs, const PDDLActionInstance& rhs) {
         if (lhs.action != rhs.action)

@@ -22,8 +22,8 @@ public:
 	SASPlan RebuildSASPlan(SASPlan* reformulatedSAS) override;
 private:
 	std::vector<Path> PerformWalk(PDDLInstance* instance);
-	std::vector<EntangledActionsSet> FindEntanglements(PDDLInstance* instance, std::vector<Path> paths);
-	PDDLInstance GenerateMacros(std::vector<EntangledActionsSet> candidates, PDDLInstance* instance);
+	std::unordered_set<std::vector<PDDLActionInstance>> FindEntanglements(PDDLInstance* instance, std::vector<Path> paths);
+	PDDLInstance GenerateMacros(std::unordered_set<std::vector<PDDLActionInstance>> candidates, PDDLInstance* instance);
 };
 
 #endif

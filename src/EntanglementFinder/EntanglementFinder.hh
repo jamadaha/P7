@@ -4,14 +4,14 @@
 #include <string>
 #include <vector>
 #include <math.h>
+#include <unordered_set>
 
 #include "../IntermediatePDDL/PDDLInstance.hh"
 #include "../Walker/Walker.hpp"
-#include "EntangledActionsSet.hh"
 
 class EntanglementFinder {
 public:
-	std::vector<EntangledActionsSet> FindEntangledCandidates(PDDLInstance* instance, std::vector<Path> paths);
+	std::unordered_set<std::vector<PDDLActionInstance>> FindEntangledCandidates(PDDLInstance* instance, std::vector<Path> paths);
 };
 
 #endif

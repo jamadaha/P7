@@ -75,7 +75,7 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered
                 candidateObjects = state->unaryFacts.at((*iter)->predicateIndex);
                 break;
             }
-            
+
         if (candidateObjects.size() == 0) {
             candidateObjects.reserve(problem->objects.size());
             for (int i = 0; i < problem->objects.size(); i++)
@@ -117,19 +117,15 @@ bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLSta
 }
 
 bool ActionGenerator::IsLegal(const PDDLLiteral *literal, const PDDLState *state, const std::vector<unsigned int> *objects) {
-    std::vector<unsigned int> literalObjects;
-    if (objects->size() < literal->args.size())
+    if (objects->size() == 0)
         return false;
-    for (int i = 0; i < literal->args.size(); i++)
-        literalObjects.push_back(objects->at(literal->args.at(i)));
-
     if (literal->predicateIndex == 0) {
-        if ((literalObjects.at(0) == literalObjects.at(1)) != literal->value)
+        if ((objects->at(literal->args.at(0)) == objects->at(literal->args.at(1))) != literal->value)
             return false;
         else
             return true;
     } else {
-        if (state->ContainsFact(literal->predicateIndex, literalObjects) != literal->value)
+        if (state->ContainsFact(literal->predicateIndex, literal->args, objects) != literal->value)
             return false;
         else
             return true;

@@ -57,6 +57,20 @@ struct PDDLState {
         return true;
     };
 
+    bool ContainsFact(const unsigned int &key, const std::vector<unsigned int> &indexes, const std::vector<unsigned int> *objects) const {
+        auto AreEqual = [&indexes, &objects](const MultiFact &MF) {
+                    if (indexes.size() != MF.fact.size())
+                        return false;
+                    for (int i = 0; i < indexes.size(); i++)
+                        if (objects->at(indexes.at(i)) != MF.fact.at(i))
+                            return false;
+                    return true;
+                };
+        if (!std::any_of(multiFacts.at(key).begin(), multiFacts.at(key).end(), AreEqual))
+            return false;
+        return true;
+    }
+
     // Very slow, please only use with caution
     friend bool operator== (const PDDLState &lhs, const PDDLState &rhs) {
         // Check unary facts

@@ -37,15 +37,23 @@ void Walker::DoAction(PDDLState *state, const PDDLActionInstance *action) {
                 state->unaryFacts.at(effect.predicateIndex).erase(action->objects.at(effect.args.at(0)));
         } else {
             // Handle multi effect
+            std::vector<unsigned int> indexes;
+            for (auto index : effect.args)
+            {
+                indexes.push_back(action->objects[index]);
+            }
             if (effect.value) {
-                if (state->ContainsFact(effect.predicateIndex, action->objects))
+                
+
+                if (state->ContainsFact(effect.predicateIndex, indexes))
                     continue;
-                state->multiFacts.at(effect.predicateIndex).push_back(MultiFact(action->objects));
+                
+                state->multiFacts.at(effect.predicateIndex).push_back(MultiFact(indexes));
             } else {
-                if (!state->ContainsFact(effect.predicateIndex, action->objects))
+                if (!state->ContainsFact(effect.predicateIndex, indexes))
                     continue;
                 auto factSet = &state->multiFacts.at(effect.predicateIndex);
-                factSet->erase(std::remove(factSet->begin(), factSet->end(), action->objects), factSet->end());
+                factSet->erase(std::remove(factSet->begin(), factSet->end(), indexes), factSet->end());
             }
         }
     }

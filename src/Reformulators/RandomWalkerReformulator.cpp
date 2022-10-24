@@ -33,7 +33,7 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 			ActionGenerator(instance->domain, instance->problem),
 			heu,
 			depthFunction);
-		paths.push_back(walker.Walk());
+		paths.push_back(walker.Walk(Configs));
 
 		// Debug info
 		if (Configs->DebugMode.Content) {

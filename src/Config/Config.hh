@@ -39,6 +39,7 @@ public:
     ConfigItem<std::string> ProblemFile = ConfigItem<std::string>("p", "problem", "Problem File", "Path to problem file", "gripper_problem.pddl");
     ConfigItem<std::string> Reformulator = ConfigItem<std::string>("r", "reformulator", "Reformulator Algorithm", "What reformulator algorithm to use", "SameOutput");
     ConfigItem<int> ReformulatorTime = ConfigItem<int>("t", "timelimit", "Reformulator time limiter", "How much time in ms that the reformulator is allowed to walk in", 500);
+    ConfigItem<bool> PrintWalkerSteps = ConfigItem<bool>("w", "printwalkersteps", "Print actions and states", "Print each action and state in walker path", false);
 
     int ParseArgs(Config* config, int argc, char** argv);
 

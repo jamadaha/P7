@@ -5,11 +5,9 @@
 #include <unordered_set>
 #include <string>
 
-#include "PDDLProblem.hh"
-#include "PDDLDomain.hh"
 #include "PDDLAction.hh"
 
-struct PDDLProblem;
+struct PDDLInstance;
 
 class PDDLActionInstance {
 public:

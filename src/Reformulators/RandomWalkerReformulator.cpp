@@ -3,8 +3,22 @@
 using namespace std;
 
 PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
-	RandomHeuristic<PDDLActionInstance> *heu = new RandomHeuristic<PDDLActionInstance>(PDDLContext(instance->domain, instance->problem));
-	BaseWidthFunction *widthFunc;
+	// Walk the PDDL
+	auto paths = PerformWalk(instance);
+
+	// Find Entangelements
+	auto candidates = FindEntanglements(paths);
+
+	// Generate new Macros
+	auto newInstance = GenerateMacros(candidates, instance);
+
+	return newInstance;
+}
+
+std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) {
+	// Walk the PDDL
+	RandomHeuristic<PDDLActionInstance>* heu = new RandomHeuristic<PDDLActionInstance>(PDDLContext(instance->domain, instance->problem));
+	BaseWidthFunction* widthFunc;
 	if (Configs->ReformulatorTime.Content == -1)
 		widthFunc = new ConstantWidthFunction(100);
 	else
@@ -39,12 +53,26 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 		ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", 1);
 	}
 
-	// Do Something and transform the input PDDL into a new PDDL format
-	PDDLInstance newInstance(instance->domain, instance->problem);
-
 	free(heu); free(widthFunc); free(depthFunction);
 
-	return *instance;
+	return paths;
+}
+
+std::vector<std::vector<PDDLActionInstance>> RandomWalkerReformulator::FindEntanglements(std::vector<Path> paths) {
+	EntanglementFinder entFinder;
+	auto candidates = entFinder.FindEntangledCandidates(paths);
+
+	// Print debug info
+	if (Configs->DebugMode.Content) {
+		
+	}
+
+	return candidates;
+}
+
+PDDLInstance RandomWalkerReformulator::GenerateMacros(std::vector<std::vector<PDDLActionInstance>> candidates, PDDLInstance* instance) {
+	PDDLInstance newInstance(instance->domain, instance->problem);
+	return newInstance;
 }
 
 SASPlan RandomWalkerReformulator::RebuildSASPlan(SASPlan* reformulatedSAS) {

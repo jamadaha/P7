@@ -19,6 +19,7 @@ target_link_libraries(P7
         DownwardRunner
         FileHelper
         Walker
+        EntanglementFinder
         ActionGenerator
         DepthFunction
         WidthFunction)

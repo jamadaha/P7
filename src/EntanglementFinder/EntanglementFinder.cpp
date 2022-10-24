@@ -14,28 +14,12 @@ unordered_set<EntanglementOccurance> EntanglementFinder::FindEntangledCandidates
 	while (level >= SearchFloor) {
 		vector<vector<PDDLActionInstance>> currentValues = GenerateActionSet(paths, level);
 
-		for (int i = 0; i < currentValues.size(); i++) {
-			for (int j = 0; j < currentValues.size(); j++) {
-				if (currentValues[i] == currentValues[j] && i != j) {
-					EntanglementOccurance newOcc(currentValues[i]);
-					auto potentialItem = candidates.find(newOcc);
-					if (potentialItem != candidates.end()) {
-						auto existingItem = &(*potentialItem);
-						existingItem->Occurance++;
-					}
-					else
-						candidates.emplace(newOcc);
-				}
-			}
-		}
+		AddCandidatesIfThere(&candidates, currentValues);
 
 		level = ceil((double)level / 2);
 	}
 
-
-	unordered_set<EntanglementOccurance> acc;
-
-	return acc;
+	return candidates;
 }
 
 vector<vector<PDDLActionInstance>> EntanglementFinder::GenerateActionSet(vector<Path> paths, int level) {
@@ -58,3 +42,19 @@ vector<vector<PDDLActionInstance>> EntanglementFinder::GenerateActionSet(vector<
 	}
 	return currentValues;
 }
+
+void EntanglementFinder::AddCandidatesIfThere(unordered_set<EntanglementOccurance>* candidates, std::vector<std::vector<PDDLActionInstance>> currentValues) {
+	for (int i = 0; i < currentValues.size(); i++) {
+		for (int j = 0; j < currentValues.size(); j++) {
+			if (currentValues[i] == currentValues[j] && i != j) {
+				EntanglementOccurance newOcc(currentValues[i]);
+				auto potentialItem = candidates->find(newOcc);
+				if (potentialItem != candidates->end()) {
+					auto existingItem = &(*potentialItem);
+					existingItem->Occurance++;
+				}
+				else
+					candidates->emplace(newOcc);
+			}
+		}
+	}

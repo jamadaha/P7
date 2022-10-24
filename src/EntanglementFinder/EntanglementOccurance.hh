@@ -8,7 +8,7 @@
 struct EntanglementOccurance {
 public:
 	std::vector<PDDLActionInstance> Chain;
-	int Occurance;
+    mutable int Occurance;
 	EntanglementOccurance(std::vector<PDDLActionInstance> chain) : Chain(chain), Occurance(1){};
 
     friend bool operator==(const EntanglementOccurance& lhs, const EntanglementOccurance& rhs) {

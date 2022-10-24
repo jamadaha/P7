@@ -31,7 +31,7 @@ public:
 
 private:
 	std::vector<std::vector<PDDLActionInstance>> GenerateActionSet(std::vector<Path> paths, int level);
-	void AddCandidatesIfThere(std::vector<Path> paths, int level);
+	void AddCandidatesIfThere(std::unordered_set<EntanglementOccurance>* candidates, std::vector<std::vector<PDDLActionInstance>> currentValues);
 };
 
 #endif

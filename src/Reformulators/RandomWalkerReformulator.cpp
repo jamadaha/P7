@@ -7,7 +7,7 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	auto paths = PerformWalk(instance);
 
 	// Find Entangelements
-	auto candidates = FindEntanglements(paths);
+	auto candidates = FindEntanglements(paths, instance);
 
 	// Generate new Macros
 	auto newInstance = GenerateMacros(candidates, instance);
@@ -58,7 +58,7 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 	return paths;
 }
 
-unordered_set<EntanglementOccurance> RandomWalkerReformulator::FindEntanglements(vector<Path> paths) {
+unordered_set<EntanglementOccurance> RandomWalkerReformulator::FindEntanglements(vector<Path> paths, PDDLInstance* instance) {
 	EntanglementFinder entFinder;
 	auto startTime = chrono::steady_clock::now();
 	auto candidates = entFinder.FindEntangledCandidates(paths);
@@ -66,15 +66,24 @@ unordered_set<EntanglementOccurance> RandomWalkerReformulator::FindEntanglements
 
 	// Print debug info
 	if (Configs->DebugMode.Content) {
-		vector<int> checkValues;
-		for (auto iter = candidates.begin(); iter != candidates.end(); iter++) {
-			auto value = std::hash<EntanglementOccurance>{}(*iter);
-			for (int i = 0; i < checkValues.size(); i++)
-				if (checkValues[i] == value)
-					ConsoleHelper::PrintDebugError("[Entanglement Finder] Unexpected collision found!", 1);
-			checkValues.push_back(value);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Entanglements:", 1);
+		for (auto i = candidates.begin(); i != candidates.end(); i++) {
+			string actionStr = "";
+			for (int j = 0; j < (*i).Chain.size(); j++) {
+				auto item = (*i).Chain.at(j);
+				string paramStr = "";
+				for (int l = 0; l < item.objects.size(); l++) {
+					paramStr += instance->problem->objects[item.objects[l]];
+					if (l != item.objects.size() - 1)
+						paramStr += ", ";
+				}
+				actionStr += item.action->name + "(" + paramStr + ")";
+				if (j != (*i).Chain.size() - 1)
+					actionStr += " -> ";
+			}
+			ConsoleHelper::PrintDebugInfo("[Entanglement Finder] " + to_string((*i).Occurance) + " : " + actionStr, 2);
 		}
-
+	
 		unsigned int totalActions = 0;
 		for (int i = 0; i < paths.size(); i++)
 			totalActions += paths[i].steps.size();

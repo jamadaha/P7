@@ -27,7 +27,12 @@ public:
 	/// </summary>
 	const double LevelReductionFactor;
 
-	EntanglementFinder(int searchFloor = 2, int searchCeiling = -1, double levelReductionFactor = 2) : SearchCeiling(searchCeiling), SearchFloor(searchFloor), LevelReductionFactor(levelReductionFactor) {};
+	/// <summary>
+	/// The minimum amount of times an action sequence have to occure to be counted as valid
+	/// </summary>
+	const int MinimumOccurance;
+
+	EntanglementFinder(int searchFloor = 2, int searchCeiling = -1, double levelReductionFactor = 2, int minimumOccurance = 5) : SearchCeiling(searchCeiling), SearchFloor(searchFloor), LevelReductionFactor(levelReductionFactor), MinimumOccurance(minimumOccurance) {};
 
 	/// <summary>
 	/// Find entanglement candidates from a vector of paths
@@ -36,7 +41,8 @@ public:
 
 private:
 	void GenerateActionSet(std::vector<std::vector<PDDLActionInstance>>* currentValues, const std::vector<Path>* paths, const int level);
-	void AddCandidatesIfThere(std::unordered_set<EntanglementOccurance>* candidates, const std::vector<std::vector<PDDLActionInstance>>* currentValues);
+	void AddCandidatesIfThere(std::unordered_set<EntanglementOccurance>* candidates, const std::vector<std::vector<PDDLActionInstance>> currentValues);
+	void RemoveIfBelowMinimum(std::unordered_set<EntanglementOccurance>* candidates);
 };
 
 #endif

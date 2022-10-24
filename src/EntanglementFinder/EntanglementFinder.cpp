@@ -19,10 +19,12 @@ unordered_set<EntanglementOccurance> EntanglementFinder::FindEntangledCandidates
 	while (level >= SearchFloor) {
 		GenerateActionSet(&currentValues, &paths, level);
 
-		AddCandidatesIfThere(&candidates, &currentValues);
+		AddCandidatesIfThere(&candidates, currentValues);
 
 		level = ceil((double)level / 2);
 	}
+
+	RemoveIfBelowMinimum(&candidates);
 
 	return candidates;
 }
@@ -30,29 +32,24 @@ unordered_set<EntanglementOccurance> EntanglementFinder::FindEntangledCandidates
 void EntanglementFinder::GenerateActionSet(vector<vector<PDDLActionInstance>> *currentValues, const vector<Path>* paths, const int level) {
 	currentValues->clear();
 	for (int i = 0; i < paths->size(); i++) {
-		int counter = 0;
-		vector<PDDLActionInstance> currentSet;
-		for (int j = 0; j < paths->at(i).steps.size(); j++) {
-			PDDLActionInstance aInstance = ((paths->at(i)).steps.at(j));
-			currentSet.push_back(aInstance);
-			counter++;
-			if (counter >= level) {
-				currentValues->push_back(currentSet);
-				currentSet.clear();
-				counter = 0;
+		for (int j = 0; j < level; j += level) {
+			vector<PDDLActionInstance> currentSet;
+			for (int l = j; l < j + level - 1; l++) {
+				if (l >= paths->at(i).steps.size())
+					break;
+				currentSet.push_back(((paths->at(i)).steps.at(l)));
 			}
-		}
-		if (currentSet.size() != 0)
 			currentValues->push_back(currentSet);
+		}
 	}
 }
 
-void EntanglementFinder::AddCandidatesIfThere(unordered_set<EntanglementOccurance>* candidates, const std::vector<std::vector<PDDLActionInstance>>* currentValues) {
-	for (int i = 0; i < currentValues->size(); i++) {
-		auto iValue = &(currentValues->at(i));
-		for (int j = i + 1; j < currentValues->size(); j++) {
-			if (*iValue == *&(currentValues->at(j))) {
-				EntanglementOccurance newOcc(*iValue);
+void EntanglementFinder::AddCandidatesIfThere(unordered_set<EntanglementOccurance>* candidates, const std::vector<std::vector<PDDLActionInstance>> currentValues) {
+	for (int i = 0; i < currentValues.size(); i++) {
+		vector<PDDLActionInstance> iValue = (currentValues.at(i));
+		for (int j = i + 1; j < currentValues.size(); j++) {
+			if (iValue == (currentValues.at(j))) {
+				EntanglementOccurance newOcc(iValue);
 				auto potentialItem = candidates->find(newOcc);
 				if (potentialItem != candidates->end()) {
 					auto existingItem = &(*potentialItem);
@@ -63,4 +60,10 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_set<EntanglementOccuranc
 			}
 		}
 	}
+}
+
+
+void EntanglementFinder::RemoveIfBelowMinimum(unordered_set<EntanglementOccurance>* candidates) {
+	const auto removeIfLessThan = [&](EntanglementOccurance const& x) { return x.Occurance < MinimumOccurance; };
+	std::erase_if(*candidates, removeIfLessThan);
 }

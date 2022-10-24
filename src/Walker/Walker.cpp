@@ -19,7 +19,7 @@ Path Walker::Walk(Config* config, PDDLState state) {
 
         DoAction(tempState, &action);
 
-        if (config->DebugMode.Content) {
+        if (config->PrintWalkerSteps.Content) {
             std::cout << tempState->ToString(this->instance);
 
             std::cout << action.ToString(this->instance);

@@ -41,8 +41,9 @@ public:
 
 private:
 	void GenerateActionSet(std::vector<std::vector<PDDLActionInstance>>* currentValues, const std::vector<Path>* paths, const int level);
-	void AddCandidatesIfThere(std::unordered_map<int, EntanglementOccurance>* candidates, const std::vector<std::vector<PDDLActionInstance>> currentValues);
+	void AddCandidatesIfThere(std::unordered_map<int, EntanglementOccurance>* candidates, std::vector<std::vector<PDDLActionInstance>> currentValues);
 	void RemoveIfBelowMinimum(std::unordered_map<int, EntanglementOccurance>* candidates);
+	bool IsEqual(std::vector<PDDLActionInstance>* lhv, std::vector<PDDLActionInstance>* rhv);
 };
 
 #endif

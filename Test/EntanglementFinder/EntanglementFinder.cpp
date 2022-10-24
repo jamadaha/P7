@@ -22,8 +22,8 @@ TEST_CASE(TAG + "Can_FindLargeOccurance_1") {
     auto result = finder.FindEntangledCandidates(paths);
     REQUIRE(result.size() == 1);
     auto firstObject = *result.begin();
-    REQUIRE(firstObject.Chain.size() == 4);
-    REQUIRE(firstObject.Occurance == 1);
+    REQUIRE(firstObject.second.Chain.size() == 4);
+    REQUIRE(firstObject.second.Occurance == 1);
 }
 
 TEST_CASE(TAG + "Can_FindLargeOccurance_2") {
@@ -42,8 +42,8 @@ TEST_CASE(TAG + "Can_FindLargeOccurance_2") {
     auto result = finder.FindEntangledCandidates(paths);
     REQUIRE(result.size() == 1);
     auto firstObject = *result.begin();
-    REQUIRE(firstObject.Chain.size() == 4);
-    REQUIRE(firstObject.Occurance == 6);
+    REQUIRE(firstObject.second.Chain.size() == 4);
+    REQUIRE(firstObject.second.Occurance == 6);
 }
 
 TEST_CASE(TAG + "Can_FindLargeOccurance_3") {
@@ -62,7 +62,7 @@ TEST_CASE(TAG + "Can_FindLargeOccurance_3") {
     auto result = finder.FindEntangledCandidates(paths);
     REQUIRE(result.size() == 2);
     for(auto i = result.begin(); i != result.end(); i++)
-        REQUIRE((*i).Chain.size() == 4);
+        REQUIRE((*i).second.Chain.size() == 4);
 }
 
 #pragma endregion

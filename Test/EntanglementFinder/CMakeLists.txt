@@ -2,6 +2,7 @@ add_executable(Tests-EntanglementFinder Test/EntanglementFinder/EntanglementFind
 target_link_libraries(Tests-EntanglementFinder 
     PRIVATE 
         Catch2::Catch2WithMain
-        EntanglementFinder)
+        EntanglementFinder
+        IntermediatePDDL)
 
 catch_discover_tests(Tests-EntanglementFinder)

@@ -12,7 +12,7 @@ TEST_CASE(TAG + "IsLegal SingleLiteral") {
         std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{},
         std::unordered_map<unsigned int, std::vector<MultiFact>>{
             {0, {}},
-            {1, {MultiFact({ 0, 1 })}},
+            {1, {MultiFact({ 0, 1 }), MultiFact({ 0, 2 })}},
             {2, {MultiFact({ 0, 1, 2 })}}
         }
     };
@@ -23,6 +23,10 @@ TEST_CASE(TAG + "IsLegal SingleLiteral") {
     };
     SECTION("Not Legal") {
         std::vector<unsigned int> candidateSet{ 0, 1, 2 };
+        SECTION("Equality") {
+            const PDDLLiteral literal{0, { 0, 1 }, true};
+            REQUIRE(!ActionGenerator::IsLegal(&literal, &state, &candidateSet));
+        }
         SECTION("2 parameters") {
             const PDDLLiteral literal{1, { 1, 0 }, true};
             REQUIRE(!ActionGenerator::IsLegal(&literal, &state, &candidateSet));
@@ -34,8 +38,20 @@ TEST_CASE(TAG + "IsLegal SingleLiteral") {
     };
     SECTION("Legal") {
         std::vector<unsigned int> candidateSet{ 0, 1, 2 };
+        SECTION("Equality") {
+            const PDDLLiteral literal{0, { 0, 0 }, true};
+            REQUIRE(!ActionGenerator::IsLegal(&literal, &state, &candidateSet));
+        }
+        SECTION("Equality2") {
+            const PDDLLiteral literal{0, { 1, 1 }, true};
+            REQUIRE(!ActionGenerator::IsLegal(&literal, &state, &candidateSet));
+        }
         SECTION("2 parameters") {
             const PDDLLiteral literal{1, { 0, 1 }, true};
+            REQUIRE(ActionGenerator::IsLegal(&literal, &state, &candidateSet));
+        }
+        SECTION("2 parameters2") {
+            const PDDLLiteral literal{1, { 0, 2 }, true};
             REQUIRE(ActionGenerator::IsLegal(&literal, &state, &candidateSet));
         }
         SECTION("3 parameters") {

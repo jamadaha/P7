@@ -108,13 +108,19 @@ bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLSta
 }
 
 bool ActionGenerator::IsLegal(const PDDLLiteral *literal, const PDDLState *state, const std::vector<unsigned int> *objects) {
+    std::vector<unsigned int> literalObjects;
+    if (objects->size() < literal->args.size())
+        return false;
+    for (int i = 0; i < literal->args.size(); i++)
+        literalObjects.push_back(objects->at(literal->args.at(i)));
+
     if (literal->predicateIndex == 0) {
-        if ((objects->at(0) == objects->at(1)) != literal->value)
+        if ((literalObjects.at(0) == literalObjects.at(1)) != literal->value)
             return false;
         else
             return true;
     } else {
-        if (state->ContainsFact(literal->predicateIndex, objects) != literal->value)
+        if (state->ContainsFact(literal->predicateIndex, literalObjects) != literal->value)
             return false;
         else
             return true;

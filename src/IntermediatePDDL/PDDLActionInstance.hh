@@ -27,6 +27,7 @@ public:
             return false;
         return true;
     }
+
     struct HashFunction {
         std::size_t operator()(PDDLActionInstance const& s) const noexcept
         {

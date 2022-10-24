@@ -17,10 +17,10 @@ Path Walker::Walk(Config* config, PDDLState state) {
         totalActions += actions.size();
         steps.push_back(action);
 
+        DoAction(tempState, &action);
+
         if (config->DebugMode.Content) {
             std::cout << tempState->ToString(this->instance);
-
-            DoAction(tempState, &action);
 
             std::cout << action.ToString(this->instance);
         }

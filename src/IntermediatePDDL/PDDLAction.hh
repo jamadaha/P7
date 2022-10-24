@@ -28,7 +28,7 @@ struct PDDLAction {
 
     /// @return Returns true if name, parameters and preconditions are the same, ignores parameter names
     friend bool operator==(const PDDLAction& lhs, const PDDLAction& rhs) {
-        if (std::cmp_not_equal(lhs.name, rhs.name))
+        if (lhs.name.compare(rhs.name) != 0)
             return false;
         if (lhs.parameters.size() != rhs.parameters.size())
             return false;

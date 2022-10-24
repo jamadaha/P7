@@ -2,6 +2,7 @@
 #define RandomWalkerReformulator_HH
 
 #include <chrono>
+#include <unordered_map>
 
 #include "BaseReformulator.hh"
 #include "../Walker/Walker.hpp"
@@ -11,6 +12,8 @@
 #include "../Walker/WidthFunctions/TimeWidthFunction.hh"
 #include "../Config/Config.hh"
 #include "../Helpers/ConsoleHelper.hh"
+#include "../EntanglementFinder/EntanglementFinder.hh"
+#include "../EntanglementFinder/EntanglementOccurance.hh"
 
 class RandomWalkerReformulator : public BaseReformulator {
 public:
@@ -19,6 +22,10 @@ public:
 	}
 	PDDLInstance ReformulatePDDL(PDDLInstance* instance) override;
 	SASPlan RebuildSASPlan(SASPlan* reformulatedSAS) override;
+private:
+	std::vector<Path> PerformWalk(PDDLInstance* instance);
+	std::unordered_map<int, EntanglementOccurance> FindEntanglements(std::vector<Path> paths, PDDLInstance* instance);
+	PDDLInstance GenerateMacros(std::unordered_map<int, EntanglementOccurance> candidates, PDDLInstance* instance);
 };
 
 #endif

@@ -49,11 +49,10 @@ void EntanglementFinder::GenerateActionSet(vector<vector<PDDLActionInstance>> *c
 
 void EntanglementFinder::AddCandidatesIfThere(unordered_set<EntanglementOccurance>* candidates, const std::vector<std::vector<PDDLActionInstance>>* currentValues) {
 	for (int i = 0; i < currentValues->size(); i++) {
-		vector<PDDLActionInstance> iValue = (currentValues->at(i));
+		auto iValue = &(currentValues->at(i));
 		for (int j = i + 1; j < currentValues->size(); j++) {
-			vector<PDDLActionInstance> jValue = (currentValues->at(j));
-			if (iValue == jValue) {
-				EntanglementOccurance newOcc(iValue);
+			if (*iValue == *&(currentValues->at(j))) {
+				EntanglementOccurance newOcc(*iValue);
 				auto potentialItem = candidates->find(newOcc);
 				if (potentialItem != candidates->end()) {
 					auto existingItem = &(*potentialItem);

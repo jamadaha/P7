@@ -28,8 +28,7 @@ unordered_set<vector<PDDLActionInstance>> EntanglementFinder::FindEntangledCandi
 		for (int i = 0; i < currentValues.size(); i++) {
 			for (int j = 0; j < currentValues.size(); j++) {
 				if (currentValues[i] == currentValues[j] && i != j) {
-					if (!candidates.contains(currentValues[i]))
-						candidates.insert(currentValues[i]);
+					candidates.emplace(currentValues[i]);
 				}
 			}
 		}

@@ -66,6 +66,15 @@ unordered_set<vector<PDDLActionInstance>> RandomWalkerReformulator::FindEntangle
 
 	// Print debug info
 	if (Configs->DebugMode.Content) {
+		vector<int> checkValues;
+		for (auto iter = candidates.begin(); iter != candidates.end(); iter++) {
+			auto value = std::hash<vector<PDDLActionInstance>>{}(*iter);
+			for (int i = 0; i < checkValues.size(); i++)
+				if (checkValues[i] == value)
+					ConsoleHelper::PrintDebugError("[Entanglement Finder] Collision found!", 1);
+			checkValues.push_back(value);
+		}
+
 		unsigned int totalActions = 0;
 		for (int i = 0; i < paths.size(); i++)
 			totalActions += paths[i].steps.size();

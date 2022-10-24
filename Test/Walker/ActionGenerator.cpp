@@ -66,7 +66,6 @@ TEST_CASE(TAG + "Iterate"){
         auto iteration = GetIterators(candidateObjects);
         REQUIRE(2 == iteration.size());
         for (int i = 0; i < 4; i++) {
-            printf("%u %u\n", (*iteration.at(0)), (*iteration.at(1)));
             if (i != 3)
                 REQUIRE(ActionGenerator::Iterate(&iteration, &candidateObjects));
             else

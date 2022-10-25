@@ -66,25 +66,26 @@ unordered_map<int, EntanglementOccurance> RandomWalkerReformulator::FindEntangle
 
 	// Print debug info
 	if (Configs->GetBool("debugmode")) {
-		// Add this to a config file later...
-		//ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Entanglements:", 1);
-		//for (auto i = candidates.begin(); i != candidates.end(); i++) {
-		//	string actionStr = "";
-		//	for (int j = 0; j < (*i).second.Chain.size(); j++) {
-		//		auto item = (*i).second.Chain.at(j);
-		//		string paramStr = "";
-		//		for (int l = 0; l < item.objects.size(); l++) {
-		//			paramStr += instance->problem->objects[item.objects[l]];
-		//			if (l != item.objects.size() - 1)
-		//				paramStr += ", ";
-		//		}
-		//		actionStr += item.action->name + "(" + paramStr + ")";
-		//		if (j != (*i).second.Chain.size() - 1)
-		//			actionStr += " -> ";
-		//	}
-		//	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] " + to_string((*i).second.Occurance) + " : " + actionStr, 2);
-		//}
-	
+		if (Configs->GetBool("printentanglersteps")) {
+			ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Entanglements:", 1);
+			for (auto i = candidates.begin(); i != candidates.end(); i++) {
+				string actionStr = "";
+				for (int j = 0; j < (*i).second.Chain.size(); j++) {
+					auto item = (*i).second.Chain.at(j);
+					string paramStr = "";
+					for (int l = 0; l < item.objects.size(); l++) {
+						paramStr += instance->problem->objects[item.objects[l]];
+						if (l != item.objects.size() - 1)
+							paramStr += ", ";
+					}
+					actionStr += item.action->name + "(" + paramStr + ")";
+					if (j != (*i).second.Chain.size() - 1)
+						actionStr += " -> ";
+				}
+				ConsoleHelper::PrintDebugInfo("[Entanglement Finder] " + to_string((*i).second.Occurance) + " : " + actionStr, 2);
+			}
+		}
+
 		unsigned int totalActions = 0;
 		for (int i = 0; i < paths.size(); i++)
 			totalActions += paths[i].steps.size();

@@ -1,4 +1,4 @@
-add_library(EntanglementFinder "EntanglementFinder.cpp")
+add_library(EntanglementFinder "EntanglementFinder.cpp" "EntanglementOccurance.cpp")
 target_sources(Config
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/EntanglementFinder.cpp

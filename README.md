@@ -59,6 +59,14 @@ These are for debugging in VSCode.
                     "name": "PATH",
                     "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
                 }
+            ],
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
             ]
         }, {
             "name": "Release",

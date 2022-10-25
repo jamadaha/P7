@@ -41,14 +41,19 @@ void EntanglementFinder::GenerateActionSet(vector<vector<PDDLActionInstance>> *c
 	currentValues->clear();
 	for (int i = 0; i < paths->size(); i++) {
 		for (int j = 0; j < paths->at(i).steps.size(); j += level) {
+			bool doAdd = true;
 			vector<PDDLActionInstance> currentSet;
 			currentSet.reserve(level);
 			for (int l = j; l < j + level; l++) {
-				if (l >= paths->at(i).steps.size())
+				if (l >= paths->at(i).steps.size()) {
+					if (l - j == 1)
+						doAdd = false;
 					break;
+				}
 				currentSet.push_back(((paths->at(i)).steps.at(l)));
 			}
-			currentValues->push_back(currentSet);
+			if (doAdd)
+				currentValues->push_back(currentSet);
 		}
 	}
 }
@@ -68,7 +73,7 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 					currentOcc->Occurance++;
 				}
 				else {
-					EntanglementOccurance newOcc(*iValue);
+					EntanglementOccurance newOcc(*iValue, key);
 					candidates->emplace(key, newOcc);
 					containsThisKey = true;
 					currentOcc = &candidates->at(key);

@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <string>
 
+#include "PDDLActionInstance.hh"
+
 struct PDDLInstance;
 
 struct MultiFact {
@@ -121,5 +123,39 @@ struct PDDLState {
 
     std::string ToString(const PDDLInstance* instance);
 };
+
+namespace std {
+    template <>
+    struct hash<MultiFact> {
+        auto operator()(MultiFact& s) const -> size_t {
+            std::size_t h1 = hash<vector<unsigned int>>{}(s.fact);
+            return h1;
+        }
+    };
+
+    template <>
+    struct hash<vector<MultiFact>> {
+        auto operator()(vector<MultiFact>& vec) const -> size_t {
+            std::size_t seed = vec.size();
+            for (auto& i : vec) {
+                seed ^= hash<MultiFact>{}(i) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+            }
+            return seed;
+        }
+    };
+
+    template <>
+    struct hash<PDDLState> {
+        auto operator()(const PDDLState& s) const -> size_t {
+            std::size_t unaryFactSeed = s.unaryFacts.size();
+            for (auto KVPAIR : s.unaryFacts)
+                unaryFactSeed ^= hash<unordered_set<unsigned int>>{}(KVPAIR.second) + 0x9e3779b9 + (unaryFactSeed << 6) + (unaryFactSeed >> 2);
+            std::size_t multiFactSeed = s.multiFacts.size();
+            for (auto KVPAIR : s.multiFacts)
+                multiFactSeed ^= hash<vector<MultiFact>>{}(KVPAIR.second) + 0x9e3779b9 + (unaryFactSeed << 6) + (unaryFactSeed >> 2);
+            return unaryFactSeed ^ (multiFactSeed << 1);
+        }
+    };
+}
 
 #endif

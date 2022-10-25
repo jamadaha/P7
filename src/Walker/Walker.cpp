@@ -19,8 +19,7 @@ Path Walker::Walk(Config* config, PDDLState state) {
         PDDLActionInstance *action = heuristic->NextChoice(&actions);
         totalActions += actions.size();
         
-
-        DoAction(tempState, action);
+        tempState->DoAction(action);
 
         if (visitedStates.contains(*tempState))
             break;
@@ -37,31 +36,4 @@ Path Walker::Walk(Config* config, PDDLState state) {
     }
     free(tempState);
     return Path(steps);
-}
-
-void Walker::DoAction(PDDLState *state, const PDDLActionInstance *action) {
-    int actionEffectLength = action->action->effects.size();
-    for (int i = 0; i < actionEffectLength; i++) {
-        PDDLLiteral effect = action->action->effects.at(i);
-        if (effect.args.size() == 1) {
-            // Handle unary effect
-            if (effect.value)
-                state->unaryFacts.at(effect.predicateIndex).emplace(action->objects.at(effect.args.at(0)));
-            else
-                state->unaryFacts.at(effect.predicateIndex).erase(action->objects.at(effect.args.at(0)));
-        } else {
-            // Handle multi effect
-            if (effect.value) {
-                if (state->ContainsFact(effect.predicateIndex, &effect.args, &action->objects))
-                    continue;
-                
-                state->multiFacts.at(effect.predicateIndex).push_back(MultiFact(&effect.args, &action->objects));
-            } else {
-                if (!state->ContainsFact(effect.predicateIndex, &effect.args, &action->objects))
-                    continue;
-                auto factSet = &state->multiFacts.at(effect.predicateIndex);
-                factSet->erase(std::remove(factSet->begin(), factSet->end(), std::make_pair(&effect.args, &action->objects)), factSet->end());
-            }
-        }
-    }
 }

@@ -9,6 +9,12 @@ Path Walker::Walk(Config* config, PDDLState state) {
     std::vector<PDDLActionInstance> steps;
     steps.reserve(depth);
     PDDLState *tempState = new PDDLState(state.unaryFacts, state.multiFacts);
+
+    if (config->PrintWalkerSteps.Content) {
+        std::string command = "truncate -s 0 walkerLog";
+        system(command.c_str());
+    }
+
     for (int i = 0; i < depth; i++) {
         std::vector<PDDLActionInstance> actions = actionGenerator.GenerateActions(tempState);
         if (actions.size() == 0)
@@ -17,15 +23,17 @@ Path Walker::Walk(Config* config, PDDLState state) {
         totalActions += actions.size();
         steps.push_back(action);
 
-        DoAction(tempState, &action);
-
         if (config->PrintWalkerSteps.Content) {
-            std::cout << tempState->ToString(this->instance);
 
-            std::cout << action.ToString(this->instance);
+            std::string stateinfo = tempState->ToString(this->instance);
+            std::string actioninfo = action.ToString(this->instance);
+            std::string content = "echo '" + stateinfo + "\n" + actioninfo + "'" + " >> walkerLog";
+
+            system(content.c_str());
         }
-        
-        
+
+
+        DoAction(tempState, &action);
     }
     free(tempState);
     return Path(steps);
@@ -46,7 +54,7 @@ void Walker::DoAction(PDDLState *state, const PDDLActionInstance *action) {
             if (effect.value) {
                 if (state->ContainsFact(effect.predicateIndex, &effect.args, &action->objects))
                     continue;
-                
+
                 state->multiFacts.at(effect.predicateIndex).push_back(MultiFact(&effect.args, &action->objects));
             } else {
                 if (!state->ContainsFact(effect.predicateIndex, &effect.args, &action->objects))

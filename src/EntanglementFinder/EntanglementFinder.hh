@@ -37,7 +37,7 @@ public:
 	/// <summary>
 	/// Find entanglement candidates from a vector of paths
 	/// </summary>
-	std::unordered_map<int ,EntanglementOccurance> FindEntangledCandidates(std::vector<Path> paths);
+	std::unordered_map<int ,EntanglementOccurance> FindEntangledCandidates(const std::vector<Path> paths);
 
 private:
 	void GenerateActionSet(std::vector<std::vector<PDDLActionInstance>>* currentValues, const std::vector<Path>* paths, const int level);

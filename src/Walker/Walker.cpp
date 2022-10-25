@@ -1,10 +1,7 @@
 #include "Walker.hpp"
 
-Path Walker::Walk(Config* config) {
-    return Walk(config, instance->problem->initState);
-}
 
-Path Walker::Walk(Config* config, PDDLState state) {
+Path Walker::Walk(BaseHeuristics *heuristic, BaseDepthFunction *depthFunc, PDDLState state) {
     int depth = depthFunc->GetDepth();
     std::unordered_set<PDDLState> visitedStates;
     visitedStates.reserve(depth);
@@ -36,4 +33,14 @@ Path Walker::Walk(Config* config, PDDLState state) {
     }
     free(tempState);
     return Path(steps);
+}
+
+std::unordered_set<Path> Walker::Walk(BaseHeuristics *heuristic, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc) {
+    std::unordered_set<Path> paths;
+    paths.reserve(widthFunc->GetWidth());
+    for (int i = 0; i < widthFunc->GetWidth(); i++) {
+        Path path = Walk(heuristic, depthFunc, this->instance->problem->initState);
+        paths.emplace(path);
+    }
+    return paths;
 }

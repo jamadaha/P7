@@ -6,6 +6,7 @@
 #include <string>
 
 #include "PDDLAction.hh"
+#include "../Helpers/Hashes.hh"
 
 struct PDDLInstance;
 
@@ -34,30 +35,8 @@ private:
 
 namespace std {
     template <>
-    struct hash<unordered_set<unsigned int>> {
-        auto operator()(const unordered_set<unsigned int>& vec) const -> size_t {
-            std::size_t seed = vec.size();
-            for (auto& i : vec) {
-                seed ^= i + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-            }
-            return seed;
-        }
-    };
-
-    template <>
-    struct hash<vector<unsigned int>> {
-        auto operator()(const vector<unsigned int>& vec) const -> size_t {
-            std::size_t seed = vec.size();
-            for (auto& i : vec) {
-                seed ^= i + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-            }
-            return seed;
-        }
-    };
-
-    template <>
     struct hash<PDDLActionInstance> {
-        auto operator()(PDDLActionInstance& s) const -> size_t {
+        auto operator()(const PDDLActionInstance& s) const -> size_t {
             std::size_t h1 = std::hash<const PDDLAction*>{}(s.action);
             std::size_t h2 = hash<vector<unsigned int>>{}(s.objects);
             return h1 ^ (h2 << 1);

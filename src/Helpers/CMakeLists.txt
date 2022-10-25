@@ -27,3 +27,13 @@ target_sources(StringHelper
 target_include_directories(StringHelper
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR})
+
+add_library(Hashes "Hashes.hh")
+target_sources(Hashes
+    PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}/Hashes.cpp
+    PUBLIC
+        ${CMAKE_CURRENT_LIST_DIR}/Hashes.hh)
+target_include_directories(Hashes
+    PUBLIC
+        ${CMAKE_CURRENT_LIST_DIR})

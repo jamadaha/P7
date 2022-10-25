@@ -7,55 +7,36 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	auto paths = PerformWalk(instance);
 
 	// Find Entangelements
-	auto candidates = FindEntanglements(paths, instance);
+	//auto candidates = FindEntanglements(paths, instance);
 
 	// Generate new Macros
-	auto newInstance = GenerateMacros(candidates, instance);
+	//auto newInstance = GenerateMacros(candidates, instance);
 
-	return newInstance;
+	return *instance;
 }
 
-std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) {
-	// Walk the PDDL
-	RandomHeuristic heuristic = RandomHeuristic();
-	BaseWidthFunction* widthFunc;
+std::unordered_set<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) {
+	Walker walker = Walker(instance, ActionGenerator(instance->domain, instance->problem), Configs);
+	BaseHeuristics *heuristic = new RandomHeuristic();
+	BaseDepthFunction *depthFunc = new ConstantDepthFunction(1000, *instance, 1);
+	BaseWidthFunction *widthFunc;
 	if (Configs->GetInteger("timelimit") == -1)
-		widthFunc = new ConstantWidthFunction(1000);
-	else
 		widthFunc = new TimeWidthFunction(Configs->GetInteger("timelimit"));
-	auto depthFunction = ConstantDepthFunction(100, *instance);
-	std::vector<Path> paths;
-	unsigned int totalActionCount = 0;
-	unsigned int totalIterations = 0;
-	auto startTime = chrono::steady_clock::now();
-	for (int i = 0; i < widthFunc->GetWidth(); i++) {
-		Walker walker = Walker(instance,
-			ActionGenerator(instance->domain, instance->problem),
-			&heuristic,
-			&depthFunction);
-		auto walk = walker.Walk(Configs);
-		if (walk.steps.size() > 5) {
-			paths.push_back(walk);
-			// Debug info
-			if (Configs->GetBool("debugmode")) {
-				totalActionCount += walker.totalActions;
-				totalIterations++;
-			}
-		}
-	}
-	auto endTime = chrono::steady_clock::now();
+	else
+		widthFunc = new ConstantWidthFunction(1000);
+
+	std::unordered_set<Path> paths = walker.Walk(heuristic, depthFunc, widthFunc);
+	free(heuristic); free(widthFunc); free(depthFunc);
 
 	// Print debug info
 	if (Configs->GetBool("debugmode")) {
-		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count();
+		/* auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count();
 		ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + to_string(ellapsed) + "ms", 1);
 		double iterationsPrSecond = (totalIterations * 1000) / ellapsed;
 		ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + to_string(totalIterations) + " [" + to_string(iterationsPrSecond) + "/s]", 1);
 		double actionsPrSecond = (totalActionCount * 1000) / ellapsed;
-		ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", 1);
+		ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", 1); */
 	}
-
-	free(widthFunc);
 
 	return paths;
 }

@@ -33,12 +33,14 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 			ActionGenerator(instance->domain, instance->problem),
 			heu,
 			depthFunction);
-		paths.push_back(walker.Walk(Configs));
-
-		// Debug info
-		if (Configs->GetBool("debugmode")) {
-			totalActionCount += walker.totalActions;
-			totalIterations++;
+		auto walk = walker.Walk(Configs);
+		if (walk.steps.size() > 5) {
+			paths.push_back(walk);
+			// Debug info
+			if (Configs->GetBool("debugmode")) {
+				totalActionCount += walker.totalActions;
+				totalIterations++;
+			}
 		}
 	}
 	auto endTime = chrono::steady_clock::now();
@@ -64,9 +66,10 @@ unordered_map<size_t, EntanglementOccurance> RandomWalkerReformulator::FindEntan
 	auto candidates = entFinder.FindEntangledCandidates(paths);
 	auto endTime = chrono::steady_clock::now();
 
-	std::set<EntanglementOccurance, EntanglementOccurance::EntangleCmp> eSet;
-	for (auto KVPair : candidates)
-		eSet.emplace(KVPair.second);
+	//std::unordered_set<EntanglementOccurance> eSet;
+	//for (auto KVPair : candidates)
+	//	eSet.emplace(KVPair.second);
+	//std::set<EntanglementOccurance, EntanglementOccurance::EntangleCmp> sSet(eSet.begin(), eSet.end());
 
 
 	// Print debug info

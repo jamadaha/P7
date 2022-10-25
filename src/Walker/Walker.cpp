@@ -12,18 +12,22 @@ Path Walker::Walk(Config* config, PDDLState state) {
     steps.reserve(depth);
     PDDLState *tempState = new PDDLState(state.unaryFacts, state.multiFacts);
     for (int i = 0; i < depth; i++) {
-        if (visitedStates.contains(*tempState)) 
-            break;
-        else
-            visitedStates.emplace(*tempState);
+        
         std::vector<PDDLActionInstance> actions = actionGenerator.GenerateActions(tempState);
         if (actions.size() == 0)
             break;
         PDDLActionInstance action = heuristic->NextChoice(actions);
         totalActions += actions.size();
-        steps.push_back(action);
+        
 
         DoAction(tempState, &action);
+
+        if (visitedStates.contains(*tempState))
+            break;
+        else {
+            visitedStates.emplace(*tempState);
+            steps.push_back(action);
+        }
 
         if (config->GetBool("printwalkersteps")) {
             std::cout << tempState->ToString(this->instance);

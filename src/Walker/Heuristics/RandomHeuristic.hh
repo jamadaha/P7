@@ -1,12 +1,11 @@
-#ifndef RandomHeuristics_HH
-#define RandomHeuristics_HH
+#ifndef RandomHeuristic_HH
+#define RandomHeuristic_HH
 
 #include "BaseHeuristics.hh"
 
-template <class T>
-class RandomHeuristic : public BaseHeuristics<T> {
+class RandomHeuristic : public BaseHeuristics {
 public:
-	RandomHeuristic() : BaseHeuristics<T>(nullptr, nullptr){
+	RandomHeuristic() : BaseHeuristics(nullptr, nullptr){
 		// 0 for debugging purposes
 		srand(0);
 		//srand(time(NULL));

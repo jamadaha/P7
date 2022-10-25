@@ -10,17 +10,16 @@
 #include "../../IntermediatePDDL/PDDLProblem.hh"
 #include "../../IntermediatePDDL/PDDLInstance.hh"
 
-template <class T>
 class BaseHeuristics {
 public:
 	const PDDLDomain *domain;
 	const PDDLProblem *problem;
 	BaseHeuristics(const PDDLDomain *domain, const PDDLProblem *problem) : domain(domain), problem(problem) {}
 
-	T NextChoice(const std::vector<T> choices) {
+	PDDLActionInstance* NextChoice(std::vector<PDDLActionInstance> *choices) {
 		int maxIndex = -1;
 		int maxValue;
-		for (int i = 0; i < choices.size(); i++) {
+		for (int i = 0; i < choices->size(); i++) {
 			int value = 0;//Eval(choices.at(i));
 			if (maxIndex == -1) {
 				maxIndex = i;
@@ -30,7 +29,7 @@ public:
 				maxValue = value;
 			}
 		}
-		return choices.at(maxIndex);
+		return &(choices->at(maxIndex));
 	};
 
 	virtual int Eval(const PDDLState *state) const = 0;

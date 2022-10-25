@@ -17,13 +17,13 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 
 std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) {
 	// Walk the PDDL
-	RandomHeuristic<PDDLActionInstance>* heu = new RandomHeuristic<PDDLActionInstance>();
+	RandomHeuristic heuristic = RandomHeuristic();
 	BaseWidthFunction* widthFunc;
 	if (Configs->GetInteger("timelimit") == -1)
 		widthFunc = new ConstantWidthFunction(1000);
 	else
 		widthFunc = new TimeWidthFunction(Configs->GetInteger("timelimit"));
-	auto depthFunction = new ConstantDepthFunction(100, *instance);
+	auto depthFunction = ConstantDepthFunction(100, *instance);
 	std::vector<Path> paths;
 	unsigned int totalActionCount = 0;
 	unsigned int totalIterations = 0;
@@ -31,8 +31,8 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 	for (int i = 0; i < widthFunc->GetWidth(); i++) {
 		Walker walker = Walker(instance,
 			ActionGenerator(instance->domain, instance->problem),
-			heu,
-			depthFunction);
+			&heuristic,
+			&depthFunction);
 		auto walk = walker.Walk(Configs);
 		if (walk.steps.size() > 5) {
 			paths.push_back(walk);
@@ -55,7 +55,7 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 		ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", 1);
 	}
 
-	free(heu); free(widthFunc); free(depthFunction);
+	free(widthFunc);
 
 	return paths;
 }

@@ -109,7 +109,6 @@ unordered_map<size_t, EntanglementOccurance> RandomWalkerReformulator::FindEntan
 	//	eSet.emplace(KVPair.second);
 	//std::set<EntanglementOccurance, EntanglementOccurance::EntangleCmp> sSet(eSet.begin(), eSet.end());
 
-
 	// Print debug info
 	if (Configs->GetBool("debugmode")) {
 		if (Configs->GetBool("printentanglersteps")) {

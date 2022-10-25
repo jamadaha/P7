@@ -8,13 +8,18 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 	if (paths.size() == 0)
 		return candidates;
 	int level = 2;
-	for (int i = 0; i < paths.size(); i++)
-		if (level < paths.at(i).steps.size())
-			level = paths.at(i).steps.size();
 	if (SearchCeiling != -1)
 		level = SearchCeiling;
+	else
+	{
+		for (int i = 0; i < paths.size(); i++)
+			if (level < paths.at(i).steps.size())
+				level = paths.at(i).steps.size();
+	}
+	if (level < 2)
+		throw exception();
 	if (SearchFloor < 2)
-		throw exception();	
+		throw exception();
 	if (LevelReductionFactor <= 1)
 		throw exception();
 
@@ -49,13 +54,15 @@ void EntanglementFinder::GenerateActionSet(vector<vector<PDDLActionInstance>> *c
 }
 
 void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, EntanglementOccurance>* candidates, vector<vector<PDDLActionInstance>> currentValues) {
-	for (int i = 0; i < currentValues.size(); i++) {
+	const int currentValueSize = currentValues.size();
+	for (int i = 0; i < currentValueSize; i++) {
 		vector<PDDLActionInstance>* iValue = &currentValues.at(i);
 		size_t key = hash<const vector<PDDLActionInstance>>{}(*iValue);
 		bool containsThisKey = candidates->contains(key);
+		if (containsThisKey)
+			continue;
 		EntanglementOccurance* currentOcc;
-		const int iValueLength = iValue->size();
-		for (int j = i + 1; j < currentValues.size(); j++) {
+		for (int j = i + 1; j < currentValueSize; j++) {
 			if (IsEqual(iValue, (&currentValues.at(j)))) {
 				if (containsThisKey) {
 					currentOcc->Occurance++;

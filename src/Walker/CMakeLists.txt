@@ -9,7 +9,8 @@ target_include_directories(Walker
         ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(Walker
     PRIVATE
-        IntermediatePDDL)
+        IntermediatePDDL
+        Config)
 
 add_library(ActionGenerator "ActionGenerator.cpp")
 target_sources(ActionGenerator

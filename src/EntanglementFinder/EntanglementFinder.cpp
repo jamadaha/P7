@@ -2,7 +2,7 @@
 
 using namespace std;
 
-unordered_map<int, EntanglementOccurance> EntanglementFinder::FindEntangledCandidates(vector<Path> paths) {
+unordered_map<int, EntanglementOccurance> EntanglementFinder::FindEntangledCandidates(const vector<Path> paths) {
 	unordered_map<int, EntanglementOccurance> candidates;
 
 	if (paths.size() == 0)
@@ -26,12 +26,11 @@ unordered_map<int, EntanglementOccurance> EntanglementFinder::FindEntangledCandi
 
 	RemoveIfBelowMinimum(&candidates);
 
-	return candidates;
+	return unordered_map<int, EntanglementOccurance>(candidates);
 }
 
 void EntanglementFinder::GenerateActionSet(vector<vector<PDDLActionInstance>> *currentValues, const vector<Path>* paths, const int level) {
 	currentValues->clear();
-	currentValues->reserve(paths->size());
 	for (int i = 0; i < paths->size(); i++) {
 		for (int j = 0; j < paths->at(i).steps.size(); j += level) {
 			vector<PDDLActionInstance> currentSet;
@@ -54,7 +53,7 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<int, EntanglementOcc
 		EntanglementOccurance* currentOcc;
 		const int iValueLength = iValue->size();
 		for (int j = i + 1; j < currentValues.size(); j++) {
-			if (IsEqual(iValue, (&currentValues[j]))) {
+			if (IsEqual(iValue, (&currentValues.at(j)))) {
 				if (containsThisKey) {
 					currentOcc->Occurance++;
 				}

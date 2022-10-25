@@ -23,7 +23,8 @@ Path Walker::Walk(Config* config, PDDLState state) {
         totalActions += actions.size();
         steps.push_back(action);
 
-        if (config->PrintWalkerSteps.Content) {
+        if (config->GetBool("printwalkersteps")) {
+            std::cout << tempState->ToString(this->instance);
 
             std::string stateinfo = tempState->ToString(this->instance);
             std::string actioninfo = action.ToString(this->instance);

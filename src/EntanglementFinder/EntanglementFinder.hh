@@ -9,6 +9,7 @@
 #include "../IntermediatePDDL/PDDLInstance.hh"
 #include "../Walker/Walker.hpp"
 #include "EntanglementOccurance.hh"
+#include "../Helpers/ProgressBarHelper.hh"
 
 class EntanglementFinder {
 public:
@@ -28,6 +29,8 @@ public:
 	/// The minimum amount of times an action sequence have to occure to be counted as valid
 	/// </summary>
 	const int MinimumOccurance;
+
+	bool DebugMode = false;
 
 	EntanglementFinder(int searchFloor = 2, int searchCeiling = -1, double levelReductionFactor = 2, int minimumOccurance = 5) : SearchCeiling(searchCeiling), SearchFloor(searchFloor), LevelReductionFactor(levelReductionFactor), MinimumOccurance(minimumOccurance) {};
 
@@ -52,7 +55,8 @@ public:
 	/// </summary>
 	bool IsEqual(std::vector<PDDLActionInstance>* lhv, std::vector<PDDLActionInstance>* rhv);
 private:
-
+	ProgressBarHelper* bar;
+	int CurrentLevel;
 };
 
 #endif

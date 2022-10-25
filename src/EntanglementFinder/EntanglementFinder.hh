@@ -43,7 +43,7 @@ public:
 	/// <summary>
 	/// Based on the values generated in the "GenerateActionSet" method
 	/// </summary>
-	void AddCandidatesIfThere(std::unordered_map<size_t, EntanglementOccurance>* candidates, std::vector<std::pair<size_t,std::vector<PDDLActionInstance*>>> currentValues);
+	void AddCandidatesIfThere(std::unordered_map<size_t, EntanglementOccurance>* candidates, std::vector<std::pair<size_t,std::vector<PDDLActionInstance*>>>* currentValues);
 	/// <summary>
 	/// Removes those values in the unordered_map where the occurance is less than the "MinimumOccurance" variable.
 	/// </summary>

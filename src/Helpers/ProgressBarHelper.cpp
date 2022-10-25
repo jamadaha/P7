@@ -9,12 +9,11 @@ void ProgressBarHelper::Update(int by) {
 	int newIndex = Value * StepValue;
 	for (int i = CurrentDisplayIndex; i < newIndex; i++) {
 		cout << "X";
-		cout.flush();
-		if (Value >= To) {
-			cout << endl;
-			break;
-		}
 	}
+	if (Value >= To)
+		cout << endl;
+	else
+		cout.flush();
 	CurrentDisplayIndex = newIndex;
 }
 
@@ -24,5 +23,5 @@ void ProgressBarHelper::SetTo(int value) {
 }
 
 void ProgressBarHelper::End() {
-	Update(To);
+	Update(To - Value);
 }

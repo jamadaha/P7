@@ -4,18 +4,21 @@
 #include <iostream>
 #include <string>
 
+#include "ConsoleHelper.hh"
+
 class ProgressBarHelper {
 public:
 	int DisplayWidth = 50;
+	int To = 1;
 
-	ProgressBarHelper(int to, std::string desc) : To(to) {
+	ProgressBarHelper(int to, std::string desc, int indent = 0) : To(to), Indent(indent) {
 		StepValue = ((double)DisplayWidth / ((double)To - 1));
-		std::cout << desc << std::endl;
-		std::cout << "|";
+		ConsoleHelper::PrintDebugInfo(desc, indent);
+		ConsoleHelper::PrintDebugInfo("|", indent, false);
 		for (int i = 0; i < DisplayWidth; i++)
 			std::cout << " ";
 		std::cout << "|" << std::endl;
-		std::cout << " ";
+		ConsoleHelper::PrintDebugInfo(" ", indent, false);
 	};
 
 	void SetTo(int value);
@@ -23,11 +26,11 @@ public:
 	void End();
 
 private:
+	int Indent = 0;
 	int Value = 0;
 
 	double StepValue = 0;
 	int CurrentDisplayIndex = 0;
-	int To = 1;
 };
 
 #endif

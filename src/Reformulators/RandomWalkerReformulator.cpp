@@ -28,7 +28,12 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 	unsigned int totalActionCount = 0;
 	unsigned int totalIterations = 0;
 	auto startTime = chrono::steady_clock::now();
-	ProgressBarHelper bar(Configs->GetInteger("timelimit"), "Walking");
+	ProgressBarHelper* bar;
+	if (Configs->GetInteger("timelimit") == -1)
+		bar = new ProgressBarHelper(widthFunc->GetWidth(), "Walking", 1);
+	else
+		bar = new ProgressBarHelper(Configs->GetInteger("timelimit"), "Walking", 1);
+
 	for (int i = 0; i < widthFunc->GetWidth(); i++) {
 		Walker walker = Walker(instance,
 			ActionGenerator(instance->domain, instance->problem),
@@ -44,15 +49,15 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 			}
 		}
 		if (Configs->GetInteger("timelimit") == -1) {
-			bar.Update();
+			bar->Update();
 		}
 		else {
 			auto curEndTime = chrono::steady_clock::now();
 			auto thisRound = chrono::duration_cast<chrono::milliseconds>(curEndTime - startTime).count();
-			bar.SetTo(thisRound);
+			bar->SetTo(thisRound);
 		}
 	}
-	bar.End();
+	bar->End();
 	auto endTime = chrono::steady_clock::now();
 
 	// Print debug info
@@ -72,6 +77,7 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 
 unordered_map<size_t, EntanglementOccurance> RandomWalkerReformulator::FindEntanglements(vector<Path> paths, PDDLInstance* instance) {
 	EntanglementFinder entFinder;
+	entFinder.DebugMode = Configs->GetBool("debugmode");
 	auto startTime = chrono::steady_clock::now();
 	auto candidates = entFinder.FindEntangledCandidates(paths);
 	auto endTime = chrono::steady_clock::now();

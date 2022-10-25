@@ -30,6 +30,8 @@ public:
 	/// </summary>
 	const int MinimumOccurance;
 
+	bool DebugMode = false;
+
 	EntanglementFinder(int searchFloor = 2, int searchCeiling = -1, double levelReductionFactor = 2, int minimumOccurance = 5) : SearchCeiling(searchCeiling), SearchFloor(searchFloor), LevelReductionFactor(levelReductionFactor), MinimumOccurance(minimumOccurance) {};
 
 	/// <summary>
@@ -53,7 +55,8 @@ public:
 	/// </summary>
 	bool IsEqual(std::vector<PDDLActionInstance>* lhv, std::vector<PDDLActionInstance>* rhv);
 private:
-
+	ProgressBarHelper* bar;
+	int CurrentLevel;
 };
 
 #endif

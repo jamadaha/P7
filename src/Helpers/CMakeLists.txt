@@ -37,3 +37,6 @@ target_sources(ProgressBarHelper
 target_include_directories(ProgressBarHelper
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(ProgressBarHelper
+    PRIVATE
+        ConsoleHelper)

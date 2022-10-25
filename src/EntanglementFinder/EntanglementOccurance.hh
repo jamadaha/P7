@@ -10,6 +10,14 @@ public:
 	const std::vector<PDDLActionInstance> Chain;
     mutable int Occurance;
 	EntanglementOccurance(const std::vector<PDDLActionInstance> chain) : Chain(chain), Occurance(2){};
+    friend bool operator==(const EntanglementOccurance &lhs, const EntanglementOccurance& rhs) {
+        return lhs.Chain == rhs.Chain;
+    }
+    struct EntangleCmp {
+		bool operator()(const EntanglementOccurance& lhs, const EntanglementOccurance& rhs) const { 
+			return lhs == rhs; 
+		};
+	};
 };
 
 namespace std {

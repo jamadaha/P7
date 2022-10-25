@@ -64,6 +64,11 @@ unordered_map<size_t, EntanglementOccurance> RandomWalkerReformulator::FindEntan
 	auto candidates = entFinder.FindEntangledCandidates(paths);
 	auto endTime = chrono::steady_clock::now();
 
+	std::set<EntanglementOccurance, EntanglementOccurance::EntangleCmp> eSet;
+	for (auto KVPair : candidates)
+		eSet.emplace(KVPair.second);
+
+
 	// Print debug info
 	if (Configs->GetBool("debugmode")) {
 		if (Configs->GetBool("printentanglersteps")) {

@@ -23,7 +23,7 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 	if (LevelReductionFactor <= 1)
 		throw exception();
 
-	vector<vector<PDDLActionInstance>> currentValues;
+	s:vector<pair<size_t, vector<PDDLActionInstance>>> currentValues;
 	
 	while (level >= SearchFloor) {
 		CurrentLevel = level;
@@ -39,7 +39,7 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 	return unordered_map<size_t, EntanglementOccurance>(candidates);
 }
 
-void EntanglementFinder::GenerateActionSet(vector<vector<PDDLActionInstance>> *currentValues, const vector<Path>* paths, const int level) {
+void EntanglementFinder::GenerateActionSet(vector<pair<size_t, vector<PDDLActionInstance>>>* currentValues, const vector<Path>* paths, const int level) {
 	currentValues->clear();
 	for (int i = 0; i < paths->size(); i++) {
 		for (int j = 0; j < paths->at(i).steps.size(); j += level) {
@@ -56,33 +56,32 @@ void EntanglementFinder::GenerateActionSet(vector<vector<PDDLActionInstance>> *c
 			}
 			size_t key = hash<const vector<PDDLActionInstance>>{}(currentSet);
 			if (doAdd)
-				currentValues->push_back(currentSet);
+				currentValues->push_back(make_pair(key, currentSet));
 		}
 	}
 }
 
-void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, EntanglementOccurance>* candidates, vector<vector<PDDLActionInstance>> currentValues) {
+void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, EntanglementOccurance>* candidates, vector<pair<size_t, vector<PDDLActionInstance>>> currentValues) {
 	const int currentValueSize = currentValues.size();
 	if (OnNewLevel != nullptr)
 		OnNewLevel(CurrentLevel, currentValueSize);
 
 	for (int i = 0; i < currentValueSize; i++) {
-		vector<PDDLActionInstance>* iValue = &currentValues.at(i);
-		size_t key = hash<const vector<PDDLActionInstance>>{}(*iValue);
-		bool containsThisKey = candidates->contains(key);
+		pair<size_t,vector<PDDLActionInstance>>* iValue = &currentValues.at(i);
+		bool containsThisKey = candidates->contains(iValue->first);
 		if (containsThisKey)
 			continue;
 		EntanglementOccurance* currentOcc;
 		for (int j = i + 1; j < currentValueSize; j++) {
-			if (IsEqual(iValue, (&currentValues.at(j)))) {
+			if (iValue->first == (&currentValues.at(j))->first) {
 				if (containsThisKey) {
 					currentOcc->Occurance++;
 				}
 				else {
-					EntanglementOccurance newOcc(*iValue, key);
-					candidates->emplace(key, newOcc);
+					EntanglementOccurance newOcc(iValue->second, iValue->first);
+					candidates->emplace(iValue->first, newOcc);
 					containsThisKey = true;
-					currentOcc = &candidates->at(key);
+					currentOcc = &candidates->at(iValue->first);
 				}
 			}
 		}
@@ -96,13 +95,4 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 void EntanglementFinder::RemoveIfBelowMinimum(unordered_map<size_t, EntanglementOccurance>* candidates) {
 	const auto removeIfLessThan = [&](pair<size_t, EntanglementOccurance> const& x) { return x.second.Occurance < MinimumOccurance; };
 	std::erase_if(*candidates, removeIfLessThan);
-}
-
-bool EntanglementFinder::IsEqual(vector<PDDLActionInstance>* lhv, vector<PDDLActionInstance>* rhv) {
-	if (lhv->size() != rhv->size())
-		return false;
-	for (int i = 0; i < lhv->size(); i++)
-		if (lhv->at(i).GetHash() != rhv->at(i).GetHash())
-			return false;
-	return true;
 }

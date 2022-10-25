@@ -39,19 +39,15 @@ public:
 	/// <summary>
 	/// Takes a set of Paths and splits them up into sets of PDDLActionInstances based on the level.
 	/// </summary>
-	void GenerateActionSet(std::vector<std::vector<PDDLActionInstance>>* currentValues, const std::vector<Path>* paths, const int level);
+	void GenerateActionSet(std::vector<std::pair<size_t, std::vector<PDDLActionInstance>>>* currentValues, const std::vector<Path>* paths, const int level);
 	/// <summary>
 	/// Based on the values generated in the "GenerateActionSet" method
 	/// </summary>
-	void AddCandidatesIfThere(std::unordered_map<size_t, EntanglementOccurance>* candidates, std::vector<std::vector<PDDLActionInstance>> currentValues);
+	void AddCandidatesIfThere(std::unordered_map<size_t, EntanglementOccurance>* candidates, std::vector<std::pair<size_t,std::vector<PDDLActionInstance>>> currentValues);
 	/// <summary>
 	/// Removes those values in the unordered_map where the occurance is less than the "MinimumOccurance" variable.
 	/// </summary>
 	void RemoveIfBelowMinimum(std::unordered_map<size_t, EntanglementOccurance>* candidates);
-	/// <summary>
-	/// Checks if two vectors of PDDLActionInstances are the same.
-	/// </summary>
-	bool IsEqual(std::vector<PDDLActionInstance>* lhv, std::vector<PDDLActionInstance>* rhv);
 
 	std::function<const void(int level, int outOf)> OnNewLevel;
 	std::function<const void()> OnLevelEnd;

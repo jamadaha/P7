@@ -2,12 +2,15 @@
 
 using namespace std;
 
-unordered_map<int, EntanglementOccurance> EntanglementFinder::FindEntangledCandidates(vector<Path> paths) {
-	unordered_map<int, EntanglementOccurance> candidates;
+unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCandidates(vector<Path> paths) {
+	unordered_map<size_t, EntanglementOccurance> candidates;
 
 	if (paths.size() == 0)
 		return candidates;
-	int level = paths.at(0).steps.size();
+	int level = 2;
+	for (int i = 0; i < paths.size(); i++)
+		if (level < paths.at(i).steps.size())
+			level = paths.at(i).steps.size();
 	if (SearchCeiling != -1)
 		level = SearchCeiling;
 	if (SearchFloor < 2)
@@ -46,10 +49,10 @@ void EntanglementFinder::GenerateActionSet(vector<vector<PDDLActionInstance>> *c
 	}
 }
 
-void EntanglementFinder::AddCandidatesIfThere(unordered_map<int, EntanglementOccurance>* candidates, vector<vector<PDDLActionInstance>> currentValues) {
+void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, EntanglementOccurance>* candidates, vector<vector<PDDLActionInstance>> currentValues) {
 	for (int i = 0; i < currentValues.size(); i++) {
 		vector<PDDLActionInstance>* iValue = &currentValues.at(i);
-		int key = hash<const vector<PDDLActionInstance>>{}(*iValue);
+		size_t key = hash<const vector<PDDLActionInstance>>{}(*iValue);
 		bool containsThisKey = candidates->contains(key);
 		EntanglementOccurance* currentOcc;
 		const int iValueLength = iValue->size();
@@ -60,7 +63,7 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<int, EntanglementOcc
 				}
 				else {
 					EntanglementOccurance newOcc(*iValue);
-					candidates->emplace(make_pair(key, newOcc));
+					candidates->emplace(key, newOcc);
 					containsThisKey = true;
 					currentOcc = &candidates->at(key);
 				}
@@ -69,8 +72,8 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<int, EntanglementOcc
 	}
 }
 
-void EntanglementFinder::RemoveIfBelowMinimum(unordered_map<int, EntanglementOccurance>* candidates) {
-	const auto removeIfLessThan = [&](pair<int, EntanglementOccurance> const& x) { return x.second.Occurance < MinimumOccurance; };
+void EntanglementFinder::RemoveIfBelowMinimum(unordered_map<size_t, EntanglementOccurance>* candidates) {
+	const auto removeIfLessThan = [&](pair<size_t, EntanglementOccurance> const& x) { return x.second.Occurance < MinimumOccurance; };
 	std::erase_if(*candidates, removeIfLessThan);
 }
 

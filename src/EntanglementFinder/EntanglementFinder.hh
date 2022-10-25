@@ -16,17 +16,14 @@ public:
 	/// The ceiling of the search (leave as -1 if you want the full path size)
 	/// </summary>
 	const int SearchCeiling;
-
 	/// <summary>
 	/// The floor of the search, minimum is 2 and maximum is the full length of the path
 	/// </summary>
 	const int SearchFloor;
-
 	/// <summary>
 	/// By how much the level should be reduced in each iteration.
 	/// </summary>
 	const double LevelReductionFactor;
-
 	/// <summary>
 	/// The minimum amount of times an action sequence have to occure to be counted as valid
 	/// </summary>
@@ -37,13 +34,25 @@ public:
 	/// <summary>
 	/// Find entanglement candidates from a vector of paths
 	/// </summary>
-	std::unordered_map<int ,EntanglementOccurance> FindEntangledCandidates(std::vector<Path> paths);
-
-private:
+	std::unordered_map<size_t,EntanglementOccurance> FindEntangledCandidates(std::vector<Path> paths);
+	/// <summary>
+	/// Takes a set of Paths and splits them up into sets of PDDLActionInstances based on the level.
+	/// </summary>
 	void GenerateActionSet(std::vector<std::vector<PDDLActionInstance>>* currentValues, const std::vector<Path>* paths, const int level);
-	void AddCandidatesIfThere(std::unordered_map<int, EntanglementOccurance>* candidates, std::vector<std::vector<PDDLActionInstance>> currentValues);
-	void RemoveIfBelowMinimum(std::unordered_map<int, EntanglementOccurance>* candidates);
+	/// <summary>
+	/// Based on the values generated in the "GenerateActionSet" method
+	/// </summary>
+	void AddCandidatesIfThere(std::unordered_map<size_t, EntanglementOccurance>* candidates, std::vector<std::vector<PDDLActionInstance>> currentValues);
+	/// <summary>
+	/// Removes those values in the unordered_map where the occurance is less than the "MinimumOccurance" variable.
+	/// </summary>
+	void RemoveIfBelowMinimum(std::unordered_map<size_t, EntanglementOccurance>* candidates);
+	/// <summary>
+	/// Checks if two vectors of PDDLActionInstances are the same.
+	/// </summary>
 	bool IsEqual(std::vector<PDDLActionInstance>* lhv, std::vector<PDDLActionInstance>* rhv);
+private:
+
 };
 
 #endif

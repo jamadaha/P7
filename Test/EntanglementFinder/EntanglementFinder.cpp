@@ -102,3 +102,115 @@ TEST_CASE(TAG + "Cant_FindLargeOccurance_IfNotThere_2") {
 }
 
 #pragma endregion
+
+#pragma region Can_FindMediumOccurance
+
+TEST_CASE(TAG + "Can_FindMediumOccurance_1") {
+    PDDLAction constantAction1;
+    PDDLActionInstance constantInstance1(&constantAction1, {});
+    PDDLAction constantAction2;
+    PDDLActionInstance constantInstance2(&constantAction2, {});
+
+    vector<Path> paths = {
+        //      Should find this as an occurance
+        //     | ------------------------------- |
+        Path({ constantInstance1,constantInstance1,constantInstance2,constantInstance1 }),
+        Path({ constantInstance1,constantInstance2,constantInstance1,constantInstance1 }) };
+
+    EntanglementFinder finder(2,-1,2,1);
+    auto result = finder.FindEntangledCandidates(paths);
+    REQUIRE(result.size() == 1);
+}
+
+TEST_CASE(TAG + "Can_FindMediumOccurance_Uneven_1") {
+    PDDLAction constantAction1;
+    PDDLActionInstance constantInstance1(&constantAction1, {});
+    PDDLAction constantAction2;
+    PDDLActionInstance constantInstance2(&constantAction2, {});
+
+    vector<Path> paths = {
+        //      Should find this as an occurance
+        //     | ------------------------------- |
+        Path({ constantInstance1,constantInstance1,constantInstance2,constantInstance1 }),
+        Path({ constantInstance1,constantInstance2,constantInstance1,constantInstance1, constantInstance1 }) };
+
+    EntanglementFinder finder(2, -1, 2, 1);
+    auto result = finder.FindEntangledCandidates(paths);
+    REQUIRE(result.size() == 1);
+}
+
+TEST_CASE(TAG + "Can_FindMediumOccurance_Uneven_2") {
+    PDDLAction constantAction1;
+    PDDLActionInstance constantInstance1(&constantAction1, {});
+    PDDLAction constantAction2;
+    PDDLActionInstance constantInstance2(&constantAction2, {});
+
+    vector<Path> paths = {
+        //      Should find this as an occurance
+        //     | ------------------------------- |
+        Path({ constantInstance1,constantInstance1,constantInstance2,constantInstance1, constantInstance1 }),
+        Path({ constantInstance1,constantInstance2,constantInstance1,constantInstance1 }) };
+
+    EntanglementFinder finder(2, -1, 2, 1);
+    auto result = finder.FindEntangledCandidates(paths);
+    REQUIRE(result.size() == 1);
+}
+
+TEST_CASE(TAG + "Can_FindMediumOccurance_Uneven_3") {
+    PDDLAction constantAction1;
+    PDDLActionInstance constantInstance1(&constantAction1, {});
+    PDDLAction constantAction2;
+    PDDLActionInstance constantInstance2(&constantAction2, {});
+
+    vector<Path> paths = {
+        //      Should find this as an occurance
+        //     | ------------------------------- |
+        Path({ constantInstance1,constantInstance1 }),
+        Path({ constantInstance1,constantInstance2,constantInstance1,constantInstance1 }) };
+
+    EntanglementFinder finder(2, -1, 2, 1);
+    auto result = finder.FindEntangledCandidates(paths);
+    REQUIRE(result.size() == 1);
+}
+
+#pragma endregion
+
+#pragma region Cant_FindMediumOccurance
+
+TEST_CASE(TAG + "Cant_FindMediumOccurance_IfNotThere") {
+    PDDLAction constantAction1;
+    PDDLActionInstance constantInstance1(&constantAction1, {});
+    PDDLAction constantAction2;
+    PDDLActionInstance constantInstance2(&constantAction2, {});
+    PDDLAction constantAction3;
+    PDDLActionInstance constantInstance3(&constantAction3, {});
+
+    vector<Path> paths = {
+        Path({ constantInstance1,constantInstance1,constantInstance1 }),
+        Path({ constantInstance2,constantInstance2,constantInstance2 }),
+        Path({ constantInstance3,constantInstance3,constantInstance3 }) };
+
+    EntanglementFinder finder(2, -1, 2, 1);
+    auto result = finder.FindEntangledCandidates(paths);
+    REQUIRE(result.size() == 0);
+}
+
+TEST_CASE(TAG + "Cant_FindMediumOccurance_IfNotThere_Uneven") {
+    PDDLAction constantAction1;
+    PDDLActionInstance constantInstance1(&constantAction1, {});
+    PDDLAction constantAction2;
+    PDDLActionInstance constantInstance2(&constantAction2, {});
+    PDDLAction constantAction3;
+    PDDLActionInstance constantInstance3(&constantAction3, {});
+
+    vector<Path> paths = {
+        Path({ constantInstance1,constantInstance1,constantInstance1 }),
+        Path({ constantInstance2 }),
+        Path({ constantInstance3,constantInstance3 }) };
+
+    EntanglementFinder finder(2, -1, 2, 1);
+    auto result = finder.FindEntangledCandidates(paths);
+    REQUIRE(result.size() == 0);
+}
+
+#pragma endregion

@@ -3,7 +3,8 @@
 using namespace std;
 
 void DownwardRunner::RunDownward(Config config, string reformulatedDomain, string reformulatedProblem) {
-	string command = config.GetString("downwardpath") + " " + reformulatedDomain + " " + reformulatedProblem + " --search \"" + config.GetString("downwardsearch") + "(" + config.GetString("downwardheuristic") + "())\"" + " > " + RunnerLogName;
+	string path = config.GetPath("downwardpath").c_str();
+	string command = path + " " + reformulatedDomain + " " + reformulatedProblem + " --search \"" + config.GetString("downwardsearch") + "(" + config.GetString("downwardheuristic") + "())\"" + " > " + RunnerLogName;
 	system(command.c_str());
 }
 

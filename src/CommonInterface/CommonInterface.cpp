@@ -35,11 +35,11 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	// Parse original PDDL files
 	ConsoleHelper::PrintInfo("Parsing PDDL files...");
 	PDDLDriver originalDriver;
-	if (originalDriver.parse(config.GetString("domain"))) {
+	if (originalDriver.parse(config.GetPath("domain"))) {
 		ConsoleHelper::PrintError("Error parsing the domain file!");
 		return CommonInterface::RunResult::ErrorsEncountered;
 	}
-	if (originalDriver.parse(config.GetString("problem"))) {
+	if (originalDriver.parse(config.GetPath("problem"))) {
 		ConsoleHelper::PrintError("Error parsing the problem file!");
 		return CommonInterface::RunResult::ErrorsEncountered;
 	}
@@ -117,7 +117,7 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 		// Validate reformulated plan works with original domain and problem
 		ConsoleHelper::PrintDebugInfo("Validate new SAS plan...");
 		report->Begin("Validate new SAS plan");
-		auto newSASValidatorResult = PlanValidator::ValidatePlan(config, config.GetString("domain"), config.GetString("problem"), CommonInterface::OutputSASName);
+		auto newSASValidatorResult = PlanValidator::ValidatePlan(config, config.GetPath("domain"), config.GetPath("problem"), CommonInterface::OutputSASName);
 		if (newSASValidatorResult != PlanValidator::PlanMatch) {
 			ConsoleHelper::PrintDebugError("Output plan is not valid for original domain and problem!");
 			t = report->Stop();

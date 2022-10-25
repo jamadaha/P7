@@ -16,8 +16,10 @@
 
 class Config {
 public:
+
     void ParseConfigFile(std::filesystem::path path);
     void ParseConfigItem(std::string line);
+
 
     int GetInteger(std::string name);
     bool GetBool(std::string name);

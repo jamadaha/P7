@@ -12,9 +12,9 @@ enum PlanValidator::ValidatorResult PlanValidator::ValidatePlan(Config config, s
 	if (!FileHelper::DoesFileExist(filesystem::path(planFile)))
 		return PlanValidator::ValidatorResult::MissingPlanFile;
 
-	if (!FileHelper::DoesFileExist(filesystem::path(config.ValidatorPath.Content)))
+	if (!FileHelper::DoesFileExist(filesystem::path(config.GetString("validatorpath"))))
 		return PlanValidator::ValidatorResult::MissingVAL;
-	string command = config.ValidatorPath.Content + " '" + domainFile + "' '" + problemFile + "' '" + planFile + "' > " + ValidatorLogName;
+	string command = config.GetString("validatorpath") + " '" + domainFile + "' '" + problemFile + "' '" + planFile + "' > " + ValidatorLogName;
 	system(command.c_str());
 
 	ifstream stream(ValidatorLogName);

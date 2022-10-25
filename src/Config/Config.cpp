@@ -2,98 +2,79 @@
 
 using namespace std;
 
-int Config::ParseArgs(Config* config, int argc, char** argv){
-    cxxopts::Options options("P7","Pure magic reformulations :)");
+void Config::ParseConfigFile(filesystem::path path) {
+    ifstream stream(path);
+    string content((istreambuf_iterator<char>(stream)),
+        (istreambuf_iterator<char>()));
+    stream.close();
 
-    config->DownwardOptions.Search.Description = GetSearchDesc();
-    config->DownwardOptions.Heuristic.Description = GetSearchDesc();
+    stringstream ss(content);
+    string line;
+    while (getline(ss, line)) {
+        line = StringHelper::Trim(line);
+        if (line.starts_with(";"))
+            continue;
+        if (line == "")
+            continue;
 
-    options.add_options()
-        ("h,help", "Print usage")
-        (config->DomainFile.Flag + "," + config->DomainFile.LongFlag, config->DomainFile.Description, cxxopts::value<std::string>()->default_value(config->DomainFile.DefaultContent))
-        (config->ProblemFile.Flag + "," + config->ProblemFile.LongFlag, config->ProblemFile.Description, cxxopts::value<std::string>()->default_value(config->ProblemFile.DefaultContent))
-        (config->DownwardPath.Flag + "," + config->DownwardPath.LongFlag, config->DownwardPath.Description, cxxopts::value<std::string>()->default_value(config->DownwardPath.DefaultContent))
-        (config->DebugMode.Flag + "," + config->DebugMode.LongFlag, config->DebugMode.Description)
-        (config->ValidatorPath.Flag + "," + config->ValidatorPath.LongFlag, config->ValidatorPath.Description, cxxopts::value<std::string>()->default_value(config->ValidatorPath.DefaultContent))
-        (config->Reformulator.Flag + "," + config->Reformulator.LongFlag, config->Reformulator.Description, cxxopts::value<std::string>()->default_value(config->Reformulator.DefaultContent))
-        (config->ReformulatorTime.Flag + "," + config->ReformulatorTime.LongFlag, config->ReformulatorTime.Description, cxxopts::value<int>())
-        (config->DownwardOptions.Search.Flag + "," + config->DownwardOptions.Search.LongFlag, config->DownwardOptions.Search.Description, cxxopts::value<std::string>()->default_value(config->DownwardOptions.Search.DefaultContent))
-        (config->DownwardOptions.Heuristic.Flag + "," + config->DownwardOptions.Heuristic.LongFlag, config->DownwardOptions.Heuristic.Description, cxxopts::value<std::string>()->default_value(config->DownwardOptions.Heuristic.DefaultContent))
-        (config->PrintWalkerSteps.Flag + "," + config->PrintWalkerSteps.LongFlag, config->PrintWalkerSteps.Description)
-    ;
+        string typeName = line.substr(0, line.find(":"));
+        typeName = StringHelper::Trim(typeName);
+        string name = line.substr(line.find(":") + 1);
+        name = name.substr(0, name.find("="));
+        name = StringHelper::Trim(name);
+        string value = line.substr(line.find("=") + 1);
+        value = StringHelper::Trim(value);
 
-    auto result = options.parse(argc, argv);
-    if (result.count("help")) {
-        cout << options.help() << endl;
-        return 1;
+        for_each(typeName.begin(), typeName.end(), [](char& c) {
+            c = ::toupper(c);
+            });
+
+        if (typeName == "INT") {
+            int num = stoi(value);
+            intItems.emplace(name, num);
+        } 
+        else if (typeName == "BOOL") {
+            for_each(value.begin(), value.end(), [](char& c) {
+                c = ::toupper(c);
+                });
+            if (value == "TRUE")
+                boolItems.emplace(name, true);
+            else if (value == "FALSE")
+                boolItems.emplace(name, false);
+        }
+        else if (typeName == "STRING") {
+            stringItems.emplace(name, value);
+        }
+        else if (typeName == "PATH") {
+            pathItems.emplace(name, filesystem::path(value));
+        }
     }
-
-    string domainPath = StringHelper::Trim(result[config->DomainFile.LongFlag].as<string>());
-    StringHelper::RemoveCharacter(&domainPath, '\'');
-    string problemPath = StringHelper::Trim(result[config->ProblemFile.LongFlag].as<string>());
-    StringHelper::RemoveCharacter(&problemPath, '\'');
-    string downwardpath = StringHelper::Trim(result[config->DownwardPath.LongFlag].as<string>());
-    StringHelper::RemoveCharacter(&downwardpath, '\'');
-    string validatorPath = StringHelper::Trim(result[config->ValidatorPath.LongFlag].as<string>());
-    StringHelper::RemoveCharacter(&validatorPath, '\'');
-    bool doValidate = false;
-    if (result[config->DebugMode.LongFlag].count() != 0)
-        doValidate = true;
-    const string searchmethod = result[config->DownwardOptions.Search.LongFlag].as<string>();
-    const string heuristicmethod = result[config->DownwardOptions.Heuristic.LongFlag].as<string>();
-    string reformulatorAlgorithm = result[config->Reformulator.LongFlag].as<string>();
-    StringHelper::Trim(&reformulatorAlgorithm);
-    int reformulatorTime = result[config->ReformulatorTime.LongFlag].as<int>();
-
-    bool printactionandstates = false; 
-    if (result[config->PrintWalkerSteps.LongFlag].count() != 0) {
-        printactionandstates = true;
+}
+int Config::GetInteger(std::string name) {
+    if (!intItems.contains(name)) {
+        ConsoleHelper::PrintWarning("Key " + name + " was not found!");
+        return 0;
     }
-
-
-    config->DownwardPath.Content = downwardpath;
-    config->ValidatorPath.Content = validatorPath;
-    config->DebugMode.Content = doValidate;
-    config->DomainFile.Content = domainPath;
-    config->ProblemFile.Content = problemPath;
-    config->Reformulator.Content = reformulatorAlgorithm;
-    config->ReformulatorTime.Content = reformulatorTime;
-    config->DownwardOptions.Search.Content = searchmethod;
-    config->DownwardOptions.Heuristic.Content = heuristicmethod;
-    config->PrintWalkerSteps.Content = printactionandstates;
-
-    return 0;
+    return intItems.at(name);
 }
-
-// Options from here https://www.fast-downward.org/Doc/SearchEngine
-string Config::GetSearchDesc() {
-    return StringHelper::StringFormat("%s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n",
-        "Search Method",
-        "astar", "a* Search",
-        "eager", "eager best-first search",
-        "eager_greedy", "greedy search (eager)",
-        "eager_wastar", "eager weighted A*",
-        "ehc", "lazy enforced hill-climbing",
-        "iterated", "iterated search",
-        "lazy", "lazy best-first search",
-        "lazy_greedy", "greedy search (lazy)",
-        "lazy_wstar", "(weighted) A* search (lazy)");
+bool Config::GetBool(std::string name) {
+    if (!boolItems.contains(name)) {
+        ConsoleHelper::PrintWarning("Key " + name + " was not found!");
+        return false;
+    }
+    return boolItems.at(name);
 }
-
-// Options from here https://www.fast-downward.org/Doc/Evaluator
-string Config::GetEvaluatorDesc() {
-    return StringHelper::StringFormat("%s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n%-12s - %s\n",
-        "Evaluator Method",
-        "add", "additive heuristic",
-        "blind", "blind heuristic",
-        "cea", "context-enchanced additive heuristic",
-        "cegar", "additive CEGAR heuristic",
-        "cg", "causal graph heuristic",
-        "ff", "FF heuristic",
-        "hm", "h^m heuristic",
-        "hmax", "Max heuristic",
-        "lmcut", "Landmark-cut heuristic",
-        "merge_and_shrink", "merge-and-shrink heuristic",
-        "operatorcounting", "Operator-counting heuristic",
-        "ipdb", "canonical pdb with hillclimbing algo");
+std::string Config::GetString(std::string name) {
+    if (!stringItems.contains(name)) {
+        ConsoleHelper::PrintWarning("Key " + name + " was not found!");
+        return "";
+    }
+    return stringItems.at(name);
+}
+std::filesystem::path Config::GetPath(std::string name) {
+    if (!pathItems.contains(name)) {
+        ConsoleHelper::PrintWarning("Key " + name + " was not found!");
+        return "";
+    }
+    return pathItems.at(name);
 }

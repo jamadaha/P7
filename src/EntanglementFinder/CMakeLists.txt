@@ -8,7 +8,3 @@ target_sources(EntanglementFinder
 target_include_directories(EntanglementFinder
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR})
-target_link_libraries(EntanglementFinder
-    PRIVATE
-        ProgressBarHelper
-        ConsoleHelper)

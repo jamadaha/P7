@@ -80,9 +80,26 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 	return paths;
 }
 
+void test() {
+
+}
+
 unordered_map<size_t, EntanglementOccurance> RandomWalkerReformulator::FindEntanglements(vector<Path> paths, PDDLInstance* instance) {
 	EntanglementFinder entFinder;
-	entFinder.DebugMode = Configs->GetBool("debugmode");
+
+	if (Configs->GetBool("debugmode")) {
+		ProgressBarHelper* bar;
+		entFinder.OnNewLevel = [&](int level, int outOf) {
+			bar = new ProgressBarHelper(outOf, "Finding Entanglements (level " + to_string(level) + ")", 1);
+		};
+		entFinder.OnLevelIteration = [&](int current, int outOf) {
+			bar->Update();
+		};
+		entFinder.OnLevelEnd = [&]() {
+			bar->End();
+		};
+	}
+
 	auto startTime = chrono::steady_clock::now();
 	auto candidates = entFinder.FindEntangledCandidates(paths);
 	auto endTime = chrono::steady_clock::now();

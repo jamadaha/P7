@@ -62,8 +62,8 @@ void EntanglementFinder::GenerateActionSet(vector<vector<PDDLActionInstance>> *c
 
 void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, EntanglementOccurance>* candidates, vector<vector<PDDLActionInstance>> currentValues) {
 	const int currentValueSize = currentValues.size();
-	if (DebugMode)
-		bar = new ProgressBarHelper(currentValueSize, "Finding Entanglements (level " + to_string(CurrentLevel) + ")", 1);
+	if (OnNewLevel != nullptr)
+		OnNewLevel(CurrentLevel, currentValueSize);
 
 	for (int i = 0; i < currentValueSize; i++) {
 		vector<PDDLActionInstance>* iValue = &currentValues.at(i);
@@ -85,11 +85,11 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 				}
 			}
 		}
-		if (DebugMode)
-			bar->Update();
+		if (OnLevelIteration != nullptr)
+			OnLevelIteration(i, currentValueSize);
 	}
-	if (DebugMode)
-		bar->End();
+	if (OnLevelEnd != nullptr)
+		OnLevelEnd();
 }
 
 void EntanglementFinder::RemoveIfBelowMinimum(unordered_map<size_t, EntanglementOccurance>* candidates) {

@@ -47,11 +47,6 @@ These are for debugging in VSCode.
             // Resolved by CMake Tools:
             "program": "${command:cmake.launchTargetPath}",
             "args": [
-                "--domain='Data/Classical tracks/Gripper/gripper_domain.pddl'",
-                "--problem='Data/Classical tracks/Gripper/gripper_problem.pddl'",
-                "--downwardpath=${workspaceFolder}/P7Requirements/downward/fast-downward.py",
-                "--reformulator=RandomWalker",
-                "--validatorpath=${workspaceFolder}/P7Requirements/VAL/validate",
                 "--timelimit=1000",
                 "--debugmode"
             ],
@@ -64,14 +59,6 @@ These are for debugging in VSCode.
                     "name": "PATH",
                     "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
                 }
-            ],
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
             ]
         }, {
             "name": "Release",
@@ -80,11 +67,6 @@ These are for debugging in VSCode.
             // Resolved by CMake Tools:
             "program": "${command:cmake.launchTargetPath}",
             "args": [
-                "--domain='Data/Classical tracks/Gripper/gripper_domain.pddl'",
-                "--problem='Data/Classical tracks/Gripper/gripper_problem.pddl'",
-                "--downwardpath=${workspaceFolder}/P7Requirements/downward/fast-downward.py",
-                "--reformulator=RandomWalker",
-                "--validatorpath=${workspaceFolder}/P7Requirements//VAL/validate",
                 "--timelimit=1000"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build",
@@ -113,11 +95,6 @@ These are for debugging in VSCode.
             "args": [
                 "'--all'",
                 "--benchmarks '${workspaceFolder}/Data/Classical tracks/Gripper/'",
-                "--domain 'gripper_domain.pddl'",
-                "--problem 'gripper_problem.pddl'",
-                "--downward '${workspaceFolder}/P7Requirements/downward/fast-downward.py'",
-                "--validate '${workspaceFolder}/P7Requirements/VAL/validate'",
-                "--reformulator RandomWalker",
                 "--timelimit=1000"
             ],
             "stopAtEntry": false,

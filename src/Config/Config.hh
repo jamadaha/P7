@@ -2,6 +2,7 @@
 #define CONFIG_HH
 
 #include <string>
+#include <filesystem>
 
 #include "../../include/cxxopts.hpp"
 #include "../Helpers/StringHelper.hh"
@@ -32,12 +33,12 @@ struct Options {
 class Config {
 public:
     ConfigItem<bool> DebugMode = ConfigItem<bool>("c", "debugmode", "Debug Mode", "Enable additional debugging info and checks", false);
-    ConfigItem<std::string> DownwardPath = ConfigItem<std::string>("f", "downwardpath", "Fast-Downward Path", "fast-downward.py filepath", "fast-downward.py");
+    ConfigItem<std::string> DownwardPath = ConfigItem<std::string>("f", "downwardpath", "Fast-Downward Path", "fast-downward.py filepath", "../P7Requirements/downward/fast-downward.py");
     Options DownwardOptions;
-    ConfigItem<std::string> ValidatorPath = ConfigItem<std::string>("v", "validatorpath", "VAL validator Path", "validator filepath", "validate");
-    ConfigItem<std::string> DomainFile = ConfigItem<std::string>("d", "domain", "Domain File", "Path to domain file", "gripper_domain.pddl");
-    ConfigItem<std::string> ProblemFile = ConfigItem<std::string>("p", "problem", "Problem File", "Path to problem file", "gripper_problem.pddl");
-    ConfigItem<std::string> Reformulator = ConfigItem<std::string>("r", "reformulator", "Reformulator Algorithm", "What reformulator algorithm to use", "SameOutput");
+    ConfigItem<std::string> ValidatorPath = ConfigItem<std::string>("v", "validatorpath", "VAL validator Path", "validator filepath", "../P7Requirements/downward/VAL/validate");
+    ConfigItem<std::string> DomainFile = ConfigItem<std::string>("d", "domain", "Domain File", "Path to domain file", "../Data/Classical tracks/Gripper/gripper_domain.pddl");
+    ConfigItem<std::string> ProblemFile = ConfigItem<std::string>("p", "problem", "Problem File", "Path to problem file", "../Data/Classical tracks/Gripper/gripper_problem.pddl");
+    ConfigItem<std::string> Reformulator = ConfigItem<std::string>("r", "reformulator", "Reformulator Algorithm", "What reformulator algorithm to use", "RandomWalker");
     ConfigItem<int> ReformulatorTime = ConfigItem<int>("t", "timelimit", "Reformulator time limiter", "How much time in ms that the reformulator is allowed to walk in", 500);
     ConfigItem<bool> PrintWalkerSteps = ConfigItem<bool>("w", "printwalkersteps", "Print actions and states", "Print each action and state in walker path", false);
 

@@ -24,3 +24,11 @@ Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const 
     return Path(steps);
 }
 
+std::vector<Path> Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc) {
+    std::vector<Path> paths;
+    while (widthFunc->Iterate()) {
+        Path path = Walk(heuristic, depthFunc, &this->instance->problem->initState);
+        paths.push_back(path);
+    }
+    return paths;
+}

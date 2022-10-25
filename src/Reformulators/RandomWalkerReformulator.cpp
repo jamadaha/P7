@@ -29,10 +29,12 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 	unsigned int totalIterations = 0;
 	auto startTime = chrono::steady_clock::now();
 	ProgressBarHelper* bar;
-	if (Configs->GetInteger("timelimit") == -1)
-		bar = new ProgressBarHelper(widthFunc->GetWidth(), "Walking", 1);
-	else
-		bar = new ProgressBarHelper(Configs->GetInteger("timelimit"), "Walking", 1);
+	if (Configs->GetBool("debugmode")) {
+		if (Configs->GetInteger("timelimit") == -1)
+			bar = new ProgressBarHelper(widthFunc->GetWidth(), "Walking", 1);
+		else
+			bar = new ProgressBarHelper(Configs->GetInteger("timelimit"), "Walking", 1);
+	}
 
 	for (int i = 0; i < widthFunc->GetWidth(); i++) {
 		Walker walker = Walker(instance,
@@ -48,16 +50,19 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 				totalIterations++;
 			}
 		}
-		if (Configs->GetInteger("timelimit") == -1) {
-			bar->Update();
-		}
-		else {
-			auto curEndTime = chrono::steady_clock::now();
-			auto thisRound = chrono::duration_cast<chrono::milliseconds>(curEndTime - startTime).count();
-			bar->SetTo(thisRound);
+		if (Configs->GetBool("debugmode")) {
+			if (Configs->GetInteger("timelimit") == -1) {
+				bar->Update();
+			}
+			else {
+				auto curEndTime = chrono::steady_clock::now();
+				auto thisRound = chrono::duration_cast<chrono::milliseconds>(curEndTime - startTime).count();
+				bar->SetTo(thisRound);
+			}
 		}
 	}
-	bar->End();
+	if (Configs->GetBool("debugmode"))
+		bar->End();
 	auto endTime = chrono::steady_clock::now();
 
 	// Print debug info

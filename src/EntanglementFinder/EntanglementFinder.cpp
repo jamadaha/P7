@@ -29,7 +29,7 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 
 	RemoveIfBelowMinimum(&candidates);
 
-	return unordered_map<int, EntanglementOccurance>(candidates);
+	return unordered_map<size_t, EntanglementOccurance>(candidates);
 }
 
 void EntanglementFinder::GenerateActionSet(vector<vector<PDDLActionInstance>> *currentValues, const vector<Path>* paths, const int level) {

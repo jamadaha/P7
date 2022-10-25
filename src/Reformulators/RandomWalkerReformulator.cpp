@@ -20,7 +20,7 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 	RandomHeuristic<PDDLActionInstance>* heu = new RandomHeuristic<PDDLActionInstance>(PDDLContext(instance->domain, instance->problem));
 	BaseWidthFunction* widthFunc;
 	if (Configs->GetInteger("timelimit") == -1)
-		widthFunc = new ConstantWidthFunction(1000);
+		widthFunc = new ConstantWidthFunction(5000);
 	else
 		widthFunc = new TimeWidthFunction(Configs->GetInteger("timelimit"));
 	auto depthFunction = new ConstantDepthFunction(100, *instance);
@@ -104,33 +104,26 @@ unordered_map<size_t, EntanglementOccurance> RandomWalkerReformulator::FindEntan
 	auto candidates = entFinder.FindEntangledCandidates(paths);
 	auto endTime = chrono::steady_clock::now();
 
-	//std::unordered_set<EntanglementOccurance> eSet;
-	//for (auto KVPair : candidates)
-	//	eSet.emplace(KVPair.second);
-	//std::set<EntanglementOccurance, EntanglementOccurance::EntangleCmp> sSet(eSet.begin(), eSet.end());
-
-	// Print debug info
-	if (Configs->GetBool("debugmode")) {
-		if (Configs->GetBool("printentanglersteps")) {
-			ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Entanglements:", 1);
-			for (auto i = candidates.begin(); i != candidates.end(); i++) {
-				string actionStr = "";
-				for (int j = 0; j < (*i).second.Chain.size(); j++) {
-					auto item = (*i).second.Chain.at(j);
-					string paramStr = "";
-					for (int l = 0; l < item.objects.size(); l++) {
-						paramStr += instance->problem->objects[item.objects[l]];
-						if (l != item.objects.size() - 1)
-							paramStr += ", ";
-					}
-					actionStr += item.action->name + "(" + paramStr + ")";
-					if (j != (*i).second.Chain.size() - 1)
-						actionStr += " -> ";
+	if (Configs->GetBool("printentanglersteps")) {
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Entanglements:", 1);
+		for (auto i = candidates.begin(); i != candidates.end(); i++) {
+			string actionStr = "";
+			for (int j = 0; j < (*i).second.Chain.size(); j++) {
+				auto item = (*i).second.Chain.at(j);
+				string paramStr = "";
+				for (int l = 0; l < item.objects.size(); l++) {
+					paramStr += instance->problem->objects[item.objects[l]];
+					if (l != item.objects.size() - 1)
+						paramStr += ", ";
 				}
-				ConsoleHelper::PrintDebugInfo("[Entanglement Finder] " + to_string((*i).second.Occurance) + " : " + actionStr, 2);
+				actionStr += item.action->name + "(" + paramStr + ")";
+				if (j != (*i).second.Chain.size() - 1)
+					actionStr += " -> ";
 			}
+			ConsoleHelper::PrintDebugInfo("[Entanglement Finder] " + to_string((*i).second.Occurance) + " : " + actionStr, 2);
 		}
-
+	}
+	if (Configs->GetBool("debugmode")) {
 		unsigned int totalActions = 0;
 		for (int i = 0; i < paths.size(); i++)
 			totalActions += paths[i].steps.size();

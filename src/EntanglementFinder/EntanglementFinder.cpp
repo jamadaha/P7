@@ -54,6 +54,7 @@ void EntanglementFinder::GenerateActionSet(vector<vector<PDDLActionInstance>> *c
 				}
 				currentSet.push_back(((paths->at(i)).steps.at(l)));
 			}
+			size_t key = hash<const vector<PDDLActionInstance>>{}(currentSet);
 			if (doAdd)
 				currentValues->push_back(currentSet);
 		}

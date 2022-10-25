@@ -20,7 +20,7 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 	RandomHeuristic<PDDLActionInstance>* heu = new RandomHeuristic<PDDLActionInstance>(PDDLContext(instance->domain, instance->problem));
 	BaseWidthFunction* widthFunc;
 	if (Configs->GetInteger("timelimit") == -1)
-		widthFunc = new ConstantWidthFunction(100);
+		widthFunc = new ConstantWidthFunction(1000);
 	else
 		widthFunc = new TimeWidthFunction(Configs->GetInteger("timelimit"));
 	auto depthFunction = new ConstantDepthFunction(100, *instance);

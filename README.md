@@ -148,7 +148,7 @@ To launch in Visual Studio (Note: This is the inferior version):
       "project": "CMakeLists.txt",
       "projectTarget": "P7",
       "debuggerConfiguration": "gdb",
-      "cwd": "/root/.vs/P7/",
+      "cwd": "/root/.vs/P7/build",
       "args": [
         "settings.ini"
       ],
@@ -161,7 +161,7 @@ To launch in Visual Studio (Note: This is the inferior version):
       "project": "CMakeLists.txt",
       "projectTarget": "P7",
       "debuggerConfiguration": "gdb",
-      "cwd": "/root/.vs/P7/",
+      "cwd": "/root/.vs/P7/build",
       "args": [
         "settingsFast.ini"
       ],

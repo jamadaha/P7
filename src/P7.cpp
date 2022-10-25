@@ -9,9 +9,9 @@ using namespace std;
 int main(int argc, char** argv){
 	 Config config;
 
-	 string fileName = "settings.ini";
+	 std::filesystem::path fileName = std::filesystem::path("settings.ini");
 	 if (argc > 1)
-		 fileName = argv[1];
+		 fileName = std::filesystem::path(argv[1]);
 	 config.ParseConfigFile(fileName); 
 
 	RunReport report = RunReport();

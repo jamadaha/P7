@@ -9,8 +9,10 @@ class TimeWidthFunction : public BaseWidthFunction {
 public:
     TimeWidthFunction(unsigned int timeLimitMs) : limitMs(timeLimitMs) {};
     bool Iterate() override {
-        if (!started)
+        if (!started) {
+            started = true;
             startTime = std::chrono::steady_clock::now();
+        }
 
         auto ellapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - startTime).count();
         if (ellapsed >= limitMs)

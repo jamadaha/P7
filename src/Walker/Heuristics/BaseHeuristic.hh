@@ -5,6 +5,8 @@
 #include <iostream>
 #include <vector>
 #include <set>
+#include <algorithm>
+#include <random>
 
 #include "../../IntermediatePDDL/PDDLDomain.hh"
 #include "../../IntermediatePDDL/PDDLProblem.hh"
@@ -16,7 +18,7 @@ public:
 	const PDDLProblem *problem;
 	BaseHeuristic(const PDDLDomain *domain, const PDDLProblem *problem) : domain(domain), problem(problem) {}
 
-	virtual PDDLActionInstance* NextChoice(const PDDLState * state, std::vector<PDDLActionInstance> *choices) const = 0; /*{
+	virtual PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const = 0; /*{
 		int maxIndex = -1;
 		int maxValue;
 		for (int i = 0; i < choices->size(); i++) {

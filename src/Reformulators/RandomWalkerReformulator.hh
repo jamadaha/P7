@@ -7,6 +7,7 @@
 #include "BaseReformulator.hh"
 #include "../Walker/Walker.hpp"
 #include "../Walker/Heuristics/RandomHeuristic.hh"
+#include "../Walker/Heuristics/GoalCountHeuristic.hh"
 #include "../Walker/DepthFunctions/ConstantDepthFunction.hh"
 #include "../Walker/WidthFunctions/ConstantWidthFunction.hh"
 #include "../Walker/WidthFunctions/TimeWidthFunction.hh"

@@ -11,7 +11,7 @@ public:
 		//srand(time(NULL));
 	};
 
-	PDDLActionInstance* NextChoice(const PDDLState * state, std::vector<PDDLActionInstance> *choices) const override {
+	PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const override {
 		return &choices->at(rand() % choices->size());
 	}
 

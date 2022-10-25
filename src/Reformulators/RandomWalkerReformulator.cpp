@@ -7,17 +7,17 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	auto paths = PerformWalk(instance);
 
 	// Find Entangelements
-	//auto candidates = FindEntanglements(paths, instance);
+	auto candidates = FindEntanglements(paths, instance);
 
 	// Generate new Macros
-	//auto newInstance = GenerateMacros(candidates, instance);
+	auto newInstance = GenerateMacros(candidates, instance);
 
 	return *instance;
 }
 
 std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) {
 	Walker walker = Walker(instance, ActionGenerator(instance->domain, instance->problem), Configs);
-	BaseHeuristic *heuristic = new RandomHeuristic();
+	BaseHeuristic *heuristic = new GoalCountHeuristic(instance->domain, instance->problem);
 	BaseDepthFunction *depthFunc = new ConstantDepthFunction(1000, *instance, 1);
 	BaseWidthFunction *widthFunc;
 	if (Configs->GetInteger("timelimit") == -1)

@@ -18,6 +18,14 @@ Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const 
         else {
             visitedStates.emplace(tempState);
             steps.push_back(*chosenAction);
+
+            if (config->GetBool("printwalkersteps")) {
+                std::string stateinfo = tempState.ToString(this->instance);
+                std::string actioninfo = chosenAction->ToString(this->instance);
+                std::string content = "echo '" + stateinfo + "\n" + actioninfo + "'" + " >> walkerLog";
+
+                system(content.c_str());
+            }
         }
     }
 
@@ -25,6 +33,11 @@ Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const 
 }
 
 std::vector<Path> Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc) {
+    if (config->GetBool("printwalkersteps")) {
+        std::string command = "truncate -s 0 walkerLog";
+        system(command.c_str());
+    }
+
     std::vector<Path> paths;
     while (widthFunc->Iterate()) {
         Path path = Walk(heuristic, depthFunc, &this->instance->problem->initState);

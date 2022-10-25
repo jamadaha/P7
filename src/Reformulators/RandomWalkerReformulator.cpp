@@ -47,6 +47,7 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 
 unordered_map<size_t, EntanglementOccurance> RandomWalkerReformulator::FindEntanglements(vector<Path> paths, PDDLInstance* instance) {
 	EntanglementFinder entFinder;
+	entFinder.DebugMode = Configs->GetBool("debugmode");
 	auto startTime = chrono::steady_clock::now();
 	auto candidates = entFinder.FindEntangledCandidates(paths);
 	auto endTime = chrono::steady_clock::now();

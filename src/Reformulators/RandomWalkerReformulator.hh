@@ -15,6 +15,7 @@
 #include "../Helpers/ConsoleHelper.hh"
 #include "../EntanglementFinder/EntanglementFinder.hh"
 #include "../EntanglementFinder/EntanglementOccurance.hh"
+#include "../Helpers/ProgressBarHelper.hh"
 
 class RandomWalkerReformulator : public BaseReformulator {
 public:

@@ -74,6 +74,26 @@ namespace std {
             return seed;
         }
     };
+
+    template <>
+    struct hash<vector<PDDLActionInstance>> {
+        auto operator()(vector<PDDLActionInstance>& vec) -> size_t {
+            std::size_t seed = vec.size();
+            for (int i = 0; i < vec.size(); i++)
+                seed ^= 0x8e3471b5 + vec.at(i).GetHash() + (seed >> 3);
+            return seed;
+        }
+    };
+
+    template <>
+    struct hash<vector<PDDLActionInstance*>> {
+        auto operator()(vector<PDDLActionInstance*>& vec) -> size_t {
+            std::size_t seed = vec.size();
+            for (int i = 0; i < vec.size(); i++)
+                seed ^= 0x8e3471b5 + vec.at(i)->GetHash() + (seed >> 3);
+            return seed;
+        }
+    };
 }
 
 #endif

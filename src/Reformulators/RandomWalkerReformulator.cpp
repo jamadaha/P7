@@ -7,7 +7,7 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	auto paths = PerformWalk(instance);
 
 	// Find Entangelements
-	auto candidates = FindEntanglements(paths, instance);
+	auto candidates = FindEntanglements(&paths, instance);
 
 	// Generate new Macros
 	auto newInstance = GenerateMacros(candidates, instance);
@@ -84,7 +84,7 @@ void test() {
 
 }
 
-unordered_map<size_t, EntanglementOccurance> RandomWalkerReformulator::FindEntanglements(vector<Path> paths, PDDLInstance* instance) {
+unordered_map<size_t, EntanglementOccurance> RandomWalkerReformulator::FindEntanglements(vector<Path>* paths, PDDLInstance* instance) {
 	EntanglementFinder entFinder;
 
 	if (Configs->GetBool("debugmode")) {
@@ -111,12 +111,12 @@ unordered_map<size_t, EntanglementOccurance> RandomWalkerReformulator::FindEntan
 			for (int j = 0; j < (*i).second.Chain.size(); j++) {
 				auto item = (*i).second.Chain.at(j);
 				string paramStr = "";
-				for (int l = 0; l < item.objects.size(); l++) {
-					paramStr += instance->problem->objects[item.objects[l]];
-					if (l != item.objects.size() - 1)
+				for (int l = 0; l < item->objects.size(); l++) {
+					paramStr += instance->problem->objects[item->objects[l]];
+					if (l != item->objects.size() - 1)
 						paramStr += ", ";
 				}
-				actionStr += item.action->name + "(" + paramStr + ")";
+				actionStr += item->action->name + "(" + paramStr + ")";
 				if (j != (*i).second.Chain.size() - 1)
 					actionStr += " -> ";
 			}
@@ -125,12 +125,12 @@ unordered_map<size_t, EntanglementOccurance> RandomWalkerReformulator::FindEntan
 	}
 	if (Configs->GetBool("debugmode")) {
 		unsigned int totalActions = 0;
-		for (int i = 0; i < paths.size(); i++)
-			totalActions += paths[i].steps.size();
+		for (int i = 0; i < paths->size(); i++)
+			totalActions += paths->at(i).steps.size();
 
 		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count();
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + to_string(ellapsed) + "ms", 1);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Found a total of " + to_string(candidates.size()) + " candidates out of " + to_string(paths.size()) + " paths that has " + to_string(totalActions) + " steps", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Found a total of " + to_string(candidates.size()) + " candidates out of " + to_string(paths->size()) + " paths that has " + to_string(totalActions) + " steps", 1);
 	}
 
 	return candidates;

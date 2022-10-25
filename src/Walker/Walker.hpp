@@ -14,7 +14,7 @@
 #include "../Config/Config.hh"
 
 struct Path {
-    const std::vector<PDDLActionInstance> steps;
+    std::vector<PDDLActionInstance> steps;
     Path(std::vector<PDDLActionInstance> steps) : steps(steps) {};
 };
 

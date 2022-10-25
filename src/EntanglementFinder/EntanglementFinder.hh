@@ -9,6 +9,7 @@
 #include "../IntermediatePDDL/PDDLInstance.hh"
 #include "../Walker/Walker.hpp"
 #include "EntanglementOccurance.hh"
+#include "../Helpers/ProgressBarHelper.hh"
 
 class EntanglementFinder {
 public:

@@ -23,14 +23,24 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 	if (LevelReductionFactor <= 1)
 		throw exception();
 
+	int iterations = 0;
+	int testLevel = level;
+	while (testLevel >= SearchFloor) {
+		testLevel = ceil((double)testLevel / LevelReductionFactor);
+		iterations++;
+	}
+
 	vector<vector<PDDLActionInstance>> currentValues;
+	ProgressBarHelper bar(iterations, "Finding Entanglements");
 	while (level >= SearchFloor) {
 		GenerateActionSet(&currentValues, &paths, level);
 
 		AddCandidatesIfThere(&candidates, currentValues);
 
 		level = ceil((double)level / LevelReductionFactor);
+		bar.Update();
 	}
+	bar.End();
 
 	RemoveIfBelowMinimum(&candidates);
 

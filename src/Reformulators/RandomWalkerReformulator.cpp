@@ -28,6 +28,7 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 	unsigned int totalActionCount = 0;
 	unsigned int totalIterations = 0;
 	auto startTime = chrono::steady_clock::now();
+	ProgressBarHelper bar(Configs->GetInteger("timelimit"), "Walking");
 	for (int i = 0; i < widthFunc->GetWidth(); i++) {
 		Walker walker = Walker(instance,
 			ActionGenerator(instance->domain, instance->problem),
@@ -42,7 +43,16 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 				totalIterations++;
 			}
 		}
+		if (Configs->GetInteger("timelimit") == -1) {
+			bar.Update();
+		}
+		else {
+			auto curEndTime = chrono::steady_clock::now();
+			auto thisRound = chrono::duration_cast<chrono::milliseconds>(curEndTime - startTime).count();
+			bar.SetTo(thisRound);
+		}
 	}
+	bar.End();
 	auto endTime = chrono::steady_clock::now();
 
 	// Print debug info

@@ -10,13 +10,13 @@
 #include "../../IntermediatePDDL/PDDLProblem.hh"
 #include "../../IntermediatePDDL/PDDLInstance.hh"
 
-class BaseHeuristics {
+class BaseHeuristic {
 public:
 	const PDDLDomain *domain;
 	const PDDLProblem *problem;
-	BaseHeuristics(const PDDLDomain *domain, const PDDLProblem *problem) : domain(domain), problem(problem) {}
+	BaseHeuristic(const PDDLDomain *domain, const PDDLProblem *problem) : domain(domain), problem(problem) {}
 
-	PDDLActionInstance* NextChoice(std::vector<PDDLActionInstance> *choices) {
+	virtual PDDLActionInstance* NextChoice(const PDDLState * state, std::vector<PDDLActionInstance> *choices) const = 0; /*{
 		int maxIndex = -1;
 		int maxValue;
 		for (int i = 0; i < choices->size(); i++) {
@@ -30,7 +30,7 @@ public:
 			}
 		}
 		return &(choices->at(maxIndex));
-	};
+	};*/
 
 	virtual int Eval(const PDDLState *state) const = 0;
 };

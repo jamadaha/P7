@@ -14,7 +14,7 @@ class ActionGenerator {
 public:
     ActionGenerator(const PDDLDomain *domain, const PDDLProblem *problem) : domain(domain), problem(problem) {};
     /// @brief For a given state, generate all possible action instances
-    std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state) const;
+    std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state);
     /// @brief For a given action, generate all possible action instances
     std::vector<PDDLActionInstance> GenerateActions(const PDDLAction *action, const PDDLState *state) const;
 
@@ -42,9 +42,13 @@ public:
     /// @brief Finds next permutation of the \p iteration
     /// @return Returns true if it hasn't reached the final permutation, and false if it has
     static bool Iterate(std::vector<std::unordered_set<unsigned int>::iterator> *iteration, std::vector<std::unordered_set<unsigned int>> *candidateObjects);
+
+    unsigned int GetTotalActionsGenerated() { return totalActions; };
+
 private:
     const PDDLDomain *domain;
     const PDDLProblem *problem;
+    unsigned int totalActions = 0;
 };
 
 #endif

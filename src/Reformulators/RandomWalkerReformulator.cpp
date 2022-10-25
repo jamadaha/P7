@@ -15,9 +15,9 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	return *instance;
 }
 
-std::unordered_set<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) {
+std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) {
 	Walker walker = Walker(instance, ActionGenerator(instance->domain, instance->problem), Configs);
-	BaseHeuristics *heuristic = new RandomHeuristic();
+	BaseHeuristic *heuristic = new RandomHeuristic();
 	BaseDepthFunction *depthFunc = new ConstantDepthFunction(1000, *instance, 1);
 	BaseWidthFunction *widthFunc;
 	if (Configs->GetInteger("timelimit") == -1)
@@ -25,17 +25,21 @@ std::unordered_set<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* ins
 	else
 		widthFunc = new ConstantWidthFunction(1000);
 
-	std::unordered_set<Path> paths = walker.Walk(heuristic, depthFunc, widthFunc);
+	auto startTime = chrono::steady_clock::now();
+	std::vector<Path> paths = walker.Walk(heuristic, depthFunc, widthFunc);
 	free(heuristic); free(widthFunc); free(depthFunc);
+	auto endTime = chrono::steady_clock::now();
 
 	// Print debug info
 	if (Configs->GetBool("debugmode")) {
-		/* auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count();
+		unsigned int totalIterations = paths.size();
+		unsigned int totalActionCount = walker.GetTotalActionsGenerated();
+		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count();
 		ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + to_string(ellapsed) + "ms", 1);
 		double iterationsPrSecond = (totalIterations * 1000) / ellapsed;
 		ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + to_string(totalIterations) + " [" + to_string(iterationsPrSecond) + "/s]", 1);
 		double actionsPrSecond = (totalActionCount * 1000) / ellapsed;
-		ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", 1); */
+		ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", 1);
 	}
 
 	return paths;

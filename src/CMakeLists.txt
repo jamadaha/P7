@@ -22,7 +22,6 @@ target_link_libraries(P7
         EntanglementFinder
         ActionGenerator
         DepthFunction
-        WidthFunction
         Hashes)
 
 add_executable(P7Lab "P7Lab.cpp")

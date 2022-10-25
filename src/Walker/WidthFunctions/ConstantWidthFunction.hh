@@ -1,15 +1,19 @@
 #ifndef ConstantWidthFunction_HH
 #define ConstantWidthFunction_HH
 
-#include "../../IntermediatePDDL/PDDLInstance.hh"
 #include "BaseWidthFunction.hh"
 
 class ConstantWidthFunction : public BaseWidthFunction {
 public:
-    ConstantWidthFunction(int width, double modifier = 1) : ConstantWidth(width), BaseWidthFunction(modifier) {}
-    int GetWidth() override;
+    ConstantWidthFunction(unsigned int maxWidth, unsigned int startWidth = 0, unsigned int increment = 1) : currentWidth(startWidth), maxWidth(maxWidth), increment(increment) {};
+    bool Iterate() override {
+        currentWidth += increment;
+        return currentWidth <= maxWidth;
+    }
 private:
-    int ConstantWidth = 0;
+    unsigned int currentWidth;
+    const unsigned int maxWidth;
+    const unsigned int increment;
 };
 
 #endif

@@ -2,9 +2,10 @@
 #define WALKER
 
 #include <vector>
+#include <list>
 
 #include "../IntermediatePDDL/PDDLActionInstance.hh"
-#include "Heuristics/BaseHeuristics.hh"
+#include "Heuristics/BaseHeuristic.hh"
 #include "DepthFunctions/BaseDepthFunction.hh"
 #include "DepthFunctions/ObjectActionDepthFunction.hh"
 #include "WidthFunctions/BaseWidthFunction.hh"
@@ -16,6 +17,7 @@
 
 struct Path {
     const std::vector<PDDLActionInstance> steps;
+    Path() : steps({}) {};
     Path(std::vector<PDDLActionInstance> steps) : steps(steps) {};
 
     friend bool operator==(const Path& lhs, const Path& rhs) {
@@ -38,11 +40,11 @@ namespace std {
 
 class Walker {
 public:
-    unsigned int totalActions = 0;
     Walker(PDDLInstance* instance, ActionGenerator actionGenerator, Config *config) : 
     instance(instance), actionGenerator(actionGenerator), config(config) {}
-    Path Walk(BaseHeuristics *heuristic, BaseDepthFunction *depthFunction, PDDLState state);
-    std::unordered_set<Path> Walk(BaseHeuristics *heuristic, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc);
+    Path Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunction, const PDDLState *state);
+    std::vector<Path> Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc);
+    unsigned int GetTotalActionsGenerated() { return actionGenerator.GetTotalActionsGenerated(); };
 private:
     PDDLInstance* instance;
     ActionGenerator actionGenerator;

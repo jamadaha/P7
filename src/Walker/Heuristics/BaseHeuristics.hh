@@ -4,16 +4,36 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <set>
 
-#include "Contexts/BaseContext.hh"
+#include "../../IntermediatePDDL/PDDLDomain.hh"
+#include "../../IntermediatePDDL/PDDLProblem.hh"
+#include "../../IntermediatePDDL/PDDLInstance.hh"
 
-template <class T, class U>
+template <class T>
 class BaseHeuristics {
 public:
-	U Context;
-	BaseHeuristics(U context) : Context(context) {}
+	const PDDLDomain *domain;
+	const PDDLProblem *problem;
+	BaseHeuristics(const PDDLDomain *domain, const PDDLProblem *problem) : domain(domain), problem(problem) {}
 
-	virtual T NextChoice(std::vector<T> choices) = 0;
+	T NextChoice(const std::vector<T> choices) {
+		int maxIndex = -1;
+		int maxValue;
+		for (int i = 0; i < choices.size(); i++) {
+			int value = 0;//Eval(choices.at(i));
+			if (maxIndex == -1) {
+				maxIndex = i;
+				maxValue = value;
+			} else if (value > maxValue) {
+				maxIndex = i;
+				maxValue = value;
+			}
+		}
+		return choices.at(maxIndex);
+	};
+
+	virtual int Eval(const PDDLState *state) const = 0;
 };
 
 #endif

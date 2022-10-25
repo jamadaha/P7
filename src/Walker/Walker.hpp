@@ -5,7 +5,6 @@
 
 #include "../IntermediatePDDL/PDDLActionInstance.hh"
 #include "Heuristics/BaseHeuristics.hh"
-#include "Heuristics/Contexts/PDDLContext.hh"
 #include "DepthFunctions/BaseDepthFunction.hh"
 #include "DepthFunctions/ObjectActionDepthFunction.hh"
 #include "ActionGenerator.hpp"
@@ -21,7 +20,7 @@ struct Path {
 class Walker {
 public:
     unsigned int totalActions = 0;
-    Walker(PDDLInstance* instance, ActionGenerator actionGenerator, BaseHeuristics<PDDLActionInstance, PDDLContext> *heuristic, BaseDepthFunction *depthFunc) : 
+    Walker(PDDLInstance* instance, ActionGenerator actionGenerator, BaseHeuristics<PDDLActionInstance> *heuristic, BaseDepthFunction *depthFunc) : 
     instance(instance), actionGenerator(actionGenerator), heuristic(heuristic), depthFunc(depthFunc) {}
     Path Walk(Config* config);
     Path Walk(Config* config, PDDLState state);
@@ -29,7 +28,7 @@ public:
 private:
     PDDLInstance* instance;
     ActionGenerator actionGenerator;
-    BaseHeuristics<PDDLActionInstance, PDDLContext> *heuristic;
+    BaseHeuristics<PDDLActionInstance> *heuristic;
     BaseDepthFunction *depthFunc;
 
     

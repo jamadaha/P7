@@ -10,7 +10,7 @@ Path Walker::Walk(Config* config, PDDLState state) {
     steps.reserve(depth);
     PDDLState *tempState = new PDDLState(state.unaryFacts, state.multiFacts);
 
-    if (config->PrintWalkerSteps.Content) {
+    if (config->GetBool("printwalkersteps")) {
         std::string command = "truncate -s 0 walkerLog";
         system(command.c_str());
     }

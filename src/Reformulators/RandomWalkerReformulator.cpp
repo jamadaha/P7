@@ -58,7 +58,7 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 	return paths;
 }
 
-unordered_map<int, EntanglementOccurance> RandomWalkerReformulator::FindEntanglements(vector<Path> paths, PDDLInstance* instance) {
+unordered_map<size_t, EntanglementOccurance> RandomWalkerReformulator::FindEntanglements(vector<Path> paths, PDDLInstance* instance) {
 	EntanglementFinder entFinder;
 	auto startTime = chrono::steady_clock::now();
 	auto candidates = entFinder.FindEntangledCandidates(paths);
@@ -98,7 +98,7 @@ unordered_map<int, EntanglementOccurance> RandomWalkerReformulator::FindEntangle
 	return candidates;
 }
 
-PDDLInstance RandomWalkerReformulator::GenerateMacros(unordered_map<int, EntanglementOccurance> candidates, PDDLInstance* instance) {
+PDDLInstance RandomWalkerReformulator::GenerateMacros(unordered_map<size_t, EntanglementOccurance> candidates, PDDLInstance* instance) {
 	PDDLInstance newInstance(instance->domain, instance->problem);
 	return newInstance;
 }

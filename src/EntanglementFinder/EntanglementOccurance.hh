@@ -9,7 +9,7 @@ struct EntanglementOccurance {
 public:
 	const std::vector<PDDLActionInstance> Chain;
     mutable int Occurance;
-	EntanglementOccurance(const std::vector<PDDLActionInstance> chain) : Chain(chain), Occurance(1){};
+	EntanglementOccurance(const std::vector<PDDLActionInstance> chain) : Chain(chain), Occurance(2){};
 };
 
 namespace std {

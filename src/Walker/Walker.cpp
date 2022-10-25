@@ -38,10 +38,20 @@ std::vector<Path> Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *dept
         system(command.c_str());
     }
 
+    ProgressBarHelper* bar;
+	if (config->GetBool("debugmode"))
+		bar = new ProgressBarHelper(widthFunc->max, "Walking", 1);
+
     std::vector<Path> paths;
-    while (widthFunc->Iterate()) {
+    unsigned int current;
+    while (widthFunc->Iterate(&current)) {
         Path path = Walk(heuristic, depthFunc, &this->instance->problem->initState);
         paths.push_back(path);
+
+        if (config->GetBool("debugmode"))
+            bar->SetTo(current);
     }
+    if (config->GetBool("debugmode"))
+        bar->End();
     return paths;
 }

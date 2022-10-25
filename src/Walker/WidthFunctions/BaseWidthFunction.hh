@@ -5,7 +5,9 @@
 
 class BaseWidthFunction {
 public:
-    virtual bool Iterate() = 0;
+    const unsigned int max;
+    BaseWidthFunction(unsigned int max) : max(max) {};
+    virtual bool Iterate(unsigned int *current) = 0;
 };
 
 #endif

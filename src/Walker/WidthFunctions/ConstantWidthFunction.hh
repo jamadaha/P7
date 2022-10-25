@@ -5,9 +5,10 @@
 
 class ConstantWidthFunction : public BaseWidthFunction {
 public:
-    ConstantWidthFunction(unsigned int maxWidth, unsigned int startWidth = 0, unsigned int increment = 1) : currentWidth(startWidth), maxWidth(maxWidth), increment(increment) {};
-    bool Iterate() override {
+    ConstantWidthFunction(unsigned int maxWidth, unsigned int startWidth = 0, unsigned int increment = 1) : currentWidth(startWidth), maxWidth(maxWidth), increment(increment), BaseWidthFunction(maxWidth) {};
+    bool Iterate(unsigned int *current) override {
         currentWidth += increment;
+        (*current) = currentWidth;
         return currentWidth <= maxWidth;
     }
 private:

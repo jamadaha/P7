@@ -18,21 +18,7 @@ public:
 	const PDDLProblem *problem;
 	BaseHeuristic(const PDDLDomain *domain, const PDDLProblem *problem) : domain(domain), problem(problem) {}
 
-	virtual PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const = 0; /*{
-		int maxIndex = -1;
-		int maxValue;
-		for (int i = 0; i < choices->size(); i++) {
-			int value = 0;//Eval(choices.at(i));
-			if (maxIndex == -1) {
-				maxIndex = i;
-				maxValue = value;
-			} else if (value > maxValue) {
-				maxIndex = i;
-				maxValue = value;
-			}
-		}
-		return &(choices->at(maxIndex));
-	};*/
+	virtual PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const = 0; 
 
 	virtual int Eval(const PDDLState *state) const = 0;
 };

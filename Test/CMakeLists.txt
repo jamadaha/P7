@@ -55,5 +55,4 @@ target_link_libraries(Test-All
         EntanglementFinder
         Walker
         ActionGenerator
-        DepthFunction
-        WidthFunction)
+        DepthFunction)

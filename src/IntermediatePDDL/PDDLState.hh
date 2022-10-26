@@ -65,9 +65,9 @@ struct PDDLState {
         return (unaryFacts.at(key).contains(value));
     };
 
-    bool ContainsFact(const unsigned int key, const MultiFact value) const {
+    bool ContainsFact(const unsigned int key, const MultiFact *value) const {
         auto AreEqual = [&value](const MultiFact &MF) {
-                    return value == MF;
+                    return (*value) == MF;
                 };
         if (!std::any_of(multiFacts.at(key).begin(), multiFacts.at(key).end(), AreEqual))
             return false;

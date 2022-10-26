@@ -2,11 +2,7 @@
 
 using namespace std;
 
-unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCandidates(vector<Path>* paths) {
-	unordered_map<size_t, EntanglementOccurance> candidates;
-
-	if (paths->size() == 0)
-		return candidates;
+int EntanglementFinder::GetInitialLevelIfValid(vector<Path>* paths) {
 	int level = 2;
 	if (SearchCeiling != -1)
 		level = SearchCeiling;
@@ -22,8 +18,18 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 		throw exception();
 	if (LevelReductionFactor <= 1)
 		throw exception();
+	return level;
+}
 
-	s:vector<pair<size_t, vector<PDDLActionInstance*>>> currentValues;
+unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCandidates(vector<Path>* paths) {
+	unordered_map<size_t, EntanglementOccurance> candidates;
+
+	if (paths->size() == 0)
+		return candidates;
+
+	int level = GetInitialLevelIfValid(paths);
+
+	vector<pair<size_t, vector<PDDLActionInstance*>>> currentValues;
 	
 	_TotalLevels = 0;
 	_TotalComparisons = 0;
@@ -98,6 +104,8 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 }
 
 void EntanglementFinder::RemoveIfBelowMinimum(unordered_map<size_t, EntanglementOccurance>* candidates) {
+	int preCount = candidates->size();
 	const auto removeIfLessThan = [&](pair<size_t, EntanglementOccurance> const& x) { return x.second.Occurance < MinimumOccurance; };
 	std::erase_if(*candidates, removeIfLessThan);
+	_RemovedCandidates = candidates->size() - preCount;
 }

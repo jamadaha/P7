@@ -36,6 +36,7 @@ public:
 	int CurrentLevel() const { return _CurrentLevel; }
 	int TotalLevels() const { return _TotalLevels; }
 	unsigned int TotalComparisons() const { return _TotalComparisons; }
+	unsigned int RemovedCandidates() const { return _RemovedCandidates; }
 
 	EntanglementFinder(int searchFloor = 2, int searchCeiling = -1, double levelReductionFactor = 2, int minimumOccurance = 5) : SearchCeiling(searchCeiling), SearchFloor(searchFloor), LevelReductionFactor(levelReductionFactor), MinimumOccurance(minimumOccurance) {};
 
@@ -52,6 +53,9 @@ private:
 	int _CurrentLevel;
 	int _TotalLevels;
 	unsigned int _TotalComparisons;
+	unsigned int _RemovedCandidates;
+
+	int GetInitialLevelIfValid(std::vector<Path>* paths);
 
 	/// <summary>
 	/// Takes a set of Paths and splits them up into sets of PDDLActionInstances based on the level.

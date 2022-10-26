@@ -128,8 +128,9 @@ unordered_map<size_t, EntanglementOccurance> RandomWalkerReformulator::FindEntan
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + to_string(ellapsed) + "ms", 1);
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + to_string(entFinder.TotalLevels()), 1);
 		double comparisonsPrSecond = (entFinder.TotalComparisons() * 1000) / ellapsed;
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Comparisons:         " + to_string(entFinder.TotalComparisons()) + "[" + to_string(comparisonsPrSecond) + "/s]", 1);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Found a total of " + to_string(candidates.size()) + " candidates out of " + to_string(paths->size()) + " paths that has " + to_string(totalActions) + " steps", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Comparisons:         " + to_string(entFinder.TotalComparisons()) + " [" + to_string(comparisonsPrSecond) + "/s]", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + to_string(candidates.size()) + " (" + to_string(entFinder.RemovedCandidates()) + " removed)", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + to_string(paths->size()) + " paths with " + to_string(totalActions) + " steps in total", 1);
 	}
 
 	return candidates;

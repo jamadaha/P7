@@ -59,8 +59,12 @@ for task in tasks:
     settingscontent += "STRING:reformulator=" + reformulator + "\n"
     settingscontent += "INT:timelimit=" + reformulatorTime + "\n"
 
+    settingscontent += "BOOL:printwalkersteps=false\n"
+    settingscontent += "BOOL:printentanglersteps=false\n"
+    settingscontent += "BOOL:debugmode=false\n"
+
     run = experiment.add_run()
-    run.add_new_file("config","settingsLab.ini",settingscontent)
+    run.add_new_file("config","settings.ini",settingscontent)
     run.add_command("planner", [abs_path(__file__,projectfile),"{config}"])
 
     run.set_property("id",[search, heuristic, task.domain, task.problem])

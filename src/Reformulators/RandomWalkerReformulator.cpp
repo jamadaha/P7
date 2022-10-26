@@ -116,7 +116,7 @@ unordered_map<size_t, EntanglementOccurance> RandomWalkerReformulator::FindEntan
 				if (j != (*i).second.Chain.size() - 1)
 					actionStr += " -> ";
 			}
-			ConsoleHelper::PrintDebugInfo("[Entanglement Finder] " + to_string((*i).second.Occurance) + " : " + actionStr, 2);
+			ConsoleHelper::PrintDebugInfo("[Entanglement Finder] " + to_string((*i).second.Occurance) + " : " + to_string((*i).second.BetweenDifferentPaths) + " : " + actionStr, 2);
 		}
 	}
 	if (Configs->GetBool("debugmode")) {

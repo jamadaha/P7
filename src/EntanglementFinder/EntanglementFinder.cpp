@@ -51,18 +51,21 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 
 void EntanglementFinder::GenerateActionSet(vector<pair<pair<size_t, int>, vector<PDDLActionInstance*>>>* currentValues, vector<Path>* paths, const int level) {
 	currentValues->clear();
-	for (int i = 0; i < paths->size(); i++) {
-		for (int j = 0; j < paths->at(i).steps.size(); j += level) {
+	const int pathsSize = paths->size();
+	for (int i = 0; i < pathsSize; i++) {
+		Path* path = &paths->at(i);
+		const int pathSize = path->steps.size();
+		for (int j = 0; j < pathSize; j += level) {
 			bool doAdd = true;
 			vector<PDDLActionInstance*> currentSet;
 			currentSet.reserve(level);
 			for (int l = j; l < j + level; l++) {
-				if (l >= paths->at(i).steps.size()) {
+				if (l >= pathSize) {
 					if (l - j == 1)
 						doAdd = false;
 					break;
 				}
-				currentSet.push_back(&((paths->at(i)).steps.at(l)));
+				currentSet.push_back(&(path->steps.at(l)));
 			}
 			if (doAdd) {
 				size_t key = hash<vector<PDDLActionInstance*>>{}(currentSet);

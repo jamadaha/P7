@@ -49,6 +49,7 @@ private:
     const PDDLDomain *domain;
     const PDDLProblem *problem;
     unsigned int totalActions = 0;
+    
 };
 
 #endif

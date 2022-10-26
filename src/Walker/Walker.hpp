@@ -50,6 +50,7 @@ private:
     PDDLInstance* instance;
     ActionGenerator actionGenerator;
     Config *config;
+    std::unordered_map<PDDLState, std::vector<PDDLActionInstance>> cachedActions;
 };
 
 #endif

@@ -29,6 +29,10 @@ public:
         return true;
     }
 
+    PDDLActionInstance& operator=(const PDDLActionInstance& other) {
+        return *new(this) PDDLActionInstance(action, objects);
+    }
+
 private:
     size_t Hash = 0;
 };

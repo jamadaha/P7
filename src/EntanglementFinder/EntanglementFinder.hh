@@ -30,12 +30,29 @@ public:
 	/// </summary>
 	const int MinimumOccurance;
 
+	/// <summary>
+	/// Gets the level the Entanglement Finder is currently on
+	/// </summary>
+	int CurrentLevel() const { return _CurrentLevel; }
+	int TotalLevels() const { return _TotalLevels; }
+	unsigned int TotalComparisons() const { return _TotalComparisons; }
+
 	EntanglementFinder(int searchFloor = 2, int searchCeiling = -1, double levelReductionFactor = 2, int minimumOccurance = 5) : SearchCeiling(searchCeiling), SearchFloor(searchFloor), LevelReductionFactor(levelReductionFactor), MinimumOccurance(minimumOccurance) {};
 
 	/// <summary>
 	/// Find entanglement candidates from a vector of paths
 	/// </summary>
 	std::unordered_map<size_t,EntanglementOccurance> FindEntangledCandidates(std::vector<Path>* paths);
+
+	std::function<const void(int level, int outOf)> OnNewLevel;
+	std::function<const void()> OnLevelEnd;
+	std::function<const void(int current, int outOf)> OnLevelIteration;
+
+private:
+	int _CurrentLevel;
+	int _TotalLevels;
+	unsigned int _TotalComparisons;
+
 	/// <summary>
 	/// Takes a set of Paths and splits them up into sets of PDDLActionInstances based on the level.
 	/// </summary>
@@ -43,18 +60,11 @@ public:
 	/// <summary>
 	/// Based on the values generated in the "GenerateActionSet" method
 	/// </summary>
-	void AddCandidatesIfThere(std::unordered_map<size_t, EntanglementOccurance>* candidates, std::vector<std::pair<size_t,std::vector<PDDLActionInstance*>>>* currentValues);
+	void AddCandidatesIfThere(std::unordered_map<size_t, EntanglementOccurance>* candidates, std::vector<std::pair<size_t, std::vector<PDDLActionInstance*>>>* currentValues);
 	/// <summary>
 	/// Removes those values in the unordered_map where the occurance is less than the "MinimumOccurance" variable.
 	/// </summary>
 	void RemoveIfBelowMinimum(std::unordered_map<size_t, EntanglementOccurance>* candidates);
-
-	std::function<const void(int level, int outOf)> OnNewLevel;
-	std::function<const void()> OnLevelEnd;
-	std::function<const void(int current, int outOf)> OnLevelIteration;
-
-private:
-	int CurrentLevel;
 };
 
 #endif

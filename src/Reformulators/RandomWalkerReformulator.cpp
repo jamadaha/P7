@@ -80,10 +80,6 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 	return paths;
 }
 
-void test() {
-
-}
-
 unordered_map<size_t, EntanglementOccurance> RandomWalkerReformulator::FindEntanglements(vector<Path>* paths, PDDLInstance* instance) {
 	EntanglementFinder entFinder;
 
@@ -130,6 +126,9 @@ unordered_map<size_t, EntanglementOccurance> RandomWalkerReformulator::FindEntan
 
 		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count();
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + to_string(ellapsed) + "ms", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + to_string(entFinder.TotalLevels()), 1);
+		double comparisonsPrSecond = (entFinder.TotalComparisons() * 1000) / ellapsed;
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Comparisons:         " + to_string(entFinder.TotalComparisons()) + "[" + to_string(comparisonsPrSecond) + "/s]", 1);
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Found a total of " + to_string(candidates.size()) + " candidates out of " + to_string(paths->size()) + " paths that has " + to_string(totalActions) + " steps", 1);
 	}
 

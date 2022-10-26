@@ -25,8 +25,12 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 
 	s:vector<pair<size_t, vector<PDDLActionInstance*>>> currentValues;
 	
+	_TotalLevels = 0;
+	_TotalComparisons = 0;
+
 	while (level >= SearchFloor) {
-		CurrentLevel = level;
+		_TotalLevels++;
+		_CurrentLevel = level;
 		GenerateActionSet(&currentValues, paths, level);
 
 		AddCandidatesIfThere(&candidates, &currentValues);
@@ -64,7 +68,7 @@ void EntanglementFinder::GenerateActionSet(vector<pair<size_t, vector<PDDLAction
 void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, EntanglementOccurance>* candidates, vector<pair<size_t, vector<PDDLActionInstance*>>>* currentValues) {
 	const int currentValueSize = currentValues->size();
 	if (OnNewLevel != nullptr)
-		OnNewLevel(CurrentLevel, currentValueSize);
+		OnNewLevel(_CurrentLevel, currentValueSize);
 
 	for (int i = 0; i < currentValueSize; i++) {
 		pair<size_t,vector<PDDLActionInstance*>>* iValue = &currentValues->at(i);
@@ -73,6 +77,7 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 			continue;
 		EntanglementOccurance* currentOcc;
 		for (int j = i + 1; j < currentValueSize; j++) {
+			_TotalComparisons++;
 			if (iValue->first == (&currentValues->at(j))->first) {
 				if (containsThisKey) {
 					currentOcc->Occurance++;

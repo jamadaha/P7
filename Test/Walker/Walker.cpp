@@ -103,10 +103,10 @@ TEST_CASE(TAG + "DoAction Multi") {
                 REQUIRE(before == state);
             }
             SECTION("New") {
-                REQUIRE(!state.ContainsFact(0, MultiFact(std::vector<unsigned int>{ 2, 3 })));
+                REQUIRE(!state.ContainsFact(0, new MultiFact(std::vector<unsigned int>{ 2, 3 })));
                 PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 2, 3 });
                 state.DoAction(&actionInstance);
-                REQUIRE(state.ContainsFact(0, MultiFact(std::vector<unsigned int>{ 2, 3 })));
+                REQUIRE(state.ContainsFact(0, new MultiFact(std::vector<unsigned int>{ 2, 3 })));
             }
         }
         
@@ -124,16 +124,16 @@ TEST_CASE(TAG + "DoAction Multi") {
                 REQUIRE(before == state);
             }
             SECTION("New") {
-                REQUIRE(!state.ContainsFact(1, MultiFact(std::vector<unsigned int>{ 2, 3 })));
+                REQUIRE(!state.ContainsFact(1, new MultiFact(std::vector<unsigned int>{ 2, 3 })));
                 PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 2, 3 });
                 state.DoAction(&actionInstance);
-                REQUIRE(state.ContainsFact(1, MultiFact(std::vector<unsigned int>{ 2, 3 })));
+                REQUIRE(state.ContainsFact(1, new MultiFact(std::vector<unsigned int>{ 2, 3 })));
             }
             SECTION("Duplicate Arguments") {
-                REQUIRE(!state.ContainsFact(1, MultiFact(std::vector<unsigned int>{ 1, 1 })));
+                REQUIRE(!state.ContainsFact(1, new MultiFact(std::vector<unsigned int>{ 1, 1 })));
                 PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 1, 1 });
                 state.DoAction(&actionInstance);
-                REQUIRE(state.ContainsFact(1, MultiFact(std::vector<unsigned int>{ 1, 1 })));
+                REQUIRE(state.ContainsFact(1, new MultiFact(std::vector<unsigned int>{ 1, 1 })));
             }
         }
 
@@ -151,16 +151,16 @@ TEST_CASE(TAG + "DoAction Multi") {
                 REQUIRE(before == state);
             }
             SECTION("New") {
-                REQUIRE(!state.ContainsFact(2, MultiFact(std::vector<unsigned int>{ 2, 3, 4 })));
+                REQUIRE(!state.ContainsFact(2, new MultiFact(std::vector<unsigned int>{ 2, 3, 4 })));
                 PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 2, 3, 4 });
                 state.DoAction(&actionInstance);
-                REQUIRE(state.ContainsFact(2, MultiFact(std::vector<unsigned int>{ 2, 3, 4 })));
+                REQUIRE(state.ContainsFact(2, new MultiFact(std::vector<unsigned int>{ 2, 3, 4 })));
             }
             SECTION("Duplicate Arguments") {
-                REQUIRE(!state.ContainsFact(2, MultiFact(std::vector<unsigned int>{ 0, 0, 1 })));
+                REQUIRE(!state.ContainsFact(2, new MultiFact(std::vector<unsigned int>{ 0, 0, 1 })));
                 PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 0, 0, 1 });
                 state.DoAction(&actionInstance);
-                REQUIRE(state.ContainsFact(2, MultiFact(std::vector<unsigned int>{ 0, 0, 1 })));
+                REQUIRE(state.ContainsFact(2, new MultiFact(std::vector<unsigned int>{ 0, 0, 1 })));
             }
         }
     };
@@ -179,10 +179,10 @@ TEST_CASE(TAG + "DoAction Multi") {
                 REQUIRE(before == state);
             }
             SECTION("Removes") {
-                REQUIRE(state.ContainsFact(0, MultiFact(std::vector<unsigned int>{ 0, 1 })));
+                REQUIRE(state.ContainsFact(0, new MultiFact(std::vector<unsigned int>{ 0, 1 })));
                 PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 0, 1 });
                 state.DoAction(&actionInstance);
-                REQUIRE(!state.ContainsFact(0, MultiFact(std::vector<unsigned int>{ 0, 1 })));
+                REQUIRE(!state.ContainsFact(0, new MultiFact(std::vector<unsigned int>{ 0, 1 })));
             }
         }
         
@@ -200,16 +200,16 @@ TEST_CASE(TAG + "DoAction Multi") {
                 REQUIRE(before == state);
             }
             SECTION("Removes") {
-                REQUIRE(state.ContainsFact(1, MultiFact(std::vector<unsigned int>{ 0, 1 })));
+                REQUIRE(state.ContainsFact(1, new MultiFact(std::vector<unsigned int>{ 0, 1 })));
                 PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 0, 1 });
                 state.DoAction(&actionInstance);
-                REQUIRE(!state.ContainsFact(1, MultiFact(std::vector<unsigned int>{ 0, 1 })));
+                REQUIRE(!state.ContainsFact(1, new MultiFact(std::vector<unsigned int>{ 0, 1 })));
             }
             SECTION("Duplicate Arguments") {
-                REQUIRE(state.ContainsFact(1, MultiFact(std::vector<unsigned int>{ 0, 0 })));
+                REQUIRE(state.ContainsFact(1, new MultiFact(std::vector<unsigned int>{ 0, 0 })));
                 PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 0, 0 });
                 state.DoAction(&actionInstance);
-                REQUIRE(!state.ContainsFact(1, MultiFact(std::vector<unsigned int>{ 0, 0 })));
+                REQUIRE(!state.ContainsFact(1, new MultiFact(std::vector<unsigned int>{ 0, 0 })));
             }
         }
 
@@ -227,16 +227,16 @@ TEST_CASE(TAG + "DoAction Multi") {
                 REQUIRE(before == state);
             }
             SECTION("Removes") {
-                REQUIRE(state.ContainsFact(2, MultiFact(std::vector<unsigned int>{ 0, 1, 2 })));
+                REQUIRE(state.ContainsFact(2, new MultiFact(std::vector<unsigned int>{ 0, 1, 2 })));
                 PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 0, 1, 2 });
                 state.DoAction(&actionInstance);
-                REQUIRE(!state.ContainsFact(2, MultiFact(std::vector<unsigned int>{ 0, 1, 2 })));
+                REQUIRE(!state.ContainsFact(2, new MultiFact(std::vector<unsigned int>{ 0, 1, 2 })));
             }
             SECTION("Duplicate Arguments") {
-                REQUIRE(state.ContainsFact(2, MultiFact(std::vector<unsigned int>{ 1, 1, 0 })));
+                REQUIRE(state.ContainsFact(2, new MultiFact(std::vector<unsigned int>{ 1, 1, 0 })));
                 PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ 1, 1, 0 });
                 state.DoAction(&actionInstance);
-                REQUIRE(!state.ContainsFact(2, MultiFact(std::vector<unsigned int>{ 1, 1, 0 })));
+                REQUIRE(!state.ContainsFact(2, new MultiFact(std::vector<unsigned int>{ 1, 1, 0 })));
             }
         }
     };

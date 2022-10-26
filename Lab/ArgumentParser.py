@@ -35,10 +35,10 @@ def set_arguments():
     )
 
     ARGPARSER.add_argument(
-        "--evaluator",
+        "--heuristic",
         required=False,
         default="blind",
-        help="Evaluator Fast Downward should use. Ex. blind"
+        help="Heuristic Fast Downward should use. Ex. blind"
     )
 
     ARGPARSER.add_argument(
@@ -63,25 +63,26 @@ def set_arguments():
 
     ARGPARSER.add_argument(
         "--reformulator",
-        required=True,
+        required=False,
         default="SameOutput",
         help="What reformulator algorithm to use"
     )
 
     ARGPARSER.add_argument(
         "--timelimit",
-        required=True,
+        required=False,
         default=500,
         help="Time limit for the reformulator"
     )
 
     return ARGPARSER.parse_args()
 
-def abs_path(filelocation,folder):
-    return os.path.join(os.path.dirname(os.path.abspath(filelocation)),folder)
+def abs_path(filelocation,filename):
+    return os.path.join(os.path.dirname(os.path.abspath(filelocation)),filename)
 
-def get_from_argument(argument, filelocation, defaultfolder):
+#If argument is none the defaultargument will be used instead
+def get_from_argument(argument, filelocation, defaultargument):
     if argument:
-        return argument
+        return abs_path(filelocation, argument)
     else:
-        return abs_path(filelocation, defaultfolder)
+        return abs_path(filelocation, defaultargument)

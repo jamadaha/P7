@@ -16,10 +16,12 @@ projectfile = get_from_argument(args.P7,__file__, "build/src/P7")
 downwardfilepath = args.downward
 validatorfilepath = args.validate
 search = args.search
-evaluator = args.evaluator
+heuristic = args.heuristic
 reformulator = args.reformulator
 reformulatorTime = args.timelimit
 
+#decide if labs method to find domains and problems should be used
+#since lab wants the benchmarksfolder to have a specific structure
 lab_build_suite = False
 folder = ""
 if ".pddl" in args.domain:
@@ -40,27 +42,31 @@ if lab_build_suite:
 else:
     tasks = make_tasks(benchmarksfolder, domains, problemsindomains)
 
+"""
+Each task contains a domain file and problem file
+For each task a settingsLab.ini file is made and P7 is given this file as argument
+"""
 for task in tasks:
-    print(task.domain_file)
-    print(task.problem_file)
+    settingscontent = "PATH:downwardpath=" + downwardfilepath + "\n"
+    settingscontent += "PATH:validatorpath=" + validatorfilepath + "\n"
 
-    arguments = [abs_path(__file__,projectfile)]
-    arguments += ["--downwardpath=" + downwardfilepath]
-    arguments += ["--validatorpath=" + validatorfilepath]
-    arguments += ["--search=" + search]
-    arguments += ["--evaluator=" + evaluator]
-    arguments += ["--reformulator=" + reformulator]
-    arguments += ["--timelimit=" + reformulatorTime]
+    settingscontent += "PATH:domain=" + task.domain_file + "\n"
+    settingscontent += "PATH:problem=" + task.problem_file + "\n"
+    
+    settingscontent += "STRING:downwardsearch=" + search + "\n"
+    settingscontent += "STRING:downwardheuristic=" + heuristic + "\n"
 
-    arguments += ["--domain=" + task.domain_file]
-    arguments += ["--problem=" + task.problem_file]
+    settingscontent += "STRING:reformulator=" + reformulator + "\n"
+    settingscontent += "INT:timelimit=" + reformulatorTime + "\n"
 
     run = experiment.add_run()
-    run.add_command("planner", arguments)
-    run.set_property("id",[search, evaluator, task.domain, task.problem])
+    run.add_new_file("config","settingsLab.ini",settingscontent)
+    run.add_command("planner", [abs_path(__file__,projectfile),"{config}"])
+
+    run.set_property("id",[search, heuristic, task.domain, task.problem])
     run.set_property("domain", task.domain)
     run.set_property("problem", task.problem)
-    run.set_property("algorithm", search + "(" + evaluator + ")")
+    run.set_property("algorithm", search + "(" + heuristic + ")")
     
 if path.exists(reportfolder):
     experiment.add_step("rm-exp-dir", shutil.rmtree, reportfolder)

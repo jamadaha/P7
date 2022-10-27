@@ -15,7 +15,7 @@ PDDLInstance WalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	return *instance;
 }
 
-std::vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
+vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 	Walker walker = Walker(instance, ActionGenerator(instance->domain, instance->problem), Configs);
 	BaseHeuristic *heuristic;
 	if (Configs->GetString("heuristic") == "random")
@@ -53,7 +53,7 @@ std::vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 	return paths;
 }
 
-unordered_map<size_t, EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path> paths, PDDLInstance* instance) {
+unordered_map<size_t, EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>* paths, PDDLInstance* instance) {
 	EntanglementFinder entFinder;
 
 	if (Configs->GetBool("debugmode")) {

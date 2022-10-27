@@ -9,10 +9,10 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	// Find a suitable reformulator
 	ConsoleHelper::PrintInfo("Finding reformulator algorithm...");
 	report->Begin("Finding Reformulator");
-	if (config.GetString("reformulator") == "SameOutput") {
+	if (config.GetString("reformulator") == "sameoutput") {
 		reformulator = new SameOutputReformulator(&config);
-	} else 	if (config.GetString("reformulator") == "RandomWalker") {
-		reformulator = new RandomWalkerReformulator(&config);
+	} else 	if (config.GetString("reformulator") == "walker") {
+		reformulator = new WalkerReformulator(&config);
 	}
 	else{
 		ConsoleHelper::PrintError("Reformulator not found! Reformulator: " + config.GetString("reformulator"));

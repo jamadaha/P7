@@ -22,7 +22,6 @@ add_subdirectory(src/SASParser)
 add_subdirectory(src/EntanglementFinder)
 add_subdirectory(src/Walker/)
 add_subdirectory(src/Walker/DepthFunctions/)
-add_subdirectory(src/Walker/WidthFunctions/)
 add_subdirectory(src/)
 
 

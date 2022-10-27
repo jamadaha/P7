@@ -19,6 +19,9 @@ struct MultiFact {
         for (int i = 0; i < indexes->size(); i++)
             fact.push_back(objects->at(indexes->at(i)));
     };
+
+#pragma region Operators
+#pragma region Equality
     friend bool operator== (const MultiFact &lhs, const MultiFact &rhs) {
         return lhs.fact == rhs.fact;
     }
@@ -41,6 +44,9 @@ struct MultiFact {
     friend bool operator== (const std::pair<const std::vector<unsigned int>*, const std::vector<unsigned int>*> &lhs, const MultiFact &rhs) {
         return rhs == lhs;
     }
+#pragma endregion Equality
+#pragma endregion Operators
+
 private:
 };
 
@@ -54,13 +60,14 @@ struct PDDLState {
     PDDLState(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts, std::unordered_map<unsigned int, std::vector<MultiFact>> multiFacts) :
         unaryFacts(unaryFacts), multiFacts(multiFacts) {};
 
+#pragma region ContainsFact
     bool ContainsFact(const unsigned int key, const unsigned int value) const {
         return (unaryFacts.at(key).contains(value));
     };
 
-    bool ContainsFact(const unsigned int key, const MultiFact value) const {
+    bool ContainsFact(const unsigned int key, const MultiFact *value) const {
         auto AreEqual = [&value](const MultiFact &MF) {
-                    return value == MF;
+                    return (*value) == MF;
                 };
         if (!std::any_of(multiFacts.at(key).begin(), multiFacts.at(key).end(), AreEqual))
             return false;
@@ -84,6 +91,12 @@ struct PDDLState {
             return false;
         return true;
     }
+#pragma endregion ContainsFact
+
+    void DoAction(const PDDLActionInstance *action);
+    void UndoAction(const PDDLActionInstance *action);
+
+    std::string ToString(const PDDLInstance* instance);
 
     // Very slow, please only use with caution
     friend bool operator== (const PDDLState &lhs, const PDDLState &rhs) {
@@ -120,8 +133,7 @@ struct PDDLState {
 
         return true;
     };
-
-    std::string ToString(const PDDLInstance* instance);
+    
 };
 
 namespace std {

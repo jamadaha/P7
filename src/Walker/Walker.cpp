@@ -1,77 +1,63 @@
 #include "Walker.hpp"
 
-Path Walker::Walk(Config* config) {
-    return Walk(config, instance->problem->initState);
+
+Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const PDDLState *state) {
+    const int depth = depthFunc->GetDepth();
+    std::vector<PDDLActionInstance> steps; steps.reserve(depth);
+    std::unordered_set<PDDLState> visitedStates; visitedStates.reserve(depth);
+
+    PDDLState tempState = PDDLState(state->unaryFacts, state->multiFacts);
+    for (int i = 0; i < depth; i++) {
+        std::vector<PDDLActionInstance> possibleActions;
+        if (cachedActions.contains(tempState))
+            possibleActions = cachedActions.at(tempState);
+        else
+            possibleActions = actionGenerator.GenerateActions(&tempState);
+
+        if (possibleActions.size() == 0) break;
+        PDDLActionInstance *chosenAction = heuristic->NextChoice(&tempState, &possibleActions);
+        tempState.DoAction(chosenAction);
+
+        if (visitedStates.contains(tempState))
+            break;
+        else {
+            visitedStates.emplace(tempState);
+            steps.push_back(*chosenAction);
+            cachedActions.emplace(tempState, possibleActions);
+
+            if (config->GetBool("printwalkersteps")) {
+                std::string stateinfo = tempState.ToString(this->instance);
+                std::string actioninfo = chosenAction->ToString(this->instance);
+                std::string content = "echo '" + stateinfo + "\n" + actioninfo + "'" + " >> walkerLog";
+
+                system(content.c_str());
+            }
+        }
+    }
+
+    return Path(steps);
 }
 
-Path Walker::Walk(Config* config, PDDLState state) {
-    int depth = depthFunc->GetDepth();
-    std::unordered_set<PDDLState> visitedStates;
-    visitedStates.reserve(depth);
-    std::vector<PDDLActionInstance> steps;
-    steps.reserve(depth);
-    PDDLState *tempState = new PDDLState(state.unaryFacts, state.multiFacts);
-
+std::vector<Path> Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc) {
     if (config->GetBool("printwalkersteps")) {
         std::string command = "truncate -s 0 walkerLog";
         system(command.c_str());
     }
 
-    for (int i = 0; i < depth; i++) {
-        
-        std::vector<PDDLActionInstance> actions = actionGenerator.GenerateActions(tempState);
-        if (actions.size() == 0)
-            break;
-        PDDLActionInstance action = heuristic->NextChoice(actions);
-        totalActions += actions.size();
-        
-        if (config->GetBool("printwalkersteps")) {
-            std::cout << tempState->ToString(this->instance);
+    ProgressBarHelper* bar;
+	if (config->GetBool("debugmode"))
+		bar = new ProgressBarHelper(widthFunc->max, "Walking", 1);
 
-            std::string stateinfo = tempState->ToString(this->instance);
-            std::string actioninfo = action.ToString(this->instance);
-            std::string content = "echo '" + stateinfo + "\n" + actioninfo + "'" + " >> walkerLog";
+    std::vector<Path> paths;
+    unsigned int current;
+    while (widthFunc->Iterate(&current)) {
+        Path path = Walk(heuristic, depthFunc, &this->instance->problem->initState);
+        paths.push_back(path);
 
-            system(content.c_str());
-        }
-
-        DoAction(tempState, &action);
-
-        if (visitedStates.contains(*tempState))
-            break;
-        else {
-            visitedStates.emplace(*tempState);
-            steps.push_back(action);
-        }
-
+        if (config->GetBool("debugmode"))
+            bar->SetTo(current);
     }
-    free(tempState);
-    return Path(steps);
-}
-
-void Walker::DoAction(PDDLState *state, const PDDLActionInstance *action) {
-    int actionEffectLength = action->action->effects.size();
-    for (int i = 0; i < actionEffectLength; i++) {
-        PDDLLiteral effect = action->action->effects.at(i);
-        if (effect.args.size() == 1) {
-            // Handle unary effect
-            if (effect.value)
-                state->unaryFacts.at(effect.predicateIndex).emplace(action->objects.at(effect.args.at(0)));
-            else
-                state->unaryFacts.at(effect.predicateIndex).erase(action->objects.at(effect.args.at(0)));
-        } else {
-            // Handle multi effect
-            if (effect.value) {
-                if (state->ContainsFact(effect.predicateIndex, &effect.args, &action->objects))
-                    continue;
-
-                state->multiFacts.at(effect.predicateIndex).push_back(MultiFact(&effect.args, &action->objects));
-            } else {
-                if (!state->ContainsFact(effect.predicateIndex, &effect.args, &action->objects))
-                    continue;
-                auto factSet = &state->multiFacts.at(effect.predicateIndex);
-                factSet->erase(std::remove(factSet->begin(), factSet->end(), std::make_pair(&effect.args, &action->objects)), factSet->end());
-            }
-        }
-    }
+    if (config->GetBool("debugmode"))
+        bar->End();
+    return paths;
 }

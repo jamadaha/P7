@@ -17,8 +17,7 @@
 #include "../Helpers/Hashes.hh"
 
 struct Path {
-    const std::vector<PDDLActionInstance> steps;
-    Path() : steps({}) {};
+    std::vector<PDDLActionInstance> steps;
     Path(std::vector<PDDLActionInstance> steps) : steps(steps) {};
 
     friend bool operator==(const Path& lhs, const Path& rhs) {
@@ -50,7 +49,6 @@ private:
     PDDLInstance* instance;
     ActionGenerator actionGenerator;
     Config *config;
-    std::unordered_map<PDDLState, std::vector<PDDLActionInstance>> cachedActions;
 };
 
 #endif

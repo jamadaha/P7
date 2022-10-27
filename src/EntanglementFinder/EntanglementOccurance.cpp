@@ -1,8 +1,10 @@
 #include "EntanglementOccurance.hh"
 
+using namespace std;
+
 size_t EntanglementOccurance::GetHash() {
     if (Hash != 0)
         return Hash;
-    Hash = std::hash<EntanglementOccurance>{}(*this);
+    Hash = hash<vector<PDDLActionInstance*>>{}((*this).Chain);
     return Hash;
 }

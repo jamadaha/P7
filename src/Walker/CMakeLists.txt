@@ -10,7 +10,8 @@ target_include_directories(Walker
 target_link_libraries(Walker
     PRIVATE
         IntermediatePDDL
-        Config)
+        Config
+        Hashes)
 
 add_library(ActionGenerator "ActionGenerator.cpp")
 target_sources(ActionGenerator

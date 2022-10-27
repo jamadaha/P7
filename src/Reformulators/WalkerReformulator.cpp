@@ -1,8 +1,8 @@
-#include "RandomWalkerReformulator.hh"
+#include "WalkerReformulator.hh"
 
 using namespace std;
 
-PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
+PDDLInstance WalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	// Walk the PDDL
 	auto paths = PerformWalk(instance);
 
@@ -12,61 +12,36 @@ PDDLInstance RandomWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	// Generate new Macros
 	auto newInstance = GenerateMacros(candidates, instance);
 
-	return newInstance;
+	return *instance;
 }
 
-std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) {
-	// Walk the PDDL
-	RandomHeuristic<PDDLActionInstance>* heu = new RandomHeuristic<PDDLActionInstance>(PDDLContext(instance->domain, instance->problem));
-	BaseWidthFunction* widthFunc;
-	if (Configs->GetInteger("timelimit") == -1)
-		widthFunc = new ConstantWidthFunction(1000);
+std::vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
+	Walker walker = Walker(instance, ActionGenerator(instance->domain, instance->problem), Configs);
+	BaseHeuristic *heuristic;
+	if (Configs->GetString("heuristic") == "random")
+		heuristic = new RandomHeuristic();
+	else if (Configs->GetString("heuristic") == "goalCount")
+		heuristic = new GoalCountHeuristic(instance->domain, instance->problem);
 	else
+		throw std::invalid_argument("Invalid heuristic specified in config");
+		
+		
+	BaseDepthFunction *depthFunc = new ConstantDepthFunction(1000, *instance, 1);
+	BaseWidthFunction *widthFunc;
+	if (Configs->GetInteger("timelimit") != -1)
 		widthFunc = new TimeWidthFunction(Configs->GetInteger("timelimit"));
-	auto depthFunction = new ConstantDepthFunction(100, *instance);
-	std::vector<Path> paths;
-	unsigned int totalActionCount = 0;
-	unsigned int totalIterations = 0;
-	auto startTime = chrono::steady_clock::now();
-	ProgressBarHelper* bar;
-	if (Configs->GetBool("debugmode")) {
-		if (Configs->GetInteger("timelimit") == -1)
-			bar = new ProgressBarHelper(widthFunc->GetWidth(), "Walking", 1);
-		else
-			bar = new ProgressBarHelper(Configs->GetInteger("timelimit"), "Walking", 1);
-	}
+	else
+		widthFunc = new ConstantWidthFunction(100000);
 
-	for (int i = 0; i < widthFunc->GetWidth(); i++) {
-		Walker walker = Walker(instance,
-			ActionGenerator(instance->domain, instance->problem),
-			heu,
-			depthFunction);
-		auto walk = walker.Walk(Configs);
-		if (walk.steps.size() > 5) {
-			paths.push_back(walk);
-			// Debug info
-			if (Configs->GetBool("debugmode")) {
-				totalActionCount += walker.totalActions;
-				totalIterations++;
-			}
-		}
-		if (Configs->GetBool("debugmode")) {
-			if (Configs->GetInteger("timelimit") == -1) {
-				bar->Update();
-			}
-			else {
-				auto curEndTime = chrono::steady_clock::now();
-				auto thisRound = chrono::duration_cast<chrono::milliseconds>(curEndTime - startTime).count();
-				bar->SetTo(thisRound);
-			}
-		}
-	}
-	if (Configs->GetBool("debugmode"))
-		bar->End();
+	auto startTime = chrono::steady_clock::now();
+	std::vector<Path> paths = walker.Walk(heuristic, depthFunc, widthFunc);
+	free(heuristic); free(widthFunc); free(depthFunc);
 	auto endTime = chrono::steady_clock::now();
 
 	// Print debug info
 	if (Configs->GetBool("debugmode")) {
+		unsigned int totalIterations = paths.size();
+		unsigned int totalActionCount = walker.GetTotalActionsGenerated();
 		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count();
 		ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + to_string(ellapsed) + "ms", 1);
 		double iterationsPrSecond = (totalIterations * 1000) / ellapsed;
@@ -75,12 +50,10 @@ std::vector<Path> RandomWalkerReformulator::PerformWalk(PDDLInstance* instance) 
 		ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", 1);
 	}
 
-	free(heu); free(widthFunc); free(depthFunction);
-
 	return paths;
 }
 
-unordered_map<size_t, EntanglementOccurance> RandomWalkerReformulator::FindEntanglements(vector<Path> paths, PDDLInstance* instance) {
+unordered_map<size_t, EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path> paths, PDDLInstance* instance) {
 	EntanglementFinder entFinder;
 	entFinder.DebugMode = Configs->GetBool("debugmode");
 	auto startTime = chrono::steady_clock::now();
@@ -127,12 +100,12 @@ unordered_map<size_t, EntanglementOccurance> RandomWalkerReformulator::FindEntan
 	return candidates;
 }
 
-PDDLInstance RandomWalkerReformulator::GenerateMacros(unordered_map<size_t, EntanglementOccurance> candidates, PDDLInstance* instance) {
+PDDLInstance WalkerReformulator::GenerateMacros(unordered_map<size_t, EntanglementOccurance> candidates, PDDLInstance* instance) {
 	PDDLInstance newInstance(instance->domain, instance->problem);
 	return newInstance;
 }
 
-SASPlan RandomWalkerReformulator::RebuildSASPlan(SASPlan* reformulatedSAS) {
+SASPlan WalkerReformulator::RebuildSASPlan(SASPlan* reformulatedSAS) {
 	// Do Something and give a "corrected" SAS plan back
 	SASPlan newPlan(reformulatedSAS->actions, reformulatedSAS->cost);
 	return newPlan;

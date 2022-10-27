@@ -1,5 +1,5 @@
-#ifndef RandomWalkerReformulator_HH
-#define RandomWalkerReformulator_HH
+#ifndef WalkerReformulator_HH
+#define WalkerReformulator_HH
 
 #include <chrono>
 #include <unordered_map>
@@ -17,9 +17,9 @@
 #include "../EntanglementFinder/EntanglementOccurance.hh"
 #include "../Helpers/ProgressBarHelper.hh"
 
-class RandomWalkerReformulator : public BaseReformulator {
+class WalkerReformulator : public BaseReformulator {
 public:
-	RandomWalkerReformulator(Config* config) : BaseReformulator(config) {
+	WalkerReformulator(Config* config) : BaseReformulator(config) {
 
 	}
 	PDDLInstance ReformulatePDDL(PDDLInstance* instance) override;

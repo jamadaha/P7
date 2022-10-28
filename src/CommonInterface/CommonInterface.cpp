@@ -62,7 +62,7 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	// Generate new PDDL files
 	ConsoleHelper::PrintInfo("Generating PDDL files...");
 	report->Begin("Generating PDDL");
-	PDDLCodeGenerator pddlGenerator = PDDLCodeGenerator(PDDLDomainCodeGenerator(&domain), PDDLProblemCodeGenerator(&domain, &problem));
+	PDDLCodeGenerator pddlGenerator = PDDLCodeGenerator(PDDLDomainCodeGenerator(reformulatedInstance.domain), PDDLProblemCodeGenerator(reformulatedInstance.domain, reformulatedInstance.problem));
 	pddlGenerator.GenerateCode(reformulatedInstance, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
 	t = report->Stop();
 

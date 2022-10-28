@@ -3,6 +3,7 @@
 
 #include <chrono>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "BaseReformulator.hh"
 #include "../Walker/Walker.hpp"
@@ -19,6 +20,8 @@
 #include "../EntanglementFinder/EntanglementEvaluator.hh"
 #include "../EntanglementFinder/EntanglementEvaluatorModifiers.hh"
 #include "../Helpers/ProgressBarHelper.hh"
+#include "../MacroGenerator/MacroGenerator.hh"
+#include "../MacroGenerator/InstanceGenerator.hh"
 
 class WalkerReformulator : public BaseReformulator {
 public:

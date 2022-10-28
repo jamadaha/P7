@@ -12,7 +12,7 @@ PDDLInstance WalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	// Generate new Macros
 	auto newInstance = GenerateMacros(candidates, instance);
 
-	return *instance;
+	return newInstance;
 }
 
 vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
@@ -153,8 +153,15 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 }
 
 PDDLInstance WalkerReformulator::GenerateMacros(vector<EntanglementOccurance> candidates, PDDLInstance* instance) {
-	PDDLInstance newInstance(instance->domain, instance->problem);
-	return newInstance;
+	MacroGenerator macroGenerator = MacroGenerator(instance->domain, instance->problem);
+	std::vector<Macro> macros; macros.reserve(1);
+
+	// Generate Macros
+	for (int i = 0; i < 1; i++) {
+		macros.push_back(macroGenerator.GenerateMacro(&candidates.at(i).Chain));
+	}
+
+	return InstanceGenerator::GenerateInstance(instance->domain, instance->problem, &macros);
 }
 
 SASPlan WalkerReformulator::RebuildSASPlan(SASPlan* reformulatedSAS) {

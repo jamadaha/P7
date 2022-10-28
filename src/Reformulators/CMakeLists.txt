@@ -10,3 +10,4 @@ target_sources(Reformulator
 target_include_directories(Reformulator
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(Reformulator MacroGenerator)

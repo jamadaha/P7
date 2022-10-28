@@ -114,7 +114,7 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 	if (Configs->GetBool("debugmode")) {
 		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count();
 		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total evaluation time:  " + to_string(ellapsed) + "ms", 1);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + to_string(candidates.size()) + " (" + to_string(entEvaluator.RemovedCandidates()) + " removed)", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + to_string(sanitizedCandidates.size()) + " (" + to_string(entEvaluator.RemovedCandidates()) + " removed)", 1);
 	}
 
 	if (Configs->GetBool("printentanglersteps")) {

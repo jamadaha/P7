@@ -100,7 +100,24 @@ struct PDDLState {
 
     // Very slow, please only use with caution
     friend bool operator== (const PDDLState &lhs, const PDDLState &rhs) {
-        return (lhs.unaryFacts == rhs.unaryFacts && rhs.multiFacts == rhs.multiFacts);
+        if (lhs.unaryFacts != rhs.unaryFacts)
+            return false;
+
+        if (lhs.multiFacts.size() != rhs.multiFacts.size())
+            return false;
+        
+        for (auto iter = lhs.multiFacts.begin(); iter != lhs.multiFacts.end(); iter++)
+            for (auto iter2 = (*iter).second.begin(); iter2 != (*iter).second.end(); iter2++)
+                if (!rhs.ContainsFact((*iter).first, &(*iter2)))
+                    return false;
+        for (auto iter = rhs.multiFacts.begin(); iter != rhs.multiFacts.end(); iter++)
+            for (auto iter2 = (*iter).second.begin(); iter2 != (*iter).second.end(); iter2++)
+                if (!lhs.ContainsFact((*iter).first, &(*iter2)))
+                    return false;
+
+        
+
+        return true;
     };
     
 };
@@ -109,32 +126,21 @@ namespace std {
     template <>
     struct hash<MultiFact> {
         auto operator()(MultiFact& s) const -> size_t {
-            std::size_t h1 = hash<vector<unsigned int>>{}(s.fact);
-            return h1;
+            return 0;
         }
     };
 
     template <>
     struct hash<vector<MultiFact>> {
         auto operator()(vector<MultiFact>& vec) const -> size_t {
-            std::size_t seed = vec.size();
-            for (auto& i : vec) {
-                seed ^= hash<MultiFact>{}(i) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-            }
-            return seed;
+            return 0;
         }
     };
 
     template <>
     struct hash<PDDLState> {
         auto operator()(const PDDLState& s) const -> size_t {
-            std::size_t unaryFactSeed = s.unaryFacts.size();
-            for (auto KVPAIR : s.unaryFacts)
-                unaryFactSeed ^= hash<unordered_set<unsigned int>>{}(KVPAIR.second) + 0x9e3779b9 + (unaryFactSeed << 6) + (unaryFactSeed >> 2);
-            std::size_t multiFactSeed = s.multiFacts.size();
-            for (auto KVPAIR : s.multiFacts)
-                multiFactSeed ^= hash<vector<MultiFact>>{}(KVPAIR.second) + 0x9e3779b9 + (unaryFactSeed << 6) + (unaryFactSeed >> 2);
-            return unaryFactSeed ^ (multiFactSeed << 1);
+            return 0;
         }
     };
 }

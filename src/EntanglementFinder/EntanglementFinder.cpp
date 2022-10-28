@@ -4,8 +4,8 @@ using namespace std;
 
 int EntanglementFinder::GetInitialLevelIfValid(vector<Path>* paths) {
 	int level = 2;
-	if (SearchCeiling != -1)
-		level = SearchCeiling;
+	if (Data.SearchCeiling != -1)
+		level = Data.SearchCeiling;
 	else
 	{
 		for (int i = 0; i < paths->size(); i++)
@@ -14,11 +14,11 @@ int EntanglementFinder::GetInitialLevelIfValid(vector<Path>* paths) {
 	}
 	if (level < 2)
 		throw exception();
-	if (SearchFloor < 2)
+	if (Data.SearchFloor < 2)
 		throw exception();
-	if (LevelReductionFactor <= 1)
+	if (Data.LevelReductionFactor <= 1)
 		throw exception();
-	if (TimeLimitMs != -1)
+	if (Data.TimeLimitMs != -1)
 		_HasTimeLimit = true;
 
 	_IsTimeLimitReached = false;
@@ -41,20 +41,18 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 
 	if (_HasTimeLimit)
 		_StartTime = chrono::steady_clock::now();
-	while (level >= SearchFloor) {
+	while (level >= Data.SearchFloor) {
 		_TotalLevels++;
 		_CurrentLevel = level;
 		GenerateActionSet(&currentValues, paths, level);
 
 		AddCandidatesIfThere(&candidates, &currentValues);
 
-		level = ceil((double)level / LevelReductionFactor);
+		level = ceil((double)level / Data.LevelReductionFactor);
 
 		if (_IsTimeLimitReached)
 			break;
 	}
-
-	RemoveIfBelowMinimum(&candidates);
 
 	return unordered_map<size_t, EntanglementOccurance>(candidates);
 }
@@ -91,6 +89,7 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 		OnNewLevel(_CurrentLevel, currentValueSize);
 
 	for (int i = 0; i < currentValueSize; i++) {
+		// Check if this value have already been found
 		pair<pair<size_t, int>,vector<PDDLActionInstance*>>* iValue = &currentValues->at(i);
 		bool containsThisKey = candidates->contains(iValue->first.first);
 		if (containsThisKey)
@@ -100,10 +99,12 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 			_TotalComparisons++;
 			if (iValue->first.first == (&currentValues->at(j))->first.first) {
 				if (containsThisKey) {
+					// Increment occurance
 					currentOcc->Occurance++;
 					currentOcc->BetweenDifferentPaths += iValue->first.second != (&currentValues->at(j))->first.second;
 				}
 				else {
+					// Add new candidate
 					EntanglementOccurance newOcc(iValue->second, iValue->first.first, 1 + (iValue->first.second != (&currentValues->at(j))->first.second));
 					candidates->emplace(iValue->first.first, newOcc);
 					containsThisKey = true;
@@ -113,24 +114,23 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 		}
 		if (OnLevelIteration != nullptr)
 			OnLevelIteration(i, currentValueSize);
-		if (_HasTimeLimit) {
-			auto currentTime = chrono::steady_clock::now();
-			auto ellapsed = chrono::duration_cast<chrono::milliseconds>(currentTime - _StartTime).count();
-			if (ellapsed > TimeLimitMs) {
-				if (OnTimeLimitReached != nullptr)
-					OnTimeLimitReached();
-				_IsTimeLimitReached = true;
-				break;
-			}
-		}
+		if (IsOverTimeLimit())
+			break;
 	}
 	if (OnLevelEnd != nullptr)
 		OnLevelEnd();
 }
 
-void EntanglementFinder::RemoveIfBelowMinimum(unordered_map<size_t, EntanglementOccurance>* candidates) {
-	int preCount = candidates->size();
-	const auto removeIfLessThan = [&](pair<size_t, EntanglementOccurance> const& x) { return x.second.Occurance < MinimumOccurance; };
-	std::erase_if(*candidates, removeIfLessThan);
-	_RemovedCandidates = preCount - candidates->size();
+bool EntanglementFinder::IsOverTimeLimit() {
+	if (_HasTimeLimit) {
+		auto currentTime = chrono::steady_clock::now();
+		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(currentTime - _StartTime).count();
+		if (ellapsed > Data.TimeLimitMs) {
+			if (OnTimeLimitReached != nullptr)
+				OnTimeLimitReached();
+			_IsTimeLimitReached = true;
+			return true;
+		}
+	}
+	return false;
 }

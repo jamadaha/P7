@@ -53,14 +53,16 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 	return paths;
 }
 
-unordered_map<size_t, EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>* paths, PDDLInstance* instance) {
-	EntanglementFinder entFinder(
-		2,
-		-1,
-		2,
-		5,
-		Configs->GetInteger("entanglerTimeLimit")
-	);
+vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>* paths, PDDLInstance* instance) {
+	// Find entanglement candidates.
+	auto entFinderData = EntanglementFinder::RunData();
+
+	entFinderData.LevelReductionFactor = Configs->GetInteger("levelReductionFactor");
+	entFinderData.TimeLimitMs = Configs->GetInteger("entanglerTimeLimit");
+	entFinderData.SearchCeiling = Configs->GetInteger("searchCeiling");
+	entFinderData.SearchFloor = Configs->GetInteger("searchFloor");
+
+	EntanglementFinder entFinder(entFinderData);
 
 	if (Configs->GetBool("debugmode")) {
 		ProgressBarHelper* bar;
@@ -83,12 +85,47 @@ unordered_map<size_t, EntanglementOccurance> WalkerReformulator::FindEntanglemen
 	auto candidates = entFinder.FindEntangledCandidates(paths);
 	auto endTime = chrono::steady_clock::now();
 
+	if (Configs->GetBool("debugmode")) {
+		unsigned int totalActions = 0;
+		for (int i = 0; i < paths->size(); i++)
+			totalActions += paths->at(i).steps.size();
+
+		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count() + 1;
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + to_string(ellapsed) + "ms", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + to_string(entFinder.TotalLevels()), 1);
+		double comparisonsPrSecond = (entFinder.TotalComparisons()) / ellapsed;
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Comparisons:         " + to_string(entFinder.TotalComparisons()) + " [" + to_string(comparisonsPrSecond) + "k/s]", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + to_string(candidates.size()), 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + to_string(paths->size()) + " paths with " + to_string(totalActions) + " steps in total", 1);
+	}
+
+	// Sanitize and remove bad candidates.
+	EntanglementEvaluator::RunData entEvaluatorData;
+	entEvaluatorData.MinimumOccurance = Configs->GetInteger("minimumOccurance");
+	entEvaluatorData.MinimumCrossOccurance = Configs->GetInteger("minimumCrossOccurance");
+
+	EntanglementEvaluator entEvaluator(entEvaluatorData);
+	if (Configs->GetString("entanglerLengthModifier") == "lengthBias")
+		entEvaluator.LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::LengthBias;
+
+	startTime = chrono::steady_clock::now();
+	auto sanitizedCandidates = entEvaluator.EvaluateAndSanitizeCandidates(candidates);
+	endTime = chrono::steady_clock::now();
+
+	if (Configs->GetBool("debugmode")) {
+		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count() + 1;
+		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total evaluation time:  " + to_string(ellapsed) + "ms", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + to_string(sanitizedCandidates.size()) + " (" + to_string(entEvaluator.RemovedCandidates()) + " removed)", 1);
+	}
+
 	if (Configs->GetBool("printentanglersteps")) {
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Entanglements:", 1);
-		for (auto i = candidates.begin(); i != candidates.end(); i++) {
+		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Top 10 Entanglements:", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglements] Quality  : Chain", 2);
+		int counter = 0;
+		for (auto i = sanitizedCandidates.begin(); i != sanitizedCandidates.end(); i++) {
 			string actionStr = "";
-			for (int j = 0; j < (*i).second.Chain.size(); j++) {
-				auto item = (*i).second.Chain.at(j);
+			for (int j = 0; j < (*i).Chain.size(); j++) {
+				auto item = (*i).Chain.at(j);
 				string paramStr = "";
 				for (int l = 0; l < item->objects.size(); l++) {
 					paramStr += instance->problem->objects[item->objects[l]];
@@ -96,30 +133,20 @@ unordered_map<size_t, EntanglementOccurance> WalkerReformulator::FindEntanglemen
 						paramStr += ", ";
 				}
 				actionStr += item->action->name + "(" + paramStr + ")";
-				if (j != (*i).second.Chain.size() - 1)
+				if (j != (*i).Chain.size() - 1)
 					actionStr += " -> ";
 			}
-			ConsoleHelper::PrintDebugInfo("[Entanglement Finder] " + to_string((*i).second.Occurance) + " : " + to_string((*i).second.BetweenDifferentPaths) + " : " + actionStr, 2);
+			ConsoleHelper::PrintDebugInfo("[Entanglements] " + to_string((*i).Quality) + " : " + actionStr, 2);
+			counter++;
+			if (counter > 10)
+				break;
 		}
 	}
-	if (Configs->GetBool("debugmode")) {
-		unsigned int totalActions = 0;
-		for (int i = 0; i < paths->size(); i++)
-			totalActions += paths->at(i).steps.size();
-
-		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count();
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + to_string(ellapsed) + "ms", 1);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + to_string(entFinder.TotalLevels()), 1);
-		double comparisonsPrSecond = (entFinder.TotalComparisons()) / ellapsed;
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Comparisons:         " + to_string(entFinder.TotalComparisons()) + " [" + to_string(comparisonsPrSecond) + "k/s]", 1);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + to_string(candidates.size()) + " (" + to_string(entFinder.RemovedCandidates()) + " removed)", 1);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + to_string(paths->size()) + " paths with " + to_string(totalActions) + " steps in total", 1);
-	}
-
-	return candidates;
+	
+	return sanitizedCandidates;
 }
 
-PDDLInstance WalkerReformulator::GenerateMacros(unordered_map<size_t, EntanglementOccurance> candidates, PDDLInstance* instance) {
+PDDLInstance WalkerReformulator::GenerateMacros(vector<EntanglementOccurance> candidates, PDDLInstance* instance) {
 	PDDLInstance newInstance(instance->domain, instance->problem);
 	return newInstance;
 }

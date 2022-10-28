@@ -90,7 +90,7 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 		for (int i = 0; i < paths->size(); i++)
 			totalActions += paths->at(i).steps.size();
 
-		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count();
+		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count() + 1;
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + to_string(ellapsed) + "ms", 1);
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + to_string(entFinder.TotalLevels()), 1);
 		double comparisonsPrSecond = (entFinder.TotalComparisons()) / ellapsed;
@@ -113,7 +113,7 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 	endTime = chrono::steady_clock::now();
 
 	if (Configs->GetBool("debugmode")) {
-		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count();
+		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count() + 1;
 		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total evaluation time:  " + to_string(ellapsed) + "ms", 1);
 		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + to_string(sanitizedCandidates.size()) + " (" + to_string(entEvaluator.RemovedCandidates()) + " removed)", 1);
 	}
@@ -142,7 +142,7 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 				break;
 		}
 	}
-
+	
 	return sanitizedCandidates;
 }
 

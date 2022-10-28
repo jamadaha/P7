@@ -38,6 +38,10 @@ void Config::ParseConfigItem(std::string line) {
         int num = stoi(value);
         intItems.emplace(name, num);
     }
+    else if (typeName == "DOUBLE") {
+        double num = stod(value);
+        doubleItems.emplace(name, num);
+    }
     else if (typeName == "BOOL") {
         for_each(value.begin(), value.end(), [](char& c) {
             c = ::toupper(c);
@@ -55,28 +59,39 @@ void Config::ParseConfigItem(std::string line) {
     }
 }
 
-int Config::GetInteger(std::string name) {
+int Config::GetInteger(string name) {
     if (!intItems.contains(name)) {
         ConsoleHelper::PrintWarning("Key " + name + " was not found!");
         return 0;
     }
     return intItems.at(name);
 }
-bool Config::GetBool(std::string name) {
+
+double Config::GetDouble(string name) {
+    if (!doubleItems.contains(name)) {
+        ConsoleHelper::PrintWarning("Key " + name + " was not found!");
+        return 0;
+    }
+    return doubleItems.at(name);
+}
+
+bool Config::GetBool(string name) {
     if (!boolItems.contains(name)) {
         ConsoleHelper::PrintWarning("Key " + name + " was not found!");
         return false;
     }
     return boolItems.at(name);
 }
-std::string Config::GetString(std::string name) {
+
+string Config::GetString(string name) {
     if (!stringItems.contains(name)) {
         ConsoleHelper::PrintWarning("Key " + name + " was not found!");
         return "";
     }
     return stringItems.at(name);
 }
-std::filesystem::path Config::GetPath(std::string name) {
+
+filesystem::path Config::GetPath(string name) {
     if (!pathItems.contains(name)) {
         ConsoleHelper::PrintWarning("Key " + name + " was not found!");
         return "";

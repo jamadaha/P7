@@ -16,13 +16,13 @@ class EntanglementEvaluator {
 public:
 	struct RunData {
 		/// <summary>
-		/// The minimum amount of times an action sequence have to occure to be counted as valid
+		/// What bottom percentage of candidates to cut away from the candidates
 		/// </summary>
-		int MinimumOccurance = 5;
+		double MinimumOccurancePercent = 5;
 		/// <summary>
-		/// The minimum amount of times an action sequence have to occure between paths to be counted as valid
+		/// What bottom percentage of candidates to cut away from the candidates
 		/// </summary>
-		int MinimumCrossOccurance = 5;
+		double MinimumCrossOccurancePercent = 5;
 	};
 
 	RunData Data;
@@ -41,11 +41,17 @@ public:
 
 private:
 	unsigned int _RemovedCandidates;
+	int _MinimumOccurance = 1;
+	int _MinimumCrossOccurance = 1;
 
 	/// <summary>
 	/// Sets the modifiers to some default values, if they have not been set to begin with.
 	/// </summary>
 	void SetModifiersIfNotSet();
+	/// <summary>
+	/// Sets the modifiers to some default values, if they have not been set to begin with.
+	/// </summary>
+	void FindMinimumOccurances(std::unordered_map<size_t, EntanglementOccurance>* candidates);
 	/// <summary>
 	/// Removes those values in the unordered_map where the occurance is less than the "MinimumOccurance" variable.
 	/// </summary>

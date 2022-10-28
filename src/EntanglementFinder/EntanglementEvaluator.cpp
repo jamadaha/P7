@@ -10,6 +10,7 @@ vector<EntanglementOccurance> EntanglementEvaluator::EvaluateAndSanitizeCandidat
 	SetModifiersIfNotSet();
 
 	// Sanitize candidates
+	FindMinimumOccurances(&candidates);
 	RemoveMinimumOccurances(&candidates);
 	RemoveMinimumCrossOccurances(&candidates);
 
@@ -29,13 +30,36 @@ void EntanglementEvaluator::SetModifiersIfNotSet() {
 		OccuranceModifier = EntanglementEvaluatorModifiers::OccuranceModifiers::Default;
 }
 
+void EntanglementEvaluator::FindMinimumOccurances(unordered_map<size_t, EntanglementOccurance>* candidates) {
+	if (Data.MinimumCrossOccurancePercent <= 0)
+		invalid_argument("Minimum cross occurance is too low!");
+	if (Data.MinimumCrossOccurancePercent > 1)
+		invalid_argument("Minimum cross occurance is too high!");
+	if (Data.MinimumOccurancePercent <= 0)
+		invalid_argument("Minimum occurance is too low!");
+	if (Data.MinimumOccurancePercent > 1)
+		invalid_argument("Minimum occurance is too high!");
+
+	int largestOccurances = 0;
+	int largestCrossOccurances = 0;
+	for (auto itt = candidates->begin(); itt != candidates->end(); itt++) {
+		if ((*itt).second.Occurance > largestOccurances)
+			largestOccurances = (*itt).second.Occurance;
+		if ((*itt).second.BetweenDifferentPaths > largestCrossOccurances)
+			largestCrossOccurances = (*itt).second.BetweenDifferentPaths;
+	}
+
+	_MinimumOccurance = largestOccurances * Data.MinimumOccurancePercent;
+	_MinimumCrossOccurance = largestCrossOccurances * Data.MinimumCrossOccurancePercent;
+}
+
 void EntanglementEvaluator::RemoveMinimumOccurances(unordered_map<size_t, EntanglementOccurance>* candidates) {
-	const auto removeIfLessThan = [&](pair<size_t, EntanglementOccurance> const& x) { return x.second.Occurance < Data.MinimumOccurance; };
+	const auto removeIfLessThan = [&](pair<size_t, EntanglementOccurance> const& x) { return x.second.Occurance < _MinimumOccurance; };
 	std::erase_if(*candidates, removeIfLessThan);
 }
 
 void EntanglementEvaluator::RemoveMinimumCrossOccurances(unordered_map<size_t, EntanglementOccurance>* candidates) {
-	const auto removeIfLessThan = [&](pair<size_t, EntanglementOccurance> const& x) { return x.second.BetweenDifferentPaths < Data.MinimumCrossOccurance; };
+	const auto removeIfLessThan = [&](pair<size_t, EntanglementOccurance> const& x) { return x.second.BetweenDifferentPaths < _MinimumCrossOccurance; };
 	std::erase_if(*candidates, removeIfLessThan);
 }
 

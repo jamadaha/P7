@@ -70,6 +70,10 @@ private:
 	/// Based on the values generated in the "GenerateActionSet" method
 	/// </summary>
 	void AddCandidatesIfThere(std::unordered_map<size_t, EntanglementOccurance>* candidates, std::vector<std::pair<std::pair<size_t, int>, std::vector<PDDLActionInstance*>>>* currentValues);
+	/// <summary>
+	/// Returns true if the time limit have been exceeded
+	/// </summary>
+	bool IsOverTimeLimit();
 };
 
 #endif

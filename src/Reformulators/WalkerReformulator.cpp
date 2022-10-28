@@ -54,6 +54,7 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 }
 
 vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>* paths, PDDLInstance* instance) {
+	// Find entanglement candidates.
 	auto entFinderData = EntanglementFinder::RunData();
 
 	entFinderData.LevelReductionFactor = 2;
@@ -98,6 +99,7 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + to_string(paths->size()) + " paths with " + to_string(totalActions) + " steps in total", 1);
 	}
 
+	// Sanitize and remove bad candidates.
 	EntanglementEvaluator::RunData entEvaluatorData;
 	entEvaluatorData.MinimumOccurance = 5;
 	entEvaluatorData.MinimumCrossOccurance = 5;

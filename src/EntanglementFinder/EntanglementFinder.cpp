@@ -85,10 +85,10 @@ void EntanglementFinder::GenerateActionSet(vector<pair<pair<size_t, int>, vector
 
 void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, EntanglementOccurance>* candidates, vector<pair<pair<size_t, int>, vector<PDDLActionInstance*>>>* currentValues) {
 	const int currentValueSize = currentValues->size();
-	if (OnNewLevel != nullptr)
-		OnNewLevel(_CurrentLevel, currentValueSize);
+	OnNewLevel(_CurrentLevel, currentValueSize);
 
 	for (int i = 0; i < currentValueSize; i++) {
+		// Check if this value have already been found
 		pair<pair<size_t, int>,vector<PDDLActionInstance*>>* iValue = &currentValues->at(i);
 		bool containsThisKey = candidates->contains(iValue->first.first);
 		if (containsThisKey)
@@ -98,10 +98,12 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 			_TotalComparisons++;
 			if (iValue->first.first == (&currentValues->at(j))->first.first) {
 				if (containsThisKey) {
+					// Increment occurance
 					currentOcc->Occurance++;
 					currentOcc->BetweenDifferentPaths += iValue->first.second != (&currentValues->at(j))->first.second;
 				}
 				else {
+					// Add new candidate
 					EntanglementOccurance newOcc(iValue->second, iValue->first.first, 1 + (iValue->first.second != (&currentValues->at(j))->first.second));
 					candidates->emplace(iValue->first.first, newOcc);
 					containsThisKey = true;
@@ -109,19 +111,23 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 				}
 			}
 		}
-		if (OnLevelIteration != nullptr)
-			OnLevelIteration(i, currentValueSize);
-		if (_HasTimeLimit) {
-			auto currentTime = chrono::steady_clock::now();
-			auto ellapsed = chrono::duration_cast<chrono::milliseconds>(currentTime - _StartTime).count();
-			if (ellapsed > Data.TimeLimitMs) {
-				if (OnTimeLimitReached != nullptr)
-					OnTimeLimitReached();
-				_IsTimeLimitReached = true;
-				break;
-			}
+		OnLevelIteration(i, currentValueSize);
+		if (IsOverTimeLimit())
+			break;
+	}
+	OnLevelEnd();
+}
+
+bool EntanglementFinder::IsOverTimeLimit() {
+	if (_HasTimeLimit) {
+		auto currentTime = chrono::steady_clock::now();
+		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(currentTime - _StartTime).count();
+		if (ellapsed > Data.TimeLimitMs) {
+			if (OnTimeLimitReached != nullptr)
+				OnTimeLimitReached();
+			_IsTimeLimitReached = true;
+			return true;
 		}
 	}
-	if (OnLevelEnd != nullptr)
-		OnLevelEnd();
+	return false;
 }

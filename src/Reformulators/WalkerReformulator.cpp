@@ -61,6 +61,10 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 	entFinderData.TimeLimitMs = Configs->GetInteger("entanglerTimeLimit");
 	entFinderData.SearchCeiling = Configs->GetInteger("searchCeiling");
 	entFinderData.SearchFloor = Configs->GetInteger("searchFloor");
+	if (Configs->GetString("levelReductionTypes") == "Division")
+		entFinderData.LevelReductionType = EntanglementFinder::RunData::Division;
+	if (Configs->GetString("levelReductionTypes") == "Subtraction")
+		entFinderData.LevelReductionType = EntanglementFinder::RunData::Subtraction;
 
 	EntanglementFinder entFinder(entFinderData);
 

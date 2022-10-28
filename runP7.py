@@ -24,6 +24,7 @@ benchmarksline = ""
 
 settingscontent = ""
 
+#Parse config file and remove lab specific settings
 for line in lines:
     if "downwardsearch" in line:
         search = line.split("=")[1].strip("\n")
@@ -44,6 +45,9 @@ for line in lines:
     else:
         settingscontent += line
 
+#if not found in config file the default values are used
+#report - build/LabReport
+#project - build/src/P7
 reportfolder = get_from_argument(reportline,__file__, "build/LabReport")
 projectfile = get_from_argument(projectline,__file__, "build/src/P7")
 
@@ -57,6 +61,8 @@ else:
     lab_build_suite = True
     defultfolder = "Data/benchmarks/"
 
+#if not found in config file the default value is used
+#benchmarks  - Data/Classical tracks/Gripper/ if domain contains .pddl else Data/benchmarks/
 benchmarksfolder = get_from_argument(benchmarksline,__file__, defultfolder)
 
 domains = domainline.split(":")

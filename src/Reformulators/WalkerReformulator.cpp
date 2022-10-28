@@ -22,6 +22,8 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 		heuristic = new RandomHeuristic();
 	else if (Configs->GetString("heuristic") == "goalCount")
 		heuristic = new GoalCountHeuristic(instance->domain, instance->problem);
+	else if (Configs->GetString("heuristic") == "goalPredicateCount")
+		heuristic = new GoalPredicateCountHeuristic(instance->domain, instance->problem);
 	else
 		throw std::invalid_argument("Invalid heuristic specified in config");
 		

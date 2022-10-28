@@ -72,7 +72,7 @@ else:
 
 """
 Each task contains a domain file and problem file
-For each task a settingsLab.ini file is made and P7 is given this file as argument
+For each task a settings.ini file is made and P7 is given this file as argument
 """
 for task in tasks:
     settingscontent += "\nPATH:domain=" + task.domain_file + "\n"

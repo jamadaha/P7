@@ -38,10 +38,10 @@ for line in lines:
         problemline = line.split("=")[1].strip("\n")
     elif "benchmarks" in line:
         benchmarksline = line.split("=")[1].strip("\n")
+    elif "report" in line:
+        reportline = line.split("=")[1].strip("\n")
     elif "project" in line:
         projectline = line.split("=")[1].strip("\n")
-    elif "P7" in line:
-        project = line.split("=")[1].strip("\n")
     else:
         settingscontent += line
 

@@ -99,10 +99,12 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 	}
 
 	EntanglementEvaluator::RunData entEvaluatorData;
-
 	entEvaluatorData.MinimumOccurance = 5;
 
 	EntanglementEvaluator entEvaluator(entEvaluatorData);
+	entEvaluator.LengthModifier = [&](double length, double maxLength) { 
+		return length * (length / maxLength);
+	};
 
 	startTime = chrono::steady_clock::now();
 	auto sanitizedCandidates = entEvaluator.EvaluateAndSanitizeCandidates(candidates);
@@ -115,8 +117,8 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 	}
 
 	if (Configs->GetBool("printentanglersteps")) {
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Top 10 Entanglements:", 1);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Quality : Chain", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Top 10 Entanglements:", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglements] Quality  : Chain", 2);
 		int counter = 0;
 		for (auto i = sanitizedCandidates.begin(); i != sanitizedCandidates.end(); i++) {
 			string actionStr = "";
@@ -132,7 +134,7 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 				if (j != (*i).Chain.size() - 1)
 					actionStr += " -> ";
 			}
-			ConsoleHelper::PrintDebugInfo("[Entanglement Finder] " + to_string((*i).Quality) + " : " + actionStr, 2);
+			ConsoleHelper::PrintDebugInfo("[Entanglements] " + to_string((*i).Quality) + " : " + actionStr, 2);
 			counter++;
 			if (counter > 10)
 				break;

@@ -30,9 +30,17 @@ public:
 	/// Find entanglement candidates from a vector of paths
 	/// </summary>
 	std::vector<EntanglementOccurance> EvaluateAndSanitizeCandidates(std::unordered_map<size_t, EntanglementOccurance> candidates);
+
+	std::function<const double(double length, double maxLength)> LengthModifier;
+	std::function<const double(double occurance, double maxOccurance)> OccuranceModifier;
+
 private:
 	unsigned int _RemovedCandidates;
 
+	/// <summary>
+	/// Sets the modifiers to some default values, if they have not been set to begin with.
+	/// </summary>
+	void SetModifiersIfNotSet();
 	/// <summary>
 	/// Removes those values in the unordered_map where the occurance is less than the "MinimumOccurance" variable.
 	/// </summary>

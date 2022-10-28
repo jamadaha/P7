@@ -6,6 +6,8 @@ vector<EntanglementOccurance> EntanglementEvaluator::EvaluateAndSanitizeCandidat
 	vector<EntanglementOccurance> sanitizedCandidates;
 	int preCount = candidates.size();
 
+	SetModifiersIfNotSet();
+
 	RemoveIfBelowMinimum(&candidates);
 
 	SetQualityByLength(&candidates);
@@ -16,6 +18,12 @@ vector<EntanglementOccurance> EntanglementEvaluator::EvaluateAndSanitizeCandidat
 	return SortCandidates(&candidates);
 }
 
+void EntanglementEvaluator::SetModifiersIfNotSet() {
+	if (LengthModifier == nullptr)
+		LengthModifier = [&](double length, double maxLength) { return length / maxLength; };
+	if (OccuranceModifier == nullptr)
+		OccuranceModifier = [&](double occurance, double maxOccurance) { return occurance / maxOccurance; };
+}
 
 void EntanglementEvaluator::RemoveIfBelowMinimum(unordered_map<size_t, EntanglementOccurance>* candidates) {
 	const auto removeIfLessThan = [&](pair<size_t, EntanglementOccurance> const& x) { return x.second.Occurance < Data.MinimumOccurance; };
@@ -23,24 +31,24 @@ void EntanglementEvaluator::RemoveIfBelowMinimum(unordered_map<size_t, Entanglem
 }
 
 void EntanglementEvaluator::SetQualityByLength(unordered_map<size_t, EntanglementOccurance>* candidates) {
-	int maxLength = 0;
+	double maxLength = 0;
 	for (auto itt = candidates->begin(); itt != candidates->end(); itt++) {
 		if ((*itt).second.Chain.size() > maxLength)
 			maxLength = (*itt).second.Chain.size();
 	}
 	for (auto itt = candidates->begin(); itt != candidates->end(); itt++) {
-		(*itt).second.Quality *= (double)maxLength / (double)(*itt).second.Chain.size();
+		(*itt).second.Quality *= LengthModifier((*itt).second.Chain.size(), maxLength);
 	}
 }
 
 void EntanglementEvaluator::SetQualityByOccurance(unordered_map<size_t, EntanglementOccurance>* candidates) {
-	int maxOccurance = 0;
+	double maxOccurance = 0;
 	for (auto itt = candidates->begin(); itt != candidates->end(); itt++) {
 		if ((*itt).second.Occurance > maxOccurance)
 			maxOccurance = (*itt).second.Occurance;
 	}
 	for (auto itt = candidates->begin(); itt != candidates->end(); itt++) {
-		(*itt).second.Quality *= (double)(*itt).second.Occurance / (double)maxOccurance;
+		(*itt).second.Quality *= OccuranceModifier((*itt).second.Occurance, maxOccurance);
 	}
 }
 

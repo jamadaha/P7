@@ -26,10 +26,9 @@ add_subdirectory(src/)
 
 
 file(COPY Data DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY "runP7.py" DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY "settings.ini" DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY "settingsFast.ini" DESTINATION ${CMAKE_BINARY_DIR})
-
+configure_file(${PROJECT_SOURCE_DIR}/runP7.py ${CMAKE_BINARY_DIR}/runP7.py COPYONLY)
+configure_file(${PROJECT_SOURCE_DIR}/settings.ini ${CMAKE_BINARY_DIR}/settings.ini COPYONLY)
+configure_file(${PROJECT_SOURCE_DIR}/settingsFast.ini ${CMAKE_BINARY_DIR}/settingsFast.ini COPYONLY)
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)

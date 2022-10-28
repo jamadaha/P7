@@ -16,8 +16,14 @@ int EntanglementFinder::GetInitialLevelIfValid(vector<Path>* paths) {
 		throw exception();
 	if (Data.SearchFloor < 2)
 		throw exception();
-	if (Data.LevelReductionFactor <= 1)
+	if (Data.LevelReductionType == RunData::LevelReductionTypes::None)
 		throw exception();
+	if (Data.LevelReductionType == RunData::LevelReductionTypes::Division)
+		if (Data.LevelReductionFactor <= 1)
+			throw exception();
+	if (Data.LevelReductionType == RunData::LevelReductionTypes::Subtraction)
+		if (Data.LevelReductionFactor < 1)
+			throw exception();
 	if (Data.TimeLimitMs != -1)
 		_HasTimeLimit = true;
 
@@ -48,13 +54,24 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 
 		AddCandidatesIfThere(&candidates, &currentValues);
 
-		level = ceil((double)level / Data.LevelReductionFactor);
+		level = ReduceLevel(level);
 
 		if (_IsTimeLimitReached)
 			break;
 	}
 
 	return unordered_map<size_t, EntanglementOccurance>(candidates);
+}
+
+int EntanglementFinder::ReduceLevel(int level) {
+	int newLevel = level;
+	if (Data.LevelReductionType == RunData::LevelReductionTypes::Division)
+		newLevel = ceil((double)level / Data.LevelReductionFactor);
+	else if (Data.LevelReductionType == RunData::LevelReductionTypes::Subtraction)
+		newLevel -= Data.LevelReductionFactor;
+	if (level == newLevel)
+		throw exception();
+	return newLevel;
 }
 
 void EntanglementFinder::GenerateActionSet(vector<pair<pair<size_t, int>, vector<PDDLActionInstance*>>>* currentValues, vector<Path>* paths, const int level) {

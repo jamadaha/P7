@@ -14,6 +14,8 @@
 class EntanglementFinder {
 public:
 	struct RunData {
+		enum LevelReductionTypes {None, Division, Subtraction};
+
 		/// <summary>
 		/// The ceiling of the search (leave as -1 if you want the full path size)
 		/// </summary>
@@ -26,6 +28,7 @@ public:
 		/// By how much the level should be reduced in each iteration.
 		/// </summary>
 		double LevelReductionFactor = 2;
+		LevelReductionTypes LevelReductionType = LevelReductionTypes::Division;
 		/// <summary>
 		/// The time limit to search for entanglements in ms. Set to -1 for no limit
 		/// </summary>
@@ -74,6 +77,10 @@ private:
 	/// Returns true if the time limit have been exceeded
 	/// </summary>
 	bool IsOverTimeLimit();
+	/// <summary>
+	/// Reduce the current level
+	/// </summary>
+	int ReduceLevel(int level);
 };
 
 #endif

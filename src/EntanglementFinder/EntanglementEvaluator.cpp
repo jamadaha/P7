@@ -24,9 +24,9 @@ vector<EntanglementOccurance> EntanglementEvaluator::EvaluateAndSanitizeCandidat
 
 void EntanglementEvaluator::SetModifiersIfNotSet() {
 	if (LengthModifier == nullptr)
-		LengthModifier = [&](double length, double maxLength) { return length / maxLength; };
+		LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::Default;
 	if (OccuranceModifier == nullptr)
-		OccuranceModifier = [&](double occurance, double maxOccurance) { return occurance / maxOccurance; };
+		OccuranceModifier = EntanglementEvaluatorModifiers::OccuranceModifiers::Default;
 }
 
 void EntanglementEvaluator::RemoveMinimumOccurances(unordered_map<size_t, EntanglementOccurance>* candidates) {

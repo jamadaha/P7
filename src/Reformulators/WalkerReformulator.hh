@@ -16,6 +16,7 @@
 #include "../EntanglementFinder/EntanglementFinder.hh"
 #include "../EntanglementFinder/EntanglementOccurance.hh"
 #include "../EntanglementFinder/EntanglementEvaluator.hh"
+#include "../EntanglementFinder/EntanglementEvaluatorModifiers.hh"
 #include "../Helpers/ProgressBarHelper.hh"
 
 class WalkerReformulator : public BaseReformulator {

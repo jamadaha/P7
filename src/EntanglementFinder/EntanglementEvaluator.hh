@@ -10,6 +10,7 @@
 #include "../IntermediatePDDL/PDDLInstance.hh"
 #include "../Walker/Walker.hpp"
 #include "EntanglementOccurance.hh"
+#include "EntanglementEvaluatorModifiers.hh"
 
 class EntanglementEvaluator {
 public:
@@ -35,8 +36,8 @@ public:
 	/// </summary>
 	std::vector<EntanglementOccurance> EvaluateAndSanitizeCandidates(std::unordered_map<size_t, EntanglementOccurance> candidates);
 
-	std::function<const double(double length, double maxLength)> LengthModifier;
-	std::function<const double(double occurance, double maxOccurance)> OccuranceModifier;
+	std::function<double(double length, double maxLength)> LengthModifier;
+	std::function<double(double occurance, double maxOccurance)> OccuranceModifier;
 
 private:
 	unsigned int _RemovedCandidates;

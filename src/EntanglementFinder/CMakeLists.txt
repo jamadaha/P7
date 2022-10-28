@@ -6,6 +6,7 @@ target_sources(EntanglementFinder
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}/EntanglementFinder.hh
         ${CMAKE_CURRENT_LIST_DIR}/EntanglementEvaluator.hh
+        ${CMAKE_CURRENT_LIST_DIR}/EntanglementEvaluatorModifiers.hh
         ${CMAKE_CURRENT_LIST_DIR}/EntanglementOccurance.hh)
 target_include_directories(EntanglementFinder
     PUBLIC

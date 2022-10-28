@@ -105,9 +105,8 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 	entEvaluatorData.MinimumCrossOccurance = 5;
 
 	EntanglementEvaluator entEvaluator(entEvaluatorData);
-	entEvaluator.LengthModifier = [&](double length, double maxLength) { 
-		return length * (length / maxLength);
-	};
+	if (Configs->GetString("entanglerLengthModifier") == "lengthBias")
+		entEvaluator.LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::LengthBias;
 
 	startTime = chrono::steady_clock::now();
 	auto sanitizedCandidates = entEvaluator.EvaluateAndSanitizeCandidates(candidates);

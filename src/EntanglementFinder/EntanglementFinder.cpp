@@ -85,7 +85,8 @@ void EntanglementFinder::GenerateActionSet(vector<pair<pair<size_t, int>, vector
 
 void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, EntanglementOccurance>* candidates, vector<pair<pair<size_t, int>, vector<PDDLActionInstance*>>>* currentValues) {
 	const int currentValueSize = currentValues->size();
-	OnNewLevel(_CurrentLevel, currentValueSize);
+	if (OnNewLevel != nullptr)
+		OnNewLevel(_CurrentLevel, currentValueSize);
 
 	for (int i = 0; i < currentValueSize; i++) {
 		// Check if this value have already been found
@@ -111,11 +112,13 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 				}
 			}
 		}
-		OnLevelIteration(i, currentValueSize);
+		if (OnLevelIteration != nullptr)
+			OnLevelIteration(i, currentValueSize);
 		if (IsOverTimeLimit())
 			break;
 	}
-	OnLevelEnd();
+	if (OnLevelEnd != nullptr)
+		OnLevelEnd();
 }
 
 bool EntanglementFinder::IsOverTimeLimit() {

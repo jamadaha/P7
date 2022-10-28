@@ -57,10 +57,10 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 	// Find entanglement candidates.
 	auto entFinderData = EntanglementFinder::RunData();
 
-	entFinderData.LevelReductionFactor = 2;
+	entFinderData.LevelReductionFactor = Configs->GetInteger("levelReductionFactor");
 	entFinderData.TimeLimitMs = Configs->GetInteger("entanglerTimeLimit");
-	entFinderData.SearchCeiling = -1;
-	entFinderData.SearchFloor = 2;
+	entFinderData.SearchCeiling = Configs->GetInteger("searchCeiling");
+	entFinderData.SearchFloor = Configs->GetInteger("searchFloor");
 
 	EntanglementFinder entFinder(entFinderData);
 
@@ -101,8 +101,8 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 
 	// Sanitize and remove bad candidates.
 	EntanglementEvaluator::RunData entEvaluatorData;
-	entEvaluatorData.MinimumOccurance = 5;
-	entEvaluatorData.MinimumCrossOccurance = 5;
+	entEvaluatorData.MinimumOccurance = Configs->GetInteger("minimumOccurance");
+	entEvaluatorData.MinimumCrossOccurance = Configs->GetInteger("minimumCrossOccurance");
 
 	EntanglementEvaluator entEvaluator(entEvaluatorData);
 	if (Configs->GetString("entanglerLengthModifier") == "lengthBias")

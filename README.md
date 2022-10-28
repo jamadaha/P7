@@ -177,13 +177,7 @@ To launch in Visual Studio (Note: This is the inferior version):
       "cwd": "/root/.vs/P7/",
       "args": [
         "'--all'",
-        "--benchmarks '$HOME/.vs/P7/Data/Classical tracks/Gripper/'",
-        "--domain 'gripper_domain.pddl'",
-        "--problem 'gripper_problem.pddl'",
-        "--downward '$HOME/downward-projects/downward/fast-downward.py'",
-        "--validate '$HOME/downward-projects/VAL/validate'",
-        "--reformulator RandomWalker",
-        "--timelimit 500"
+        "--settings 'settingsLab.ini'"
       ],
       "env": {
       }
@@ -198,13 +192,7 @@ To launch in Visual Studio (Note: This is the inferior version):
       "cwd": "/root/.vs/P7/",
       "args": [
         "'--all'",
-        "--benchmarks '$HOME/.vs/P7/Data/benchmarks/'",
-        "--domain 'gripper:depot'",
-        "--problem 'prob01.pddl,prob02.pddl:p01.pddl,p02.pddl'",
-        "--downward $HOME/downward-projects/downward/fast-downward.py",
-        "--validate $HOME/downward-projects/validate/validate",
-        "--reformulator RandomWalker",
-        "--timelimit 500"
+        "--settings 'settingsLabMultiple.ini'"
       ],
       "env": {
       }

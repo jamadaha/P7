@@ -10,29 +10,57 @@ from Lab.Benchmarks import get_suite, make_tasks
 
 args = set_arguments()
 
-reportfolder = get_from_argument(args.report,__file__, "build/LabReport")
-projectfile = get_from_argument(args.P7,__file__, "build/src/P7")
+with open(args.settings, 'r') as file:
+    lines = file.readlines()
 
-downwardfilepath = args.downward
-validatorfilepath = args.validate
-search = args.search
-heuristic = args.heuristic
-reformulator = args.reformulator
-reformulatorTime = args.timelimit
+search = ""
+heuristic = ""
+domainline = ""
+problemline = ""
+
+reportline = ""
+projectline = ""
+benchmarksline = ""
+
+settingscontent = ""
+
+for line in lines:
+    if "downwardsearch" in line:
+        search = line.split("=")[1].strip("\n")
+        settingscontent += line
+    elif "downwardheuristic" in line:
+        heuristic = line.split("=")[1].strip("\n")
+        settingscontent += line
+    elif "domain" in line:
+        domainline = line.split("=")[1].strip("\n")
+    elif "problem" in line:
+        problemline = line.split("=")[1].strip("\n")
+    elif "benchmarks" in line:
+        benchmarksline = line.split("=")[1].strip("\n")
+    elif "project" in line:
+        projectline = line.split("=")[1].strip("\n")
+    elif "P7" in line:
+        project = line.split("=")[1].strip("\n")
+    else:
+        settingscontent += line
+
+reportfolder = get_from_argument(reportline,__file__, "build/LabReport")
+projectfile = get_from_argument(projectline,__file__, "build/src/P7")
 
 #decide if labs method to find domains and problems should be used
 #since lab wants the benchmarksfolder to have a specific structure
 lab_build_suite = False
-folder = ""
-if ".pddl" in args.domain:
-    folder = "Data/Classical tracks/Gripper/"
+defaultfolder = ""
+if ".pddl" in domainline:
+    defultfolder = "Data/Classical tracks/Gripper/"
 else:
     lab_build_suite = True
-    folder = "Data/benchmarks/"
-benchmarksfolder = get_from_argument(args.benchmarks,__file__, folder)
+    defultfolder = "Data/benchmarks/"
 
-domains = args.domain.split(":")
-problemsindomains = args.problem.split(":")
+benchmarksfolder = get_from_argument(benchmarksline,__file__, defultfolder)
+
+domains = domainline.split(":")
+problemsindomains = problemline.split(":")
 
 experiment = Experiment(reportfolder)
 
@@ -47,21 +75,8 @@ Each task contains a domain file and problem file
 For each task a settingsLab.ini file is made and P7 is given this file as argument
 """
 for task in tasks:
-    settingscontent = "PATH:downwardpath=" + downwardfilepath + "\n"
-    settingscontent += "PATH:validatorpath=" + validatorfilepath + "\n"
-
-    settingscontent += "PATH:domain=" + task.domain_file + "\n"
+    settingscontent += "\nPATH:domain=" + task.domain_file + "\n"
     settingscontent += "PATH:problem=" + task.problem_file + "\n"
-    
-    settingscontent += "STRING:downwardsearch=" + search + "\n"
-    settingscontent += "STRING:downwardheuristic=" + heuristic + "\n"
-
-    settingscontent += "STRING:reformulator=" + reformulator + "\n"
-    settingscontent += "INT:timelimit=" + reformulatorTime + "\n"
-
-    settingscontent += "BOOL:printwalkersteps=false\n"
-    settingscontent += "BOOL:printentanglersteps=false\n"
-    settingscontent += "BOOL:debugmode=false\n"
 
     run = experiment.add_run()
     run.add_new_file("config","settings.ini",settingscontent)

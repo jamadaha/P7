@@ -14,26 +14,30 @@
 
 class EntanglementFinder {
 public:
-	/// <summary>
-	/// The ceiling of the search (leave as -1 if you want the full path size)
-	/// </summary>
-	const int SearchCeiling;
-	/// <summary>
-	/// The floor of the search, minimum is 2 and maximum is the full length of the path
-	/// </summary>
-	const int SearchFloor;
-	/// <summary>
-	/// By how much the level should be reduced in each iteration.
-	/// </summary>
-	const double LevelReductionFactor;
-	/// <summary>
-	/// The minimum amount of times an action sequence have to occure to be counted as valid
-	/// </summary>
-	const int MinimumOccurance;
-	/// <summary>
-	/// The time limit to search for entanglements in ms. Set to -1 for no limit
-	/// </summary>
-	const int TimeLimitMs;
+	struct RunData {
+		/// <summary>
+		/// The ceiling of the search (leave as -1 if you want the full path size)
+		/// </summary>
+		int SearchCeiling;
+		/// <summary>
+		/// The floor of the search, minimum is 2 and maximum is the full length of the path
+		/// </summary>
+		int SearchFloor;
+		/// <summary>
+		/// By how much the level should be reduced in each iteration.
+		/// </summary>
+		double LevelReductionFactor;
+		/// <summary>
+		/// The minimum amount of times an action sequence have to occure to be counted as valid
+		/// </summary>
+		int MinimumOccurance;
+		/// <summary>
+		/// The time limit to search for entanglements in ms. Set to -1 for no limit
+		/// </summary>
+		int TimeLimitMs;
+	};
+
+	RunData Data;
 
 	/// <summary>
 	/// Gets the level the Entanglement Finder is currently on
@@ -43,7 +47,7 @@ public:
 	unsigned int TotalComparisons() const { return _TotalComparisons; }
 	unsigned int RemovedCandidates() const { return _RemovedCandidates; }
 
-	EntanglementFinder(int searchFloor = 2, int searchCeiling = -1, double levelReductionFactor = 2, int minimumOccurance = 5, int timeLimit = -1) : SearchCeiling(searchCeiling), SearchFloor(searchFloor), LevelReductionFactor(levelReductionFactor), MinimumOccurance(minimumOccurance), TimeLimitMs(timeLimit) {};
+	EntanglementFinder(RunData data) : Data(data) {};
 
 	/// <summary>
 	/// Find entanglement candidates from a vector of paths

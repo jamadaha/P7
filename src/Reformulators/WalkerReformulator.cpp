@@ -54,13 +54,15 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 }
 
 unordered_map<size_t, EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>* paths, PDDLInstance* instance) {
-	EntanglementFinder entFinder(
-		2,
-		-1,
-		2,
-		5,
-		Configs->GetInteger("entanglerTimeLimit")
-	);
+	auto entData = EntanglementFinder::RunData();
+
+	entData.LevelReductionFactor = 2;
+	entData.TimeLimitMs = Configs->GetInteger("entanglerTimeLimit");
+	entData.MinimumOccurance = 5;
+	entData.SearchCeiling = -1;
+	entData.SearchFloor = 2;
+
+	EntanglementFinder entFinder(entData);
 
 	if (Configs->GetBool("debugmode")) {
 		ProgressBarHelper* bar;

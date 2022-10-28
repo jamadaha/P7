@@ -4,8 +4,8 @@ using namespace std;
 
 int EntanglementFinder::GetInitialLevelIfValid(vector<Path>* paths) {
 	int level = 2;
-	if (SearchCeiling != -1)
-		level = SearchCeiling;
+	if (Data.SearchCeiling != -1)
+		level = Data.SearchCeiling;
 	else
 	{
 		for (int i = 0; i < paths->size(); i++)
@@ -14,11 +14,11 @@ int EntanglementFinder::GetInitialLevelIfValid(vector<Path>* paths) {
 	}
 	if (level < 2)
 		throw exception();
-	if (SearchFloor < 2)
+	if (Data.SearchFloor < 2)
 		throw exception();
-	if (LevelReductionFactor <= 1)
+	if (Data.LevelReductionFactor <= 1)
 		throw exception();
-	if (TimeLimitMs != -1)
+	if (Data.TimeLimitMs != -1)
 		_HasTimeLimit = true;
 
 	_IsTimeLimitReached = false;
@@ -41,14 +41,14 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 
 	if (_HasTimeLimit)
 		_StartTime = chrono::steady_clock::now();
-	while (level >= SearchFloor) {
+	while (level >= Data.SearchFloor) {
 		_TotalLevels++;
 		_CurrentLevel = level;
 		GenerateActionSet(&currentValues, paths, level);
 
 		AddCandidatesIfThere(&candidates, &currentValues);
 
-		level = ceil((double)level / LevelReductionFactor);
+		level = ceil((double)level / Data.LevelReductionFactor);
 
 		if (_IsTimeLimitReached)
 			break;
@@ -116,7 +116,7 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 		if (_HasTimeLimit) {
 			auto currentTime = chrono::steady_clock::now();
 			auto ellapsed = chrono::duration_cast<chrono::milliseconds>(currentTime - _StartTime).count();
-			if (ellapsed > TimeLimitMs) {
+			if (ellapsed > Data.TimeLimitMs) {
 				if (OnTimeLimitReached != nullptr)
 					OnTimeLimitReached();
 				_IsTimeLimitReached = true;
@@ -130,7 +130,7 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 
 void EntanglementFinder::RemoveIfBelowMinimum(unordered_map<size_t, EntanglementOccurance>* candidates) {
 	int preCount = candidates->size();
-	const auto removeIfLessThan = [&](pair<size_t, EntanglementOccurance> const& x) { return x.second.Occurance < MinimumOccurance; };
+	const auto removeIfLessThan = [&](pair<size_t, EntanglementOccurance> const& x) { return x.second.Occurance < Data.MinimumOccurance; };
 	std::erase_if(*candidates, removeIfLessThan);
 	_RemovedCandidates = preCount - candidates->size();
 }

@@ -7,6 +7,11 @@ Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const 
     std::unordered_set<PDDLState> visitedStates; visitedStates.reserve(depth);
 
     PDDLState tempState = PDDLState(state->unaryFacts, state->multiFacts);
+    if (config->GetBool("printwalkersteps")) {
+        std::string command = "echo '" + tempState.ToString(instance)+ "'" + " >> walkerLog"; 
+        system(command.c_str());
+    }
+    
     for (int i = 0; i < depth; i++) {
         std::vector<PDDLActionInstance> possibleActions;
         possibleActions = actionGenerator.GenerateActions(&tempState);
@@ -24,7 +29,7 @@ Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const 
             if (config->GetBool("printwalkersteps")) {
                 std::string stateinfo = tempState.ToString(this->instance);
                 std::string actioninfo = chosenAction->ToString(this->instance);
-                std::string content = "echo '" + stateinfo + "\n" + actioninfo + "'" + " >> walkerLog";
+                std::string content = "echo '" + actioninfo + "\n" + stateinfo + "'" + " >> walkerLog";
 
                 system(content.c_str());
             }

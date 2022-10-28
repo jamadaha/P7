@@ -100,38 +100,7 @@ struct PDDLState {
 
     // Very slow, please only use with caution
     friend bool operator== (const PDDLState &lhs, const PDDLState &rhs) {
-        // Check unary facts
-        //// Check that they contain the same keys
-        for (auto iter : lhs.unaryFacts)
-            if (!rhs.unaryFacts.contains(iter.first))
-                return false;
-        for (auto iter : rhs.unaryFacts)
-            if (!lhs.unaryFacts.contains(iter.first))
-                return false;
-        //// 
-        //// Check that they contain the same values
-        for (auto iter : lhs.unaryFacts)
-            if (lhs.unaryFacts.at(iter.first) != rhs.unaryFacts.at(iter.first))
-                return false;
-        ////
-        //
-        // Check multi facts
-        //// Check that they contain the same keys
-        for (auto iter : lhs.multiFacts)
-            if (!rhs.multiFacts.contains(iter.first))
-                return false;
-        for (auto iter : rhs.multiFacts)
-            if (!lhs.multiFacts.contains(iter.first))
-                return false;
-        //// 
-        //// Check that they contain the same values
-        for (auto iter : lhs.multiFacts)
-            if (lhs.multiFacts.at(iter.first) != rhs.multiFacts.at(iter.first))
-                return false;
-        ////
-        // 
-
-        return true;
+        return (lhs.unaryFacts == rhs.unaryFacts && rhs.multiFacts == rhs.multiFacts);
     };
     
 };

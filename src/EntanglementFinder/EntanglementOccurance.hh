@@ -11,6 +11,7 @@ public:
 	std::vector<PDDLActionInstance*> Chain;
     int Occurance;
     int BetweenDifferentPaths;
+    double Quality = 1;
 
     EntanglementOccurance(std::vector<PDDLActionInstance*> chain, int betweenDifferentPaths) : Chain(chain), Occurance(2), BetweenDifferentPaths(betweenDifferentPaths) {};
     EntanglementOccurance(std::vector<PDDLActionInstance*> chain, size_t hash, int betweenDifferentPaths) : Chain(chain), Occurance(2), Hash(hash), BetweenDifferentPaths(betweenDifferentPaths) {};

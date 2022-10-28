@@ -29,7 +29,7 @@ public:
 	/// <summary>
 	/// Find entanglement candidates from a vector of paths
 	/// </summary>
-	void EvaluateAndSanitizeCandidates(std::unordered_map<size_t, EntanglementOccurance>* candidates);
+	std::vector<EntanglementOccurance> EvaluateAndSanitizeCandidates(std::unordered_map<size_t, EntanglementOccurance> candidates);
 private:
 	unsigned int _RemovedCandidates;
 
@@ -37,6 +37,18 @@ private:
 	/// Removes those values in the unordered_map where the occurance is less than the "MinimumOccurance" variable.
 	/// </summary>
 	void RemoveIfBelowMinimum(std::unordered_map<size_t, EntanglementOccurance>* candidates);
+	/// <summary>
+	/// Updates the Quality parameter of the occurances based on their lengths
+	/// </summary>
+	void SetQualityByLength(std::unordered_map<size_t, EntanglementOccurance>* candidates);
+	/// <summary>
+	/// Updates the Quality parameter of the occurances based on their occurance value
+	/// </summary>
+	void SetQualityByOccurance(std::unordered_map<size_t, EntanglementOccurance>* candidates);
+	/// <summary>
+	/// Sorts the candidates into a more usefull vector instead.
+	/// </summary>
+	std::vector<EntanglementOccurance> SortCandidates(std::unordered_map<size_t, EntanglementOccurance>* candidates);
 };
 
 #endif

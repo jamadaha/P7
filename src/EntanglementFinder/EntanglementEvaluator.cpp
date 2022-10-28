@@ -6,10 +6,14 @@ vector<EntanglementOccurance> EntanglementEvaluator::EvaluateAndSanitizeCandidat
 	vector<EntanglementOccurance> sanitizedCandidates;
 	int preCount = candidates.size();
 
+	// Setup default modifiers
 	SetModifiersIfNotSet();
 
-	RemoveIfBelowMinimum(&candidates);
+	// Sanitize candidates
+	RemoveMinimumOccurances(&candidates);
+	RemoveMinimumCrossOccurances(&candidates);
 
+	// Modify remaining candidates Quality
 	SetQualityByLength(&candidates);
 	SetQualityByOccurance(&candidates);
 
@@ -25,8 +29,13 @@ void EntanglementEvaluator::SetModifiersIfNotSet() {
 		OccuranceModifier = [&](double occurance, double maxOccurance) { return occurance / maxOccurance; };
 }
 
-void EntanglementEvaluator::RemoveIfBelowMinimum(unordered_map<size_t, EntanglementOccurance>* candidates) {
+void EntanglementEvaluator::RemoveMinimumOccurances(unordered_map<size_t, EntanglementOccurance>* candidates) {
 	const auto removeIfLessThan = [&](pair<size_t, EntanglementOccurance> const& x) { return x.second.Occurance < Data.MinimumOccurance; };
+	std::erase_if(*candidates, removeIfLessThan);
+}
+
+void EntanglementEvaluator::RemoveMinimumCrossOccurances(unordered_map<size_t, EntanglementOccurance>* candidates) {
+	const auto removeIfLessThan = [&](pair<size_t, EntanglementOccurance> const& x) { return x.second.BetweenDifferentPaths < Data.MinimumCrossOccurance; };
 	std::erase_if(*candidates, removeIfLessThan);
 }
 

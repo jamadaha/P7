@@ -100,6 +100,7 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 
 	EntanglementEvaluator::RunData entEvaluatorData;
 	entEvaluatorData.MinimumOccurance = 5;
+	entEvaluatorData.MinimumCrossOccurance = 5;
 
 	EntanglementEvaluator entEvaluator(entEvaluatorData);
 	entEvaluator.LengthModifier = [&](double length, double maxLength) { 

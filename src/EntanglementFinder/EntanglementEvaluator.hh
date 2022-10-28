@@ -17,7 +17,11 @@ public:
 		/// <summary>
 		/// The minimum amount of times an action sequence have to occure to be counted as valid
 		/// </summary>
-		int MinimumOccurance;
+		int MinimumOccurance = 5;
+		/// <summary>
+		/// The minimum amount of times an action sequence have to occure between paths to be counted as valid
+		/// </summary>
+		int MinimumCrossOccurance = 5;
 	};
 
 	RunData Data;
@@ -44,7 +48,11 @@ private:
 	/// <summary>
 	/// Removes those values in the unordered_map where the occurance is less than the "MinimumOccurance" variable.
 	/// </summary>
-	void RemoveIfBelowMinimum(std::unordered_map<size_t, EntanglementOccurance>* candidates);
+	void RemoveMinimumOccurances(std::unordered_map<size_t, EntanglementOccurance>* candidates);
+	/// <summary>
+	/// Removes those values in the unordered_map where the occurance is less than the "MinimumCrossOccurance" variable.
+	/// </summary>
+	void RemoveMinimumCrossOccurances(std::unordered_map<size_t, EntanglementOccurance>* candidates);
 	/// <summary>
 	/// Updates the Quality parameter of the occurances based on their lengths
 	/// </summary>

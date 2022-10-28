@@ -17,19 +17,19 @@ public:
 		/// <summary>
 		/// The ceiling of the search (leave as -1 if you want the full path size)
 		/// </summary>
-		int SearchCeiling;
+		int SearchCeiling = -1;
 		/// <summary>
 		/// The floor of the search, minimum is 2 and maximum is the full length of the path
 		/// </summary>
-		int SearchFloor;
+		int SearchFloor = 2;
 		/// <summary>
 		/// By how much the level should be reduced in each iteration.
 		/// </summary>
-		double LevelReductionFactor;
+		double LevelReductionFactor = 2;
 		/// <summary>
 		/// The time limit to search for entanglements in ms. Set to -1 for no limit
 		/// </summary>
-		int TimeLimitMs;
+		int TimeLimitMs = -1;
 	};
 
 	RunData Data;

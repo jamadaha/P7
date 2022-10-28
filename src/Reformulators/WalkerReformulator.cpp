@@ -54,15 +54,14 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 }
 
 unordered_map<size_t, EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>* paths, PDDLInstance* instance) {
-	auto entData = EntanglementFinder::RunData();
+	auto entFinderData = EntanglementFinder::RunData();
 
-	entData.LevelReductionFactor = 2;
-	entData.TimeLimitMs = Configs->GetInteger("entanglerTimeLimit");
-	entData.MinimumOccurance = 5;
-	entData.SearchCeiling = -1;
-	entData.SearchFloor = 2;
+	entFinderData.LevelReductionFactor = 2;
+	entFinderData.TimeLimitMs = Configs->GetInteger("entanglerTimeLimit");
+	entFinderData.SearchCeiling = -1;
+	entFinderData.SearchFloor = 2;
 
-	EntanglementFinder entFinder(entData);
+	EntanglementFinder entFinder(entFinderData);
 
 	if (Configs->GetBool("debugmode")) {
 		ProgressBarHelper* bar;
@@ -114,8 +113,24 @@ unordered_map<size_t, EntanglementOccurance> WalkerReformulator::FindEntanglemen
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + to_string(entFinder.TotalLevels()), 1);
 		double comparisonsPrSecond = (entFinder.TotalComparisons()) / ellapsed;
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Comparisons:         " + to_string(entFinder.TotalComparisons()) + " [" + to_string(comparisonsPrSecond) + "k/s]", 1);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + to_string(candidates.size()) + " (" + to_string(entFinder.RemovedCandidates()) + " removed)", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + to_string(candidates.size()), 1);
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + to_string(paths->size()) + " paths with " + to_string(totalActions) + " steps in total", 1);
+	}
+
+	EntanglementEvaluator::RunData entEvaluatorData;
+
+	entEvaluatorData.MinimumOccurance = 5;
+
+	EntanglementEvaluator entEvaluator(entEvaluatorData);
+
+	startTime = chrono::steady_clock::now();
+	entEvaluator.EvaluateAndSanitizeCandidates(&candidates);
+	endTime = chrono::steady_clock::now();
+
+	if (Configs->GetBool("debugmode")) {
+		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count();
+		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total evaluation time:  " + to_string(ellapsed) + "ms", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + to_string(candidates.size()) + " (" + to_string(entEvaluator.RemovedCandidates()) + " removed)", 1);
 	}
 
 	return candidates;

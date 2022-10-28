@@ -54,8 +54,6 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 			break;
 	}
 
-	RemoveIfBelowMinimum(&candidates);
-
 	return unordered_map<size_t, EntanglementOccurance>(candidates);
 }
 
@@ -126,11 +124,4 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 	}
 	if (OnLevelEnd != nullptr)
 		OnLevelEnd();
-}
-
-void EntanglementFinder::RemoveIfBelowMinimum(unordered_map<size_t, EntanglementOccurance>* candidates) {
-	int preCount = candidates->size();
-	const auto removeIfLessThan = [&](pair<size_t, EntanglementOccurance> const& x) { return x.second.Occurance < Data.MinimumOccurance; };
-	std::erase_if(*candidates, removeIfLessThan);
-	_RemovedCandidates = preCount - candidates->size();
 }

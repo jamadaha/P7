@@ -10,7 +10,6 @@
 #include "../IntermediatePDDL/PDDLInstance.hh"
 #include "../Walker/Walker.hpp"
 #include "EntanglementOccurance.hh"
-#include "../Helpers/ProgressBarHelper.hh"
 
 class EntanglementFinder {
 public:
@@ -28,10 +27,6 @@ public:
 		/// </summary>
 		double LevelReductionFactor;
 		/// <summary>
-		/// The minimum amount of times an action sequence have to occure to be counted as valid
-		/// </summary>
-		int MinimumOccurance;
-		/// <summary>
 		/// The time limit to search for entanglements in ms. Set to -1 for no limit
 		/// </summary>
 		int TimeLimitMs;
@@ -39,13 +34,9 @@ public:
 
 	RunData Data;
 
-	/// <summary>
-	/// Gets the level the Entanglement Finder is currently on
-	/// </summary>
 	int CurrentLevel() const { return _CurrentLevel; }
 	int TotalLevels() const { return _TotalLevels; }
 	unsigned int TotalComparisons() const { return _TotalComparisons; }
-	unsigned int RemovedCandidates() const { return _RemovedCandidates; }
 
 	EntanglementFinder(RunData data) : Data(data) {};
 
@@ -63,13 +54,14 @@ private:
 	int _CurrentLevel;
 	int _TotalLevels;
 	unsigned int _TotalComparisons;
-	unsigned int _RemovedCandidates;
 	bool _HasTimeLimit = false;
 	bool _IsTimeLimitReached = false;
 	std::chrono::_V2::steady_clock::time_point _StartTime;
 
+	/// <summary>
+	/// Validate the input data
+	/// </summary>
 	int GetInitialLevelIfValid(std::vector<Path>* paths);
-
 	/// <summary>
 	/// Takes a set of Paths and splits them up into sets of PDDLActionInstances based on the level.
 	/// </summary>
@@ -78,10 +70,6 @@ private:
 	/// Based on the values generated in the "GenerateActionSet" method
 	/// </summary>
 	void AddCandidatesIfThere(std::unordered_map<size_t, EntanglementOccurance>* candidates, std::vector<std::pair<std::pair<size_t, int>, std::vector<PDDLActionInstance*>>>* currentValues);
-	/// <summary>
-	/// Removes those values in the unordered_map where the occurance is less than the "MinimumOccurance" variable.
-	/// </summary>
-	void RemoveIfBelowMinimum(std::unordered_map<size_t, EntanglementOccurance>* candidates);
 };
 
 #endif

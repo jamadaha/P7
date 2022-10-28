@@ -5,6 +5,7 @@
 #include <vector>
 #include <math.h>
 #include <unordered_map>
+#include <chrono>
 
 #include "../IntermediatePDDL/PDDLInstance.hh"
 #include "../Walker/Walker.hpp"
@@ -29,6 +30,10 @@ public:
 	/// The minimum amount of times an action sequence have to occure to be counted as valid
 	/// </summary>
 	const int MinimumOccurance;
+	/// <summary>
+	/// The time limit to search for entanglements in ms. Set to -1 for no limit
+	/// </summary>
+	const int TimeLimitMs;
 
 	/// <summary>
 	/// Gets the level the Entanglement Finder is currently on
@@ -38,7 +43,7 @@ public:
 	unsigned int TotalComparisons() const { return _TotalComparisons; }
 	unsigned int RemovedCandidates() const { return _RemovedCandidates; }
 
-	EntanglementFinder(int searchFloor = 2, int searchCeiling = -1, double levelReductionFactor = 2, int minimumOccurance = 5) : SearchCeiling(searchCeiling), SearchFloor(searchFloor), LevelReductionFactor(levelReductionFactor), MinimumOccurance(minimumOccurance) {};
+	EntanglementFinder(int searchFloor = 2, int searchCeiling = -1, double levelReductionFactor = 2, int minimumOccurance = 5, int timeLimit = -1) : SearchCeiling(searchCeiling), SearchFloor(searchFloor), LevelReductionFactor(levelReductionFactor), MinimumOccurance(minimumOccurance), TimeLimitMs(timeLimit) {};
 
 	/// <summary>
 	/// Find entanglement candidates from a vector of paths
@@ -48,12 +53,16 @@ public:
 	std::function<const void(int level, int outOf)> OnNewLevel;
 	std::function<const void()> OnLevelEnd;
 	std::function<const void(int current, int outOf)> OnLevelIteration;
+	std::function<const void()> OnTimeLimitReached;
 
 private:
 	int _CurrentLevel;
 	int _TotalLevels;
 	unsigned int _TotalComparisons;
 	unsigned int _RemovedCandidates;
+	bool _HasTimeLimit = false;
+	bool _IsTimeLimitReached = false;
+	std::chrono::_V2::steady_clock::time_point _StartTime;
 
 	int GetInitialLevelIfValid(std::vector<Path>* paths);
 

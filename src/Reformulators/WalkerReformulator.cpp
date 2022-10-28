@@ -54,7 +54,13 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 }
 
 unordered_map<size_t, EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>* paths, PDDLInstance* instance) {
-	EntanglementFinder entFinder;
+	EntanglementFinder entFinder(
+		2,
+		-1,
+		2,
+		5,
+		Configs->GetInteger("entanglerTimeLimit")
+	);
 
 	if (Configs->GetBool("debugmode")) {
 		ProgressBarHelper* bar;
@@ -66,6 +72,10 @@ unordered_map<size_t, EntanglementOccurance> WalkerReformulator::FindEntanglemen
 		};
 		entFinder.OnLevelEnd = [&]() {
 			bar->End();
+		};
+		entFinder.OnTimeLimitReached = [&]() {
+			bar->End();
+			ConsoleHelper::PrintInfo("[Entanglement Finder] Entangler time limit reached!", 1);
 		};
 	}
 

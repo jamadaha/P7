@@ -18,6 +18,11 @@ int EntanglementFinder::GetInitialLevelIfValid(vector<Path>* paths) {
 		throw exception();
 	if (LevelReductionFactor <= 1)
 		throw exception();
+	if (TimeLimitMs != -1)
+		_HasTimeLimit = true;
+
+	_IsTimeLimitReached = false;
+
 	return level;
 }
 
@@ -34,6 +39,8 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 	_TotalLevels = 0;
 	_TotalComparisons = 0;
 
+	if (_HasTimeLimit)
+		_StartTime = chrono::steady_clock::now();
 	while (level >= SearchFloor) {
 		_TotalLevels++;
 		_CurrentLevel = level;
@@ -42,6 +49,9 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 		AddCandidatesIfThere(&candidates, &currentValues);
 
 		level = ceil((double)level / LevelReductionFactor);
+
+		if (_IsTimeLimitReached)
+			break;
 	}
 
 	RemoveIfBelowMinimum(&candidates);
@@ -103,6 +113,16 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 		}
 		if (OnLevelIteration != nullptr)
 			OnLevelIteration(i, currentValueSize);
+		if (_HasTimeLimit) {
+			auto currentTime = chrono::steady_clock::now();
+			auto ellapsed = chrono::duration_cast<chrono::milliseconds>(currentTime - _StartTime).count();
+			if (ellapsed > TimeLimitMs) {
+				if (OnTimeLimitReached != nullptr)
+					OnTimeLimitReached();
+				_IsTimeLimitReached = true;
+				break;
+			}
+		}
 	}
 	if (OnLevelEnd != nullptr)
 		OnLevelEnd();

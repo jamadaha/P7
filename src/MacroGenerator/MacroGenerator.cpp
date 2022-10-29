@@ -86,11 +86,7 @@ std::unordered_map<GroundedLiteral, bool> latterEffects) {
     std::unordered_map<GroundedLiteral, bool> effects = latterEffects;
 
     for (auto iter : priorEffects) {
-        if (effects.contains(iter.first) && effects.at(iter.first) != iter.second) {
-            effects.erase(iter.first); 
-            break;
-        }
-        effects.emplace(iter.first, iter.second);
+        effects[iter.first] = iter.second;
     }
 
     return effects;

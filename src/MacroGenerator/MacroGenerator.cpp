@@ -83,9 +83,9 @@ std::unordered_map<GroundedLiteral, bool> priorEffs) {
 std::unordered_map<GroundedLiteral, bool> MacroGenerator::CombineEffects(
 std::unordered_map<GroundedLiteral, bool> priorEffects, 
 std::unordered_map<GroundedLiteral, bool> latterEffects) {
-    std::unordered_map<GroundedLiteral, bool> effects = latterEffects;
+    std::unordered_map<GroundedLiteral, bool> effects = priorEffects;
 
-    for (auto iter : priorEffects) {
+    for (auto iter : latterEffects) {
         effects[iter.first] = iter.second;
     }
 

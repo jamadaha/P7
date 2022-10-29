@@ -13,6 +13,9 @@ public:
 private:
     static std::vector<PDDLLiteral> GenerateLiterals(const std::unordered_map<GroundedLiteral, bool> *macroPreconditions, 
     std::unordered_map<unsigned int, unsigned int> *groundedToIndex);
+    static void AppendObjectPreconditions(std::vector<PDDLLiteral> *literals, 
+const std::unordered_map<std::string, unsigned int> predicateMap, 
+const std::vector<std::string> parameters);
 
 };
 

@@ -21,6 +21,7 @@ private:
     unsigned int groundedActionsCount = 0;
     unsigned int macroCount = 0;
 
+    std::vector<PDDLActionInstance> CloneOriginalPath(const std::vector<PDDLActionInstance*> *actions);
     std::vector<GroundedAction> GroundActions(const std::vector<PDDLActionInstance*> *actions);
     GroundedAction CombineActions(const std::vector<GroundedAction> *actions);
     std::unordered_map<GroundedLiteral, bool> CombinePreconditions(

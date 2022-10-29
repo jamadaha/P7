@@ -3,7 +3,15 @@
 Macro MacroGenerator::GenerateMacro(const std::vector<PDDLActionInstance*> *actions) {
     std::vector<GroundedAction> groundedActions = GroundActions(actions);
     GroundedAction combinedAction = CombineActions(&groundedActions);
-    return Macro(combinedAction, *actions);
+    return Macro(combinedAction, CloneOriginalPath(actions));
+}
+
+
+std::vector<PDDLActionInstance> MacroGenerator::CloneOriginalPath(const std::vector<PDDLActionInstance*> *actions) {
+    std::vector<PDDLActionInstance> newPath;
+    for (int i = 0; i < actions->size(); i++)
+        newPath.push_back(PDDLActionInstance(actions->at(i)->action, actions->at(i)->objects));
+    return newPath;
 }
 
 // Duplicate code inside, remove at some point

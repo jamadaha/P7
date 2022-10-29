@@ -103,7 +103,7 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	// Rebuild the SAS Plan
 	ConsoleHelper::PrintInfo("Rebuilding the SAS plan...");
 	report->Begin("Rebuild SAS plan");
-	SASPlan outputPlan = reformulator->RebuildSASPlan(&reformulatedSASPlan);
+	SASPlan outputPlan = reformulator->RebuildSASPlan(&instance, &reformulatedSASPlan);
 	t = report->Stop();
 
 	// Output the new SAS plan

@@ -17,7 +17,9 @@ PDDLInstance InstanceGenerator::GenerateInstance(const PDDLDomain *domain, const
         }
     }
 
-    std::vector<PDDLAction> actions; actions.reserve(macros->size());
+    std::vector<PDDLAction> actions; actions.reserve(domain->actions.size() + macros->size());
+    for (int i = 0; i < domain->actions.size(); i++)
+        actions.push_back(domain->actions.at(i));
     for (int i = 0; i < macros->size(); i++) {
         const Macro *macro = &macros->at(i);
         const std::unordered_set<unsigned int> *macroParameters = &macro->groundedAction.parameters;
@@ -32,8 +34,9 @@ PDDLInstance InstanceGenerator::GenerateInstance(const PDDLDomain *domain, const
         }
 
         std::vector<PDDLLiteral> preconditions = GenerateLiterals(&macro->groundedAction.preconditions, &groundedToIndex);
+        AppendObjectPreconditions(&preconditions, predicateMap, parameters);
         std::vector<PDDLLiteral> effects = GenerateLiterals(&macro->groundedAction.effects, &groundedToIndex);
-        actions.push_back(PDDLAction(macro->groundedAction.name, parameters, preconditions, effects));
+        actions.push_back(PDDLAction(macro->name, parameters, preconditions, effects));
     }
 
     PDDLDomain *newDomain = new PDDLDomain(domain->name, domain->requirements, predicates, predicateMap, actions);
@@ -55,4 +58,14 @@ std::unordered_map<unsigned int, unsigned int> *groundedToIndex) {
         literals.push_back(PDDLLiteral((*iter).first.predicate, args, (*iter).second));
     }
     return literals;
+}
+
+void InstanceGenerator::AppendObjectPreconditions(std::vector<PDDLLiteral> *literals, 
+const std::unordered_map<std::string, unsigned int> predicateMap,
+const std::vector<std::string> parameters) {
+    for (int i = 0; i < parameters.size(); i++) {
+        std::string object = parameters.at(i).substr(1);
+        std::string predicate = "is-" + object;
+        literals->push_back(PDDLLiteral(predicateMap.at(predicate), std::vector<unsigned int>{ i }, true));
+    }
 }

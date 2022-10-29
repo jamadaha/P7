@@ -10,7 +10,7 @@ PDDLInstance SameOutputReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	return newInstance;
 }
 
-SASPlan SameOutputReformulator::RebuildSASPlan(SASPlan* reformulatedSAS) {
+SASPlan SameOutputReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) {
 	SASPlan newPlan(reformulatedSAS->actions, reformulatedSAS->cost);
 	return newPlan;
 }

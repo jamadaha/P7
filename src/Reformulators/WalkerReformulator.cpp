@@ -156,7 +156,7 @@ PDDLInstance WalkerReformulator::GenerateMacros(vector<EntanglementOccurance> ca
 	MacroGenerator macroGenerator = MacroGenerator(instance->domain, instance->problem);
 
 	// Generate Macros
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < candidates.size(); i++) {
 		macros.push_back(macroGenerator.GenerateMacro(&candidates.at(i).Chain));
 	}
 

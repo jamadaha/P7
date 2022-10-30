@@ -91,7 +91,7 @@ struct PDDLState {
 
     // Very slow, please only use with caution
     friend bool operator== (const PDDLState &lhs, const PDDLState &rhs) {
-        return (lhs.unaryFacts != rhs.unaryFacts || lhs.multiFacts != rhs.multiFacts);
+        return (lhs.unaryFacts == rhs.unaryFacts && lhs.multiFacts == rhs.multiFacts);
     };
     
 };

@@ -8,6 +8,7 @@
 #include <string>
 
 #include "PDDLActionInstance.hh"
+#include "../Helpers/Hashes.hh"
 
 struct PDDLInstance;
 
@@ -50,14 +51,23 @@ struct MultiFact {
 private:
 };
 
+namespace std {
+    template <>
+    struct hash<MultiFact> {
+        auto operator()(const MultiFact& s) const -> size_t {
+            return hash<vector<unsigned int>>{}(s.fact);
+        }
+    };
+}
+
 struct PDDLState {
     // Key - Index of predicate | Value - Set of objects which the predicate is true for
     std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts;
     // Key - Index of predicate | Value - List of combinations of objcets which the predicate is true for (Should be a set, but cpp has a stroke trying to has a vector)
-    std::unordered_map<unsigned int, std::vector<MultiFact>> multiFacts;
+    std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts;
 
     PDDLState() {};
-    PDDLState(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts, std::unordered_map<unsigned int, std::vector<MultiFact>> multiFacts) :
+    PDDLState(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts, std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts) :
         unaryFacts(unaryFacts), multiFacts(multiFacts) {};
 
 #pragma region ContainsFact
@@ -66,30 +76,11 @@ struct PDDLState {
     };
 
     bool ContainsFact(const unsigned int key, const MultiFact *value) const {
-        auto AreEqual = [&value](const MultiFact &MF) {
-                    return (*value) == MF;
-                };
-        if (!std::any_of(multiFacts.at(key).begin(), multiFacts.at(key).end(), AreEqual))
-            return false;
-        return true;
-    };
-
-    bool ContainsFact(const unsigned int key, const std::vector<unsigned int> *value) const {
-        auto AreEqual = [&value](const MultiFact &MF) {
-                    return *value == MF;
-                };
-        if (!std::any_of(multiFacts.at(key).begin(), multiFacts.at(key).end(), AreEqual))
-            return false;
-        return true;
+        return multiFacts.at(key).contains(*value);
     };
 
     bool ContainsFact(const unsigned int &key, const std::vector<unsigned int> *indexes, const std::vector<unsigned int> *objects) const {
-        auto AreEqual = [&indexes, &objects](const MultiFact &MF) {
-                    return std::make_pair(indexes, objects) == MF;
-                };
-        if (!std::any_of(multiFacts.at(key).begin(), multiFacts.at(key).end(), AreEqual))
-            return false;
-        return true;
+        return multiFacts.at(key).contains(MultiFact(indexes, objects));
     }
 #pragma endregion ContainsFact
 
@@ -100,47 +91,18 @@ struct PDDLState {
 
     // Very slow, please only use with caution
     friend bool operator== (const PDDLState &lhs, const PDDLState &rhs) {
-        if (lhs.unaryFacts != rhs.unaryFacts)
-            return false;
-
-        if (lhs.multiFacts.size() != rhs.multiFacts.size())
-            return false;
-        
-        for (auto iter = lhs.multiFacts.begin(); iter != lhs.multiFacts.end(); iter++)
-            for (auto iter2 = (*iter).second.begin(); iter2 != (*iter).second.end(); iter2++)
-                if (!rhs.ContainsFact((*iter).first, &(*iter2)))
-                    return false;
-        for (auto iter = rhs.multiFacts.begin(); iter != rhs.multiFacts.end(); iter++)
-            for (auto iter2 = (*iter).second.begin(); iter2 != (*iter).second.end(); iter2++)
-                if (!lhs.ContainsFact((*iter).first, &(*iter2)))
-                    return false;
-
-        
-
-        return true;
+        return (lhs.unaryFacts != rhs.unaryFacts || lhs.multiFacts != rhs.multiFacts);
     };
     
 };
 
 namespace std {
     template <>
-    struct hash<MultiFact> {
-        auto operator()(MultiFact& s) const -> size_t {
-            return 0;
-        }
-    };
-
-    template <>
-    struct hash<vector<MultiFact>> {
-        auto operator()(vector<MultiFact>& vec) const -> size_t {
-            return 0;
-        }
-    };
-
-    template <>
     struct hash<PDDLState> {
         auto operator()(const PDDLState& s) const -> size_t {
-            return 0;
+            size_t h1 = s.unaryFacts.size();
+            size_t h2 = s.multiFacts.size();
+            return h1 ^ (h2 << 1);
         }
     };
 }

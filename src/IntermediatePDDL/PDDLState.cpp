@@ -14,17 +14,10 @@ void PDDLState::DoAction(const PDDLActionInstance *action) {
                 unaryFacts.at(effect.predicateIndex).erase(action->objects.at(effect.args.at(0)));
         } else {
             // Handle multi effect
-            if (effect.value) {
-                if (ContainsFact(effect.predicateIndex, &effect.args, &action->objects))
-                    continue;
-                
-                multiFacts.at(effect.predicateIndex).push_back(MultiFact(&effect.args, &action->objects));
-            } else {
-                if (!ContainsFact(effect.predicateIndex, &effect.args, &action->objects))
-                    continue;
-                auto factSet = &multiFacts.at(effect.predicateIndex);
-                factSet->erase(std::remove(factSet->begin(), factSet->end(), std::make_pair(&effect.args, &action->objects)), factSet->end());
-            }
+            if (effect.value)
+                multiFacts.at(effect.predicateIndex).emplace(MultiFact(action->objects));
+            else
+                multiFacts.at(effect.predicateIndex).erase(MultiFact(action->objects));
         }
     }
 }
@@ -41,17 +34,10 @@ void PDDLState::UndoAction(const PDDLActionInstance *action) {
                 unaryFacts.at(effect.predicateIndex).erase(action->objects.at(effect.args.at(0)));
         } else {
             // Handle multi effect
-            if (!effect.value) {
-                if (ContainsFact(effect.predicateIndex, &effect.args, &action->objects))
-                    continue;
-                
-                multiFacts.at(effect.predicateIndex).push_back(MultiFact(&effect.args, &action->objects));
-            } else {
-                if (!ContainsFact(effect.predicateIndex, &effect.args, &action->objects))
-                    continue;
-                auto factSet = &multiFacts.at(effect.predicateIndex);
-                factSet->erase(std::remove(factSet->begin(), factSet->end(), std::make_pair(&effect.args, &action->objects)), factSet->end());
-            }
+            if (!effect.value)
+                multiFacts.at(effect.predicateIndex).emplace(MultiFact(action->objects));
+            else
+                multiFacts.at(effect.predicateIndex).erase(MultiFact(action->objects));
         }
     }
 }

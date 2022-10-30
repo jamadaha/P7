@@ -115,11 +115,11 @@ std::unordered_map<unsigned int, std::unordered_set<unsigned int>> PDDLConverter
     return unaryFacts;
 };
 
-std::unordered_map<unsigned int, std::vector<MultiFact>> PDDLConverter::GetMultiFacts(PDDLDomain *domain, std::unordered_map<std::string, unsigned int> *objectMap, LiteralList *literalList) {
-    std::unordered_map<unsigned int, std::vector<MultiFact>> multiFacts;
+std::unordered_map<unsigned int, std::unordered_set<MultiFact>> PDDLConverter::GetMultiFacts(PDDLDomain *domain, std::unordered_map<std::string, unsigned int> *objectMap, LiteralList *literalList) {
+    std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts;
     for (int i = 0; i < domain->predicates.size(); i++)
         if (domain->predicates[i].argumentCount > 1)
-            multiFacts[i] = std::vector<MultiFact>();
+            multiFacts[i] = std::unordered_set<MultiFact>();
 
     for (int i = 0; i < literalList->size(); i++) {
         auto fact = (*literalList)[i];
@@ -129,7 +129,7 @@ std::unordered_map<unsigned int, std::vector<MultiFact>> PDDLConverter::GetMulti
         std::vector<unsigned int> objectIndexes;
         for (int a = 0; a < fact->first->_args->size(); a++)
             objectIndexes.push_back(objectMap->at((*fact->first->_args)[a]));
-        multiFacts.at(predicateIndex).push_back(MultiFact(objectIndexes));
+        multiFacts.at(predicateIndex).emplace(MultiFact(objectIndexes));
     }
     return multiFacts;
 }

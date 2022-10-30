@@ -2,13 +2,14 @@
 
 using namespace std;
 
-vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *state) const {
+vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *state) {
     vector<PDDLActionInstance> legalActions;
     const int domainLength = domain->actions.size();
     for (int i = 0; i < domainLength; i++) {
         vector<PDDLActionInstance> tempActions = GenerateActions(&(domain->actions[i]), state);
         copy(tempActions.begin(), tempActions.end(), back_inserter(legalActions));
     }
+    totalActions += legalActions.size();
     return legalActions;
 }
 

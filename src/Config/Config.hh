@@ -22,6 +22,7 @@ public:
 
 
     int GetInteger(std::string name);
+    double GetDouble(std::string name);
     bool GetBool(std::string name);
     std::string GetString(std::string name);
     std::filesystem::path GetPath(std::string name);
@@ -29,6 +30,7 @@ private:
     std::map<std::string, std::string> stringItems;
     std::map<std::string, std::filesystem::path> pathItems;
     std::map<std::string, int> intItems;
+    std::map<std::string, double> doubleItems;
     std::map<std::string, bool> boolItems;
 };
 

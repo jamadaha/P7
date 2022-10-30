@@ -22,7 +22,8 @@ target_link_libraries(P7
         EntanglementFinder
         ActionGenerator
         DepthFunction
-        WidthFunction
-        ProgressBarHelper)
+        Hashes
+        ProgressBarHelper
+        MacroGenerator)
 
 add_executable(P7Lab "P7Lab.cpp")

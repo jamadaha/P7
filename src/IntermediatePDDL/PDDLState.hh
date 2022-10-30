@@ -19,6 +19,9 @@ struct MultiFact {
         for (int i = 0; i < indexes->size(); i++)
             fact.push_back(objects->at(indexes->at(i)));
     };
+
+#pragma region Operators
+#pragma region Equality
     friend bool operator== (const MultiFact &lhs, const MultiFact &rhs) {
         return lhs.fact == rhs.fact;
     }
@@ -41,6 +44,9 @@ struct MultiFact {
     friend bool operator== (const std::pair<const std::vector<unsigned int>*, const std::vector<unsigned int>*> &lhs, const MultiFact &rhs) {
         return rhs == lhs;
     }
+#pragma endregion Equality
+#pragma endregion Operators
+
 private:
 };
 
@@ -54,13 +60,14 @@ struct PDDLState {
     PDDLState(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts, std::unordered_map<unsigned int, std::vector<MultiFact>> multiFacts) :
         unaryFacts(unaryFacts), multiFacts(multiFacts) {};
 
+#pragma region ContainsFact
     bool ContainsFact(const unsigned int key, const unsigned int value) const {
         return (unaryFacts.at(key).contains(value));
     };
 
-    bool ContainsFact(const unsigned int key, const MultiFact value) const {
+    bool ContainsFact(const unsigned int key, const MultiFact *value) const {
         auto AreEqual = [&value](const MultiFact &MF) {
-                    return value == MF;
+                    return (*value) == MF;
                 };
         if (!std::any_of(multiFacts.at(key).begin(), multiFacts.at(key).end(), AreEqual))
             return false;
@@ -84,76 +91,56 @@ struct PDDLState {
             return false;
         return true;
     }
+#pragma endregion ContainsFact
+
+    void DoAction(const PDDLActionInstance *action);
+    void UndoAction(const PDDLActionInstance *action);
+
+    std::string ToString(const PDDLInstance* instance);
 
     // Very slow, please only use with caution
     friend bool operator== (const PDDLState &lhs, const PDDLState &rhs) {
-        // Check unary facts
-        //// Check that they contain the same keys
-        for (auto iter : lhs.unaryFacts)
-            if (!rhs.unaryFacts.contains(iter.first))
-                return false;
-        for (auto iter : rhs.unaryFacts)
-            if (!lhs.unaryFacts.contains(iter.first))
-                return false;
-        //// 
-        //// Check that they contain the same values
-        for (auto iter : lhs.unaryFacts)
-            if (lhs.unaryFacts.at(iter.first) != rhs.unaryFacts.at(iter.first))
-                return false;
-        ////
-        //
-        // Check multi facts
-        //// Check that they contain the same keys
-        for (auto iter : lhs.multiFacts)
-            if (!rhs.multiFacts.contains(iter.first))
-                return false;
-        for (auto iter : rhs.multiFacts)
-            if (!lhs.multiFacts.contains(iter.first))
-                return false;
-        //// 
-        //// Check that they contain the same values
-        for (auto iter : lhs.multiFacts)
-            if (lhs.multiFacts.at(iter.first) != rhs.multiFacts.at(iter.first))
-                return false;
-        ////
-        // 
+        if (lhs.unaryFacts != rhs.unaryFacts)
+            return false;
+
+        if (lhs.multiFacts.size() != rhs.multiFacts.size())
+            return false;
+        
+        for (auto iter = lhs.multiFacts.begin(); iter != lhs.multiFacts.end(); iter++)
+            for (auto iter2 = (*iter).second.begin(); iter2 != (*iter).second.end(); iter2++)
+                if (!rhs.ContainsFact((*iter).first, &(*iter2)))
+                    return false;
+        for (auto iter = rhs.multiFacts.begin(); iter != rhs.multiFacts.end(); iter++)
+            for (auto iter2 = (*iter).second.begin(); iter2 != (*iter).second.end(); iter2++)
+                if (!lhs.ContainsFact((*iter).first, &(*iter2)))
+                    return false;
+
+        
 
         return true;
     };
-
-    std::string ToString(const PDDLInstance* instance);
+    
 };
 
 namespace std {
     template <>
     struct hash<MultiFact> {
         auto operator()(MultiFact& s) const -> size_t {
-            std::size_t h1 = hash<vector<unsigned int>>{}(s.fact);
-            return h1;
+            return 0;
         }
     };
 
     template <>
     struct hash<vector<MultiFact>> {
         auto operator()(vector<MultiFact>& vec) const -> size_t {
-            std::size_t seed = vec.size();
-            for (auto& i : vec) {
-                seed ^= hash<MultiFact>{}(i) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-            }
-            return seed;
+            return 0;
         }
     };
 
     template <>
     struct hash<PDDLState> {
         auto operator()(const PDDLState& s) const -> size_t {
-            std::size_t unaryFactSeed = s.unaryFacts.size();
-            for (auto KVPAIR : s.unaryFacts)
-                unaryFactSeed ^= hash<unordered_set<unsigned int>>{}(KVPAIR.second) + 0x9e3779b9 + (unaryFactSeed << 6) + (unaryFactSeed >> 2);
-            std::size_t multiFactSeed = s.multiFacts.size();
-            for (auto KVPAIR : s.multiFacts)
-                multiFactSeed ^= hash<vector<MultiFact>>{}(KVPAIR.second) + 0x9e3779b9 + (unaryFactSeed << 6) + (unaryFactSeed >> 2);
-            return unaryFactSeed ^ (multiFactSeed << 1);
+            return 0;
         }
     };
 }

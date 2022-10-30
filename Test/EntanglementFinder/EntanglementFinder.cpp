@@ -18,8 +18,10 @@ TEST_CASE(TAG + "Can_FindLargeOccurance_1") {
         Path({ constantInstance,constantInstance,constantInstance,constantInstance }),
         Path({ constantInstance,constantInstance,constantInstance,constantInstance }) };
 
-    EntanglementFinder finder(4, -1, 2, 0);
-    auto result = finder.FindEntangledCandidates(paths);
+    auto data = EntanglementFinder::RunData();
+    data.SearchFloor = 4;
+    EntanglementFinder finder(data);
+    auto result = finder.FindEntangledCandidates(&paths);
     REQUIRE(result.size() == 1);
     auto firstObject = *result.begin();
     REQUIRE(firstObject.second.Chain.size() == 4);
@@ -38,8 +40,10 @@ TEST_CASE(TAG + "Can_FindLargeOccurance_2") {
         Path({ constantInstance1,constantInstance2,constantInstance2,constantInstance1 }),
         Path({ constantInstance1,constantInstance2,constantInstance2,constantInstance1 }) };
 
-    EntanglementFinder finder(4,-1,2,1);
-    auto result = finder.FindEntangledCandidates(paths);
+    auto data = EntanglementFinder::RunData();
+    data.SearchFloor = 4;
+    EntanglementFinder finder(data);
+    auto result = finder.FindEntangledCandidates(&paths);
     REQUIRE(result.size() == 1);
     auto firstObject = *result.begin();
     REQUIRE(firstObject.second.Chain.size() == 4);
@@ -58,8 +62,10 @@ TEST_CASE(TAG + "Can_FindLargeOccurance_3") {
         Path({ constantInstance1,constantInstance2,constantInstance2,constantInstance1 }),
         Path({ constantInstance1,constantInstance2,constantInstance2,constantInstance1 }) };
 
-    EntanglementFinder finder(4, -1, 2, 0);
-    auto result = finder.FindEntangledCandidates(paths);
+    auto data = EntanglementFinder::RunData();
+    data.SearchFloor = 4;
+    EntanglementFinder finder(data);
+    auto result = finder.FindEntangledCandidates(&paths);
     REQUIRE(result.size() == 2);
     for(auto i = result.begin(); i != result.end(); i++)
         REQUIRE((*i).second.Chain.size() == 4);
@@ -78,8 +84,10 @@ TEST_CASE(TAG + "Can_FindLargeOccurance_Uneven_1") {
         Path({ constantInstance1,constantInstance2,constantInstance2,constantInstance1 }),
         Path({ constantInstance2,constantInstance2,constantInstance1 }) };
 
-    EntanglementFinder finder(4, -1, 2, 0);
-    auto result = finder.FindEntangledCandidates(paths);
+    auto data = EntanglementFinder::RunData();
+    data.SearchFloor = 4;
+    EntanglementFinder finder(data);
+    auto result = finder.FindEntangledCandidates(&paths);
     REQUIRE(result.size() == 1);
 }
 
@@ -97,8 +105,10 @@ TEST_CASE(TAG + "Cant_FindLargeOccurance_IfNotThere_1") {
         Path({ constantInstance1,constantInstance1,constantInstance2,constantInstance1 }),
         Path({ constantInstance1,constantInstance2,constantInstance1,constantInstance1 }) };
 
-    EntanglementFinder finder(4);
-    auto result = finder.FindEntangledCandidates(paths);
+    auto data = EntanglementFinder::RunData();
+    data.SearchFloor = 4;
+    EntanglementFinder finder(data);
+    auto result = finder.FindEntangledCandidates(&paths);
     REQUIRE(result.size() == 0);
 }
 
@@ -114,8 +124,10 @@ TEST_CASE(TAG + "Cant_FindLargeOccurance_IfNotThere_2") {
         Path({ constantInstance1,constantInstance2,constantInstance1,constantInstance1 }),
         Path({ constantInstance2,constantInstance1,constantInstance1,constantInstance1 }) };
 
-    EntanglementFinder finder(4);
-    auto result = finder.FindEntangledCandidates(paths);
+    auto data = EntanglementFinder::RunData();
+    data.SearchFloor = 4;
+    EntanglementFinder finder(data);
+    auto result = finder.FindEntangledCandidates(&paths);
     REQUIRE(result.size() == 0);
 }
 
@@ -135,8 +147,10 @@ TEST_CASE(TAG + "Can_FindMediumOccurance_1") {
         Path({ constantInstance1,constantInstance1,constantInstance2,constantInstance1 }),
         Path({ constantInstance1,constantInstance2,constantInstance1,constantInstance1 }) };
 
-    EntanglementFinder finder(2,-1,2,1);
-    auto result = finder.FindEntangledCandidates(paths);
+    auto data = EntanglementFinder::RunData();
+    data.SearchFloor = 2;
+    EntanglementFinder finder(data);
+    auto result = finder.FindEntangledCandidates(&paths);
     REQUIRE(result.size() == 1);
 }
 
@@ -152,8 +166,10 @@ TEST_CASE(TAG + "Can_FindMediumOccurance_Uneven_1") {
         Path({ constantInstance1,constantInstance1,constantInstance2,constantInstance1 }),
         Path({ constantInstance1,constantInstance2,constantInstance1,constantInstance1, constantInstance1 }) };
 
-    EntanglementFinder finder(2, -1, 2, 1);
-    auto result = finder.FindEntangledCandidates(paths);
+    auto data = EntanglementFinder::RunData();
+    data.SearchFloor = 2;
+    EntanglementFinder finder(data);
+    auto result = finder.FindEntangledCandidates(&paths);
     REQUIRE(result.size() == 1);
 }
 
@@ -169,8 +185,10 @@ TEST_CASE(TAG + "Can_FindMediumOccurance_Uneven_2") {
         Path({ constantInstance1,constantInstance1,constantInstance2,constantInstance1, constantInstance1 }),
         Path({ constantInstance1,constantInstance2,constantInstance1,constantInstance1 }) };
 
-    EntanglementFinder finder(2, -1, 2, 1);
-    auto result = finder.FindEntangledCandidates(paths);
+    auto data = EntanglementFinder::RunData();
+    data.SearchFloor = 2;
+    EntanglementFinder finder(data);
+    auto result = finder.FindEntangledCandidates(&paths);
     REQUIRE(result.size() == 1);
 }
 
@@ -186,8 +204,10 @@ TEST_CASE(TAG + "Can_FindMediumOccurance_Uneven_3") {
         Path({ constantInstance1,constantInstance1 }),
         Path({ constantInstance1,constantInstance2,constantInstance1,constantInstance1 }) };
 
-    EntanglementFinder finder(2, -1, 2, 1);
-    auto result = finder.FindEntangledCandidates(paths);
+    auto data = EntanglementFinder::RunData();
+    data.SearchFloor = 2;
+    EntanglementFinder finder(data);
+    auto result = finder.FindEntangledCandidates(&paths);
     REQUIRE(result.size() == 1);
 }
 
@@ -208,8 +228,10 @@ TEST_CASE(TAG + "Cant_FindMediumOccurance_IfNotThere") {
         Path({ constantInstance2,constantInstance2,constantInstance2 }),
         Path({ constantInstance3,constantInstance3,constantInstance3 }) };
 
-    EntanglementFinder finder(2, -1, 2, 1);
-    auto result = finder.FindEntangledCandidates(paths);
+    auto data = EntanglementFinder::RunData();
+    data.SearchFloor = 2;
+    EntanglementFinder finder(data);
+    auto result = finder.FindEntangledCandidates(&paths);
     REQUIRE(result.size() == 0);
 }
 
@@ -226,8 +248,10 @@ TEST_CASE(TAG + "Cant_FindMediumOccurance_IfNotThere_Uneven") {
         Path({ constantInstance2 }),
         Path({ constantInstance3,constantInstance3 }) };
 
-    EntanglementFinder finder(2, -1, 2, 1);
-    auto result = finder.FindEntangledCandidates(paths);
+    auto data = EntanglementFinder::RunData();
+    data.SearchFloor = 2;
+    EntanglementFinder finder(data);
+    auto result = finder.FindEntangledCandidates(&paths);
     REQUIRE(result.size() == 0);
 }
 
@@ -247,8 +271,10 @@ TEST_CASE(TAG + "Can_FindSmallOccurance_1") {
         Path({ constantInstance1,constantInstance1,constantInstance2,constantInstance1, constantInstance1, constantInstance2 }),
         Path({ constantInstance1,constantInstance2,constantInstance1,constantInstance1, constantInstance1, constantInstance1 }) };
 
-    EntanglementFinder finder(2, -1, 2, 1);
-    auto result = finder.FindEntangledCandidates(paths);
+    auto data = EntanglementFinder::RunData();
+    data.SearchFloor = 2;
+    EntanglementFinder finder(data);
+    auto result = finder.FindEntangledCandidates(&paths);
     REQUIRE(result.size() == 3);
 }
 
@@ -266,8 +292,10 @@ TEST_CASE(TAG + "Cant_FindSmallOccurance_1") {
         Path({ constantInstance1,constantInstance1 }),
         Path({ constantInstance2,constantInstance2 }) };
 
-    EntanglementFinder finder(2, -1, 2, 1);
-    auto result = finder.FindEntangledCandidates(paths);
+    auto data = EntanglementFinder::RunData();
+    data.SearchFloor = 2;
+    EntanglementFinder finder(data);
+    auto result = finder.FindEntangledCandidates(&paths);
     REQUIRE(result.size() == 0);
 }
 

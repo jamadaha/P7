@@ -9,10 +9,10 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	// Find a suitable reformulator
 	ConsoleHelper::PrintInfo("Finding reformulator algorithm...");
 	report->Begin("Finding Reformulator");
-	if (config.GetString("reformulator") == "SameOutput") {
+	if (config.GetString("reformulator") == "sameoutput") {
 		reformulator = new SameOutputReformulator(&config);
-	} else 	if (config.GetString("reformulator") == "RandomWalker") {
-		reformulator = new RandomWalkerReformulator(&config);
+	} else 	if (config.GetString("reformulator") == "walker") {
+		reformulator = new WalkerReformulator(&config);
 	}
 	else{
 		ConsoleHelper::PrintError("Reformulator not found! Reformulator: " + config.GetString("reformulator"));
@@ -62,7 +62,7 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	// Generate new PDDL files
 	ConsoleHelper::PrintInfo("Generating PDDL files...");
 	report->Begin("Generating PDDL");
-	PDDLCodeGenerator pddlGenerator = PDDLCodeGenerator(PDDLDomainCodeGenerator(&domain), PDDLProblemCodeGenerator(&domain, &problem));
+	PDDLCodeGenerator pddlGenerator = PDDLCodeGenerator(PDDLDomainCodeGenerator(reformulatedInstance.domain), PDDLProblemCodeGenerator(reformulatedInstance.domain, reformulatedInstance.problem));
 	pddlGenerator.GenerateCode(reformulatedInstance, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
 	t = report->Stop();
 
@@ -103,7 +103,7 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	// Rebuild the SAS Plan
 	ConsoleHelper::PrintInfo("Rebuilding the SAS plan...");
 	report->Begin("Rebuild SAS plan");
-	SASPlan outputPlan = reformulator->RebuildSASPlan(&reformulatedSASPlan);
+	SASPlan outputPlan = reformulator->RebuildSASPlan(&instance, &reformulatedSASPlan);
 	t = report->Stop();
 
 	// Output the new SAS plan

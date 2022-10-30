@@ -46,10 +46,10 @@ for line in lines:
         settingscontent += line
 
 #if not found in config file the default values are used
-#report - build/LabReport
-#project - build/src/P7
-reportfolder = get_from_argument(reportline,__file__, "build/LabReport")
-projectfile = get_from_argument(projectline,__file__, "build/src/P7")
+#report - LabReport
+#project - src/P7
+reportfolder = get_from_argument(reportline,__file__, "LabReport")
+projectfile = get_from_argument(projectline,__file__, "src/P7")
 
 #decide if labs method to find domains and problems should be used
 #since lab wants the benchmarksfolder to have a specific structure
@@ -85,7 +85,7 @@ for task in tasks:
     settingscontent += "PATH:problem=" + task.problem_file + "\n"
 
     run = experiment.add_run()
-    run.add_new_file("config","settings.ini",settingscontent)
+    run.add_new_file("config","TempSettings.ini",settingscontent)
     run.add_command("planner", [abs_path(__file__,projectfile),"{config}"])
 
     run.set_property("id",[search, heuristic, task.domain, task.problem])

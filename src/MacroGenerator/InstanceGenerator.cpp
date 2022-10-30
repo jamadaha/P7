@@ -63,7 +63,7 @@ std::unordered_map<unsigned int, unsigned int> *groundedToIndex) {
 void InstanceGenerator::AppendObjectPreconditions(std::vector<PDDLLiteral> *literals, 
 const std::unordered_map<std::string, unsigned int> predicateMap,
 const std::vector<std::string> parameters) {
-    for (int i = 0; i < parameters.size(); i++) {
+    for (unsigned int i = 0; i < parameters.size(); i++) {
         std::string object = parameters.at(i).substr(1);
         std::string predicate = "is-" + object;
         literals->push_back(PDDLLiteral(predicateMap.at(predicate), std::vector<unsigned int>{ i }, true));

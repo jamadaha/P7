@@ -12,7 +12,7 @@ PDDLInstance WalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	// Generate new Macros
 	auto newInstance = GenerateMacros(candidates, instance);
 
-	return *instance;
+	return newInstance;
 }
 
 vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
@@ -153,12 +153,44 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 }
 
 PDDLInstance WalkerReformulator::GenerateMacros(vector<EntanglementOccurance> candidates, PDDLInstance* instance) {
-	PDDLInstance newInstance(instance->domain, instance->problem);
-	return newInstance;
+	MacroGenerator macroGenerator = MacroGenerator(instance->domain, instance->problem);
+
+	// Generate Macros
+	for (int i = 0; i < candidates.size(); i++) {
+		macros.push_back(macroGenerator.GenerateMacro(&candidates.at(i).Chain));
+	}
+
+	return InstanceGenerator::GenerateInstance(instance->domain, instance->problem, &macros);
 }
 
-SASPlan WalkerReformulator::RebuildSASPlan(SASPlan* reformulatedSAS) {
+SASPlan WalkerReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) {
+	std::vector<SASAction> actions;
+	for (int i = 0; i < reformulatedSAS->actions.size(); i++) {
+		auto sasAction = reformulatedSAS->actions.at(i);
+		unsigned int actionIndex = -1;
+		for (int t = 0; t < instance->domain->actions.size(); t++)
+			if (instance->domain->actions.at(t).name == sasAction.name)
+				actionIndex = t;
+		if (actionIndex != -1) {
+			// Untested
+			std::vector<std::string> args;
+			for (int t = 0; t < sasAction.parameters.size(); t++)
+				args.push_back(sasAction.parameters.at(t));
+			actions.push_back(SASAction(sasAction.name, args));
+		} else {
+			for (auto macro : macros) {
+				if (sasAction.name == macro.name)
+					for (auto macroAction : macro.path) {
+						std::vector<std::string> args; args.reserve(macroAction.objects.size());
+						for (auto object : macroAction.objects) 
+							args.push_back(instance->problem->objects.at(object));
+						actions.push_back(SASAction(macroAction.action->name, args));
+					}
+						
+			}
+		}
+	}
 	// Do Something and give a "corrected" SAS plan back
-	SASPlan newPlan(reformulatedSAS->actions, reformulatedSAS->cost);
+	SASPlan newPlan = SASPlan(actions, actions.size());
 	return newPlan;
 } 

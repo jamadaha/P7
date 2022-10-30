@@ -3,6 +3,7 @@
 
 #include <chrono>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "BaseReformulator.hh"
 #include "../Walker/Walker.hpp"
@@ -19,6 +20,8 @@
 #include "../EntanglementFinder/EntanglementEvaluator.hh"
 #include "../EntanglementFinder/EntanglementEvaluatorModifiers.hh"
 #include "../Helpers/ProgressBarHelper.hh"
+#include "../MacroGenerator/MacroGenerator.hh"
+#include "../MacroGenerator/InstanceGenerator.hh"
 
 class WalkerReformulator : public BaseReformulator {
 public:
@@ -26,8 +29,9 @@ public:
 
 	}
 	PDDLInstance ReformulatePDDL(PDDLInstance* instance) override;
-	SASPlan RebuildSASPlan(SASPlan* reformulatedSAS) override;
+	SASPlan RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) override;
 private:
+	std::vector<Macro> macros;
 	std::vector<Path> PerformWalk(PDDLInstance* instance);
 	std::vector<EntanglementOccurance> FindEntanglements(std::vector<Path>* paths, PDDLInstance* instance);
 	PDDLInstance GenerateMacros(std::vector<EntanglementOccurance> candidates, PDDLInstance* instance);

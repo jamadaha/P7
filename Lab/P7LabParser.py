@@ -92,17 +92,11 @@ from lab.parser import Parser
 
 def get_times(content, props):
 
-    print(type(content))
-    test = content.split("(%)\n")[1].split("Total Time")[0]
-    print(test)
-
-    all_names = re.findall(r"(([a-zA-Z]+\s)+)",test)
-    all_times = re.findall(r"(\d+\.\d+)", content)
-
-    print(type(all_names[0]))
-    print(all_names)
-    print(all_times)
-
+    result = content.split("(%)\n")[1].split("Total Time")[0]
+    
+    all_names = re.findall(r"(([a-zA-Z]+\s)+)",result)
+    all_times = re.findall(r"(\d+\.\d+)", result)
+    
     times = all_times[::2]
     procents = all_times[1::2]
 

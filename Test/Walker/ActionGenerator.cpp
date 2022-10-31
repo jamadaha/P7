@@ -10,7 +10,7 @@ const std::string TAG = "ActionGenerator ";
 TEST_CASE(TAG + "IsLegal SingleLiteral") {
     const PDDLState state {
         std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{},
-        std::unordered_map<unsigned int, std::vector<MultiFact>>{
+        std::unordered_map<unsigned int, std::unordered_set<MultiFact>>{
             {0, {}},
             {1, {MultiFact({ 0, 1 }), MultiFact({ 0, 2 })}},
             {2, {MultiFact({ 0, 1, 2 })}}
@@ -66,7 +66,7 @@ TEST_CASE(TAG + "IsLegal SingleLiteral") {
 TEST_CASE(TAG + "IsLegal MultiLiteral") {
     PDDLState state {
         std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{},
-        std::unordered_map<unsigned int, std::vector<MultiFact>>{
+        std::unordered_map<unsigned int, std::unordered_set<MultiFact>>{
             {0, {}},
             {1, {MultiFact({ 0, 1 })}},
             {2, {MultiFact({ 0, 1, 2 })}}
@@ -173,7 +173,7 @@ PDDLDomain GenerateDomain(std::vector<PDDLAction> actions = std::vector<PDDLActi
     actions);
 }
 
-PDDLProblem GenerateProblem(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts = std::unordered_map<unsigned int, std::unordered_set<unsigned int>> {}, std::unordered_map<unsigned int, std::vector<MultiFact>> multiFacts = std::unordered_map<unsigned int, std::vector<MultiFact>> {}, 
+PDDLProblem GenerateProblem(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts = std::unordered_map<unsigned int, std::unordered_set<unsigned int>> {}, std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts = std::unordered_map<unsigned int, std::unordered_set<MultiFact>> {}, 
 PDDLDomain *domain = nullptr, std::vector<std::string> objects = std::vector<std::string>()) {
     return PDDLProblem("Test", 
     domain, 
@@ -203,7 +203,7 @@ TEST_CASE(TAG + "GenerateActions Unary - 1 Legal") {
     });
     PDDLProblem problem = GenerateProblem(std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{
         { 1, { 0 } }
-    }, std::unordered_map<unsigned int, std::vector<MultiFact>>{
+    }, std::unordered_map<unsigned int, std::unordered_set<MultiFact>>{
 
     }, &domain,
     std::vector<std::string> {
@@ -227,7 +227,7 @@ TEST_CASE(TAG + "GenerateActions Unary - 0 Legal") {
     });
     PDDLProblem problem = GenerateProblem(std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{
         { 1, { 0 } }
-    }, std::unordered_map<unsigned int, std::vector<MultiFact>>{
+    }, std::unordered_map<unsigned int, std::unordered_set<MultiFact>>{
 
     }, &domain,
     std::vector<std::string> {
@@ -251,7 +251,7 @@ TEST_CASE(TAG + "GenerateActions Equal") {
     });
     PDDLProblem problem = GenerateProblem(std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{
         
-    }, std::unordered_map<unsigned int, std::vector<MultiFact>>{
+    }, std::unordered_map<unsigned int, std::unordered_set<MultiFact>>{
 
     }, &domain,
     std::vector<std::string> {
@@ -275,7 +275,7 @@ TEST_CASE(TAG + "GenerateActions Not Equal") {
     });
     PDDLProblem problem = GenerateProblem(std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{
         
-    }, std::unordered_map<unsigned int, std::vector<MultiFact>>{
+    }, std::unordered_map<unsigned int, std::unordered_set<MultiFact>>{
 
     }, &domain,
     std::vector<std::string> {
@@ -299,7 +299,7 @@ TEST_CASE(TAG + "GenerateActions Multi - 1 Legal") {
     });
     PDDLProblem problem = GenerateProblem(std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{
         
-    }, std::unordered_map<unsigned int, std::vector<MultiFact>>{
+    }, std::unordered_map<unsigned int, std::unordered_set<MultiFact>>{
         { 2, { MultiFact({0, 1} )} }
     }, &domain,
     std::vector<std::string> {
@@ -406,7 +406,7 @@ TEST_CASE(TAG + "RemoveIllegal SingleLiteral") {
             {1, std::unordered_set<unsigned int>{ 0 }},
             {2, std::unordered_set<unsigned int>{ 0, 1 }}
         },
-        std::unordered_map<unsigned int, std::vector<MultiFact>>{}
+        std::unordered_map<unsigned int, std::unordered_set<MultiFact>>{}
     };
     SECTION("EmptySet") {
         std::unordered_set<unsigned int> candidateSet{ };
@@ -466,7 +466,7 @@ TEST_CASE(TAG + "RemoveIllegal MultiLiteral") {
             {1, std::unordered_set<unsigned int>{ 0 }},
             {2, std::unordered_set<unsigned int>{ 0, 1 }}
         },
-        std::unordered_map<unsigned int, std::vector<MultiFact>>{}
+        std::unordered_map<unsigned int, std::unordered_set<MultiFact>>{}
     };
     std::unordered_set<unsigned int> set{ 0, 1, 2 };
     std::unordered_set<const PDDLLiteral*> literals{

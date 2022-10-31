@@ -3,6 +3,9 @@
 
 #include <vector>
 
+#include "../Helpers/Hashes.hh"
+
+
 struct PDDLLiteral {
     // Index of domain predicate list
     const unsigned int predicateIndex;
@@ -22,5 +25,16 @@ struct PDDLLiteral {
         return true;
     }
 };
+
+namespace std {
+    template <>
+    struct hash<PDDLLiteral> {
+        auto operator()(const PDDLLiteral& s) const -> size_t {
+            std::size_t h1 = hash<unsigned int>{}(s.predicateIndex);
+            std::size_t h2 = hash<vector<unsigned int>>{}(s.args);
+            return h1 ^ (h2 << 1);
+        }
+    };
+}
 
 #endif

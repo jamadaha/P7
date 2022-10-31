@@ -174,7 +174,7 @@ To launch in Visual Studio (Note: This is the inferior version):
       "project": "CMakeLists.txt",
       "projectTarget": "P7Lab",
       "debuggerConfiguration": "gdb",
-      "cwd": "/root/.vs/P7/",
+      "cwd": "/root/.vs/P7/build",
       "args": [
         "'--all'",
         "--settings 'settingsLab.ini'"
@@ -189,7 +189,7 @@ To launch in Visual Studio (Note: This is the inferior version):
       "projectTarget": "P7Lab",
       "comment": "P7 with Lab",
       "debuggerConfiguration": "gdb",
-      "cwd": "/root/.vs/P7/",
+      "cwd": "/root/.vs/P7/build",
       "args": [
         "'--all'",
         "--settings 'settingsLabMultiple.ini'"

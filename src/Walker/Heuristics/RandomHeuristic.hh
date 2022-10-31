@@ -5,10 +5,12 @@
 
 class RandomHeuristic : public BaseHeuristic {
 public:
-	RandomHeuristic() : BaseHeuristic(nullptr, nullptr){
+	RandomHeuristic(bool isDebug) : BaseHeuristic(nullptr, nullptr){
 		// 0 for debugging purposes
-		srand(0);
-		//srand(time(NULL));
+		if (isDebug)
+			srand(0);
+		else
+			srand(time(NULL));
 	};
 
 	PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const override {

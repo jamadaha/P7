@@ -19,13 +19,14 @@ int main(int argc, char** argv){
 		CompareRunReport compareReport;
 		bool isAllGood = true;
 		for (int i = 0; i < config.GetStringList("reformulator").size(); i++) {
-			RunReport report = RunReport();
+			RunReport report = RunReport(config.GetStringList("reformulator").at(i));
 			CommonInterface interface = CommonInterface(config);
 			auto runResult = interface.Run(&report, i);
 			if (runResult != CommonInterface::RunResult::RanWithoutErrors) {
 				isAllGood = false;
 				break;
 			}
+			report.Print();
 			compareReport.AddReport(report);
 		}
 		if (isAllGood)
@@ -33,7 +34,7 @@ int main(int argc, char** argv){
 	}
 	else 
 	{
-		RunReport report = RunReport();
+		RunReport report = RunReport(config.GetStringList("reformulator").at(0));
 		CommonInterface interface = CommonInterface(config);
 		auto runResult = interface.Run(&report);
 		if (runResult == CommonInterface::RunResult::RanWithoutErrors)

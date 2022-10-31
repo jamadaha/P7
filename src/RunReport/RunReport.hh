@@ -23,6 +23,11 @@ public:
         ns
     };
 
+    double TotalTime = 0;
+    std::string Reformulator;
+
+    RunReport(std::string reformulator) : Reformulator(reformulator){};
+
     int Begin(std::string desc);
 
     // Returns time taken
@@ -34,7 +39,6 @@ public:
     int64_t Stop(int i, TimeScale ts = TimeScale::ms);
 
     void Print(TimeScale ts = TimeScale::ms);
-
 private:
     std::vector<ReportStep> steps;
 };

@@ -33,11 +33,13 @@ int64_t RunReport::Stop(int i, RunReport::TimeScale ts) {
     steps[i].finished = true;
 
     if (ts == RunReport::TimeScale::ns) {
-        TotalTime += steps[i].time;
+        if (steps[i].parent == -1)
+            TotalTime += steps[i].time;
         return steps[i].time;
     }
     else {
-        TotalTime += steps[i].time / 1000000;
+        if (steps[i].parent == -1)
+            TotalTime += steps[i].time / 1000000;
         return steps[i].time / 1000000;
     }
 }

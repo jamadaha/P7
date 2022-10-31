@@ -42,6 +42,9 @@ for line in lines:
         reportline = line.split("=")[1].strip("\n")
     elif "project" in line:
         projectline = line.split("=")[1].strip("\n")
+    elif "downward" in line or "validator" in line:
+        argument = line.split("=")
+        settingscontent += argument[0] + "=" + abs_path(__file__, argument[1]) 
     else:
         settingscontent += line
 

@@ -8,7 +8,6 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report, int refo
 
 	// Find a suitable reformulator
 	ConsoleHelper::PrintInfo("Finding reformulator algorithm...");
-	report->Begin("Finding Reformulator");
 	if (config.GetStringList("reformulator").at(reformulatorIndex) == "sameoutput") {
 		reformulator = new SameOutputReformulator(&config, report);
 	} else 	if (config.GetStringList("reformulator").at(reformulatorIndex) == "walker") {

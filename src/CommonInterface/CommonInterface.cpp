@@ -2,16 +2,16 @@
 
 using namespace std;
 
-enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
+enum CommonInterface::RunResult CommonInterface::Run(RunReport* report, int reformulatorIndex) {
 	int64_t t;
 	BaseReformulator* reformulator;
 
 	// Find a suitable reformulator
 	ConsoleHelper::PrintInfo("Finding reformulator algorithm...");
 	report->Begin("Finding Reformulator");
-	if (config.GetString("reformulator") == "sameoutput") {
+	if (config.GetStringList("reformulator").at(reformulatorIndex) == "sameoutput") {
 		reformulator = new SameOutputReformulator(&config);
-	} else 	if (config.GetString("reformulator") == "walker") {
+	} else 	if (config.GetStringList("reformulator").at(reformulatorIndex) == "walker") {
 		reformulator = new WalkerReformulator(&config);
 	}
 	else{

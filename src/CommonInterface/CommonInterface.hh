@@ -25,7 +25,7 @@ public:
 	CommonInterface(Config config, std::string tempDomainName = "tempDomain.pddl", std::string tempProblemName = "tempProblem.pddl", std::string fastDownwardSASName = "sas_plan", std::string outputSASName = "real_sas_plan") :
 	config(config), TempDomainName(tempDomainName), TempProblemName(tempProblemName), FastDownwardSASName(fastDownwardSASName), OutputSASName(outputSASName){};
 
-	enum RunResult Run(RunReport* report);
+	enum RunResult Run(RunReport* report, int reformulatorIndex = 0);
 
 private:
 	Config config;

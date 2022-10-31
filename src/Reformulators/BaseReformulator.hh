@@ -4,10 +4,11 @@
 #include "../IntermediatePDDL/PDDLInstance.hh"
 #include "../SASParser/SASParser.hh"
 #include "../Config/Config.hh"
+#include "../RunReport/RunReport.hh"
 
 class BaseReformulator {
 public:
-	BaseReformulator(Config* config) : Configs(config) {
+	BaseReformulator(Config* config, RunReport *report) : Configs(config), report(report) {
 
 	}
 
@@ -15,6 +16,7 @@ public:
 	virtual SASPlan RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) = 0;
 protected:
 	Config* Configs;
+	RunReport *report;
 };
 
 #endif

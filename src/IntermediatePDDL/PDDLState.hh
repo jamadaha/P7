@@ -71,11 +71,15 @@ struct PDDLState {
         unaryFacts(unaryFacts), multiFacts(multiFacts) {};
 
 #pragma region ContainsFact
-    bool ContainsFact(const unsigned int key, const unsigned int value) const {
-        return (unaryFacts.at(key).contains(value));
+
+    bool ContainsFact(const unsigned int &key, const unsigned int *value) const {
+        return unaryFacts.at(key).contains(*value);
+    };
+    bool ContainsFact(const unsigned int &key, const unsigned int &value) const {
+        return unaryFacts.at(key).contains(value);
     };
 
-    bool ContainsFact(const unsigned int key, const MultiFact *value) const {
+    bool ContainsFact(const unsigned int &key, const MultiFact *value) const {
         return multiFacts.at(key).contains(*value);
     };
 

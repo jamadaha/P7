@@ -38,7 +38,6 @@ public:
 	PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const override {
 		int bestIndex = -1;
 		int bestValue = -1;
-		const int currentValue = Eval(state);
 		auto engine = std::default_random_engine{};
 
 		// The purpose of this init bullshitery is making it take random choices in case of equal values
@@ -66,12 +65,12 @@ public:
 	int Eval(const PDDLState *state) const override {
 		int value = 0;
 		for (auto iter = problem->goalState.unaryFacts.begin(); iter != problem->goalState.unaryFacts.end(); iter++)
-			for (auto fact : (*iter).second)
-				if (state->ContainsFact((*iter).first, fact))
+			for (auto factIter = (*iter).second.begin(); factIter != (*iter).second.end(); factIter++)
+				if (state->ContainsFact((*iter).first, &(*factIter)))
 					value += 1000;
 		for (auto iter = problem->goalState.multiFacts.begin(); iter != problem->goalState.multiFacts.end(); iter++)
-			for (auto fact : (*iter).second)
-				if (state->ContainsFact((*iter).first, &fact))
+			for (auto factIter = (*iter).second.begin(); factIter != (*iter).second.end(); factIter++)
+				if (state->ContainsFact((*iter).first, &(*factIter)))
 					value += 1000;
 		for (auto iter = goalPreconditions.begin(); iter != goalPreconditions.end(); iter++) {
 			if (domain->predicates.at((*iter)).arguments.size() == 1)

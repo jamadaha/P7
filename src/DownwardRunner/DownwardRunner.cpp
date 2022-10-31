@@ -3,12 +3,12 @@
 using namespace std;
 
 void DownwardRunner::RunDownward(Config config, string reformulatedDomain, string reformulatedProblem) {
-	string path = config.GetPath("downwardpath").c_str();
+	string path = config.GetItem<filesystem::path>("downwardpath").c_str();
 	string command;
-	if (config.GetString("downwardheuristic").find("[") == std::string::npos)
-		command = path + " " + reformulatedDomain + " " + reformulatedProblem + " --search \"" + config.GetString("downwardsearch") + "(" + config.GetString("downwardheuristic") + "())\"" + " > " + RunnerLogName;
+	if (config.GetItem<string>("downwardheuristic").find("[") == std::string::npos)
+		command = path + " " + reformulatedDomain + " " + reformulatedProblem + " --search \"" + config.GetItem<string>("downwardsearch") + "(" + config.GetItem<string>("downwardheuristic") + "())\"" + " > " + RunnerLogName;
 	else
-		command = path + " " + reformulatedDomain + " " + reformulatedProblem + " --search \"" + config.GetString("downwardsearch") + "(" + config.GetString("downwardheuristic") + ")\"" + " > " + RunnerLogName;
+		command = path + " " + reformulatedDomain + " " + reformulatedProblem + " --search \"" + config.GetItem<string>("downwardsearch") + "(" + config.GetItem<string>("downwardheuristic") + ")\"" + " > " + RunnerLogName;
 	system(command.c_str());
 }
 

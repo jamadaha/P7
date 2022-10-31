@@ -7,6 +7,7 @@
 #include <iostream>
 #include <stdarg.h>  // For va_start, etc.
 #include <cstring>
+#include <vector>
 
 class StringHelper {
 public:
@@ -15,6 +16,7 @@ public:
 	static void Trim(std::string* buffer);
 	static std::string Trim(std::string buffer);
 	static std::string StringFormat(const std::string fmt_str, ...);
+	static std::vector<std::string> Split(std::string input, char delimiter);
 };
 
 #endif

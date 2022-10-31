@@ -16,24 +16,16 @@
 
 class Config {
 public:
-
     void ParseConfigFile(std::filesystem::path path);
     void ParseConfigItem(std::string line);
 
-
-    int GetInteger(std::string name);
-    double GetDouble(std::string name);
-    bool GetBool(std::string name);
-    std::string GetString(std::string name);
-    std::filesystem::path GetPath(std::string name);
-    std::vector<std::string> GetStringList(std::string name);
+    template <typename T>
+    T GetItem(std::string name);
 private:
-    std::map<std::string, std::string> stringItems;
-    std::map<std::string, std::vector<std::string>> stringListItems;
-    std::map<std::string, std::filesystem::path> pathItems;
-    std::map<std::string, int> intItems;
-    std::map<std::string, double> doubleItems;
-    std::map<std::string, bool> boolItems;
+    template <typename T>
+    T GetNewItem(std::string value);
+
+    std::map<std::string, void*> items;
 };
 
 #endif

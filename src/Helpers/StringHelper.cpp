@@ -55,3 +55,17 @@ std::string StringHelper::StringFormat(const std::string fmt_str, ...) {
     return std::string(formatted.get());
 }
 
+vector<string> StringHelper::Split(string input, char delimiter) {
+    vector<string> newList;
+
+    size_t pos = 0;
+    std::string token;
+    while ((pos = input.find(delimiter)) != std::string::npos) {
+        token = input.substr(0, pos);
+        newList.push_back(token);
+        input.erase(0, pos + 1);
+    }
+    newList.push_back(input);
+
+    return newList;
+}

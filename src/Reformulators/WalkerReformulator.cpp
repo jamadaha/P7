@@ -19,7 +19,7 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 	Walker walker = Walker(instance, ActionGenerator(instance->domain, instance->problem), Configs, report);
 	BaseHeuristic *heuristic;
 	if (Configs->GetString("heuristic") == "random")
-		heuristic = new RandomHeuristic();
+		heuristic = new RandomHeuristic(Configs->GetBool("debugmode"));
 	else if (Configs->GetString("heuristic") == "goalCount")
 		heuristic = new GoalCountHeuristic(instance->domain, instance->problem);
 	else if (Configs->GetString("heuristic") == "goalPredicateCount")
@@ -33,7 +33,7 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 	if (Configs->GetInteger("timelimit") != -1)
 		widthFunc = new TimeWidthFunction(Configs->GetInteger("timelimit"));
 	else
-		widthFunc = new ConstantWidthFunction(100000);
+		widthFunc = new ConstantWidthFunction(500);
 
 	int i = report->Begin("Walking");
 	std::vector<Path> paths = walker.Walk(heuristic, depthFunc, widthFunc);

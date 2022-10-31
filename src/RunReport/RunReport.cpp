@@ -32,10 +32,16 @@ int64_t RunReport::Stop(int i, RunReport::TimeScale ts) {
         steps[i].time += chrono::duration_cast<chrono::nanoseconds>(steps[i].eTime - steps[i].iTime).count();
     steps[i].finished = true;
 
-    if (ts == RunReport::TimeScale::ns)
+    if (ts == RunReport::TimeScale::ns) {
+        if (steps[i].parent == -1)
+            TotalTime += steps[i].time;
         return steps[i].time;
-    else
+    }
+    else {
+        if (steps[i].parent == -1)
+            TotalTime += steps[i].time / 1000000;
         return steps[i].time / 1000000;
+    }
 }
 
 void RunReport::Print(RunReport::TimeScale ts) {

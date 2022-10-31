@@ -57,6 +57,20 @@ void Config::ParseConfigItem(std::string line) {
     else if (typeName == "PATH") {
         pathItems.emplace(name, filesystem::path(value));
     }
+    else if (typeName == "LIST<STRING>") {
+        vector<string> newList;
+        string delimiter = ",";
+
+        size_t pos = 0;
+        std::string token;
+        while ((pos = value.find(delimiter)) != std::string::npos) {
+            token = value.substr(0, pos);
+            newList.push_back(token);
+            value.erase(0, pos + delimiter.length());
+        }
+        newList.push_back(value);
+        stringListItems.emplace(name, newList);
+    }
 }
 
 int Config::GetInteger(string name) {
@@ -97,4 +111,12 @@ filesystem::path Config::GetPath(string name) {
         return "";
     }
     return pathItems.at(name);
+}
+
+vector<string> Config::GetStringList(string name) {
+    if (!stringListItems.contains(name)) {
+        ConsoleHelper::PrintWarning("Key " + name + " was not found!");
+        return vector<string>();
+    }
+    return stringListItems.at(name);
 }

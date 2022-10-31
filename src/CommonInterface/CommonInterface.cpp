@@ -10,15 +10,14 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report, int refo
 	ConsoleHelper::PrintInfo("Finding reformulator algorithm...");
 	report->Begin("Finding Reformulator");
 	if (config.GetStringList("reformulator").at(reformulatorIndex) == "sameoutput") {
-		reformulator = new SameOutputReformulator(&config);
+		reformulator = new SameOutputReformulator(&config, report);
 	} else 	if (config.GetStringList("reformulator").at(reformulatorIndex) == "walker") {
-		reformulator = new WalkerReformulator(&config);
+		reformulator = new WalkerReformulator(&config, report);
 	}
 	else{
 		ConsoleHelper::PrintError("Reformulator not found! Reformulator: " + config.GetString("reformulator"));
 		return CommonInterface::RunResult::ErrorsEncountered;
 	}
-	t = report->Stop();
 
 	if (config.GetBool("debugmode")) {
 		// Checking filepaths in the config file
@@ -35,6 +34,7 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report, int refo
 	// Parse original PDDL files
 	ConsoleHelper::PrintInfo("Parsing PDDL files...");
 	PDDLDriver originalDriver;
+	report->Begin("Parsing PDDL Files");
 	if (originalDriver.parse(config.GetPath("domain"))) {
 		ConsoleHelper::PrintError("Error parsing the domain file!");
 		return CommonInterface::RunResult::ErrorsEncountered;
@@ -55,9 +55,9 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report, int refo
 	
 	// Reformulate the PDDL file
 	ConsoleHelper::PrintInfo("Reformulating PDDL...");
-	report->Begin("Reformulation of PDDL");
+	int reformulationID = report->Begin("Reformulation of PDDL");
 	PDDLInstance reformulatedInstance = reformulator->ReformulatePDDL(&instance);
-	t = report->Stop();
+	t = report->Stop(reformulationID);
 	
 	// Generate new PDDL files
 	ConsoleHelper::PrintInfo("Generating PDDL files...");

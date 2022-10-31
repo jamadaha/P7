@@ -14,10 +14,14 @@ Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const 
     
     for (int i = 0; i < depth; i++) {
         std::vector<PDDLActionInstance> possibleActions;
+        report->Resume(reportActionGenID);
         possibleActions = actionGenerator.GenerateActions(&tempState);
+        report->Pause(reportActionGenID);
 
         if (possibleActions.size() == 0) break;
+        report->Resume(reportHeuristicID);
         PDDLActionInstance *chosenAction = heuristic->NextChoice(&tempState, &possibleActions);
+        report->Pause(reportHeuristicID);
         tempState.DoAction(chosenAction);
 
         if (visitedStates.contains(tempState))
@@ -49,6 +53,9 @@ std::vector<Path> Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *dept
 	if (config->GetBool("debugmode"))
 		bar = new ProgressBarHelper(widthFunc->max, "Walking", 1);
 
+    reportActionGenID = report->Begin("Action Generation"); report->Pause(reportActionGenID);
+    reportHeuristicID = report->Begin("Heuristic"); report->Pause(reportHeuristicID);
+
     std::vector<Path> paths;
     unsigned int current;
     while (widthFunc->Iterate(&current)) {
@@ -60,5 +67,6 @@ std::vector<Path> Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *dept
     }
     if (config->GetBool("debugmode"))
         bar->End();
+    report->Stop(reportActionGenID); report->Stop(reportHeuristicID);
     return paths;
 }

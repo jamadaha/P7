@@ -40,8 +40,8 @@ namespace std {
 
 class Walker {
 public:
-    Walker(PDDLInstance* instance, ActionGenerator actionGenerator, Config *config) : 
-    instance(instance), actionGenerator(actionGenerator), config(config) {}
+    Walker(PDDLInstance* instance, ActionGenerator actionGenerator, Config *config, RunReport *report) : 
+    instance(instance), actionGenerator(actionGenerator), config(config), report(report) {}
     Path Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunction, const PDDLState *state);
     std::vector<Path> Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc);
     unsigned int GetTotalActionsGenerated() { return actionGenerator.GetTotalActionsGenerated(); };
@@ -49,6 +49,9 @@ private:
     PDDLInstance* instance;
     ActionGenerator actionGenerator;
     Config *config;
+    RunReport *report;
+    int reportActionGenID;
+    int reportHeuristicID;
 };
 
 #endif

@@ -16,7 +16,7 @@ PDDLInstance WalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 }
 
 vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
-	Walker walker = Walker(instance, ActionGenerator(instance->domain, instance->problem), Configs);
+	Walker walker = Walker(instance, ActionGenerator(instance->domain, instance->problem), Configs, report);
 	BaseHeuristic *heuristic;
 	if (Configs->GetString("heuristic") == "random")
 		heuristic = new RandomHeuristic(Configs->GetBool("debugmode"));
@@ -35,16 +35,15 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 	else
 		widthFunc = new ConstantWidthFunction(500);
 
-	auto startTime = chrono::steady_clock::now();
+	int i = report->Begin("Walking");
 	std::vector<Path> paths = walker.Walk(heuristic, depthFunc, widthFunc);
 	free(heuristic); free(widthFunc); free(depthFunc);
-	auto endTime = chrono::steady_clock::now();
+	auto ellapsed = report->Stop(i);
 
 	// Print debug info
 	if (Configs->GetBool("debugmode")) {
 		unsigned int totalIterations = paths.size();
 		unsigned int totalActionCount = walker.GetTotalActionsGenerated();
-		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count();
 		ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + to_string(ellapsed) + "ms", 1);
 		double iterationsPrSecond = (totalIterations * 1000) / ellapsed;
 		ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + to_string(totalIterations) + " [" + to_string(iterationsPrSecond) + "/s]", 1);
@@ -87,16 +86,15 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 		};
 	}
 
-	auto startTime = chrono::steady_clock::now();
+	int entangleID = report->Begin("Finding Entanglements");
 	auto candidates = entFinder.FindEntangledCandidates(paths);
-	auto endTime = chrono::steady_clock::now();
+	auto ellapsed = report->Stop(entangleID);
 
 	if (Configs->GetBool("debugmode")) {
 		unsigned int totalActions = 0;
 		for (int i = 0; i < paths->size(); i++)
 			totalActions += paths->at(i).steps.size();
 
-		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count() + 1;
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + to_string(ellapsed) + "ms", 1);
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + to_string(entFinder.TotalLevels()), 1);
 		double comparisonsPrSecond = (entFinder.TotalComparisons()) / ellapsed;
@@ -114,12 +112,11 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 	if (Configs->GetString("entanglerLengthModifier") == "lengthBias")
 		entEvaluator.LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::LengthBias;
 
-	startTime = chrono::steady_clock::now();
+	int evaluationID = report->Begin("Evaluating Entanglements");
 	auto sanitizedCandidates = entEvaluator.EvaluateAndSanitizeCandidates(candidates);
-	endTime = chrono::steady_clock::now();
+	ellapsed = report->Stop(evaluationID);
 
 	if (Configs->GetBool("debugmode")) {
-		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(endTime - startTime).count() + 1;
 		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total evaluation time:  " + to_string(ellapsed) + "ms", 1);
 		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + to_string(sanitizedCandidates.size()) + " (" + to_string(entEvaluator.RemovedCandidates()) + " removed)", 1);
 	}

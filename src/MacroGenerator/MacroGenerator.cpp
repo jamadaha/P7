@@ -49,12 +49,13 @@ std::vector<GroundedAction> MacroGenerator::GroundActions(const std::vector<PDDL
 
 GroundedAction MacroGenerator::CombineActions(const std::vector<GroundedAction> *actions) {
     // Initialize to first element in actions
-    std::string name = std::to_string(macroCount++);
+    std::string name = std::to_string(macroCount++) + "-" + actions->at(0).name;
     std::unordered_map<GroundedLiteral, bool> preconditions = actions->at(0).preconditions;
     std::unordered_map<GroundedLiteral, bool> effects = actions->at(0).effects;
 
     // Combine through vector with accumalitive combination
     for (int i = 1; i < actions->size(); i++) {
+        name += "-" + actions->at(i).name;
         preconditions = CombinePreconditions(preconditions, actions->at(i).preconditions, effects);
         effects = CombineEffects(effects, actions->at(i).effects);
     }

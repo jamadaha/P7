@@ -17,6 +17,7 @@ public:
 	static std::string Trim(std::string buffer);
 	static std::string StringFormat(const std::string fmt_str, ...);
 	static std::vector<std::string> Split(std::string input, char delimiter);
+	static std::string ToUpper(std::string value);
 };
 
 #endif

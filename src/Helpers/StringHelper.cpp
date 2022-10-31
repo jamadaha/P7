@@ -69,3 +69,8 @@ vector<string> StringHelper::Split(string input, char delimiter) {
 
     return newList;
 }
+
+string StringHelper::ToUpper(string value) {
+    std::transform(value.begin(), value.end(), value.begin(), ::toupper);
+    return value;
+}

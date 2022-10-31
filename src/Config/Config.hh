@@ -21,9 +21,18 @@ public:
 
     template <typename T>
     T GetItem(std::string name);
+
+    bool Contains(std::string name);
 private:
+    std::string GetTypeName(std::string line);
+    std::string GetSubTypeName(std::string typeName);
+    std::string GetName(std::string line);
+    std::string GetStringValue(std::string line);
+
     template <typename T>
     T GetNewItem(std::string value);
+    template <typename T>
+    std::vector<T> GetNewListItem(std::vector<std::string> values);
 
     std::map<std::string, void*> items;
 };

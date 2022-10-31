@@ -62,6 +62,17 @@ template vector<string> Config::GetItem<vector<string>>(string name);
 
 #pragma endregion
 
+#pragma region GetNewListItem Templates
+
+template <typename T>
+vector<T> Config::GetNewListItem(vector<string> values) {
+    vector<T> newList;
+    for (auto i : values)
+        newList.push_back(GetNewItem<T>(i));
+    return newList;
+}
+
+#pragma endregion
 
 void Config::ParseConfigFile(filesystem::path path) {
     ifstream stream(path);
@@ -83,53 +94,29 @@ void Config::ParseConfigItem(std::string line) {
     if (line == "")
         return;
 
-    string typeName = line.substr(0, line.find(":"));
-    typeName = StringHelper::Trim(typeName);
-    string name = line.substr(line.find(":") + 1);
-    name = name.substr(0, name.find("="));
-    name = StringHelper::Trim(name);
-    string value = line.substr(line.find("=") + 1);
-    value = StringHelper::Trim(value);
-
-    for_each(typeName.begin(), typeName.end(), [](char& c) {
-        c = ::toupper(c);
-        });
+    string typeName = GetTypeName(line);
+    string name = GetName(line);
+    string value = GetStringValue(line);
 
     if (typeName.starts_with("LIST")) {
-        string subType = typeName.substr(typeName.find("<"));
-        subType = StringHelper::RemoveCharacter(subType, '>');
+        string subType = GetSubTypeName(typeName);
 
         auto list = StringHelper::Split(value, ',');
 
         if (subType == "INT") {
-            vector<int> newList;
-            for (auto i : list)
-                newList.push_back(GetNewItem<int>(i));
-            items.emplace(name, new vector<int>(newList));
+            items.emplace(name, new vector<int>(GetNewListItem<int>(list)));
         }
         else if (subType == "DOUBLE") {
-            vector<double> newList;
-            for (auto i : list)
-                newList.push_back(GetNewItem<double>(i));
-            items.emplace(name, new vector<double>(newList));
+            items.emplace(name, new vector<double>(GetNewListItem<double>(list)));
         }
         else if (subType == "BOOL") {
-            vector<bool> newList;
-            for (auto i : list)
-                newList.push_back(GetNewItem<bool>(i));
-            items.emplace(name, new vector<bool>(newList));
+            items.emplace(name, new vector<bool>(GetNewListItem<bool>(list)));
         }
         else if (subType == "STRING") {
-            vector<string> newList;
-            for (auto i : list)
-                newList.push_back(GetNewItem<string>(i));
-            items.emplace(name, new vector<string>(newList));
+            items.emplace(name, new vector<string>(GetNewListItem<string>(list)));
         }
         else if (subType == "PATH") {
-            vector<filesystem::path> newList;
-            for (auto i : list)
-                newList.push_back(GetNewItem<filesystem::path>(i));
-            items.emplace(name, new vector<filesystem::path>(newList));
+            items.emplace(name, new vector<filesystem::path>(GetNewListItem<filesystem::path>(list)));
         }
     }
     else {
@@ -149,42 +136,36 @@ void Config::ParseConfigItem(std::string line) {
             items.emplace(name, new filesystem::path(GetNewItem<filesystem::path>(value)));
         }
     }
+}
 
-    //if (typeName == "INT") {
-    //    int num = stoi(value);
-    //    items.emplace(name, new int(num));
-    //}
-    //else if (typeName == "DOUBLE") {
-    //    double num = stod(value);
-    //    items.emplace(name, new double(num));
-    //}
-    //else if (typeName == "BOOL") {
-    //    for_each(value.begin(), value.end(), [](char& c) {
-    //        c = ::toupper(c);
-    //        });
-    //    if (value == "TRUE")
-    //        items.emplace(name, new bool(true));
-    //    else if (value == "FALSE")
-    //        items.emplace(name, new bool(false));
-    //}
-    //else if (typeName == "STRING") {
-    //    items.emplace(name, new string(value));
-    //}
-    //else if (typeName == "PATH") {
-    //    items.emplace(name, new filesystem::path(value));
-    //}
-    //else if (typeName == "LIST<STRING>") {
-    //    vector<string> newList;
-    //    string delimiter = ",";
+string Config::GetTypeName(string line) {
+    string typeName = line.substr(0, line.find(":"));
+    typeName = StringHelper::Trim(typeName);
+    typeName = StringHelper::ToUpper(typeName);
+    return typeName;
+}
 
-    //    size_t pos = 0;
-    //    std::string token;
-    //    while ((pos = value.find(delimiter)) != std::string::npos) {
-    //        token = value.substr(0, pos);
-    //        newList.push_back(token);
-    //        value.erase(0, pos + delimiter.length());
-    //    }
-    //    newList.push_back(value);
-    //    items.emplace(name, new vector<string>(newList));
-    //}
+string Config::GetSubTypeName(string typeName) {
+    string subType = typeName.substr(typeName.find("<") + 1);
+    subType = StringHelper::RemoveCharacter(subType, '>');
+    subType = StringHelper::Trim(subType);
+    subType = StringHelper::ToUpper(subType);
+    return subType;
+}
+
+string Config::GetName(string line) {
+    string name = line.substr(line.find(":") + 1);
+    name = name.substr(0, name.find("="));
+    name = StringHelper::Trim(name);
+    return name;
+}
+
+string Config::GetStringValue(string line) {
+    string value = line.substr(line.find("=") + 1);
+    value = StringHelper::Trim(value);
+    return value;
+}
+
+bool Config::Contains(string name) {
+    return items.contains(name);
 }

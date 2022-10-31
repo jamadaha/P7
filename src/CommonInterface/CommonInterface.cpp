@@ -33,6 +33,7 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report) {
 	// Parse original PDDL files
 	ConsoleHelper::PrintInfo("Parsing PDDL files...");
 	PDDLDriver originalDriver;
+	report->Begin("Parsing PDDL Files");
 	if (originalDriver.parse(config.GetPath("domain"))) {
 		ConsoleHelper::PrintError("Error parsing the domain file!");
 		return CommonInterface::RunResult::ErrorsEncountered;

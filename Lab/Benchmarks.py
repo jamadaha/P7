@@ -6,14 +6,12 @@ def get_suite(domains, problemsindomains):
     suite = []
     for domainindex in range(len(domains)):
         domain = domains[domainindex]
-        print(domain)
         if len(problemsindomains) != len(domains):
             suite.append(domain)
         else:
             domainproblems = problemsindomains[domainindex].split(",")
             for problem in domainproblems:
                 if problem:
-                    print(problem)
                     suite.append(domain+":"+problem)
                 else:
                     suite.append(domain)
@@ -23,14 +21,12 @@ def make_tasks(benchmarksfolder, domains, problemsindomains):
     tasks = []
     for domainindex in range(len(domains)):
         domain = domains[domainindex]
-        print(domain)
         if len(problemsindomains) != len(domains):
             raise Error("There are not defined problems for some domains")
         else:
             domainproblems = problemsindomains[domainindex].split(",")
             for problem in domainproblems:
                 if problem:
-                    print(problem)
                     tasks.append(Problem(domain, 
                                          problem, 
                                          benchmarksfolder + problem, 

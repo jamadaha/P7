@@ -23,6 +23,8 @@ public:
     T GetItem(std::string name);
 
     bool Contains(std::string name);
+
+    void Clear();
 private:
     std::string GetTypeName(std::string line);
     std::string GetSubTypeName(std::string typeName);

@@ -169,3 +169,10 @@ string Config::GetStringValue(string line) {
 bool Config::Contains(string name) {
     return items.contains(name);
 }
+
+void Config::Clear() {
+    for (auto i : items) {
+        delete i.second;
+    }
+    items.clear();
+}

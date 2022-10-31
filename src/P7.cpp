@@ -40,5 +40,8 @@ int main(int argc, char** argv){
 		if (runResult == CommonInterface::RunResult::RanWithoutErrors)
 			report.Print();
 	}
+
+	config.Clear();
+
 	return 0;
 }

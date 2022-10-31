@@ -12,7 +12,8 @@
 
 class ActionGenerator {
 public:
-    ActionGenerator(const PDDLDomain *domain, const PDDLProblem *problem) : domain(domain), problem(problem) {};
+    ActionGenerator(const PDDLDomain *domain, const PDDLProblem *problem) : domain(domain), problem(problem) {
+    };
     /// @brief For a given state, generate all possible action instances
     std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state);
     /// @brief For a given action, generate all possible action instances
@@ -49,7 +50,6 @@ private:
     const PDDLDomain *domain;
     const PDDLProblem *problem;
     unsigned int totalActions = 0;
-    
 };
 
 #endif

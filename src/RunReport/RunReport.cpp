@@ -3,9 +3,23 @@
 using namespace std;
 
 int RunReport::Begin(string desc) {
-    steps.emplace_back(ReportStep(desc));
+    int parent = -1;
+    for (int i = steps.size() - 1; i >= 0; i--)
+        if (!steps[i].finished) {
+            parent = i; break;
+        }
+    steps.emplace_back(ReportStep(desc, parent));
     steps[steps.size() - 1].iTime = chrono::steady_clock::now();
     return steps.size() - 1;
+}
+
+void RunReport::Pause(int i) {
+    steps[i].eTime = chrono::steady_clock::now();
+    steps[i].time += chrono::duration_cast<chrono::nanoseconds>(steps[i].eTime - steps[i].iTime).count();
+}
+
+void RunReport::Resume(int i) {
+    steps[i].iTime = chrono::steady_clock::now();
 }
 
 int64_t RunReport::Stop(RunReport::TimeScale ts) {
@@ -14,7 +28,9 @@ int64_t RunReport::Stop(RunReport::TimeScale ts) {
 
 int64_t RunReport::Stop(int i, RunReport::TimeScale ts) {
     steps[i].eTime = chrono::steady_clock::now();
-    steps[i].time = chrono::duration_cast<chrono::nanoseconds>(steps[i].eTime - steps[i].iTime).count();
+    if (steps[i].time == 0)
+        steps[i].time += chrono::duration_cast<chrono::nanoseconds>(steps[i].eTime - steps[i].iTime).count();
+    steps[i].finished = true;
 
     if (ts == RunReport::TimeScale::ns)
         return steps[i].time;
@@ -27,7 +43,8 @@ void RunReport::Print(RunReport::TimeScale ts) {
     double totalTime = 0;
     for (auto step : steps) {
         lDesc = max(lDesc, (int)step.desc.size());
-        totalTime += step.time;
+        if (step.parent == -1)
+            totalTime += step.time;
     }
 
     printf("---- Time Taken ----\n");

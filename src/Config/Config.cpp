@@ -94,48 +94,88 @@ void Config::ParseConfigItem(std::string line) {
     if (line == "")
         return;
 
-    string typeName = GetTypeName(line);
+    string typeNameStr = GetTypeName(line);
     string name = GetName(line);
     string value = GetStringValue(line);
 
-    if (typeName.starts_with("LIST")) {
-        string subType = GetSubTypeName(typeName);
+    if (typeNameStr.starts_with("LIST")) {
+        string subTypeStr = GetSubTypeName(typeNameStr);
+        auto subType = GetTypeEnum(subTypeStr);
 
         auto list = StringHelper::Split(value, ',');
 
-        if (subType == "INT") {
+        switch (subType)
+        {
+        case Config::NONE:
+            throw invalid_argument("Invalid config type!");
+            break;
+        case Config::INT:
             items.emplace(name, new vector<int>(GetNewListItem<int>(list)));
-        }
-        else if (subType == "DOUBLE") {
+            break;
+        case Config::DOUBLE:
             items.emplace(name, new vector<double>(GetNewListItem<double>(list)));
-        }
-        else if (subType == "BOOL") {
+            break;
+        case Config::BOOL:
             items.emplace(name, new vector<bool>(GetNewListItem<bool>(list)));
-        }
-        else if (subType == "STRING") {
+            break;
+        case Config::STRING:
             items.emplace(name, new vector<string>(GetNewListItem<string>(list)));
-        }
-        else if (subType == "PATH") {
+            break;
+        case Config::PATH:
             items.emplace(name, new vector<filesystem::path>(GetNewListItem<filesystem::path>(list)));
+            break;
+        default:
+            throw invalid_argument("Invalid config type!");
+            break;
         }
     }
     else {
-        if (typeName == "INT") {
+        auto typeName = GetTypeEnum(typeNameStr);
+
+        switch (typeName)
+        {
+        case Config::NONE:
+            throw invalid_argument("Invalid config type!");
+            break;
+        case Config::INT:
             items.emplace(name, new int(GetNewItem<int>(value)));
-        }
-        else if(typeName == "DOUBLE") {
+            break;
+        case Config::DOUBLE:
             items.emplace(name, new double(GetNewItem<double>(value)));
-        }
-        else if(typeName == "BOOL") {
+            break;
+        case Config::BOOL:
             items.emplace(name, new bool(GetNewItem<bool>(value)));
-        }
-        else if(typeName == "STRING") {
+            break;
+        case Config::STRING:
             items.emplace(name, new string(GetNewItem<string>(value)));
-        }
-        else if(typeName == "PATH") {
+            break;
+        case Config::PATH:
             items.emplace(name, new filesystem::path(GetNewItem<filesystem::path>(value)));
+            break;
+        default:
+            throw invalid_argument("Invalid config type!");
+            break;
         }
     }
+}
+
+Config::ValidTypes Config::GetTypeEnum(std::string typeName) {
+    if (typeName == "INT") {
+        return Config::ValidTypes::INT;
+    }
+    else if (typeName == "DOUBLE") {
+        return Config::ValidTypes::DOUBLE;
+    }
+    else if (typeName == "BOOL") {
+        return Config::ValidTypes::BOOL;
+    }
+    else if (typeName == "STRING") {
+        return Config::ValidTypes::STRING;
+    }
+    else if (typeName == "PATH") {
+        return Config::ValidTypes::PATH;
+    }
+    return Config::ValidTypes::NONE;
 }
 
 string Config::GetTypeName(string line) {

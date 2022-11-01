@@ -40,9 +40,9 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 		unsigned int totalIterations = paths.size();
 		unsigned int totalActionCount = walker.GetTotalActionsGenerated();
 		ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + to_string(ellapsed) + "ms", 1);
-		double iterationsPrSecond = (totalIterations * 1000) / ellapsed;
+		double iterationsPrSecond = (totalIterations * 1000) / (ellapsed + 1);
 		ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + to_string(totalIterations) + " [" + to_string(iterationsPrSecond) + "/s]", 1);
-		double actionsPrSecond = (totalActionCount * 1000) / ellapsed;
+		double actionsPrSecond = (totalActionCount * 1000) / (ellapsed + 1);
 		ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", 1);
 	}
 
@@ -87,7 +87,7 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + to_string(ellapsed) + "ms", 1);
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + to_string(entFinder.TotalLevels()), 1);
-		double comparisonsPrSecond = (entFinder.TotalComparisons()) / ellapsed;
+		double comparisonsPrSecond = (entFinder.TotalComparisons()) / (ellapsed + 1);
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Comparisons:         " + to_string(entFinder.TotalComparisons()) + " [" + to_string(comparisonsPrSecond) + "k/s]", 1);
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + to_string(candidates.size()), 1);
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + to_string(paths->size()) + " paths with " + to_string(totalActions) + " steps in total", 1);

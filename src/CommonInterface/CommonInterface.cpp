@@ -60,7 +60,7 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report, int refo
 
 	int counter = 1;
 	while (currentIncrementTimeLimit < timeLimit) {
-		ConsoleHelper::PrintInfo("Iteration " + to_string(counter));
+		ConsoleHelper::PrintInfo("Iteration " + to_string(counter) + "(" + to_string(currentIncrementTimeLimit) + "s)");
 		reformulator->TimeLimit = currentIncrementTimeLimit;
 
 		// Reformulate the PDDL file

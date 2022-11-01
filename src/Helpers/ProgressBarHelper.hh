@@ -12,8 +12,9 @@ public:
 	int To = 1;
 
 	ProgressBarHelper(int to, std::string desc, int indent = 0) : To(to), Indent(indent) {
-		StepValue = ((double)DisplayWidth / ((double)To - 1));
-		ConsoleHelper::PrintDebugInfo(desc, indent);
+		StepValue = ((double)DisplayWidth / ((double)To));
+		if (desc != "")
+			ConsoleHelper::PrintDebugInfo(desc, indent);
 		ConsoleHelper::PrintDebugInfo("|", indent, false);
 		for (int i = 0; i < DisplayWidth; i++)
 			std::cout << " ";

@@ -2,6 +2,8 @@
 
 using namespace std;
 
+const int debugIndent = 2;
+
 PDDLInstance WalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	// Walk the PDDL
 	auto paths = PerformWalk(instance);
@@ -66,7 +68,7 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 	if (Configs->GetItem<bool>("debugmode")) {
 		ProgressBarHelper* bar;
 		entFinder.OnNewLevel = [&](int level, int outOf) {
-			bar = new ProgressBarHelper(outOf, "Finding Entanglements (level " + to_string(level) + ")", 1);
+			bar = new ProgressBarHelper(outOf, "Finding Entanglements (level " + to_string(level) + ")", debugIndent + 1);
 		};
 		entFinder.OnLevelIteration = [&](int current, int outOf) {
 			bar->Update();
@@ -86,11 +88,11 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 			totalActions += paths->at(i).steps.size();
 
 		//ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + to_string(ellapsed) + "ms", 1);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + to_string(entFinder.TotalLevels()), 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + to_string(entFinder.TotalLevels()), debugIndent);
 		//double comparisonsPrSecond = (entFinder.TotalComparisons()) / (ellapsed + 1);
 		//ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Comparisons:         " + to_string(entFinder.TotalComparisons()) + " [" + to_string(comparisonsPrSecond) + "k/s]", 1);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + to_string(candidates.size()), 1);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + to_string(paths->size()) + " paths with " + to_string(totalActions) + " steps in total", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + to_string(candidates.size()), debugIndent);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + to_string(paths->size()) + " paths with " + to_string(totalActions) + " steps in total", debugIndent);
 	}
 
 	// Sanitize and remove bad candidates.
@@ -108,12 +110,12 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 
 	if (Configs->GetItem<bool>("debugmode")) {
 		//ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total evaluation time:  " + to_string(ellapsed) + "ms", 1);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + to_string(sanitizedCandidates.size()) + " (" + to_string(entEvaluator.RemovedCandidates()) + " removed)", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + to_string(sanitizedCandidates.size()) + " (" + to_string(entEvaluator.RemovedCandidates()) + " removed)", debugIndent);
 	}
 
 	if (Configs->GetItem<bool>("printentanglersteps")) {
-		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Top 10 Entanglements:", 1);
-		ConsoleHelper::PrintDebugInfo("[Entanglements] Quality  : Chain", 2);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Top 10 Entanglements:", debugIndent);
+		ConsoleHelper::PrintDebugInfo("[Entanglements] Quality  : Chain", debugIndent + 1);
 		int counter = 0;
 		for (auto i = sanitizedCandidates.begin(); i != sanitizedCandidates.end(); i++) {
 			string actionStr = "";
@@ -129,7 +131,7 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 				if (j != (*i).Chain.size() - 1)
 					actionStr += " -> ";
 			}
-			ConsoleHelper::PrintDebugInfo("[Entanglements] " + to_string((*i).Quality) + " : " + actionStr, 2);
+			ConsoleHelper::PrintDebugInfo("[Entanglements] " + to_string((*i).Quality) + " : " + actionStr, debugIndent + 1);
 			counter++;
 			if (counter > 10)
 				break;
@@ -142,15 +144,19 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 PDDLInstance WalkerReformulator::GenerateMacros(vector<EntanglementOccurance> candidates, PDDLInstance* instance) {
 	MacroGenerator macroGenerator = MacroGenerator(instance->domain, instance->problem);
 
-	// Generate Macros
+	ConsoleHelper::PrintDebugInfo("[Macro Generator] Generating Macros...", debugIndent );
+	auto bar = new ProgressBarHelper(candidates.size(), "", debugIndent + 1);
 	for (int i = 0; i < candidates.size(); i++) {
 		macros.push_back(macroGenerator.GenerateMacro(&candidates.at(i).Chain));
+		bar->Update();
 	}
+	bar->End();
 
 	return InstanceGenerator::GenerateInstance(instance->domain, instance->problem, &macros);
 }
 
 SASPlan WalkerReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) {
+	ConsoleHelper::PrintDebugInfo("[SAS Rebuilder] Rebuilding SAS plan...", debugIndent);
 	std::vector<SASAction> actions;
 	for (int i = 0; i < reformulatedSAS->actions.size(); i++) {
 		auto sasAction = reformulatedSAS->actions.at(i);

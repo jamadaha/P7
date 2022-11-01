@@ -2,6 +2,11 @@
 
 using namespace std;
 
+// predicateLength -> (predicate -> (Fragment*))
+// unordered_map<unsigned int, unordered_map<unsigned int, unordered_set<Fragment*>>> legalPredicateFragments;
+// fragmentLength -> (Fragment)
+// unordered_map<unsigned int, unordered_set<Fragment>> legalFragments;
+
 vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *state) {
     vector<PDDLActionInstance> legalActions;
     const int domainLength = domain->actions.size();

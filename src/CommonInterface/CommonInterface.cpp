@@ -53,35 +53,44 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report, int refo
 	PDDLProblem problem = PDDLConverter::Convert(&domain, originalDriver.problem);
 	PDDLInstance instance = PDDLInstance(&domain, &problem);
 	t = report->Stop();
-	
+
+	int reformulationID = report->Setup("Reformulation of PDDL");
+	int generatePDDLFilesID = report->Setup("Generating PDDL");
+	int runFastDownwardID = report->Setup("Running FastDownward");
+
+	int counter = 1;
 	while (currentIncrementTimeLimit < timeLimit) {
+		ConsoleHelper::PrintInfo("Iteration " + to_string(counter));
 		reformulator->TimeLimit = currentIncrementTimeLimit;
 
 		// Reformulate the PDDL file
-		ConsoleHelper::PrintInfo("Reformulating PDDL...");
-		int reformulationID = report->Begin("Reformulation of PDDL");
+		ConsoleHelper::PrintInfo("Reformulating PDDL...", 1);
+		report->Resume(reformulationID);
 		PDDLInstance reformulatedInstance = reformulator->ReformulatePDDL(&instance);
-		t = report->Stop(reformulationID);
+		report->Pause(reformulationID);
 
 		// Generate new PDDL files
-		ConsoleHelper::PrintInfo("Generating PDDL files...");
-		report->Begin("Generating PDDL");
+		ConsoleHelper::PrintInfo("Generating PDDL files...", 1);
+		report->Resume(generatePDDLFilesID);
 		PDDLCodeGenerator pddlGenerator = PDDLCodeGenerator(PDDLDomainCodeGenerator(reformulatedInstance.domain), PDDLProblemCodeGenerator(reformulatedInstance.domain, reformulatedInstance.problem));
 		pddlGenerator.GenerateCode(reformulatedInstance, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
-		t = report->Stop();
+		report->Pause(generatePDDLFilesID);
 
 		// Throw the new pddl files into Fast Downward
-		ConsoleHelper::PrintInfo("Run new PDDL files with Fast Downward...");
-		report->Begin("Running FastDownward");
+		ConsoleHelper::PrintInfo("Run new PDDL files with Fast Downward...", 1);
+		report->Resume(runFastDownwardID);
 		DownwardRunner runner = DownwardRunner();
 		runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, currentIncrementTimeLimit);
 		auto runRes = runner.ParseDownwardLog();
 		if (runRes == DownwardRunner::FoundPlan) {
-			t = report->Stop();
+			report->Stop(reformulationID);
+			report->Stop(generatePDDLFilesID);
+			report->Stop(runFastDownwardID);
 			break;
 		}
-		t = report->Stop();
+		report->Pause(runFastDownwardID);
 		currentIncrementTimeLimit *= config.GetItem<int>("incrementModifier");
+		counter++;
 	}
 
 	if (config.GetItem<bool>("debugmode")) {

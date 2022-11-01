@@ -30,20 +30,20 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 	BaseDepthFunction *depthFunc = new ConstantDepthFunction(1000, *instance, 1);
 	BaseWidthFunction *widthFunc = new TimeWidthFunction(TimeLimit * 1000);
 
-	int i = report->Begin("Walking");
+	//int i = report->Begin("Walking");
 	std::vector<Path> paths = walker.Walk(heuristic, depthFunc, widthFunc);
 	free(heuristic); free(widthFunc); free(depthFunc);
-	auto ellapsed = report->Stop(i);
+	//auto ellapsed = report->Stop(i);
 
 	// Print debug info
 	if (Configs->GetItem<bool>("debugmode")) {
 		unsigned int totalIterations = paths.size();
 		unsigned int totalActionCount = walker.GetTotalActionsGenerated();
-		ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + to_string(ellapsed) + "ms", 1);
-		double iterationsPrSecond = (totalIterations * 1000) / (ellapsed + 1);
-		ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + to_string(totalIterations) + " [" + to_string(iterationsPrSecond) + "/s]", 1);
-		double actionsPrSecond = (totalActionCount * 1000) / (ellapsed + 1);
-		ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", 1);
+		//ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + to_string(ellapsed) + "ms", 1);
+		//double iterationsPrSecond = (totalIterations * 1000) / (ellapsed + 1);
+		//ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + to_string(totalIterations) + " [" + to_string(iterationsPrSecond) + "/s]", 1);
+		//double actionsPrSecond = (totalActionCount * 1000) / (ellapsed + 1);
+		//ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", 1);
 	}
 
 	return paths;
@@ -76,19 +76,19 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 		};
 	}
 
-	int entangleID = report->Begin("Finding Entanglements");
+	//int entangleID = report->Begin("Finding Entanglements");
 	auto candidates = entFinder.FindEntangledCandidates(paths);
-	auto ellapsed = report->Stop(entangleID);
+	//auto ellapsed = report->Stop(entangleID);
 
 	if (Configs->GetItem<bool>("debugmode")) {
 		unsigned int totalActions = 0;
 		for (int i = 0; i < paths->size(); i++)
 			totalActions += paths->at(i).steps.size();
 
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + to_string(ellapsed) + "ms", 1);
+		//ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + to_string(ellapsed) + "ms", 1);
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + to_string(entFinder.TotalLevels()), 1);
-		double comparisonsPrSecond = (entFinder.TotalComparisons()) / (ellapsed + 1);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Comparisons:         " + to_string(entFinder.TotalComparisons()) + " [" + to_string(comparisonsPrSecond) + "k/s]", 1);
+		//double comparisonsPrSecond = (entFinder.TotalComparisons()) / (ellapsed + 1);
+		//ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Comparisons:         " + to_string(entFinder.TotalComparisons()) + " [" + to_string(comparisonsPrSecond) + "k/s]", 1);
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + to_string(candidates.size()), 1);
 		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + to_string(paths->size()) + " paths with " + to_string(totalActions) + " steps in total", 1);
 	}
@@ -102,12 +102,12 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 	if (Configs->GetItem<string>("entanglerLengthModifier") == "lengthBias")
 		entEvaluator.LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::LengthBias;
 
-	int evaluationID = report->Begin("Evaluating Entanglements");
+	//int evaluationID = report->Begin("Evaluating Entanglements");
 	auto sanitizedCandidates = entEvaluator.EvaluateAndSanitizeCandidates(candidates);
-	ellapsed = report->Stop(evaluationID);
+	//ellapsed = report->Stop(evaluationID);
 
 	if (Configs->GetItem<bool>("debugmode")) {
-		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total evaluation time:  " + to_string(ellapsed) + "ms", 1);
+		//ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total evaluation time:  " + to_string(ellapsed) + "ms", 1);
 		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + to_string(sanitizedCandidates.size()) + " (" + to_string(entEvaluator.RemovedCandidates()) + " removed)", 1);
 	}
 

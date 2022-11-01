@@ -21,32 +21,28 @@ struct ReportStep {
 
 class RunReport {
 public:
-    enum TimeScale {
-        ms,
-        ns
-    };
-
     double TotalTime = 0;
     std::string Reformulator;
 
     RunReport(std::string reformulator) : Reformulator(reformulator){};
 
-    int Begin(std::string desc);
+    int Setup(std::string desc, int parentID = -1);
+    int Begin(std::string desc, int parentID = -1);
 
     void Pause(int i);
     void Resume(int i);
 
     // Returns time taken
     // Default is in ms
-    int64_t Stop(TimeScale ts = TimeScale::ms);
+    int64_t Stop();
 
     // Returns time taken
     // Default is in ms
-    int64_t Stop(int i, TimeScale ts = TimeScale::ms);
+    int64_t Stop(int i);
 
 
 
-    void Print(TimeScale ts = TimeScale::ms);
+    void Print();
 private:
     std::vector<ReportStep> steps;
 };

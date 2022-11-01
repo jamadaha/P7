@@ -13,11 +13,13 @@ TEST_CASE(TAG + "overlapping preconditions") {
 }
 
 TEST_CASE(TAG + "precon - positive eff") {
-    
+
 }
 
 TEST_CASE(TAG + "positive - negative eff") {
 
 }
 
-TEST_CASE(TAG + "negative - positive eff")
+TEST_CASE(TAG + "negative - positive eff") {
+    
+}

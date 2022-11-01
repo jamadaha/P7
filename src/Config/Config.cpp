@@ -212,7 +212,7 @@ bool Config::Contains(string name) {
 
 void Config::Clear() {
     for (auto i : items) {
-        delete i.second;
+        free(i.second);
     }
     items.clear();
 }

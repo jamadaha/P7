@@ -144,19 +144,25 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 PDDLInstance WalkerReformulator::GenerateMacros(vector<EntanglementOccurance> candidates, PDDLInstance* instance) {
 	MacroGenerator macroGenerator = MacroGenerator(instance->domain, instance->problem);
 
-	ConsoleHelper::PrintDebugInfo("[Macro Generator] Generating Macros...", debugIndent );
-	auto bar = new ProgressBarHelper(candidates.size(), "", debugIndent + 1);
+	ProgressBarHelper* bar;
+	if (Configs->GetItem<bool>("debugmode")) {
+		ConsoleHelper::PrintDebugInfo("[Macro Generator] Generating Macros...", debugIndent);
+		bar = new ProgressBarHelper(candidates.size(), "", debugIndent + 1);
+	}
 	for (int i = 0; i < candidates.size(); i++) {
 		macros.push_back(macroGenerator.GenerateMacro(&candidates.at(i).Chain));
-		bar->Update();
+		if (Configs->GetItem<bool>("debugmode"))
+			bar->Update();
 	}
-	bar->End();
+	if (Configs->GetItem<bool>("debugmode"))
+		bar->End();
 
 	return InstanceGenerator::GenerateInstance(instance->domain, instance->problem, &macros);
 }
 
 SASPlan WalkerReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) {
-	ConsoleHelper::PrintDebugInfo("[SAS Rebuilder] Rebuilding SAS plan...", debugIndent);
+	if (Configs->GetItem<bool>("debugmode"))
+		ConsoleHelper::PrintDebugInfo("[SAS Rebuilder] Rebuilding SAS plan...", debugIndent);
 	std::vector<SASAction> actions;
 	for (int i = 0; i < reformulatedSAS->actions.size(); i++) {
 		auto sasAction = reformulatedSAS->actions.at(i);

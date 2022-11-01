@@ -6,6 +6,7 @@
 #include <chrono>
 
 struct ReportStep {
+    bool isRunning;
     std::string desc;
     // How long the step took in nano seconds
     int64_t time = 0;

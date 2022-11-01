@@ -7,13 +7,15 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report, int refo
 	BaseReformulator* reformulator;
 	int timeLimit = config.GetItem<int>("incrementLimit");
 	int currentIncrementTimeLimit = config.GetItem<int>("startIncrement");
+	bool isDirect = false;
 
 	// Find a suitable reformulator
 	ConsoleHelper::PrintInfo("Finding reformulator algorithm...");
 	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "sameoutput") {
-		reformulator = new SameOutputReformulator(&config, report, config.GetItem<int>("initialIncrementTimeMs"));
+		reformulator = new SameOutputReformulator(&config, report, currentIncrementTimeLimit);
+		isDirect = true;
 	} else 	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "walker") {
-		reformulator = new WalkerReformulator(&config, report, config.GetItem<int>("initialIncrementTimeMs"));
+		reformulator = new WalkerReformulator(&config, report, currentIncrementTimeLimit);
 	}
 	else{
 		ConsoleHelper::PrintError("Reformulator not found! Reformulator: " + config.GetItem<string>("reformulator"));
@@ -58,8 +60,12 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report, int refo
 	int generatePDDLFilesID = report->Setup("Generating PDDL");
 	int runFastDownwardID = report->Setup("Running FastDownward");
 
+	if (isDirect)
+		currentIncrementTimeLimit = timeLimit;
+
+	DownwardRunner::DownwardRunnerResult runRes;
 	int counter = 1;
-	while (currentIncrementTimeLimit < timeLimit) {
+	while (currentIncrementTimeLimit <= timeLimit) {
 		ConsoleHelper::PrintInfo("Iteration " + to_string(counter) + "(" + to_string(currentIncrementTimeLimit) + "s)");
 		reformulator->TimeLimit = currentIncrementTimeLimit;
 
@@ -81,16 +87,20 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report, int refo
 		report->Resume(runFastDownwardID);
 		DownwardRunner runner = DownwardRunner();
 		runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, currentIncrementTimeLimit);
-		auto runRes = runner.ParseDownwardLog();
+		runRes = runner.ParseDownwardLog();
+		report->Pause(runFastDownwardID);
 		if (runRes == DownwardRunner::FoundPlan) {
 			report->Stop(reformulationID);
 			report->Stop(generatePDDLFilesID);
 			report->Stop(runFastDownwardID);
 			break;
 		}
-		report->Pause(runFastDownwardID);
 		currentIncrementTimeLimit *= config.GetItem<int>("incrementModifier");
 		counter++;
+	}
+	if (runRes != DownwardRunner::FoundPlan) {
+		ConsoleHelper::PrintError("Fast downward did not find a plan in time!");
+		return CommonInterface::RunResult::ErrorsEncountered;
 	}
 
 	if (config.GetItem<bool>("debugmode")) {

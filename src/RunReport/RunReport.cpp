@@ -10,16 +10,23 @@ int RunReport::Setup(string desc, int parentID) {
 int RunReport::Begin(string desc, int parentID) {
     steps.emplace_back(ReportStep(desc, parentID));
     steps[steps.size() - 1].iTime = chrono::steady_clock::now();
+    steps[steps.size() - 1].isRunning = true;
     return steps.size() - 1;
 }
 
 void RunReport::Pause(int i) {
-    steps[i].eTime = chrono::steady_clock::now();
-    steps[i].time += chrono::duration_cast<chrono::milliseconds>(steps[i].eTime - steps[i].iTime).count();
+    if (steps[i].isRunning) {
+        steps[i].isRunning = false;
+        steps[i].eTime = chrono::steady_clock::now();
+        steps[i].time += chrono::duration_cast<chrono::milliseconds>(steps[i].eTime - steps[i].iTime).count();
+    }
 }
 
 void RunReport::Resume(int i) {
-    steps[i].iTime = chrono::steady_clock::now();
+    if (!steps[i].isRunning) {
+        steps[i].isRunning = true;
+        steps[i].iTime = chrono::steady_clock::now();
+    }
 }
 
 int64_t RunReport::Stop() {
@@ -30,7 +37,7 @@ int64_t RunReport::Stop(int i) {
     if (steps[i].finished)
         return steps[i].time;
 
-    if (steps[i].time == 0) {
+    if (steps[i].isRunning) {
         steps[i].eTime = chrono::steady_clock::now();
         steps[i].time += chrono::duration_cast<chrono::milliseconds>(steps[i].eTime - steps[i].iTime).count();
     }

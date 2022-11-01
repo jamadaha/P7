@@ -63,12 +63,25 @@ namespace std {
 struct PDDLState {
     // Key - Index of predicate | Value - Set of objects which the predicate is true for
     std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts;
-    // Key - Index of predicate | Value - List of combinations of objcets which the predicate is true for (Should be a set, but cpp has a stroke trying to has a vector)
+    std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts;
+    // Key - Index of predicate | Value - List of permutations of objcets which the predicate is true for
     std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts;
 
     PDDLState() {};
     PDDLState(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts, std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts) :
-        unaryFacts(unaryFacts), multiFacts(multiFacts) {};
+        unaryFacts(unaryFacts), multiFacts(multiFacts) {
+            for (auto iter = multiFacts.begin(); iter != multiFacts.end(); iter++) {
+                auto lol = (*iter);
+
+                if (lol.first == 0)
+                    this->binaryFacts.emplace((*iter).first, std::unordered_set<std::pair<unsigned int, unsigned int>>());
+                else if (lol.second.size() != 0 && (*lol.second.begin()).fact.size() == 2) {
+                    this->binaryFacts.emplace((*iter).first, std::unordered_set<std::pair<unsigned int, unsigned int>>());
+                    for (auto iter2 = (*iter).second.begin(); iter2 != (*iter).second.end(); iter2++)
+                        this->binaryFacts.at((*iter).first).emplace(std::make_pair((*iter2).fact.at(0), (*iter2).fact.at(1)));
+                }
+            }
+        };
 
 #pragma region ContainsFact
 
@@ -78,6 +91,12 @@ struct PDDLState {
     bool ContainsFact(const unsigned int &key, const unsigned int &value) const {
         return unaryFacts.at(key).contains(value);
     };
+
+    bool ContainsFact(const unsigned int &key, const std::pair<unsigned int, unsigned int> &value) const {
+        if (key == 0)
+            return value.first == value.second;
+        return binaryFacts.contains(key) && binaryFacts.at(key).contains(value);
+    }
 
     bool ContainsFact(const unsigned int &key, const MultiFact *value) const {
         return multiFacts.at(key).contains(*value);

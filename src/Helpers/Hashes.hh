@@ -6,6 +6,38 @@
 
 namespace std {
     template <>
+    struct hash<pair<unsigned int, unsigned int>> {
+        size_t operator()(const pair<unsigned int, unsigned int>& p) const
+        {
+            auto hash1 = hash<unsigned int>{}(p.first);
+            auto hash2 = hash<unsigned int>{}(p.second);
+    
+            if (hash1 != hash2) {
+                return hash1 ^ (hash2 << 1);             
+            }
+            
+            // If hash1 == hash2, their XOR is zero.
+            return hash1;
+        }
+    };
+
+    template <>
+    struct hash<pair<unsigned int*, unsigned int*>> {
+        size_t operator()(const pair<unsigned int*, unsigned int*>& p) const
+        {
+            auto hash1 = hash<unsigned int*>{}(p.first);
+            auto hash2 = hash<unsigned int*>{}(p.second);
+    
+            if (hash1 != hash2) {
+                return hash1 ^ (hash2 << 1);             
+            }
+            
+            // If hash1 == hash2, their XOR is zero.
+            return hash1;
+        }
+    };
+
+    template <>
     struct hash<unordered_set<unsigned int>> {
         auto operator()(const unordered_set<unsigned int>& vec) const -> size_t {
             std::size_t seed = vec.size();

@@ -27,13 +27,8 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 	else
 		throw std::invalid_argument("Invalid heuristic specified in config");
 		
-		
 	BaseDepthFunction *depthFunc = new ConstantDepthFunction(1000, *instance, 1);
-	BaseWidthFunction *widthFunc;
-	if (Configs->GetItem<int>("timelimit") != -1)
-		widthFunc = new TimeWidthFunction(Configs->GetItem<int>("timelimit"));
-	else
-		widthFunc = new ConstantWidthFunction(500);
+	BaseWidthFunction *widthFunc = new TimeWidthFunction(TimeLimit * 1000);
 
 	int i = report->Begin("Walking");
 	std::vector<Path> paths = walker.Walk(heuristic, depthFunc, widthFunc);
@@ -59,7 +54,6 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 	auto entFinderData = EntanglementFinder::RunData();
 
 	entFinderData.LevelReductionFactor = Configs->GetItem<int>("levelReductionFactor");
-	entFinderData.TimeLimitMs = Configs->GetItem<int>("entanglerTimeLimit");
 	entFinderData.SearchCeiling = Configs->GetItem<int>("searchCeiling");
 	entFinderData.SearchFloor = Configs->GetItem<int>("searchFloor");
 	if (Configs->GetItem<string>("levelReductionTypes") == "Division")
@@ -79,10 +73,6 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 		};
 		entFinder.OnLevelEnd = [&]() {
 			bar->End();
-		};
-		entFinder.OnTimeLimitReached = [&]() {
-			bar->End();
-			ConsoleHelper::PrintInfo("[Entanglement Finder] Entangler time limit reached!", 1);
 		};
 	}
 

@@ -5,13 +5,15 @@ using namespace std;
 enum CommonInterface::RunResult CommonInterface::Run(RunReport* report, int reformulatorIndex) {
 	int64_t t;
 	BaseReformulator* reformulator;
+	int timeLimit = config.GetItem<int>("incrementLimit");
+	int currentIncrementTimeLimit = config.GetItem<int>("startIncrement");
 
 	// Find a suitable reformulator
 	ConsoleHelper::PrintInfo("Finding reformulator algorithm...");
 	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "sameoutput") {
-		reformulator = new SameOutputReformulator(&config, report);
+		reformulator = new SameOutputReformulator(&config, report, config.GetItem<int>("initialIncrementTimeMs"));
 	} else 	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "walker") {
-		reformulator = new WalkerReformulator(&config, report);
+		reformulator = new WalkerReformulator(&config, report, config.GetItem<int>("initialIncrementTimeMs"));
 	}
 	else{
 		ConsoleHelper::PrintError("Reformulator not found! Reformulator: " + config.GetItem<string>("reformulator"));
@@ -52,31 +54,35 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report, int refo
 	PDDLInstance instance = PDDLInstance(&domain, &problem);
 	t = report->Stop();
 	
-	// Reformulate the PDDL file
-	ConsoleHelper::PrintInfo("Reformulating PDDL...");
-	int reformulationID = report->Begin("Reformulation of PDDL");
-	PDDLInstance reformulatedInstance = reformulator->ReformulatePDDL(&instance);
-	t = report->Stop(reformulationID);
-	
-	// Generate new PDDL files
-	ConsoleHelper::PrintInfo("Generating PDDL files...");
-	report->Begin("Generating PDDL");
-	PDDLCodeGenerator pddlGenerator = PDDLCodeGenerator(PDDLDomainCodeGenerator(reformulatedInstance.domain), PDDLProblemCodeGenerator(reformulatedInstance.domain, reformulatedInstance.problem));
-	pddlGenerator.GenerateCode(reformulatedInstance, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
-	t = report->Stop();
+	while (currentIncrementTimeLimit < timeLimit) {
+		reformulator->TimeLimit = currentIncrementTimeLimit;
 
-	// Throw the new pddl files into Fast Downward
-	ConsoleHelper::PrintInfo("Run new PDDL files with Fast Downward...");
-	report->Begin("Running FastDownward");
-	DownwardRunner runner = DownwardRunner();
-	runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
-	auto runRes = runner.ParseDownwardLog();
-	if (runRes != DownwardRunner::FoundPlan) {
-		ConsoleHelper::PrintError("No solution could be found for the plan");
+		// Reformulate the PDDL file
+		ConsoleHelper::PrintInfo("Reformulating PDDL...");
+		int reformulationID = report->Begin("Reformulation of PDDL");
+		PDDLInstance reformulatedInstance = reformulator->ReformulatePDDL(&instance);
+		t = report->Stop(reformulationID);
+
+		// Generate new PDDL files
+		ConsoleHelper::PrintInfo("Generating PDDL files...");
+		report->Begin("Generating PDDL");
+		PDDLCodeGenerator pddlGenerator = PDDLCodeGenerator(PDDLDomainCodeGenerator(reformulatedInstance.domain), PDDLProblemCodeGenerator(reformulatedInstance.domain, reformulatedInstance.problem));
+		pddlGenerator.GenerateCode(reformulatedInstance, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
 		t = report->Stop();
-		return CommonInterface::RunResult::ErrorsEncountered;
+
+		// Throw the new pddl files into Fast Downward
+		ConsoleHelper::PrintInfo("Run new PDDL files with Fast Downward...");
+		report->Begin("Running FastDownward");
+		DownwardRunner runner = DownwardRunner();
+		runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, currentIncrementTimeLimit);
+		auto runRes = runner.ParseDownwardLog();
+		if (runRes == DownwardRunner::FoundPlan) {
+			t = report->Stop();
+			break;
+		}
+		t = report->Stop();
+		currentIncrementTimeLimit *= config.GetItem<int>("incrementModifier");
 	}
-	t = report->Stop();
 
 	if (config.GetItem<bool>("debugmode")) {
 		// Check to make sure the reformulated plan also matches the reformulated problem and domain

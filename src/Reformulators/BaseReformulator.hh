@@ -8,7 +8,8 @@
 
 class BaseReformulator {
 public:
-	BaseReformulator(Config* config, RunReport *report) : Configs(config), report(report) {
+	int TimeLimit;
+	BaseReformulator(Config* config, RunReport *report, int timeLimit) : Configs(config), report(report), TimeLimit(timeLimit) {
 
 	}
 

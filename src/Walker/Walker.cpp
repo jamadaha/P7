@@ -7,7 +7,7 @@ Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const 
     std::unordered_set<PDDLState> visitedStates; visitedStates.reserve(depth);
 
     PDDLState tempState = PDDLState(state->unaryFacts, state->multiFacts);
-    if (config->GetBool("printwalkersteps")) {
+    if (config->GetItem<bool>("printwalkersteps")) {
         std::string command = "echo '" + tempState.ToString(instance)+ "'" + " >> walkerLog"; 
         system(command.c_str());
     }
@@ -30,7 +30,7 @@ Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const 
             visitedStates.emplace(tempState);
             steps.push_back(*chosenAction);
 
-            if (config->GetBool("printwalkersteps")) {
+            if (config->GetItem<bool>("printwalkersteps")) {
                 std::string stateinfo = tempState.ToString(this->instance);
                 std::string actioninfo = chosenAction->ToString(this->instance);
                 std::string content = "echo '" + actioninfo + "\n" + stateinfo + "'" + " >> walkerLog";
@@ -44,13 +44,13 @@ Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const 
 }
 
 std::vector<Path> Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc) {
-    if (config->GetBool("printwalkersteps")) {
+    if (config->GetItem<bool>("printwalkersteps")) {
         std::string command = "truncate -s 0 walkerLog";
         system(command.c_str());
     }
 
     ProgressBarHelper* bar;
-	if (config->GetBool("debugmode"))
+	if (config->GetItem<bool>("debugmode"))
 		bar = new ProgressBarHelper(widthFunc->max, "Walking", 1);
 
     reportActionGenID = report->Begin("Action Generation"); report->Pause(reportActionGenID);
@@ -62,10 +62,10 @@ std::vector<Path> Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *dept
         Path path = Walk(heuristic, depthFunc, &this->instance->problem->initState);
         paths.push_back(path);
 
-        if (config->GetBool("debugmode"))
+        if (config->GetItem<bool>("debugmode"))
             bar->SetTo(current);
     }
-    if (config->GetBool("debugmode"))
+    if (config->GetItem<bool>("debugmode"))
         bar->End();
     report->Stop(reportActionGenID); report->Stop(reportHeuristicID);
     return paths;

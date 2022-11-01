@@ -8,17 +8,17 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report, int refo
 
 	// Find a suitable reformulator
 	ConsoleHelper::PrintInfo("Finding reformulator algorithm...");
-	if (config.GetStringList("reformulator").at(reformulatorIndex) == "sameoutput") {
+	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "sameoutput") {
 		reformulator = new SameOutputReformulator(&config, report);
-	} else 	if (config.GetStringList("reformulator").at(reformulatorIndex) == "walker") {
+	} else 	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "walker") {
 		reformulator = new WalkerReformulator(&config, report);
 	}
 	else{
-		ConsoleHelper::PrintError("Reformulator not found! Reformulator: " + config.GetString("reformulator"));
+		ConsoleHelper::PrintError("Reformulator not found! Reformulator: " + config.GetItem<string>("reformulator"));
 		return CommonInterface::RunResult::ErrorsEncountered;
 	}
 
-	if (config.GetBool("debugmode")) {
+	if (config.GetItem<bool>("debugmode")) {
 		// Checking filepaths in the config file
 		ConsoleHelper::PrintDebugInfo("Checking filepaths from the config...");
 		report->Begin("Checking Filepaths");
@@ -34,11 +34,11 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report, int refo
 	ConsoleHelper::PrintInfo("Parsing PDDL files...");
 	PDDLDriver originalDriver;
 	report->Begin("Parsing PDDL Files");
-	if (originalDriver.parse(config.GetPath("domain"))) {
+	if (originalDriver.parse(config.GetItem<filesystem::path>("domain"))) {
 		ConsoleHelper::PrintError("Error parsing the domain file!");
 		return CommonInterface::RunResult::ErrorsEncountered;
 	}
-	if (originalDriver.parse(config.GetPath("problem"))) {
+	if (originalDriver.parse(config.GetItem<filesystem::path>("problem"))) {
 		ConsoleHelper::PrintError("Error parsing the problem file!");
 		return CommonInterface::RunResult::ErrorsEncountered;
 	}
@@ -78,7 +78,7 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report, int refo
 	}
 	t = report->Stop();
 
-	if (config.GetBool("debugmode")) {
+	if (config.GetItem<bool>("debugmode")) {
 		// Check to make sure the reformulated plan also matches the reformulated problem and domain
 		ConsoleHelper::PrintDebugInfo("Validate reformulated SAS plan...");
 		report->Begin("Validating reformulated SAS plan");
@@ -112,11 +112,11 @@ enum CommonInterface::RunResult CommonInterface::Run(RunReport* report, int refo
 	sasGenerator.GenerateCode(outputPlan, CommonInterface::OutputSASName);
 	t = report->Stop();
 
-	if (config.GetBool("debugmode")) {
+	if (config.GetItem<bool>("debugmode")) {
 		// Validate reformulated plan works with original domain and problem
 		ConsoleHelper::PrintDebugInfo("Validate new SAS plan...");
 		report->Begin("Validate new SAS plan");
-		auto newSASValidatorResult = PlanValidator::ValidatePlan(config, config.GetPath("domain"), config.GetPath("problem"), CommonInterface::OutputSASName);
+		auto newSASValidatorResult = PlanValidator::ValidatePlan(config, config.GetItem<filesystem::path>("domain"), config.GetItem<filesystem::path>("problem"), CommonInterface::OutputSASName);
 		if (newSASValidatorResult != PlanValidator::PlanMatch) {
 			ConsoleHelper::PrintDebugError("Output plan is not valid for original domain and problem!");
 			t = report->Stop();

@@ -16,24 +16,30 @@
 
 class Config {
 public:
-
     void ParseConfigFile(std::filesystem::path path);
     void ParseConfigItem(std::string line);
 
+    template <typename T>
+    T GetItem(std::string name);
 
-    int GetInteger(std::string name);
-    double GetDouble(std::string name);
-    bool GetBool(std::string name);
-    std::string GetString(std::string name);
-    std::filesystem::path GetPath(std::string name);
-    std::vector<std::string> GetStringList(std::string name);
+    bool Contains(std::string name);
+
+    void Clear();
 private:
-    std::map<std::string, std::string> stringItems;
-    std::map<std::string, std::vector<std::string>> stringListItems;
-    std::map<std::string, std::filesystem::path> pathItems;
-    std::map<std::string, int> intItems;
-    std::map<std::string, double> doubleItems;
-    std::map<std::string, bool> boolItems;
+    enum ValidTypes {NONE, INT, DOUBLE, BOOL, STRING, PATH};
+    ValidTypes GetTypeEnum(std::string typeName);
+
+    std::string GetTypeName(std::string line);
+    std::string GetSubTypeName(std::string typeName);
+    std::string GetName(std::string line);
+    std::string GetStringValue(std::string line);
+
+    template <typename T>
+    T GetNewItem(std::string value);
+    template <typename T>
+    std::vector<T> GetNewListItem(std::vector<std::string> values);
+
+    std::map<std::string, void*> items;
 };
 
 #endif

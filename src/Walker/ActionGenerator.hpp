@@ -33,16 +33,11 @@ public:
     /// @param literal Some unary literal
     static void RemoveIllegal(std::unordered_set<unsigned int> &set, const PDDLLiteral *literal, const PDDLState *state);
 
-    /// @brief Checks whether the objects are valid for each of the \p literals
-    /// @param literals Some multi literals
-    static bool IsLegal(const std::vector<PDDLLiteral> *literals, const PDDLState *state, const std::vector<unsigned int> *objects);
-    /// @brief Checks whether the objects are valid for the given \p literal
-    /// @param literal Some multi literal
-    static bool IsLegal(const PDDLLiteral *literal, const PDDLState *state, const std::vector<unsigned int> *objects);
+    /// @brief Removes those in \p set which do not match the given literal
+    /// @param literal Some unary literal
+    static void RemoveIllegal(std::unordered_set<std::pair<unsigned int, unsigned int>> &set, const PDDLLiteral *literal, const PDDLState *state);
 
-    /// @brief Finds next permutation of the \p iteration
-    /// @return Returns true if it hasn't reached the final permutation, and false if it has
-    static bool Iterate(std::vector<std::unordered_set<unsigned int>::iterator> *iteration, std::vector<std::unordered_set<unsigned int>> *candidateObjects);
+    static void Intersect(std::unordered_set<unsigned int> &a, const std::unordered_set<unsigned int> &b);
 
     unsigned int GetTotalActionsGenerated() { return totalActions; };
 

@@ -196,6 +196,21 @@ To launch in Visual Studio (Note: This is the inferior version):
       ],
       "env": {
       }
+    },
+    {
+        "type": "cppgdb",
+        "name": "P7 Stresstest",
+        "project": "CMakeLists.txt",
+        "projectTarget": "P7Lab",
+        "comment": "Test all benchmarks",
+        "debuggerConfiguration": "gdb",
+        "cwd": "/home/pc/.vs/P7/build",
+        "args": [
+            "'--all'",
+            "--settings 'settingsStress.ini'"
+        ],
+        "env": {
+        }
     }
   ]
 }

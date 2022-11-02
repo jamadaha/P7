@@ -54,11 +54,13 @@ PDDLProblem PDDLConverter::Convert(PDDLDomain *domain, Problem *problem) {
     // Get Init and Goal state
     auto initUnaryFacts = GetUnaryFacts(domain, &objectMap, problem->_init);
     auto goalUnaryFacts = GetUnaryFacts(domain, &objectMap, problem->_goal);
+    auto initBinaryFacts = GetBinaryFacts(domain, &objectMap, problem->_init);
+    auto goalBinaryFacts = GetBinaryFacts(domain, &objectMap, problem->_goal);
     auto initMultiFacts = GetMultiFacts(domain, &objectMap, problem->_init);
     auto goalMultiFacts = GetMultiFacts(domain, &objectMap, problem->_goal);
     
-    auto initState = PDDLState(initUnaryFacts, initMultiFacts);
-    auto goalState = PDDLState(goalUnaryFacts, goalMultiFacts);
+    auto initState = PDDLState(initUnaryFacts, initBinaryFacts, initMultiFacts);
+    auto goalState = PDDLState(goalUnaryFacts, goalBinaryFacts, goalMultiFacts);
     
     return PDDLProblem(name, domain, objects, objectMap, initState, goalState);
 }
@@ -114,6 +116,22 @@ std::unordered_map<unsigned int, std::unordered_set<unsigned int>> PDDLConverter
     }
     return unaryFacts;
 };
+
+std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> PDDLConverter::GetBinaryFacts(PDDLDomain *domain, std::unordered_map<std::string, unsigned int> *objectMap, LiteralList *literalList) {
+    std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts;
+    for (int i = 0; i < domain->predicates.size(); i++)
+        if (domain->predicates[i].argumentCount > 1)
+            binaryFacts[i] = std::unordered_set<std::pair<unsigned int, unsigned int>>();
+
+    for (int i = 0; i < literalList->size(); i++) {
+        auto fact = (*literalList)[i];
+        if (fact->first->_args->size() != 2)
+            continue;
+        unsigned int predicateIndex = domain->predicateMap.at(fact->first->_name);
+        binaryFacts.at(predicateIndex).emplace(std::make_pair(objectMap->at((*fact->first->_args)[0]), objectMap->at((*fact->first->_args)[1])));
+    }
+    return binaryFacts;
+}
 
 std::unordered_map<unsigned int, std::unordered_set<MultiFact>> PDDLConverter::GetMultiFacts(PDDLDomain *domain, std::unordered_map<std::string, unsigned int> *objectMap, LiteralList *literalList) {
     std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts;

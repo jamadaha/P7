@@ -38,6 +38,7 @@ public:
     static void RemoveIllegal(std::unordered_set<std::pair<unsigned int, unsigned int>> &set, const PDDLLiteral *literal, const PDDLState *state);
 
     static void Intersect(std::unordered_set<unsigned int> &a, const std::unordered_set<unsigned int> &b);
+    static void Intersect(std::unordered_set<std::pair<unsigned int, unsigned int>> &a, const std::unordered_set<std::pair<unsigned int, unsigned int>> &b);
 
     static std::vector<std::vector<unsigned int>> PermuteAll(std::vector<std::unordered_set<unsigned int>> candidateObjects, std::unordered_map<std::pair<unsigned int, unsigned int>, std::unordered_set<std::pair<unsigned int, unsigned int>>> candidatePairs);
 

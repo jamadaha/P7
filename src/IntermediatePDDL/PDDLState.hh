@@ -68,20 +68,10 @@ struct PDDLState {
     std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts;
 
     PDDLState() {};
-    PDDLState(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts, std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts) :
-        unaryFacts(unaryFacts), multiFacts(multiFacts) {
-            for (auto iter = multiFacts.begin(); iter != multiFacts.end(); iter++) {
-                auto lol = (*iter);
-
-                if (lol.first == 0)
-                    this->binaryFacts.emplace((*iter).first, std::unordered_set<std::pair<unsigned int, unsigned int>>());
-                else if (lol.second.size() != 0 && (*lol.second.begin()).fact.size() == 2) {
-                    this->binaryFacts.emplace((*iter).first, std::unordered_set<std::pair<unsigned int, unsigned int>>());
-                    for (auto iter2 = (*iter).second.begin(); iter2 != (*iter).second.end(); iter2++)
-                        this->binaryFacts.at((*iter).first).emplace(std::make_pair((*iter2).fact.at(0), (*iter2).fact.at(1)));
-                }
-            }
-        };
+    PDDLState(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts, 
+              std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts, 
+              std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts) :
+        unaryFacts(unaryFacts), binaryFacts(binaryFacts), multiFacts(multiFacts) {};
 
 #pragma region ContainsFact
 
@@ -95,7 +85,7 @@ struct PDDLState {
     bool ContainsFact(const unsigned int &key, const std::pair<unsigned int, unsigned int> &value) const {
         if (key == 0)
             return value.first == value.second;
-        return binaryFacts.contains(key) && binaryFacts.at(key).contains(value);
+        return binaryFacts.at(key).contains(value);
     }
 
     bool ContainsFact(const unsigned int &key, const MultiFact *value) const {

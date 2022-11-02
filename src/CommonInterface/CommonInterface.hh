@@ -59,7 +59,7 @@ private:
 	std::string TempProblemName;
 	std::string FastDownwardSASName;
 	std::string OutputSASName;
-	
+	bool isDirect = false;
 };
 
 #endif

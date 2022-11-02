@@ -8,8 +8,9 @@ InterfaceStep<BaseReformulator*> CommonInterface::GetReformulator(int reformulat
 	BaseReformulator* reformulator;
 	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "sameoutput") {
 		reformulator = new SameOutputReformulator(&config, Report);
+		isDirect = true;
 	}
-	else 	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "walker") {
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "walker") {
 		reformulator = new WalkerReformulator(&config, Report);
 	}
 	else {
@@ -199,7 +200,7 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 	if (!convertPDDLFormatStep.RanWithoutErrors)
 		return CommonInterface::RunResult::ErrorsEncountered;
 
-	if (config.GetItem<bool>("runIteratively")) {
+	if (!isDirect) {
 		auto runIterativelyStep = RunIteratively(getReformulatorStep.Data, convertPDDLFormatStep.Data);
 		if (!runIterativelyStep.RanWithoutErrors)
 			return CommonInterface::RunResult::ErrorsEncountered;

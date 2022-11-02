@@ -161,8 +161,7 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 
 	// Sanitize and remove bad candidates.
 	EntanglementEvaluator::RunData entEvaluatorData;
-	entEvaluatorData.MinimumOccurancePercent = Configs->GetItem<double>("minimumOccurancePercent");
-	entEvaluatorData.MinimumCrossOccurancePercent = Configs->GetItem<double>("minimumCrossOccurancePercent");
+	entEvaluatorData.MinimumQualityPercent = Configs->GetItem<double>("minimumQualityPercent");
 
 	entanglementEvaluator = new EntanglementEvaluator(entEvaluatorData);
 	if (Configs->GetItem<string>("entanglerLengthModifier") == "lengthBias")

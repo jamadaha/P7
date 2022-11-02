@@ -69,12 +69,10 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *ac
             candidatePermutations.push_back({ *iter });
     } else
         candidatePermutations = PermuteAll(candidateObjects, candidatePairs);
+        
     for (int i = 0; i < candidatePermutations.size(); i++)
         if (IsLegal(&action->preconditions, state, &candidatePermutations.at(i)))
             legalActions.push_back(PDDLActionInstance(action, candidatePermutations.at(i)));
-
-
-    // Do something to handle multifacts
  
     return legalActions;
 }
@@ -194,17 +192,5 @@ bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLSta
 }
 
 bool ActionGenerator::IsLegal(const PDDLLiteral *literal, const PDDLState *state, const std::vector<unsigned int> *objects) {
-    if (objects->size() == 0)
-        return false;
-    if (literal->predicateIndex == 0) {
-        if ((objects->at(literal->args.at(0)) == objects->at(literal->args.at(1))) != literal->value)
-            return false;
-        else
-            return true;
-    } else {
-        if (state->ContainsFact(literal->predicateIndex, &literal->args, objects) != literal->value)
-            return false;
-        else
-            return true;
-    }
+    return (state->ContainsFact(literal->predicateIndex, &literal->args, objects) == literal->value);
 }

@@ -33,6 +33,7 @@ configure_file(${PROJECT_SOURCE_DIR}/settings.ini ${CMAKE_BINARY_DIR}/settings.i
 configure_file(${PROJECT_SOURCE_DIR}/settingsFast.ini ${CMAKE_BINARY_DIR}/settingsFast.ini COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/settingsLab.ini ${CMAKE_BINARY_DIR}/settingsLab.ini COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/settingsLabMultiple.ini ${CMAKE_BINARY_DIR}/settingsLabMultiple.ini COPYONLY)
+configure_file(${PROJECT_SOURCE_DIR}/settingsStress.ini ${CMAKE_BINARY_DIR}/settingsStress.ini COPYONLY)
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)

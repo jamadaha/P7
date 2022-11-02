@@ -15,13 +15,13 @@ int main(int argc, char** argv){
 		fileName = std::filesystem::path(argv[1]);
 	config.ParseConfigFile(fileName); 
 
-	if (config.GetStringList("reformulator").size() > 1) {
+	if (config.GetItem<vector<string>>("reformulator").size() > 1) {
 		CompareRunReport compareReport;
 		bool isAllGood = true;
-		for (int i = 0; i < config.GetStringList("reformulator").size(); i++) {
-			RunReport report = RunReport(config.GetStringList("reformulator").at(i));
-			CommonInterface interface = CommonInterface(config);
-			auto runResult = interface.Run(&report, i);
+		for (int i = 0; i < config.GetItem<vector<string>>("reformulator").size(); i++) {
+			RunReport report = RunReport(config.GetItem<vector<string>>("reformulator").at(i));
+			CommonInterface interface = CommonInterface(config, &report);
+			auto runResult = interface.Run(i);
 			if (runResult != CommonInterface::RunResult::RanWithoutErrors) {
 				isAllGood = false;
 				break;
@@ -34,11 +34,14 @@ int main(int argc, char** argv){
 	}
 	else 
 	{
-		RunReport report = RunReport(config.GetStringList("reformulator").at(0));
-		CommonInterface interface = CommonInterface(config);
-		auto runResult = interface.Run(&report);
-		if (runResult == CommonInterface::RunResult::RanWithoutErrors)
+		RunReport report = RunReport(config.GetItem<vector<string>>("reformulator").at(0));
+		CommonInterface interface = CommonInterface(config, &report);
+		auto runResult = interface.Run();
+		//if (runResult == CommonInterface::RunResult::RanWithoutErrors)
 			report.Print();
 	}
+
+	config.Clear();
+
 	return 0;
 }

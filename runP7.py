@@ -84,11 +84,12 @@ Each task contains a domain file and problem file
 For each task a settings.ini file is made and P7 is given this file as argument
 """
 for task in tasks:
-    settingscontent += "\nPATH:domain=" + task.domain_file + "\n"
-    settingscontent += "PATH:problem=" + task.problem_file + "\n"
+    content = settingscontent
+    content += "\nPATH:domain=" + task.domain_file + "\n"
+    content += "PATH:problem=" + task.problem_file + "\n"
 
     run = experiment.add_run()
-    run.add_new_file("config","TempSettings.ini",settingscontent)
+    run.add_new_file("config","TempSettings.ini",content)
     run.add_command("planner", [abs_path(__file__,projectfile),"{config}"])
 
     run.set_property("id",[search, heuristic, task.domain, task.problem])

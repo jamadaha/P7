@@ -3,14 +3,14 @@
 using namespace std;
 
 string PathsChecker::IsPathsOk(Config* config) {
-	if (!CheckItem(config->GetPath("domain")))
-		return config->GetPath("domain");
-	if (!CheckItem(config->GetPath("problem")))
-		return config->GetPath("problem");
-	if (!CheckItem(config->GetPath("downwardpath")))
-		return config->GetPath("downwardpath");
-	if (!CheckItem(config->GetPath("validatorpath")))
-		return config->GetPath("validatorpath");
+	if (!CheckItem(config->GetItem<filesystem::path>("domain")))
+		return config->GetItem<filesystem::path>("domain");
+	if (!CheckItem(config->GetItem<filesystem::path>("problem")))
+		return config->GetItem<filesystem::path>("problem");
+	if (!CheckItem(config->GetItem<filesystem::path>("downwardpath")))
+		return config->GetItem<filesystem::path>("downwardpath");
+	if (!CheckItem(config->GetItem<filesystem::path>("validatorpath")))
+		return config->GetItem<filesystem::path>("validatorpath");
 	return "";
 }
 

@@ -5,6 +5,7 @@ Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const 
     const int depth = depthFunc->GetDepth();
     std::vector<PDDLActionInstance> steps; steps.reserve(depth);
     std::unordered_set<PDDLState> visitedStates; visitedStates.reserve(depth);
+    std::unordered_map<PDDLState, std::vector<PDDLActionInstance>> cachedActions;
 
     PDDLState tempState = PDDLState(state->unaryFacts, state->binaryFacts, state->multiFacts);
     if (OnTempStateMade != nullptr)
@@ -12,7 +13,10 @@ Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const 
 
     for (int i = 0; i < depth; i++) {
         std::vector<PDDLActionInstance> possibleActions;
-        possibleActions = actionGenerator.GenerateActions(&tempState);
+        if (cachedActions.contains(tempState))
+            possibleActions = cachedActions.at(tempState);
+        else 
+            possibleActions = actionGenerator.GenerateActions(&tempState);
 
         if (possibleActions.size() == 0) break;
         PDDLActionInstance *chosenAction = heuristic->NextChoice(&tempState, &possibleActions);
@@ -22,6 +26,8 @@ Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const 
             break;
         else {
             visitedStates.emplace(tempState);
+            if (!cachedActions.contains(tempState))
+                cachedActions[tempState] = possibleActions;
             steps.push_back(*chosenAction);
 
             if (OnStateWalk != nullptr)

@@ -263,3 +263,79 @@ TEST_CASE(TAG + "negative - positive eff") {
     REQUIRE(m.groundedAction.preconditions == expectedPrecons);
     REQUIRE(m.groundedAction.effects == expectedEffects);
 }
+
+TEST_CASE(TAG + "3 action blocks macro") {
+    std::vector<PDDLActionInstance*> actions;
+    // predicates:
+    // (on ?x ?y)
+    // (ontable ?x)
+    // (clear ?x)
+    // (handempty)
+    // (holding ?x)
+
+    // example macro, not necessarily a good one
+    // actions: pickup 0, stack 0 on 1, pickup 2
+    PDDLAction _act1 = PDDLAction(
+        "pickup",
+        std::vector<std::string> {"?x"},
+        // (clear ?x) (ontable ?x) (handempty)
+        std::vector<PDDLLiteral> {PDDLLiteral(3, std::vector<unsigned int> {0}, true), PDDLLiteral(2, std::vector<unsigned int> {0}, true), PDDLLiteral(4, std::vector<unsigned int> {}, true)},
+        // (not (ontable ?x)) (not (clear ?x)) (not (handempty)) (holding ?x)))
+        std::vector<PDDLLiteral> {PDDLLiteral(2, std::vector<unsigned int> {0}, false), PDDLLiteral(3, std::vector<unsigned int> {0}, false), PDDLLiteral(4, std::vector<unsigned int> {}, false), PDDLLiteral(5, std::vector<unsigned int> {0}, true)}
+    );
+    PDDLAction _act2 = PDDLAction(
+        "stack",
+        std::vector<std::string> {"?x", "?y"},
+        // (holding ?x) (clear ?y)
+        std::vector<PDDLLiteral> {PDDLLiteral(5, std::vector<unsigned int> {0}, true), PDDLLiteral(3, std::vector<unsigned int> {1}, true)},
+        // (not (holding ?x)) (not (clear ?y)) (clear ?x) (handempty) (on ?x ?y)))
+        std::vector<PDDLLiteral> {PDDLLiteral(5, std::vector<unsigned int> {0}, false), PDDLLiteral(3, std::vector<unsigned int> {1}, false), PDDLLiteral(3, std::vector<unsigned int> {0}, true), PDDLLiteral(4, std::vector<unsigned int> {}, true), PDDLLiteral(1, std::vector<unsigned int> {0, 1}, true)}
+    );
+
+    PDDLActionInstance act1 = PDDLActionInstance(&_act1, std::vector<unsigned int> {0});
+    PDDLActionInstance act2 = PDDLActionInstance(&_act2, std::vector<unsigned int> {0, 1});
+    PDDLActionInstance act3 = PDDLActionInstance(&_act1, std::vector<unsigned int> {2});
+
+    actions.push_back(&act1);
+    actions.push_back(&act2);
+    actions.push_back(&act3);
+
+    // generate macro
+    MacroGenerator macroGenerator = MacroGenerator();
+    Macro m = macroGenerator.GenerateMacro(&actions);
+
+    // expected stuff
+    std::unordered_map<GroundedLiteral, bool> expectedPrecons ({
+        // ({3(0), 2(0), 4} U ({5(0), 3(1)} - {5(0)})) U ({3(2), 2(2), 4} - {3(0), 4, 1(0, 1)})
+        // = 3(0), 2(0), 4, 3(1), 3(2), 2(2))
+        {GroundedLiteral(3, std::vector<unsigned int> {0}), true},
+        {GroundedLiteral(2, std::vector<unsigned int> {0}), true},
+        {GroundedLiteral(4, std::vector<unsigned int> { }), true},
+        {GroundedLiteral(3, std::vector<unsigned int> {1}), true},
+        {GroundedLiteral(3, std::vector<unsigned int> {2}), true},
+        {GroundedLiteral(2, std::vector<unsigned int> {2}), true}
+    });
+    std::unordered_map<GroundedLiteral, bool> expectedEffects ({
+        // positive effects
+        // ({5(0)} - {5(0), 3(1)}) U {3(0), 4, 1(0, 1)}
+        // ({3(0), 4, 1(0, 1)} - {2(2), 3(2), 4}) U 5(2)
+        // = 3(0), 1(0, 1), 5(2)
+        {GroundedLiteral(3, std::vector<unsigned int> {0}), true},
+        {GroundedLiteral(1, std::vector<unsigned int> {0, 1}), true},
+        {GroundedLiteral(5, std::vector<unsigned int> {2}), true},
+        // negative effects
+        // ({2(0), 3(0), 4} - {4, 1(0, 1), 3(0)}) U {5(0), 3(1)}
+        // ({2(0), 5(0), 3(1)} - {5(1)}) U {2(2), 3(2), 4}
+        // = 2(0) 5(0), 3(1), 2(2), 3(2), 4
+        {GroundedLiteral(2, std::vector<unsigned int> {0}), false},
+        {GroundedLiteral(5, std::vector<unsigned int> {0}), false},
+        {GroundedLiteral(3, std::vector<unsigned int> {1}), false},
+        {GroundedLiteral(2, std::vector<unsigned int> {2}), false},
+        {GroundedLiteral(3, std::vector<unsigned int> {2}), false},
+        {GroundedLiteral(4, std::vector<unsigned int> { }), false}
+    });
+
+    REQUIRE(m.groundedAction.parameters == std::unordered_set<unsigned int> {0, 1, 2});
+    REQUIRE(m.groundedAction.preconditions == expectedPrecons);
+    REQUIRE(m.groundedAction.effects == expectedEffects);
+}

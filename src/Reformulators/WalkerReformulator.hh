@@ -31,7 +31,6 @@ public:
 	PDDLInstance ReformulatePDDL(PDDLInstance* instance) override;
 	SASPlan RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) override;
 private:
-	std::vector<Macro> macros;
 	std::vector<Path> PerformWalk(PDDLInstance* instance);
 	std::vector<EntanglementOccurance> FindEntanglements(std::vector<Path>* paths, PDDLInstance* instance);
 	PDDLInstance GenerateMacros(std::vector<EntanglementOccurance>* candidates, PDDLInstance* instance);
@@ -41,6 +40,7 @@ private:
 	EntanglementEvaluator* entanglementEvaluator;
 	MacroGenerator* macroGenerator;
 	std::vector<Path> paths;
+	std::vector<Macro> macros;
 
 	void PrintEntanglerSteps(std::vector<EntanglementOccurance>* candidates, PDDLInstance* instance);
 	void PrintWalkerDebugData(double ellapsed);

@@ -144,6 +144,7 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 
 PDDLInstance WalkerReformulator::GenerateMacros(vector<EntanglementOccurance>* candidates, PDDLInstance* instance) {
 	macroGenerator = new MacroGenerator(instance->domain, instance->problem);
+	macros.clear();
 
 	ProgressBarHelper* bar;
 	if (Configs->GetItem<bool>("debugmode")) {

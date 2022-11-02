@@ -7,7 +7,9 @@ const int debugIndent = 2;
 PDDLInstance WalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	// Walk the PDDL
 	int walkID = Report->Begin("Walking", ReportID);
-	auto paths = PerformWalk(instance);
+	auto newPaths = PerformWalk(instance);
+	for (int i = 0; i < newPaths.size(); i++)
+		paths.push_back(newPaths.at(i));
 	auto ellapsed = Report->Stop(walkID);
 	if (Configs->GetItem<bool>("debugmode")) {
 		unsigned int totalIterations = paths.size();
@@ -62,7 +64,7 @@ PDDLInstance WalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 
 	// Generate new Macros
 	int generateMacroID = Report->Begin("Generating Macros", ReportID);
-	auto newInstance = GenerateMacros(candidates, instance);
+	auto newInstance = GenerateMacros(&candidates, instance);
 	ellapsed = Report->Stop(generateMacroID);
 	if (Configs->GetItem<bool>("debugmode")) {
 		ConsoleHelper::PrintDebugInfo("[Macro Generator] Total generation time:         " + to_string(ellapsed) + "ms", debugIndent);
@@ -171,16 +173,16 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 	return sanitizedCandidates;
 }
 
-PDDLInstance WalkerReformulator::GenerateMacros(vector<EntanglementOccurance> candidates, PDDLInstance* instance) {
+PDDLInstance WalkerReformulator::GenerateMacros(vector<EntanglementOccurance>* candidates, PDDLInstance* instance) {
 	macroGenerator = new MacroGenerator(instance->domain, instance->problem);
 
 	ProgressBarHelper* bar;
 	if (Configs->GetItem<bool>("debugmode")) {
 		ConsoleHelper::PrintDebugInfo("[Macro Generator] Generating Macros...", debugIndent);
-		bar = new ProgressBarHelper(candidates.size(), "", debugIndent + 1);
+		bar = new ProgressBarHelper(candidates->size(), "", debugIndent + 1);
 	}
-	for (int i = 0; i < candidates.size(); i++) {
-		macros.push_back(macroGenerator->GenerateMacro(&candidates.at(i).Chain));
+	for (int i = 0; i < candidates->size(); i++) {
+		macros.push_back(macroGenerator->GenerateMacro(&candidates->at(i).Chain));
 		if (Configs->GetItem<bool>("debugmode"))
 			bar->Update();
 	}

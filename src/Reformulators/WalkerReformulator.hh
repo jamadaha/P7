@@ -34,12 +34,13 @@ private:
 	std::vector<Macro> macros;
 	std::vector<Path> PerformWalk(PDDLInstance* instance);
 	std::vector<EntanglementOccurance> FindEntanglements(std::vector<Path>* paths, PDDLInstance* instance);
-	PDDLInstance GenerateMacros(std::vector<EntanglementOccurance> candidates, PDDLInstance* instance);
+	PDDLInstance GenerateMacros(std::vector<EntanglementOccurance>* candidates, PDDLInstance* instance);
 
 	Walker* walker;
 	EntanglementFinder* entanglementFinder;
 	EntanglementEvaluator* entanglementEvaluator;
 	MacroGenerator* macroGenerator;
+	std::vector<Path> paths;
 };
 
 #endif

@@ -114,26 +114,29 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 }
 
 InterfaceStep<void> CommonInterface::RunSingle(BaseReformulator* reformulator, PDDLInstance* instance) {
+	int iterativeProcess = Report->Begin("Reformulating Directly");
+
 	ConsoleHelper::PrintInfo("Reformulating PDDL...", 1);
-	int reformulationID = Report->Begin("Reformulation of PDDL");
+	int reformulationID = Report->Begin("Reformulation of PDDL", iterativeProcess);
 	reformulator->ReportID = reformulationID;
 	PDDLInstance reformulatedInstance = reformulator->ReformulatePDDL(instance);
 	Report->Stop();
 
 	// Generate new PDDL files
 	ConsoleHelper::PrintInfo("Generating PDDL files...", 1);
-	Report->Begin("");
+	Report->Begin("Generating PDDL", iterativeProcess);
 	PDDLCodeGenerator pddlGenerator = PDDLCodeGenerator(PDDLDomainCodeGenerator(reformulatedInstance.domain), PDDLProblemCodeGenerator(reformulatedInstance.domain, reformulatedInstance.problem));
 	pddlGenerator.GenerateCode(reformulatedInstance, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
 	Report->Stop();
 
 	// Throw the new pddl files into Fast Downward
 	ConsoleHelper::PrintInfo("Run new PDDL files with Fast Downward...", 1);
-	Report->Begin("");
+	Report->Begin("Running FastDownward", iterativeProcess);
 	DownwardRunner runner = DownwardRunner();
 	runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, -1);
 	auto runRes = runner.ParseDownwardLog();
 	Report->Stop();
+	Report->Stop(iterativeProcess);
 	if (runRes != DownwardRunner::FoundPlan) {
 		ConsoleHelper::PrintError("Fast downward did not find a plan!");
 		return InterfaceStep<void>(false);

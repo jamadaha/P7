@@ -12,8 +12,10 @@
 
 class ActionGenerator {
 public:
+    unsigned int GetTotalActionsGenerated() { return totalActions; };
     ActionGenerator(const PDDLDomain *domain, const PDDLProblem *problem) : domain(domain), problem(problem) {
     };
+
     /// @brief For a given state, generate all possible action instances
     std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state);
     /// @brief For a given action, generate all possible action instances
@@ -44,7 +46,12 @@ public:
 
     static void Permute(std::vector<std::unordered_set<unsigned int>> &candidateObjects, std::unordered_map<std::pair<unsigned int, unsigned int>, std::unordered_set<std::pair<unsigned int, unsigned int>>> &candidatePairs, std::vector<std::vector<unsigned int>> *permutations, std::vector<unsigned int> *permutation);
 
-    unsigned int GetTotalActionsGenerated() { return totalActions; };
+    /// @brief Checks whether the objects are valid for each of the \p literals
+    /// @param literals Some multi literals
+    static bool IsLegal(const std::vector<PDDLLiteral> *literals, const PDDLState *state, const std::vector<unsigned int> *objects);
+    /// @brief Checks whether the objects are valid for the given \p literal
+    /// @param literal Some multi literal
+    static bool IsLegal(const PDDLLiteral *literal, const PDDLState *state, const std::vector<unsigned int> *objects);
 
 private:
     const PDDLDomain *domain;

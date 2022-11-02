@@ -68,9 +68,15 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *ac
         }
     }
 
-    std::vector<std::vector<unsigned int>> candidatePermutations = PermuteAll(candidateObjects, candidatePairs);
+    std::vector<std::vector<unsigned int>> candidatePermutations;
+    if (candidateObjects.size() == 1) {
+        for (auto iter = candidateObjects.at(0).begin(); iter != candidateObjects.at(0).end(); iter++)
+            candidatePermutations.push_back({ *iter });
+    } else
+        candidatePermutations = PermuteAll(candidateObjects, candidatePairs);
     for (int i = 0; i < candidatePermutations.size(); i++)
-        legalActions.push_back(PDDLActionInstance(action, candidatePermutations.at(i)));
+        if (IsLegal(&action->preconditions, state, &candidatePermutations.at(i)))
+            legalActions.push_back(PDDLActionInstance(action, candidatePermutations.at(i)));
 
 
     // Do something to handle multifacts
@@ -180,3 +186,30 @@ void ActionGenerator::Permute(std::vector<std::unordered_set<unsigned int>> &can
     }
 }
 
+bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLState *state, const vector<unsigned int> *objects) {
+    const int literalsLength = literals->size();
+    for (int i = 0; i < literalsLength; i++) {
+        const PDDLLiteral *literal = &(literals->at(i));
+        if (literal->args.size() < 3)
+            continue;
+        if (!IsLegal(literal, state, objects))
+            return false;
+    }
+    return true;
+}
+
+bool ActionGenerator::IsLegal(const PDDLLiteral *literal, const PDDLState *state, const std::vector<unsigned int> *objects) {
+    if (objects->size() == 0)
+        return false;
+    if (literal->predicateIndex == 0) {
+        if ((objects->at(literal->args.at(0)) == objects->at(literal->args.at(1))) != literal->value)
+            return false;
+        else
+            return true;
+    } else {
+        if (state->ContainsFact(literal->predicateIndex, &literal->args, objects) != literal->value)
+            return false;
+        else
+            return true;
+    }
+}

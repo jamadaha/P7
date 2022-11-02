@@ -141,7 +141,7 @@ std::unordered_map<unsigned int, std::unordered_set<MultiFact>> PDDLConverter::G
 
     for (int i = 0; i < literalList->size(); i++) {
         auto fact = (*literalList)[i];
-        if (fact->first->_args->size() < 2)
+        if (fact->first->_args->size() < 3)
             continue;
         unsigned int predicateIndex = domain->predicateMap.at(fact->first->_name);
         std::vector<unsigned int> objectIndexes;

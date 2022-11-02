@@ -11,56 +11,17 @@ PDDLInstance WalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	for (int i = 0; i < newPaths.size(); i++)
 		paths.push_back(newPaths.at(i));
 	auto ellapsed = Report->Stop(walkID);
-	if (Configs->GetItem<bool>("debugmode")) {
-		unsigned int totalIterations = paths.size();
-		unsigned int totalActionCount = walker->GetTotalActionsGenerated();
-		ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + to_string(ellapsed) + "ms", debugIndent);
-		double iterationsPrSecond = (totalIterations * 1000) / (ellapsed + 1);
-		ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + to_string(totalIterations) + " [" + to_string(iterationsPrSecond) + "/s]", debugIndent);
-		double actionsPrSecond = (totalActionCount * 1000) / (ellapsed + 1);
-		ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", debugIndent);
-	}
+	if (Configs->GetItem<bool>("debugmode"))
+		PrintWalkerDebugData(ellapsed);
 
 	// Find Entangelements
 	int entangleID = Report->Begin("Finding Entanglements", ReportID);
 	auto candidates = FindEntanglements(&paths, instance);
 	ellapsed = Report->Stop();
-	if (Configs->GetItem<bool>("debugmode")) {
-		unsigned int totalActions = 0;
-		for (int i = 0; i < paths.size(); i++)
-			totalActions += paths.at(i).steps.size();
-
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + to_string(ellapsed) + "ms", debugIndent);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + to_string(entanglementFinder->TotalLevels()), debugIndent);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + to_string(entanglementEvaluator->RemovedCandidates() + candidates.size()), debugIndent);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + to_string(paths.size()) + " paths with " + to_string(totalActions) + " steps in total", debugIndent);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total evaluation time:  " + to_string(ellapsed) + "ms", debugIndent);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + to_string(entanglementEvaluator->RemovedCandidates() + candidates.size()) + " (" + to_string(entanglementEvaluator->RemovedCandidates()) + " removed)", debugIndent);
-	}
-	if (Configs->GetItem<bool>("printentanglersteps")) {
-		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Top 10 Entanglements:", debugIndent);
-		ConsoleHelper::PrintDebugInfo("[Entanglements] Quality  : Chain", debugIndent + 1);
-		int counter = 0;
-		for (auto i = candidates.begin(); i != candidates.end(); i++) {
-			string actionStr = "";
-			for (int j = 0; j < (*i).Chain.size(); j++) {
-				auto item = (*i).Chain.at(j);
-				string paramStr = "";
-				for (int l = 0; l < item->objects.size(); l++) {
-					paramStr += instance->problem->objects[item->objects[l]];
-					if (l != item->objects.size() - 1)
-						paramStr += ", ";
-				}
-				actionStr += item->action->name + "(" + paramStr + ")";
-				if (j != (*i).Chain.size() - 1)
-					actionStr += " -> ";
-			}
-			ConsoleHelper::PrintDebugInfo("[Entanglements] " + to_string((*i).Quality) + " : " + actionStr, debugIndent + 1);
-			counter++;
-			if (counter > 10)
-				break;
-		}
-	}
+	if (Configs->GetItem<bool>("debugmode"))
+		PrintEntanglerDebugData(ellapsed, &candidates);
+	if (Configs->GetItem<bool>("printentanglersteps"))
+		PrintEntanglerSteps(&candidates, instance);
 
 	// Generate new Macros
 	int generateMacroID = Report->Begin("Generating Macros", ReportID);
@@ -230,3 +191,55 @@ SASPlan WalkerReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* refo
 	SASPlan newPlan = SASPlan(actions, actions.size());
 	return newPlan;
 } 
+
+#pragma region Debug Items
+
+void WalkerReformulator::PrintEntanglerSteps(vector<EntanglementOccurance>* candidates, PDDLInstance* instance) {
+	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Top 10 Entanglements:", debugIndent);
+	ConsoleHelper::PrintDebugInfo("[Entanglements] Quality  : Chain", debugIndent + 1);
+	int counter = 0;
+	for (auto i = candidates->begin(); i != candidates->end(); i++) {
+		string actionStr = "";
+		for (int j = 0; j < (*i).Chain.size(); j++) {
+			auto item = (*i).Chain.at(j);
+			string paramStr = "";
+			for (int l = 0; l < item->objects.size(); l++) {
+				paramStr += instance->problem->objects[item->objects[l]];
+				if (l != item->objects.size() - 1)
+					paramStr += ", ";
+			}
+			actionStr += item->action->name + "(" + paramStr + ")";
+			if (j != (*i).Chain.size() - 1)
+				actionStr += " -> ";
+		}
+		ConsoleHelper::PrintDebugInfo("[Entanglements] " + to_string((*i).Quality) + " : " + actionStr, debugIndent + 1);
+		counter++;
+		if (counter > 10)
+			break;
+	}
+}
+
+void WalkerReformulator::PrintWalkerDebugData(double ellapsed) {
+	unsigned int totalIterations = paths.size();
+	unsigned int totalActionCount = walker->GetTotalActionsGenerated();
+	ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + to_string(ellapsed) + "ms", debugIndent);
+	double iterationsPrSecond = (totalIterations * 1000) / (ellapsed + 1);
+	ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + to_string(totalIterations) + " [" + to_string(iterationsPrSecond) + "/s]", debugIndent);
+	double actionsPrSecond = (totalActionCount * 1000) / (ellapsed + 1);
+	ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", debugIndent);
+}
+
+void WalkerReformulator::PrintEntanglerDebugData(double ellapsed, vector<EntanglementOccurance>* candidates) {
+	unsigned int totalActions = 0;
+	for (int i = 0; i < paths.size(); i++)
+		totalActions += paths.at(i).steps.size();
+
+	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + to_string(ellapsed) + "ms", debugIndent);
+	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + to_string(entanglementFinder->TotalLevels()), debugIndent);
+	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + to_string(entanglementEvaluator->RemovedCandidates() + candidates->size()), debugIndent);
+	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + to_string(paths.size()) + " paths with " + to_string(totalActions) + " steps in total", debugIndent);
+	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total evaluation time:  " + to_string(ellapsed) + "ms", debugIndent);
+	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + to_string(entanglementEvaluator->RemovedCandidates() + candidates->size()) + " (" + to_string(entanglementEvaluator->RemovedCandidates()) + " removed)", debugIndent);
+}
+
+#pragma endregion

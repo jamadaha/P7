@@ -41,6 +41,10 @@ private:
 	EntanglementEvaluator* entanglementEvaluator;
 	MacroGenerator* macroGenerator;
 	std::vector<Path> paths;
+
+	void PrintEntanglerSteps(std::vector<EntanglementOccurance>* candidates, PDDLInstance* instance);
+	void PrintWalkerDebugData(double ellapsed);
+	void PrintEntanglerDebugData(double ellapsed, std::vector<EntanglementOccurance>* candidates);
 };
 
 #endif

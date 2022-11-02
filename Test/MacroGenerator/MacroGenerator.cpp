@@ -175,7 +175,7 @@ TEST_CASE(TAG + "no precon - negative eff") {
     });
     std::unordered_map<GroundedLiteral, bool> expectedEffects ({
         {GroundedLiteral(2, std::vector<unsigned int> {1}), false},
-        {GroundedLiteral(4, std::vector<unsigned int> {2}), true}
+        {GroundedLiteral(3, std::vector<unsigned int> {2}), true}
     });
     REQUIRE(m.groundedAction.parameters == std::unordered_set<unsigned int> {0, 1, 2});
     REQUIRE(m.groundedAction.preconditions == expectedPrecons);

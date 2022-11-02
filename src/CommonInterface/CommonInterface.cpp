@@ -81,7 +81,7 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 		reformulator->ReportID = reformulationID;
 		reformulator->Iteration = counter;
 		PDDLInstance reformulatedInstance = reformulator->ReformulatePDDL(instance);
-		Report->Stop();
+		Report->Stop(reformulationID);
 
 		// Generate new PDDL files
 		ConsoleHelper::PrintInfo("Generating PDDL files...", 1);
@@ -97,12 +97,14 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 		runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, currentIncrementTimeLimit);
 		runRes = runner.ParseDownwardLog();
 		Report->Stop();
+		Report->Stop(iterationID);
 		if (runRes == DownwardRunner::FoundPlan) {
 			break;
 		}
 		currentIncrementTimeLimit *= config.GetItem<int>("incrementModifier");
 		counter++;
 	}
+	Report->Stop(iterativeProcess);
 	if (runRes != DownwardRunner::FoundPlan) {
 		ConsoleHelper::PrintError("Fast downward did not find a plan in time!");
 		return InterfaceStep<void>(false);

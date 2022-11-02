@@ -4,9 +4,12 @@
 #include <string>
 #include <vector>
 #include <chrono>
+#include <map>
+#include <algorithm>
 
 struct ReportStep {
     bool isRunning;
+    int indent = 0;
     std::string desc;
     // How long the step took in nano seconds
     int64_t time = 0;
@@ -18,6 +21,7 @@ struct ReportStep {
     int parent = -1;
     ReportStep(std::string desc) : desc(desc), finished(false) {}
     ReportStep(std::string desc, int parent) : desc(desc), parent(parent), finished(false) {}
+    ReportStep(std::string desc, int parent, int indent) : desc(desc), parent(parent), indent(indent), finished(false) {}
 };
 
 class RunReport {
@@ -45,7 +49,8 @@ public:
 
     void Print();
 private:
-    std::string GetParentIndent(int parentID);
+    int GetParentIndent(int parentID);
+    double GetTotalChildrenTime(int parentID);
     std::vector<ReportStep> steps;
 };
 

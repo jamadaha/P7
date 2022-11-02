@@ -33,11 +33,6 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *ac
         return legalActions;
     
     unordered_map<pair<unsigned int, unsigned int>, unordered_set<pair<unsigned int, unsigned int>>> candidatePairs;
-    std::vector<unordered_set<pair<unsigned int, unsigned int>>> applicablePairs;
-    applicablePairs.reserve(candidateObjects.size());
-    for (int i = 0; i < candidateObjects.size(); i++)
-        applicablePairs.push_back(unordered_set<pair<unsigned int, unsigned int>>());
-
     for (int i = 0; i < action->preconditions.size(); i++) {
         auto precondition = &action->preconditions.at(i);
         if (precondition->args.size() != 2)
@@ -63,8 +58,6 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *ac
 
         if (!candidatePairs.contains(indexPair)) {
             candidatePairs[indexPair] = pairs;
-            for (auto iter = candidatePairs.at(indexPair).begin(); iter != candidatePairs.at(indexPair).end(); iter++)
-                applicablePairs.at(indexPair.first).emplace((*iter));
             // Remove those from candidate objects which are not in any pairs
             Intersect(candidateObjects.at(indexPair.first), indexFirsts);
             Intersect(candidateObjects.at(indexPair.second), indexSecond);
@@ -75,8 +68,8 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *ac
         }
     }
 
-    unordered_set<std::vector<unsigned int>> candidatePermutations;
-    
+    std::vector<std::vector<unsigned int>> candidatePermutations = PermuteAll(candidateObjects, candidatePairs);
+
 
 
     // Do something to handle multifacts
@@ -145,3 +138,30 @@ void ActionGenerator::Intersect(std::unordered_set<unsigned int> &a, const std::
     const auto Contains = [&](auto const& x) { return !b.contains(x);};
     std::erase_if(a, Contains);
 }
+
+std::vector<std::vector<unsigned int>> ActionGenerator::PermuteAll(std::vector<std::unordered_set<unsigned int>> candidateObjects, std::unordered_map<std::pair<unsigned int, unsigned int>, std::unordered_set<std::pair<unsigned int, unsigned int>>> candidatePairs) {
+    vector<vector<unsigned int>> permutations;
+    vector<unsigned int> permutation;
+    permutation.reserve(candidateObjects.size());
+    for (auto iter = candidateObjects.at(0).begin(); iter != candidateObjects.at(0).end(); iter++) {
+        permutation.push_back(*iter);
+        Permute(candidateObjects, candidatePairs, &permutations, &permutation);
+        permutation.pop_back();
+    }
+    return permutations;
+}
+
+void ActionGenerator::Permute(std::vector<std::unordered_set<unsigned int>> &candidateObjects, std::unordered_map<std::pair<unsigned int, unsigned int>, std::unordered_set<std::pair<unsigned int, unsigned int>>> &candidatePairs, std::vector<std::vector<unsigned int>> *permutations, std::vector<unsigned int> *permutation) {
+    auto perm1 = *permutation;
+    for (auto iter = candidateObjects.at(permutation->size()).begin(); iter != candidateObjects.at(permutation->size()).end(); iter++) {
+        permutation->push_back(*iter);
+        auto perm2 = *permutation;
+        if (permutation->size() == candidateObjects.size()) {
+            permutations->push_back(*permutation);
+        } else {
+            Permute(candidateObjects, candidatePairs, permutations, permutation);
+        }
+        permutation->pop_back();
+    }
+}
+

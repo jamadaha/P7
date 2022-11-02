@@ -16,6 +16,7 @@ class EntanglementEvaluator {
 public:
 	struct RunData {
 		double MinimumQualityPercent = 0;
+		int MaxCandidates = 1;
 	};
 
 	RunData Data;

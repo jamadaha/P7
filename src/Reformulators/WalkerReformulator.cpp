@@ -6,149 +6,40 @@ const int debugIndent = 2;
 
 PDDLInstance WalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	// Walk the PDDL
+	int walkID = Report->Begin("Walking", ReportID);
 	auto paths = PerformWalk(instance);
-
-	// Find Entangelements
-	auto candidates = FindEntanglements(&paths, instance);
-
-	// Generate new Macros
-	auto newInstance = GenerateMacros(candidates, instance);
-
-	return newInstance;
-}
-
-vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
-	Walker walker = Walker(instance, ActionGenerator(instance->domain, instance->problem));
-	BaseHeuristic *heuristic;
-	if (Configs->GetItem<string>("heuristic") == "random")
-		heuristic = new RandomHeuristic(Configs->GetItem<bool>("debugmode"));
-	else if (Configs->GetItem<string>("heuristic") == "goalCount")
-		heuristic = new GoalCountHeuristic(instance->domain, instance->problem);
-	else if (Configs->GetItem<string>("heuristic") == "goalPredicateCount")
-		heuristic = new GoalPredicateCountHeuristic(instance->domain, instance->problem);
-	else
-		throw std::invalid_argument("Invalid heuristic specified in config");
-	BaseDepthFunction *depthFunc = new ConstantDepthFunction(1000, *instance, 1);
-	BaseWidthFunction *widthFunc = new TimeWidthFunction(TimeLimit * 1000);
-
-	if (Configs->GetItem<bool>("debugmode")) {
-		ProgressBarHelper* bar;
-		walker.OnWalkerStart = [&]() {
-			bar = new ProgressBarHelper(widthFunc->max, "Walking", debugIndent + 1);
-
-			if (Configs->GetItem<bool>("printwalkersteps")) {
-				std::string command = "truncate -s 0 walkerLog";
-				system(command.c_str());
-			}
-		};
-		walker.OnWalkerStep = [&](int currentStep) {
-			bar->SetTo(currentStep);
-		};
-		walker.OnWalkerEnd = [&]() {
-			bar->End();
-		};
-		if (Configs->GetItem<bool>("printwalkersteps")) {
-			walker.OnTempStateMade = [&](PDDLInstance* instance, PDDLState* state) {
-				std::string command = "echo '" + state->ToString(instance) + "'" + " >> walkerLog";
-				system(command.c_str());
-
-			};
-			walker.OnStateWalk = [&](PDDLInstance* instance, PDDLState* state, PDDLActionInstance* chosenAction) {
-				std::string stateinfo = state->ToString(instance);
-				std::string actioninfo = chosenAction->ToString(instance);
-				std::string content = "echo '" + actioninfo + "\n" + stateinfo + "'" + " >> walkerLog";
-
-				system(content.c_str());
-			};
-		}
-	}
-
-	//int i = report->Begin("Walking");
-	std::vector<Path> paths = walker.Walk(heuristic, depthFunc, widthFunc);
-	free(heuristic); free(widthFunc); free(depthFunc);
-	//auto ellapsed = report->Stop(i);
-
-	// Print debug info
+	auto ellapsed = Report->Stop(walkID);
 	if (Configs->GetItem<bool>("debugmode")) {
 		unsigned int totalIterations = paths.size();
-		unsigned int totalActionCount = walker.GetTotalActionsGenerated();
-		//ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + to_string(ellapsed) + "ms", 1);
-		//double iterationsPrSecond = (totalIterations * 1000) / (ellapsed + 1);
-		//ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + to_string(totalIterations) + " [" + to_string(iterationsPrSecond) + "/s]", 1);
-		//double actionsPrSecond = (totalActionCount * 1000) / (ellapsed + 1);
-		//ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", 1);
+		unsigned int totalActionCount = walker->GetTotalActionsGenerated();
+		ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + to_string(ellapsed) + "ms", 1);
+		double iterationsPrSecond = (totalIterations * 1000) / (ellapsed + 1);
+		ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + to_string(totalIterations) + " [" + to_string(iterationsPrSecond) + "/s]", 1);
+		double actionsPrSecond = (totalActionCount * 1000) / (ellapsed + 1);
+		ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", 1);
 	}
 
-	return paths;
-}
-
-vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>* paths, PDDLInstance* instance) {
-	// Find entanglement candidates.
-	auto entFinderData = EntanglementFinder::RunData();
-
-	entFinderData.LevelReductionFactor = Configs->GetItem<int>("levelReductionFactor");
-	entFinderData.SearchCeiling = Configs->GetItem<int>("searchCeiling");
-	entFinderData.SearchFloor = Configs->GetItem<int>("searchFloor");
-	if (Configs->GetItem<string>("levelReductionTypes") == "Division")
-		entFinderData.LevelReductionType = EntanglementFinder::RunData::Division;
-	if (Configs->GetItem<string>("levelReductionTypes") == "Subtraction")
-		entFinderData.LevelReductionType = EntanglementFinder::RunData::Subtraction;
-
-	EntanglementFinder entFinder(entFinderData);
-
-	if (Configs->GetItem<bool>("debugmode")) {
-		ProgressBarHelper* bar;
-		entFinder.OnNewLevel = [&](int level, int outOf) {
-			bar = new ProgressBarHelper(outOf, "Finding Entanglements (level " + to_string(level) + ")", debugIndent + 1);
-		};
-		entFinder.OnLevelIteration = [&](int current, int outOf) {
-			bar->Update();
-		};
-		entFinder.OnLevelEnd = [&]() {
-			bar->End();
-		};
-	}
-
-	//int entangleID = report->Begin("Finding Entanglements");
-	auto candidates = entFinder.FindEntangledCandidates(paths);
-	//auto ellapsed = report->Stop(entangleID);
-
+	// Find Entangelements
+	int entangleID = Report->Begin("Finding Entanglements", ReportID);
+	auto candidates = FindEntanglements(&paths, instance);
+	ellapsed = Report->Stop();
 	if (Configs->GetItem<bool>("debugmode")) {
 		unsigned int totalActions = 0;
-		for (int i = 0; i < paths->size(); i++)
-			totalActions += paths->at(i).steps.size();
+		for (int i = 0; i < paths.size(); i++)
+			totalActions += paths.at(i).steps.size();
 
-		//ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + to_string(ellapsed) + "ms", 1);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + to_string(entFinder.TotalLevels()), debugIndent);
-		//double comparisonsPrSecond = (entFinder.TotalComparisons()) / (ellapsed + 1);
-		//ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Comparisons:         " + to_string(entFinder.TotalComparisons()) + " [" + to_string(comparisonsPrSecond) + "k/s]", 1);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + to_string(candidates.size()), debugIndent);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + to_string(paths->size()) + " paths with " + to_string(totalActions) + " steps in total", debugIndent);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + to_string(ellapsed) + "ms", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + to_string(entanglementFinder->TotalLevels()), debugIndent);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + to_string(entanglementEvaluator->RemovedCandidates() + candidates.size()), debugIndent);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + to_string(paths.size()) + " paths with " + to_string(totalActions) + " steps in total", debugIndent);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total evaluation time:  " + to_string(ellapsed) + "ms", 1);
+		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + to_string(entanglementEvaluator->RemovedCandidates() + candidates.size()) + " (" + to_string(entanglementEvaluator->RemovedCandidates()) + " removed)", debugIndent);
 	}
-
-	// Sanitize and remove bad candidates.
-	EntanglementEvaluator::RunData entEvaluatorData;
-	entEvaluatorData.MinimumOccurancePercent = Configs->GetItem<double>("minimumOccurancePercent");
-	entEvaluatorData.MinimumCrossOccurancePercent = Configs->GetItem<double>("minimumCrossOccurancePercent");
-
-	EntanglementEvaluator entEvaluator(entEvaluatorData);
-	if (Configs->GetItem<string>("entanglerLengthModifier") == "lengthBias")
-		entEvaluator.LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::LengthBias;
-
-	//int evaluationID = report->Begin("Evaluating Entanglements");
-	auto sanitizedCandidates = entEvaluator.EvaluateAndSanitizeCandidates(candidates);
-	//ellapsed = report->Stop(evaluationID);
-
-	if (Configs->GetItem<bool>("debugmode")) {
-		//ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total evaluation time:  " + to_string(ellapsed) + "ms", 1);
-		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + to_string(sanitizedCandidates.size()) + " (" + to_string(entEvaluator.RemovedCandidates()) + " removed)", debugIndent);
-	}
-
 	if (Configs->GetItem<bool>("printentanglersteps")) {
 		ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Top 10 Entanglements:", debugIndent);
 		ConsoleHelper::PrintDebugInfo("[Entanglements] Quality  : Chain", debugIndent + 1);
 		int counter = 0;
-		for (auto i = sanitizedCandidates.begin(); i != sanitizedCandidates.end(); i++) {
+		for (auto i = candidates.begin(); i != candidates.end(); i++) {
 			string actionStr = "";
 			for (int j = 0; j < (*i).Chain.size(); j++) {
 				auto item = (*i).Chain.at(j);
@@ -168,12 +59,120 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 				break;
 		}
 	}
+
+	// Generate new Macros
+	int generateMacroID = Report->Begin("Generating Macros", ReportID);
+	auto newInstance = GenerateMacros(candidates, instance);
+	ellapsed = Report->Stop(generateMacroID);
+	if (Configs->GetItem<bool>("debugmode")) {
+		ConsoleHelper::PrintDebugInfo("[Macro Generator] Total generation time:         " + to_string(ellapsed) + "ms", debugIndent);
+	}
+
+	free(walker);
+	free(entanglementFinder);
+	free(entanglementEvaluator);
+	free(macroGenerator);
+
+	return newInstance;
+}
+
+vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
+	walker = new Walker(instance, ActionGenerator(instance->domain, instance->problem));
+	BaseHeuristic *heuristic;
+	if (Configs->GetItem<string>("heuristic") == "random")
+		heuristic = new RandomHeuristic(Configs->GetItem<bool>("debugmode"));
+	else if (Configs->GetItem<string>("heuristic") == "goalCount")
+		heuristic = new GoalCountHeuristic(instance->domain, instance->problem);
+	else if (Configs->GetItem<string>("heuristic") == "goalPredicateCount")
+		heuristic = new GoalPredicateCountHeuristic(instance->domain, instance->problem);
+	else
+		throw std::invalid_argument("Invalid heuristic specified in config");
+	BaseDepthFunction *depthFunc = new ConstantDepthFunction(1000, *instance, 1);
+	BaseWidthFunction *widthFunc = new TimeWidthFunction(TimeLimit * 1000);
+
+	if (Configs->GetItem<bool>("debugmode")) {
+		ProgressBarHelper* bar;
+		walker->OnWalkerStart = [&]() {
+			bar = new ProgressBarHelper(widthFunc->max, "Walking", debugIndent + 1);
+
+			if (Configs->GetItem<bool>("printwalkersteps")) {
+				std::string command = "truncate -s 0 walkerLog";
+				system(command.c_str());
+			}
+		};
+		walker->OnWalkerStep = [&](int currentStep) {
+			bar->SetTo(currentStep);
+		};
+		walker->OnWalkerEnd = [&]() {
+			bar->End();
+		};
+		if (Configs->GetItem<bool>("printwalkersteps")) {
+			walker->OnTempStateMade = [&](PDDLInstance* instance, PDDLState* state) {
+				std::string command = "echo '" + state->ToString(instance) + "'" + " >> walkerLog";
+				system(command.c_str());
+
+			};
+			walker->OnStateWalk = [&](PDDLInstance* instance, PDDLState* state, PDDLActionInstance* chosenAction) {
+				std::string stateinfo = state->ToString(instance);
+				std::string actioninfo = chosenAction->ToString(instance);
+				std::string content = "echo '" + actioninfo + "\n" + stateinfo + "'" + " >> walkerLog";
+
+				system(content.c_str());
+			};
+		}
+	}
+
+	std::vector<Path> paths = walker->Walk(heuristic, depthFunc, widthFunc);
+	free(heuristic); free(widthFunc); free(depthFunc);
+
+	return paths;
+}
+
+vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>* paths, PDDLInstance* instance) {
+	// Find entanglement candidates.
+	auto entFinderData = EntanglementFinder::RunData();
+
+	entFinderData.LevelReductionFactor = Configs->GetItem<int>("levelReductionFactor");
+	entFinderData.SearchCeiling = Configs->GetItem<int>("searchCeiling");
+	entFinderData.SearchFloor = Configs->GetItem<int>("searchFloor");
+	if (Configs->GetItem<string>("levelReductionTypes") == "Division")
+		entFinderData.LevelReductionType = EntanglementFinder::RunData::Division;
+	if (Configs->GetItem<string>("levelReductionTypes") == "Subtraction")
+		entFinderData.LevelReductionType = EntanglementFinder::RunData::Subtraction;
+
+	entanglementFinder = new EntanglementFinder(entFinderData);
+
+	if (Configs->GetItem<bool>("debugmode")) {
+		ProgressBarHelper* bar;
+		entanglementFinder->OnNewLevel = [&](int level, int outOf) {
+			bar = new ProgressBarHelper(outOf, "Finding Entanglements (level " + to_string(level) + ")", debugIndent + 1);
+		};
+		entanglementFinder->OnLevelIteration = [&](int current, int outOf) {
+			bar->Update();
+		};
+		entanglementFinder->OnLevelEnd = [&]() {
+			bar->End();
+		};
+	}
+
+	auto candidates = entanglementFinder->FindEntangledCandidates(paths);
+
+	// Sanitize and remove bad candidates.
+	EntanglementEvaluator::RunData entEvaluatorData;
+	entEvaluatorData.MinimumOccurancePercent = Configs->GetItem<double>("minimumOccurancePercent");
+	entEvaluatorData.MinimumCrossOccurancePercent = Configs->GetItem<double>("minimumCrossOccurancePercent");
+
+	entanglementEvaluator = new EntanglementEvaluator(entEvaluatorData);
+	if (Configs->GetItem<string>("entanglerLengthModifier") == "lengthBias")
+		entanglementEvaluator->LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::LengthBias;
+
+	auto sanitizedCandidates = entanglementEvaluator->EvaluateAndSanitizeCandidates(candidates);
 	
 	return sanitizedCandidates;
 }
 
 PDDLInstance WalkerReformulator::GenerateMacros(vector<EntanglementOccurance> candidates, PDDLInstance* instance) {
-	MacroGenerator macroGenerator = MacroGenerator(instance->domain, instance->problem);
+	macroGenerator = new MacroGenerator(instance->domain, instance->problem);
 
 	ProgressBarHelper* bar;
 	if (Configs->GetItem<bool>("debugmode")) {
@@ -181,7 +180,7 @@ PDDLInstance WalkerReformulator::GenerateMacros(vector<EntanglementOccurance> ca
 		bar = new ProgressBarHelper(candidates.size(), "", debugIndent + 1);
 	}
 	for (int i = 0; i < candidates.size(); i++) {
-		macros.push_back(macroGenerator.GenerateMacro(&candidates.at(i).Chain));
+		macros.push_back(macroGenerator->GenerateMacro(&candidates.at(i).Chain));
 		if (Configs->GetItem<bool>("debugmode"))
 			bar->Update();
 	}

@@ -2,12 +2,23 @@
 
 using namespace std;
 
+string RunReport::GetParentIndent(int parentID) {
+    string retStr = "  ";
+    if (steps[parentID].parent != -1)
+        retStr += GetParentIndent(steps[parentID].parent);
+    return retStr;
+}
+
 int RunReport::Setup(string desc, int parentID) {
+    if (parentID != -1)
+        desc = GetParentIndent(parentID) + desc;
     steps.emplace_back(ReportStep(desc, parentID));
     return steps.size() - 1;
 }
 
 int RunReport::Begin(string desc, int parentID) {
+    if (parentID != -1)
+        desc = GetParentIndent(parentID) + desc;
     steps.emplace_back(ReportStep(desc, parentID));
     steps[steps.size() - 1].iTime = chrono::steady_clock::now();
     steps[steps.size() - 1].isRunning = true;

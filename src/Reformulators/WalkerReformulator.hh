@@ -25,7 +25,7 @@
 
 class WalkerReformulator : public BaseReformulator {
 public:
-	WalkerReformulator(Config* config) : BaseReformulator(config) {
+	WalkerReformulator(Config* config, RunReport* report) : BaseReformulator(config, report) {
 
 	}
 	PDDLInstance ReformulatePDDL(PDDLInstance* instance) override;
@@ -35,6 +35,11 @@ private:
 	std::vector<Path> PerformWalk(PDDLInstance* instance);
 	std::vector<EntanglementOccurance> FindEntanglements(std::vector<Path>* paths, PDDLInstance* instance);
 	PDDLInstance GenerateMacros(std::vector<EntanglementOccurance> candidates, PDDLInstance* instance);
+
+	Walker* walker;
+	EntanglementFinder* entanglementFinder;
+	EntanglementEvaluator* entanglementEvaluator;
+	MacroGenerator* macroGenerator;
 };
 
 #endif

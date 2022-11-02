@@ -7,10 +7,10 @@ InterfaceStep<BaseReformulator*> CommonInterface::GetReformulator(int reformulat
 	Report->Begin("Finding reformulator");
 	BaseReformulator* reformulator;
 	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "sameoutput") {
-		reformulator = new SameOutputReformulator(&config);
+		reformulator = new SameOutputReformulator(&config, Report);
 	}
 	else 	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "walker") {
-		reformulator = new WalkerReformulator(&config);
+		reformulator = new WalkerReformulator(&config, Report);
 	}
 	else {
 		ConsoleHelper::PrintError("Reformulator not found! Reformulator: " + config.GetItem<string>("reformulator"));
@@ -63,9 +63,7 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 	int currentIncrementTimeLimit = config.GetItem<int>("startIncrement");
 	bool isDirect = false;
 
-	int reformulationID = Report->Setup("Reformulation of PDDL");
-	int generatePDDLFilesID = Report->Setup("Generating PDDL");
-	int runFastDownwardID = Report->Setup("Running FastDownward");
+	int iterativeProcess = Report->Begin("Reformulating Iteratively");
 
 	if (isDirect)
 		currentIncrementTimeLimit = timeLimit;
@@ -73,33 +71,33 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 	DownwardRunner::DownwardRunnerResult runRes;
 	int counter = 1;
 	while (currentIncrementTimeLimit <= timeLimit) {
+		int iterationID = Report->Begin("Iteration " + to_string(counter), iterativeProcess);
 		ConsoleHelper::PrintInfo("Iteration " + to_string(counter) + "(" + to_string(currentIncrementTimeLimit) + "s)");
 		reformulator->TimeLimit = currentIncrementTimeLimit;
 
 		// Reformulate the PDDL file
 		ConsoleHelper::PrintInfo("Reformulating PDDL...", 1);
-		Report->Resume(reformulationID);
+		int reformulationID= Report->Begin("Reformulation of PDDL", iterationID);
+		reformulator->ReportID = reformulationID;
+		reformulator->Iteration = counter;
 		PDDLInstance reformulatedInstance = reformulator->ReformulatePDDL(instance);
-		Report->Pause(reformulationID);
+		Report->Stop();
 
 		// Generate new PDDL files
 		ConsoleHelper::PrintInfo("Generating PDDL files...", 1);
-		Report->Resume(generatePDDLFilesID);
+		Report->Begin("Generating PDDL", iterationID);
 		PDDLCodeGenerator pddlGenerator = PDDLCodeGenerator(PDDLDomainCodeGenerator(reformulatedInstance.domain), PDDLProblemCodeGenerator(reformulatedInstance.domain, reformulatedInstance.problem));
 		pddlGenerator.GenerateCode(reformulatedInstance, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
-		Report->Pause(generatePDDLFilesID);
+		Report->Stop();
 
 		// Throw the new pddl files into Fast Downward
 		ConsoleHelper::PrintInfo("Run new PDDL files with Fast Downward...", 1);
-		Report->Resume(runFastDownwardID);
+		Report->Begin("Running FastDownward", iterationID);
 		DownwardRunner runner = DownwardRunner();
 		runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, currentIncrementTimeLimit);
 		runRes = runner.ParseDownwardLog();
-		Report->Pause(runFastDownwardID);
+		Report->Stop();
 		if (runRes == DownwardRunner::FoundPlan) {
-			Report->Stop(reformulationID);
-			Report->Stop(generatePDDLFilesID);
-			Report->Stop(runFastDownwardID);
 			break;
 		}
 		currentIncrementTimeLimit *= config.GetItem<int>("incrementModifier");
@@ -114,7 +112,8 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 
 InterfaceStep<void> CommonInterface::RunSingle(BaseReformulator* reformulator, PDDLInstance* instance) {
 	ConsoleHelper::PrintInfo("Reformulating PDDL...", 1);
-	Report->Begin("Reformulation of PDDL");
+	int reformulationID = Report->Begin("Reformulation of PDDL");
+	reformulator->ReportID = reformulationID;
 	PDDLInstance reformulatedInstance = reformulator->ReformulatePDDL(instance);
 	Report->Stop();
 

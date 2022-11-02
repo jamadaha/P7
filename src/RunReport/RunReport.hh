@@ -45,6 +45,7 @@ public:
 
     void Print();
 private:
+    std::string GetParentIndent(int parentID);
     std::vector<ReportStep> steps;
 };
 

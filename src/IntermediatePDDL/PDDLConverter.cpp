@@ -25,7 +25,7 @@ PDDLDomain PDDLConverter::Convert(Domain *domain) {
 
     for (int i = 0; i < domain->_predicates->size(); i++) {
         auto predicate = (*domain->_predicates)[i];
-        AddPredicate(PDDLPredicate(predicate->_name, (*predicate->_args), predicate->_args->size()));
+        AddPredicate(PDDLPredicate(StringHelper::ToUpper(predicate->_name), (*predicate->_args), predicate->_args->size()));
     }    
 
     // Get Actions
@@ -75,7 +75,7 @@ std::vector<PDDLLiteral> PDDLConverter::GetLiteralList(std::unordered_map<std::s
         for (int a = 0; a < precondition->first->_args->size(); a++)
             args.push_back(parameterIndex[(*precondition->first->_args)[a]]);
 
-        literals.push_back(PDDLLiteral(predicateMap[precondition->first->_name], args, precondition->second));
+        literals.push_back(PDDLLiteral(predicateMap[StringHelper::ToUpper(precondition->first->_name)], args, precondition->second));
     }
     return literals;
 }
@@ -110,7 +110,7 @@ std::unordered_map<unsigned int, std::unordered_set<unsigned int>> PDDLConverter
         auto fact = (*literalList)[i];
         if (fact->first->_args->size() != 1)
             continue;
-        unsigned int predicateIndex = domain->predicateMap.at(fact->first->_name);
+        unsigned int predicateIndex = domain->predicateMap.at(StringHelper::ToUpper(fact->first->_name));
         unsigned int objectIndex = objectMap->at((*fact->first->_args)[0]); 
         unaryFacts.at(predicateIndex).emplace(objectIndex);
     }
@@ -127,7 +127,7 @@ std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsi
         auto fact = (*literalList)[i];
         if (fact->first->_args->size() != 2)
             continue;
-        unsigned int predicateIndex = domain->predicateMap.at(fact->first->_name);
+        unsigned int predicateIndex = domain->predicateMap.at(StringHelper::ToUpper(fact->first->_name));
         binaryFacts.at(predicateIndex).emplace(std::make_pair(objectMap->at((*fact->first->_args)[0]), objectMap->at((*fact->first->_args)[1])));
     }
     return binaryFacts;
@@ -143,7 +143,7 @@ std::unordered_map<unsigned int, std::unordered_set<MultiFact>> PDDLConverter::G
         auto fact = (*literalList)[i];
         if (fact->first->_args->size() < 3)
             continue;
-        unsigned int predicateIndex = domain->predicateMap.at(fact->first->_name);
+        unsigned int predicateIndex = domain->predicateMap.at(StringHelper::ToUpper(fact->first->_name));
         std::vector<unsigned int> objectIndexes;
         for (int a = 0; a < fact->first->_args->size(); a++)
             objectIndexes.push_back(objectMap->at((*fact->first->_args)[a]));

@@ -228,7 +228,7 @@ TEST_CASE(TAG + "negative - positive eff") {
         "testaction1",
         std::vector<std::string> {"?x", "?y"},
         std::vector<PDDLLiteral> {PDDLLiteral(1, std::vector<unsigned int> {0}, true)},
-        std::vector<PDDLLiteral> {PDDLLiteral(2, std::vector<unsigned int> {1}, false), PDDLLiteral(3, std::vector<unsigned int> {1}, false), PDDLLiteral(5, std::vector<unsigned int> {0, 1}, true)}
+        std::vector<PDDLLiteral> {PDDLLiteral(2, std::vector<unsigned int> {1}, false), PDDLLiteral(3, std::vector<unsigned int> {1}, false)}
     );
     PDDLAction _act2 = PDDLAction(
         "testaction2",
@@ -256,8 +256,6 @@ TEST_CASE(TAG + "negative - positive eff") {
         // predicate 3, false should be absent
         {GroundedLiteral(3, std::vector<unsigned int> {1}), true},
         {GroundedLiteral(4, std::vector<unsigned int> {2}), false},
-        // check if positive effects still get added
-        {GroundedLiteral(5, std::vector<unsigned int> {0, 1}), true}
     });
     REQUIRE(m.groundedAction.parameters == std::unordered_set<unsigned int> {0, 1, 2});
     REQUIRE(m.groundedAction.preconditions == expectedPrecons);

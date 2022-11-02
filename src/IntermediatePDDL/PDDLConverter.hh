@@ -11,6 +11,7 @@
 #include "PDDLProblem.hh"
 #include "../PDDLParser/domain.hh"
 #include "../PDDLParser/problem.hh"
+#include "../Helpers/StringHelper.hh"
 
 class PDDLConverter {
 public:

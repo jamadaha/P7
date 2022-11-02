@@ -4,7 +4,8 @@ target_link_libraries(Tests-PDDLCodeGenerator
         Catch2::Catch2WithMain
         PDDLCodeGenerator
         PDDLParser
-        IntermediatePDDL)
+        IntermediatePDDL
+        StringHelper)
 
 file(COPY Test/PDDLCodeGenerator/TestFiles DESTINATION ${CMAKE_BINARY_DIR})
 

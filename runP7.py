@@ -17,12 +17,14 @@ search = ""
 heuristic = ""
 domainline = ""
 problemline = ""
+reformulators = []
 
 reportline = ""
 projectline = ""
 benchmarksline = ""
 
 settingscontent = ""
+
 
 #Parse config file and remove lab specific settings
 for line in lines:
@@ -45,6 +47,10 @@ for line in lines:
     elif "downward" in line or "validator" in line:
         argument = line.split("=")
         settingscontent += argument[0] + "=" + abs_path(__file__, argument[1]) 
+    elif "reformulator=" in line:
+        reformulators = line.split("=")[1].strip("\n").split(",")
+        print(reformulators)
+        #settingscontent += line
     else:
         settingscontent += line
 
@@ -83,26 +89,34 @@ else:
 Each task contains a domain file and problem file
 For each task a settings.ini file is made and P7 is given this file as argument
 """
-for task in tasks:
-    content = settingscontent
-    content += "\nPATH:domain=" + task.domain_file + "\n"
-    content += "PATH:problem=" + task.problem_file + "\n"
+for reformulator in reformulators:
+    for task in tasks:
+        content = settingscontent
+        content += "\nPATH:domain=" + task.domain_file + "\n"
+        content += "PATH:problem=" + task.problem_file + "\n"
 
-    run = experiment.add_run()
-    run.add_new_file("config","TempSettings.ini",content)
-    run.add_command("planner", [abs_path(__file__,projectfile),"{config}"])
+        content += "LIST<STRING>:reformulator=" + reformulator + "\n"
 
-    run.set_property("id",[search, heuristic, task.domain, task.problem])
-    run.set_property("domain", task.domain)
-    run.set_property("problem", task.problem)
-    run.set_property("algorithm", search + "(" + heuristic + ")")
+        run = experiment.add_run()
+        run.add_new_file("config","TempSettings.ini",content)
+        run.add_command("planner", [abs_path(__file__,projectfile),"{config}"])
+
+        run.set_property("id",[reformulator, task.domain, task.problem])
+        run.set_property("domain", task.domain)
+        run.set_property("problem", task.problem)
+        run.set_property("algorithm", reformulator)
     
-if path.exists(reportfolder):
-    experiment.add_step("rm-exp-dir", shutil.rmtree, reportfolder)
-if path.exists(experiment.eval_dir):
-    experiment.add_step("rm-eval-dir", shutil.rmtree, experiment.eval_dir)
-experiment.add_step("build", experiment.build)
-experiment.add_step("start", experiment.start_runs)
+
+def start(experiment, reportfolder):
+    if path.exists(reportfolder):
+        experiment.add_step("rm-exp-dir", shutil.rmtree, reportfolder)
+    if path.exists(experiment.eval_dir):
+        experiment.add_step("rm-eval-dir", shutil.rmtree, experiment.eval_dir)
+    experiment.add_step("build", experiment.build)
+    experiment.add_step("start", experiment.start_runs)
+    
+
+start(experiment, reportfolder)
 experiment.add_fetcher(name="fetch")
 
 add_reports(experiment)

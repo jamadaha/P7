@@ -18,7 +18,7 @@ PDDLInstance WalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 }
 
 vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
-	Walker walker = Walker(instance, ActionGenerator(instance->domain, instance->problem), Configs, report);
+	Walker walker = Walker(instance, ActionGenerator(instance->domain, instance->problem));
 	BaseHeuristic *heuristic;
 	if (Configs->GetItem<string>("heuristic") == "random")
 		heuristic = new RandomHeuristic(Configs->GetItem<bool>("debugmode"));
@@ -28,9 +28,40 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 		heuristic = new GoalPredicateCountHeuristic(instance->domain, instance->problem);
 	else
 		throw std::invalid_argument("Invalid heuristic specified in config");
-		
 	BaseDepthFunction *depthFunc = new ConstantDepthFunction(1000, *instance, 1);
 	BaseWidthFunction *widthFunc = new TimeWidthFunction(TimeLimit * 1000);
+
+	if (Configs->GetItem<bool>("debugmode")) {
+		ProgressBarHelper* bar;
+		walker.OnWalkerStart = [&]() {
+			bar = new ProgressBarHelper(widthFunc->max, "Walking)", debugIndent + 1);
+
+			if (Configs->GetItem<bool>("printwalkersteps")) {
+				std::string command = "truncate -s 0 walkerLog";
+				system(command.c_str());
+			}
+		};
+		walker.OnWalkerStep = [&](int currentStep) {
+			bar->SetTo(currentStep);
+		};
+		walker.OnWalkerEnd = [&]() {
+			bar->End();
+		};
+		if (Configs->GetItem<bool>("printwalkersteps")) {
+			walker.OnTempStateMade = [&](PDDLInstance* instance, PDDLState* state) {
+				std::string command = "echo '" + state->ToString(instance) + "'" + " >> walkerLog";
+				system(command.c_str());
+
+			};
+			walker.OnStateWalk = [&](PDDLInstance* instance, PDDLState* state, PDDLActionInstance* chosenAction) {
+				std::string stateinfo = state->ToString(instance);
+				std::string actioninfo = chosenAction->ToString(instance);
+				std::string content = "echo '" + actioninfo + "\n" + stateinfo + "'" + " >> walkerLog";
+
+				system(content.c_str());
+			};
+		}
+	}
 
 	//int i = report->Begin("Walking");
 	std::vector<Path> paths = walker.Walk(heuristic, depthFunc, widthFunc);

@@ -6,8 +6,7 @@ Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const 
     std::vector<PDDLActionInstance> steps; steps.reserve(depth);
     std::unordered_set<PDDLState> visitedStates; visitedStates.reserve(depth);
 
-    PDDLState tempState = PDDLState(state->unaryFacts, state->multiFacts);
-   
+    PDDLState tempState = PDDLState(state->unaryFacts, state->binaryFacts, state->multiFacts);
     if (OnTempStateMade != nullptr)
         OnTempStateMade(this->instance, &tempState);
 

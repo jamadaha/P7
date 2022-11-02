@@ -3,6 +3,7 @@
 
 #include <string>
 #include <fstream>
+#include <limits>
 
 #include "../Config/Config.hh"
 

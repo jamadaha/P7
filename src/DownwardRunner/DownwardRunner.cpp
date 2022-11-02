@@ -6,7 +6,7 @@ void DownwardRunner::RunDownward(Config config, string reformulatedDomain, strin
 	string path = config.GetItem<filesystem::path>("downwardpath").c_str();
 	string command;
 	if (timeLimit == -1)
-		timeLimit = INT_MAX;
+		timeLimit = std::numeric_limits<int>::max();
 	if (config.GetItem<string>("downwardheuristic").find("[") == std::string::npos)
 		command = path + " --search-time-limit " + to_string(timeLimit) + "s " + reformulatedDomain + " " + reformulatedProblem + " --search \"" + config.GetItem<string>("downwardsearch") + "(" + config.GetItem<string>("downwardheuristic") + "())\"" + " > " + RunnerLogName;
 	else

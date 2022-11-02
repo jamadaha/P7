@@ -1,11 +1,10 @@
+from shutil import register_archive_format
 from downward.reports.absolute import AbsoluteReport
 from downward.reports.taskwise import TaskwiseReport
 
 import os
 
-def add_reports(experiment):
-    add_parsers(experiment)
-
+def add_absolute_report(experiment):
     ERROR_ATTRIBUTES= ['domain', 
                        'problem', 
                        'algorithm', 
@@ -32,8 +31,11 @@ def add_reports(experiment):
 
     ATTRIBUTES = ERROR_ATTRIBUTES + PREDEFINED_ATTRIBUTES
     experiment.add_report(AbsoluteReport(attributes=ATTRIBUTES), outfile="report.html")
-    experiment.add_report(TaskwiseReport(attributes=["*_ms"]), outfile="report_ms.html")
-    experiment.add_report(TaskwiseReport(attributes=["*_procent"]), outfile="report_procent.html")
+
+def add_taskwise_reports(experiment, reformulators):
+    for reformulator in reformulators:
+        experiment.add_report(TaskwiseReport(attributes=["*_ms"],filter_algorithm=[reformulator]), outfile=reformulator+"report_ms.html")
+        experiment.add_report(TaskwiseReport(attributes=["*_procent"],filter_algorithm=[reformulator]), outfile=reformulator+"report_procent.html")
 
 def add_parsers(experiment):
     EXITCODE_PARSER = os.path.join(os.path.dirname(os.path.abspath(__file__)),"ExitcodeParser.py")

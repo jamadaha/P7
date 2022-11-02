@@ -5,7 +5,7 @@ from downward import suites
 import shutil
 from os import path
 from Lab.ArgumentParser import *
-from Lab.Reports import add_reports
+from Lab.Reports import *
 from Lab.Benchmarks import get_suite, make_tasks
 
 args = set_arguments()
@@ -119,6 +119,8 @@ def start(experiment, reportfolder):
 start(experiment, reportfolder)
 experiment.add_fetcher(name="fetch")
 
-add_reports(experiment)
+add_parsers(experiment)
+add_absolute_report(experiment)
+add_taskwise_reports(experiment, reformulators)
 
 experiment.run_steps()

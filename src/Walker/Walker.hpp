@@ -10,8 +10,6 @@
 #include "DepthFunctions/ObjectActionDepthFunction.hh"
 #include "WidthFunctions/BaseWidthFunction.hh"
 #include "ActionGenerator.hpp"
-#include "../RunReport/RunReport.hh"
-#include "../Helpers/ProgressBarHelper.hh"
 
 #include "../Config/Config.hh"
 #include "../Helpers/Hashes.hh"

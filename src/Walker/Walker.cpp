@@ -34,8 +34,6 @@ Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const 
 }
 
 std::vector<Path> Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc) {
-    ProgressBarHelper* bar;
-
     std::vector<Path> paths;
     unsigned int current;
     if (OnWalkerStart != nullptr)

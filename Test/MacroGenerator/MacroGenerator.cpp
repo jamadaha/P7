@@ -106,7 +106,7 @@ TEST_CASE(TAG + "precon - positive eff") {
     REQUIRE(m.groundedAction.effects == expectedEffects);
 }
 
-TEST_CASE(TAG + "precon - positive eff (reversed)") {
+TEST_CASE(TAG + "precon - positive eff (reverse order)") {
     std::vector<PDDLActionInstance*> actions;
     PDDLAction _act1 = PDDLAction(
         "testaction1",
@@ -144,7 +144,7 @@ TEST_CASE(TAG + "precon - positive eff (reversed)") {
     REQUIRE(m.groundedAction.effects == expectedEffects);
 }
 
-TEST_CASE(TAG + "precon negative eff") {
+TEST_CASE(TAG + "no precon - negative eff") {
     std::vector<PDDLActionInstance*> actions;
     PDDLAction _act1 = PDDLAction(
         "testaction1",
@@ -183,9 +183,83 @@ TEST_CASE(TAG + "precon negative eff") {
 }
 
 TEST_CASE(TAG + "positive - negative eff") {
-    REQUIRE(1==0);
+    std::vector<PDDLActionInstance*> actions;
+    PDDLAction _act1 = PDDLAction(
+        "testaction1",
+        std::vector<std::string> {"?x", "?y"},
+        std::vector<PDDLLiteral> {PDDLLiteral(1, std::vector<unsigned int> {0}, true)},
+        std::vector<PDDLLiteral> {PDDLLiteral(2, std::vector<unsigned int> {1}, true), PDDLLiteral(3, std::vector<unsigned int> {1}, true)}
+    );
+    PDDLAction _act2 = PDDLAction(
+        "testaction2",
+        std::vector<std::string> {"?x", "?y"},
+        std::vector<PDDLLiteral> {PDDLLiteral(1, std::vector<unsigned int> {1}, true)},
+        // the first effect here removes the 2nd effect from action above, the 2nd is same as first above, 3rd is added on top
+        std::vector<PDDLLiteral> {PDDLLiteral(3, std::vector<unsigned int> {0}, false), PDDLLiteral(2, std::vector<unsigned int> {0}, true), PDDLLiteral(4, std::vector<unsigned int> {1}, true)}
+    );
+    PDDLActionInstance act1 = PDDLActionInstance(&_act1, std::vector<unsigned int> {0, 1});
+    PDDLActionInstance act2 = PDDLActionInstance(&_act2, std::vector<unsigned int> {1, 2});
+    
+    actions.push_back(&act1);
+    actions.push_back(&act2);
+
+    // generate macro
+    MacroGenerator macroGenerator = MacroGenerator();
+    Macro m = macroGenerator.GenerateMacro(&actions);
+    // expected stuff
+    std::unordered_map<GroundedLiteral, bool> expectedPrecons ({
+        {GroundedLiteral(1, std::vector<unsigned int> {0}), true},
+        {GroundedLiteral(1, std::vector<unsigned int> {2}), true}
+    });
+    std::unordered_map<GroundedLiteral, bool> expectedEffects ({
+        {GroundedLiteral(2, std::vector<unsigned int> {1}), true},
+        // predicate 3, true should be absent
+        {GroundedLiteral(3, std::vector<unsigned int> {1}), false},
+        {GroundedLiteral(4, std::vector<unsigned int> {2}), true}
+    });
+    REQUIRE(m.groundedAction.parameters == std::unordered_set<unsigned int> {0, 1, 2});
+    REQUIRE(m.groundedAction.preconditions == expectedPrecons);
+    REQUIRE(m.groundedAction.effects == expectedEffects);
 }
 
 TEST_CASE(TAG + "negative - positive eff") {
-    REQUIRE(1==0);
+    std::vector<PDDLActionInstance*> actions;
+    PDDLAction _act1 = PDDLAction(
+        "testaction1",
+        std::vector<std::string> {"?x", "?y"},
+        std::vector<PDDLLiteral> {PDDLLiteral(1, std::vector<unsigned int> {0}, true)},
+        std::vector<PDDLLiteral> {PDDLLiteral(2, std::vector<unsigned int> {1}, false), PDDLLiteral(3, std::vector<unsigned int> {1}, false), PDDLLiteral(5, std::vector<unsigned int> {0, 1}, true)}
+    );
+    PDDLAction _act2 = PDDLAction(
+        "testaction2",
+        std::vector<std::string> {"?x", "?y"},
+        std::vector<PDDLLiteral> {PDDLLiteral(1, std::vector<unsigned int> {1}, true)},
+        // the first effect here removes the 2nd effect from action above, the 2nd is same as first above, 3rd is added on top
+        std::vector<PDDLLiteral> {PDDLLiteral(3, std::vector<unsigned int> {0}, true), PDDLLiteral(2, std::vector<unsigned int> {0}, false), PDDLLiteral(4, std::vector<unsigned int> {1}, false)}
+    );
+    PDDLActionInstance act1 = PDDLActionInstance(&_act1, std::vector<unsigned int> {0, 1});
+    PDDLActionInstance act2 = PDDLActionInstance(&_act2, std::vector<unsigned int> {1, 2});
+    
+    actions.push_back(&act1);
+    actions.push_back(&act2);
+
+    // generate macro
+    MacroGenerator macroGenerator = MacroGenerator();
+    Macro m = macroGenerator.GenerateMacro(&actions);
+    // expected stuff
+    std::unordered_map<GroundedLiteral, bool> expectedPrecons ({
+        {GroundedLiteral(1, std::vector<unsigned int> {0}), true},
+        {GroundedLiteral(1, std::vector<unsigned int> {2}), true}
+    });
+    std::unordered_map<GroundedLiteral, bool> expectedEffects ({
+        {GroundedLiteral(2, std::vector<unsigned int> {1}), false},
+        // predicate 3, false should be absent
+        {GroundedLiteral(3, std::vector<unsigned int> {1}), true},
+        {GroundedLiteral(4, std::vector<unsigned int> {2}), false},
+        // check if positive effects still get added
+        {GroundedLiteral(5, std::vector<unsigned int> {0, 1}), true}
+    });
+    REQUIRE(m.groundedAction.parameters == std::unordered_set<unsigned int> {0, 1, 2});
+    REQUIRE(m.groundedAction.preconditions == expectedPrecons);
+    REQUIRE(m.groundedAction.effects == expectedEffects);
 }

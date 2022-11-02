@@ -72,9 +72,10 @@ def add_initial_h_values(content, props):
         else:
             init_h = int(init_h)
         if heuristic in initial_h_values:
-            props.add_unexplained_error(
-                f"multiple initial h values found for {heuristic}"
-            )
+            print(f"multiple initial h values found for {heuristic}")
+            #props.add_unexplained_error(
+            #    f"multiple initial h values found for {heuristic}"
+            #)
         initial_h_values[heuristic] = init_h
 
     props["initial_h_values"] = initial_h_values

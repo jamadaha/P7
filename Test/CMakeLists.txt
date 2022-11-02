@@ -32,6 +32,7 @@ add_executable(Test-All
 	"Test/PlanValidators/PlanValidator.cpp"
 	"Test/Helpers/StringHelper.cpp"
 	"Test/EntanglementFinder/EntanglementFinder.cpp"
+	"Test/EntanglementFinder/Hashes.cpp"
 	"Test/DownwardRunner/DownwardRunner.cpp"
     "Test/MacroGenerator/MacroGenerator.cpp")
 target_link_libraries(Test-All 

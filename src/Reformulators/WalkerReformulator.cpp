@@ -105,12 +105,18 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 
 	// Sanitize and remove bad candidates.
 	EntanglementEvaluator::RunData entEvaluatorData;
-	entEvaluatorData.MinimumOccurancePercent = Configs->GetItem<double>("minimumOccurancePercent");
-	entEvaluatorData.MinimumCrossOccurancePercent = Configs->GetItem<double>("minimumCrossOccurancePercent");
+	entEvaluatorData.MinimumQualityPercent = Configs->GetItem<double>("minimumQualityPercent");
 
 	EntanglementEvaluator entEvaluator(entEvaluatorData);
 	if (Configs->GetItem<string>("entanglerLengthModifier") == "lengthBias")
 		entEvaluator.LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::LengthBias;
+	if (Configs->GetItem<string>("entanglerLengthModifier") == "none")
+		entEvaluator.LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::None;
+
+	if (Configs->GetItem<string>("entanglerOccuranceModifier") == "none")
+		entEvaluator.OccuranceModifier = EntanglementEvaluatorModifiers::OccuranceModifiers::None;
+	if (Configs->GetItem<string>("entanglerOccuranceModifier") == "lowOccuranceBias")
+		entEvaluator.OccuranceModifier = EntanglementEvaluatorModifiers::OccuranceModifiers::LowOccuranceBias;
 
 	int evaluationID = report->Begin("Evaluating Entanglements");
 	auto sanitizedCandidates = entEvaluator.EvaluateAndSanitizeCandidates(candidates);

@@ -50,4 +50,13 @@ private:
     std::vector<std::unordered_set<unsigned int>> GenerateApplicablePredicates(bool unary) const;
 };
 
+namespace std {
+    template <>
+    struct hash<const PDDLAction*> {
+        auto operator()(const PDDLAction* s) const -> size_t {
+            return hash<string>{}(s->name) << s->preconditions.size() << s->effects.size() << s->parameters.size();
+        }
+    };
+}
+
 #endif

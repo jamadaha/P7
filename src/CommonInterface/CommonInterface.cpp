@@ -60,7 +60,7 @@ InterfaceStep<PDDLInstance*> CommonInterface::ConvertPDDLFormat(PDDLDriver* driv
 }
 
 InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulator, PDDLInstance* instance) {
-	int timeLimit = config.GetItem<int>("incrementLimit");
+	int timeLimit = config.GetItem<int>("totalTimeLimit");
 	int currentIncrementTimeLimit = config.GetItem<int>("startIncrement");
 	bool isDirect = false;
 
@@ -94,8 +94,9 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 
 InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, PDDLInstance* instance) {
 	int iterativeProcess = Report->Begin("Reformulating Directly");
+	int timeLimit = config.GetItem<int>("totalTimeLimit");
 
-	if (RunSingle(reformulator, instance, iterativeProcess, -1).RanWithoutErrors)
+	if (RunSingle(reformulator, instance, iterativeProcess, timeLimit).RanWithoutErrors)
 		return InterfaceStep<void>();
 	else
 		return InterfaceStep<void>(false);

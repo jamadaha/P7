@@ -3,7 +3,6 @@
 using namespace std;
 
 vector<EntanglementOccurance> EntanglementEvaluator::EvaluateAndSanitizeCandidates(unordered_map<size_t, EntanglementOccurance> candidates) {
-	vector<EntanglementOccurance> sanitizedCandidates;
 	int preCount = candidates.size();
 
 	// Setup default modifiers
@@ -18,7 +17,11 @@ vector<EntanglementOccurance> EntanglementEvaluator::EvaluateAndSanitizeCandidat
 
 	_RemovedCandidates = preCount - candidates.size();
 
-	return SortCandidates(&candidates);
+	vector<EntanglementOccurance> sanitizedCandidates = SortCandidates(&candidates);
+	if (sanitizedCandidates.size() > Data.MaxCandidates) {
+		sanitizedCandidates.erase(sanitizedCandidates.begin() + Data.MaxCandidates, sanitizedCandidates.end());
+	}
+	return sanitizedCandidates;
 }
 
 void EntanglementEvaluator::SetModifiersIfNotSet() {

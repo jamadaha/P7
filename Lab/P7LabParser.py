@@ -91,10 +91,19 @@ import re
 from lab.parser import Parser
 
 def get_times(content, props):
+    """
+    Only care about the ouput of P7 from:
 
+    Description Time Taken (ms) Time Taken (%)
+    ...
+    Total Time
+    """
     result = content.split("(%)\n")[1].split("Total Time")[0]
     
+    #match for the description
     all_names = re.findall(r"(([a-zA-Z]+\s)+)",result)
+
+    #match for the time in ms and %
     all_times = re.findall(r"(\d+\.\d+)", result)
     
     times = all_times[::2]

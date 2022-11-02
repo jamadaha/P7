@@ -49,8 +49,6 @@ for line in lines:
         settingscontent += argument[0] + "=" + abs_path(__file__, argument[1]) 
     elif "reformulator=" in line:
         reformulators = line.split("=")[1].strip("\n").split(",")
-        print(reformulators)
-        #settingscontent += line
     else:
         settingscontent += line
 
@@ -107,16 +105,12 @@ for reformulator in reformulators:
         run.set_property("algorithm", reformulator)
     
 
-def start(experiment, reportfolder):
-    if path.exists(reportfolder):
-        experiment.add_step("rm-exp-dir", shutil.rmtree, reportfolder)
-    if path.exists(experiment.eval_dir):
-        experiment.add_step("rm-eval-dir", shutil.rmtree, experiment.eval_dir)
-    experiment.add_step("build", experiment.build)
-    experiment.add_step("start", experiment.start_runs)
-    
-
-start(experiment, reportfolder)
+if path.exists(reportfolder):
+    experiment.add_step("rm-exp-dir", shutil.rmtree, reportfolder)
+if path.exists(experiment.eval_dir):
+    experiment.add_step("rm-eval-dir", shutil.rmtree, experiment.eval_dir)
+experiment.add_step("build", experiment.build)
+experiment.add_step("start", experiment.start_runs)
 experiment.add_fetcher(name="fetch")
 
 add_parsers(experiment)

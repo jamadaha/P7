@@ -144,44 +144,6 @@ TEST_CASE(TAG + "precon - positive eff (reverse order)") {
     REQUIRE(m.groundedAction.effects == expectedEffects);
 }
 
-TEST_CASE(TAG + "no precon - negative eff") {
-    std::vector<PDDLActionInstance*> actions;
-    PDDLAction _act1 = PDDLAction(
-        "testaction1",
-        std::vector<std::string> {"?x", "?y"},
-        std::vector<PDDLLiteral> {PDDLLiteral(1, std::vector<unsigned int> {0}, true)},
-        std::vector<PDDLLiteral> {PDDLLiteral(2, std::vector<unsigned int> {1}, false)}
-    );
-    PDDLAction _act2 = PDDLAction(
-        "testaction2",
-        std::vector<std::string> {"?x", "?y"},
-        std::vector<PDDLLiteral> {PDDLLiteral(2, std::vector<unsigned int> {0}, true)},
-        std::vector<PDDLLiteral> {PDDLLiteral(3, std::vector<unsigned int> {1}, true)}
-    );
-    PDDLActionInstance act1 = PDDLActionInstance(&_act1, std::vector<unsigned int> {0, 1});
-    PDDLActionInstance act2 = PDDLActionInstance(&_act2, std::vector<unsigned int> {1, 2});
-    
-    actions.push_back(&act1);
-    actions.push_back(&act2);
-
-    // generate macro
-    MacroGenerator macroGenerator = MacroGenerator();
-    Macro m = macroGenerator.GenerateMacro(&actions);
-    // expected stuff
-    std::unordered_map<GroundedLiteral, bool> expectedPrecons ({
-        {GroundedLiteral(1, std::vector<unsigned int> {0}), true},
-        // this shouldnt be removed
-        {GroundedLiteral(2, std::vector<unsigned int> {1}), true}
-    });
-    std::unordered_map<GroundedLiteral, bool> expectedEffects ({
-        {GroundedLiteral(2, std::vector<unsigned int> {1}), false},
-        {GroundedLiteral(3, std::vector<unsigned int> {2}), true}
-    });
-    REQUIRE(m.groundedAction.parameters == std::unordered_set<unsigned int> {0, 1, 2});
-    REQUIRE(m.groundedAction.preconditions == expectedPrecons);
-    REQUIRE(m.groundedAction.effects == expectedEffects);
-}
-
 TEST_CASE(TAG + "positive - negative eff") {
     std::vector<PDDLActionInstance*> actions;
     PDDLAction _act1 = PDDLAction(

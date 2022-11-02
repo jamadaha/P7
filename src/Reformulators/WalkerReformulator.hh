@@ -25,7 +25,7 @@
 
 class WalkerReformulator : public BaseReformulator {
 public:
-	WalkerReformulator(Config* config, RunReport *report, int timeLimit) : BaseReformulator(config, report, timeLimit) {
+	WalkerReformulator(Config* config) : BaseReformulator(config) {
 
 	}
 	PDDLInstance ReformulatePDDL(PDDLInstance* instance) override;

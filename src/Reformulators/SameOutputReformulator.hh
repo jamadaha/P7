@@ -7,7 +7,7 @@
 
 class SameOutputReformulator : public BaseReformulator {
 public:
-	SameOutputReformulator(Config *config, RunReport *report, int timeLimit) : BaseReformulator(config, report, timeLimit) {
+	SameOutputReformulator(Config *config) : BaseReformulator(config) {
 
 	}
 	PDDLInstance ReformulatePDDL(PDDLInstance* instance) override;

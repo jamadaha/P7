@@ -166,6 +166,14 @@ vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>
 	entanglementEvaluator = new EntanglementEvaluator(entEvaluatorData);
 	if (Configs->GetItem<string>("entanglerLengthModifier") == "lengthBias")
 		entanglementEvaluator->LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::LengthBias;
+	if (Configs->GetItem<string>("entanglerLengthModifier") == "none")
+		entanglementEvaluator->LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::None;
+
+	if (Configs->GetItem<string>("entanglerOccuranceModifier") == "none")
+		entanglementEvaluator->OccuranceModifier = EntanglementEvaluatorModifiers::OccuranceModifiers::None;
+	if (Configs->GetItem<string>("entanglerOccuranceModifier") == "lowOccuranceBias")
+		entanglementEvaluator->OccuranceModifier = EntanglementEvaluatorModifiers::OccuranceModifiers::LowOccuranceBias;
+
 
 	auto sanitizedCandidates = entanglementEvaluator->EvaluateAndSanitizeCandidates(candidates);
 	

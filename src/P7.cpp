@@ -20,8 +20,8 @@ int main(int argc, char** argv){
 		bool isAllGood = true;
 		for (int i = 0; i < config.GetItem<vector<string>>("reformulator").size(); i++) {
 			RunReport report = RunReport(config.GetItem<vector<string>>("reformulator").at(i));
-			CommonInterface interface = CommonInterface(config);
-			auto runResult = interface.Run(&report, i);
+			CommonInterface interface = CommonInterface(config, &report);
+			auto runResult = interface.Run(i);
 			if (runResult != CommonInterface::RunResult::RanWithoutErrors) {
 				isAllGood = false;
 				break;
@@ -35,9 +35,9 @@ int main(int argc, char** argv){
 	else 
 	{
 		RunReport report = RunReport(config.GetItem<vector<string>>("reformulator").at(0));
-		CommonInterface interface = CommonInterface(config);
-		auto runResult = interface.Run(&report);
-		if (runResult == CommonInterface::RunResult::RanWithoutErrors)
+		CommonInterface interface = CommonInterface(config, &report);
+		auto runResult = interface.Run();
+		//if (runResult == CommonInterface::RunResult::RanWithoutErrors)
 			report.Print();
 	}
 

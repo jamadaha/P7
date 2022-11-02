@@ -2,128 +2,227 @@
 
 using namespace std;
 
-enum CommonInterface::RunResult CommonInterface::Run(RunReport* report, int reformulatorIndex) {
-	int64_t t;
-	BaseReformulator* reformulator;
-
-	// Find a suitable reformulator
+InterfaceStep<BaseReformulator*> CommonInterface::GetReformulator(int reformulatorIndex) {
 	ConsoleHelper::PrintInfo("Finding reformulator algorithm...");
+	Report->Begin("Finding reformulator");
+	BaseReformulator* reformulator;
 	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "sameoutput") {
-		reformulator = new SameOutputReformulator(&config, report);
-	} else 	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "walker") {
-		reformulator = new WalkerReformulator(&config, report);
+		reformulator = new SameOutputReformulator(&config, Report);
+		isDirect = true;
 	}
-	else{
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "walker") {
+		reformulator = new WalkerReformulator(&config, Report);
+	}
+	else {
 		ConsoleHelper::PrintError("Reformulator not found! Reformulator: " + config.GetItem<string>("reformulator"));
-		return CommonInterface::RunResult::ErrorsEncountered;
+		return InterfaceStep<BaseReformulator*>(reformulator, false);
 	}
+	Report->Stop();
+	return InterfaceStep<BaseReformulator*>(reformulator);
+}
 
-	if (config.GetItem<bool>("debugmode")) {
-		// Checking filepaths in the config file
-		ConsoleHelper::PrintDebugInfo("Checking filepaths from the config...");
-		report->Begin("Checking Filepaths");
-		string notFoundPath = PathsChecker::IsPathsOk(&config);
-		if (notFoundPath != "") {
-			ConsoleHelper::PrintDebugError("Some file paths where not found! Not found path: " + notFoundPath);
-			return CommonInterface::RunResult::ErrorsEncountered;
-		}
-		t = report->Stop();
+InterfaceStep<void> CommonInterface::CheckFilePaths() {
+	ConsoleHelper::PrintDebugInfo("Checking filepaths from the config...");
+	Report->Begin("Checking Filepaths");
+	string notFoundPath = PathsChecker::IsPathsOk(&config);
+	if (notFoundPath != "") {
+		ConsoleHelper::PrintDebugError("Some file paths where not found! Not found path: " + notFoundPath);
+		return InterfaceStep<void>(false);
 	}
+	Report->Stop();
+	return InterfaceStep<void>();
+}
 
-	// Parse original PDDL files
+InterfaceStep<PDDLDriver*> CommonInterface::ParsePDDLFiles() {
 	ConsoleHelper::PrintInfo("Parsing PDDL files...");
-	PDDLDriver originalDriver;
-	report->Begin("Parsing PDDL Files");
-	if (originalDriver.parse(config.GetItem<filesystem::path>("domain"))) {
+	PDDLDriver* originalDriver = new PDDLDriver();
+	Report->Begin("Parsing PDDL Files");
+	if (originalDriver->parse(config.GetItem<filesystem::path>("domain"))) {
 		ConsoleHelper::PrintError("Error parsing the domain file!");
-		return CommonInterface::RunResult::ErrorsEncountered;
+		return InterfaceStep<PDDLDriver*>(originalDriver, false);
 	}
-	if (originalDriver.parse(config.GetItem<filesystem::path>("problem"))) {
+	if (originalDriver->parse(config.GetItem<filesystem::path>("problem"))) {
 		ConsoleHelper::PrintError("Error parsing the problem file!");
-		return CommonInterface::RunResult::ErrorsEncountered;
+		return InterfaceStep<PDDLDriver*>(originalDriver, false);
 	}
-	t = report->Stop();
+	Report->Stop();
+	return InterfaceStep<PDDLDriver*>(originalDriver);
+}
 
-	// Convert PDDL format
+InterfaceStep<PDDLInstance*> CommonInterface::ConvertPDDLFormat(PDDLDriver* driver) {
 	ConsoleHelper::PrintInfo("Converting PDDL format...");
-	report->Begin("Converison of PDDL format");
-	PDDLDomain domain = PDDLConverter::Convert(originalDriver.domain);
-	PDDLProblem problem = PDDLConverter::Convert(&domain, originalDriver.problem);
-	PDDLInstance instance = PDDLInstance(&domain, &problem);
-	t = report->Stop();
-	
-	// Reformulate the PDDL file
-	ConsoleHelper::PrintInfo("Reformulating PDDL...");
-	int reformulationID = report->Begin("Reformulation of PDDL");
-	PDDLInstance reformulatedInstance = reformulator->ReformulatePDDL(&instance);
-	t = report->Stop(reformulationID);
-	
+	Report->Begin("Converison of PDDL format");
+	static PDDLDomain domain = PDDLConverter::Convert(driver->domain);
+	static PDDLProblem problem = PDDLConverter::Convert(&domain, driver->problem);
+	PDDLInstance* instance = new PDDLInstance(&domain, &problem);
+	Report->Stop();
+	return InterfaceStep<PDDLInstance*>(instance);
+}
+
+InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulator, PDDLInstance* instance) {
+	int timeLimit = config.GetItem<int>("incrementLimit");
+	int currentIncrementTimeLimit = config.GetItem<int>("startIncrement");
+	bool isDirect = false;
+
+	int iterativeProcess = Report->Begin("Reformulating Iteratively");
+
+	if (isDirect)
+		currentIncrementTimeLimit = timeLimit;
+
+	DownwardRunner::DownwardRunnerResult runRes;
+	int counter = 1;
+	while (currentIncrementTimeLimit <= timeLimit) {
+		int iterationID = Report->Begin("Iteration " + to_string(counter), iterativeProcess);
+		ConsoleHelper::PrintInfo("Iteration " + to_string(counter) + "(" + to_string(currentIncrementTimeLimit) + "s)");
+		reformulator->TimeLimit = currentIncrementTimeLimit;
+
+		auto result = RunSingle(reformulator, instance, iterationID, currentIncrementTimeLimit);
+		if (result.RanWithoutErrors) {
+			runRes = result.Data;
+			break;
+		}
+		currentIncrementTimeLimit *= config.GetItem<int>("incrementModifier");
+		counter++;
+	}
+	Report->Stop(iterativeProcess);
+	if (runRes != DownwardRunner::FoundPlan) {
+		ConsoleHelper::PrintError("Fast downward did not find a plan in time!");
+		return InterfaceStep<void>(false);
+	}
+	return InterfaceStep<void>();
+}
+
+InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, PDDLInstance* instance) {
+	int iterativeProcess = Report->Begin("Reformulating Directly");
+
+	if (RunSingle(reformulator, instance, iterativeProcess, -1).RanWithoutErrors)
+		return InterfaceStep<void>();
+	else
+		return InterfaceStep<void>(false);
+}
+
+InterfaceStep<DownwardRunner::DownwardRunnerResult> CommonInterface::RunSingle(BaseReformulator* reformulator, PDDLInstance* instance, int reportID, int timeLimit) {
+	ConsoleHelper::PrintInfo("Reformulating PDDL...", 1);
+	int reformulationID = Report->Begin("Reformulation of PDDL", reportID);
+	reformulator->ReportID = reformulationID;
+	PDDLInstance reformulatedInstance = reformulator->ReformulatePDDL(instance);
+	Report->Stop();
+	Report->Stop(reformulationID);
+
 	// Generate new PDDL files
-	ConsoleHelper::PrintInfo("Generating PDDL files...");
-	report->Begin("Generating PDDL");
+	ConsoleHelper::PrintInfo("Generating PDDL files...", 1);
+	Report->Begin("Generating PDDL", reportID);
 	PDDLCodeGenerator pddlGenerator = PDDLCodeGenerator(PDDLDomainCodeGenerator(reformulatedInstance.domain), PDDLProblemCodeGenerator(reformulatedInstance.domain, reformulatedInstance.problem));
 	pddlGenerator.GenerateCode(reformulatedInstance, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
-	t = report->Stop();
+	Report->Stop();
 
 	// Throw the new pddl files into Fast Downward
-	ConsoleHelper::PrintInfo("Run new PDDL files with Fast Downward...");
-	report->Begin("Running FastDownward");
+	ConsoleHelper::PrintInfo("Run new PDDL files with Fast Downward...", 1);
+	Report->Begin("Running FastDownward", reportID);
 	DownwardRunner runner = DownwardRunner();
-	runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
+	runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, timeLimit);
 	auto runRes = runner.ParseDownwardLog();
+	Report->Stop();
+	Report->Stop(reportID);
 	if (runRes != DownwardRunner::FoundPlan) {
-		ConsoleHelper::PrintError("No solution could be found for the plan");
-		t = report->Stop();
-		return CommonInterface::RunResult::ErrorsEncountered;
+		return InterfaceStep<DownwardRunner::DownwardRunnerResult>(runRes, false);
 	}
-	t = report->Stop();
+	return InterfaceStep<DownwardRunner::DownwardRunnerResult>(runRes);
+}
 
-	if (config.GetItem<bool>("debugmode")) {
-		// Check to make sure the reformulated plan also matches the reformulated problem and domain
-		ConsoleHelper::PrintDebugInfo("Validate reformulated SAS plan...");
-		report->Begin("Validating reformulated SAS plan");
-		auto reformulatedSASValidatorResult = PlanValidator::ValidatePlan(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, CommonInterface::FastDownwardSASName);
-		if (reformulatedSASValidatorResult != PlanValidator::PlanMatch) {
-			ConsoleHelper::PrintDebugError("Output plan is not valid for reformulated domain and problem!");
-			t = report->Stop();
-			return CommonInterface::RunResult::ErrorsEncountered;
-		}
-		t = report->Stop();
+InterfaceStep<void> CommonInterface::ValidatePlans(string domainFile, string problemFile, string sasFile) {
+	ConsoleHelper::PrintDebugInfo("Validate reformulated SAS plan...");
+	Report->Begin("Validating reformulated SAS plan");
+	auto reformulatedSASValidatorResult = PlanValidator::ValidatePlan(config, domainFile, problemFile, sasFile);
+	Report->Stop();
+	if (reformulatedSASValidatorResult != PlanValidator::PlanMatch) {
+		ConsoleHelper::PrintDebugError("Output plan is not valid for reformulated domain and problem!");
+		return InterfaceStep<void>(false);
 	}
+	return InterfaceStep<void>(true);
+}
 
-	// Parse the output SAS plan
+InterfaceStep<SASPlan> CommonInterface::ParseSASPlan() {
 	ConsoleHelper::PrintInfo("Parsing SAS Plan...");
-	report->Begin("Parse SAS plan");
+	Report->Begin("Parse SAS plan");
 	SASParser sasParser;
 	filesystem::path sasPath = filesystem::path(CommonInterface::FastDownwardSASName);
 	SASPlan reformulatedSASPlan = sasParser.Parse(sasPath);
-	t = report->Stop();
+	Report->Stop();
+	return InterfaceStep<SASPlan>(reformulatedSASPlan);
+}
 
-	// Rebuild the SAS Plan
+InterfaceStep<SASPlan> CommonInterface::RebuildSASPlan(SASPlan* reformulatedSASPlan, BaseReformulator* reformulator, PDDLInstance* instance) {
 	ConsoleHelper::PrintInfo("Rebuilding the SAS plan...");
-	report->Begin("Rebuild SAS plan");
-	SASPlan outputPlan = reformulator->RebuildSASPlan(&instance, &reformulatedSASPlan);
-	t = report->Stop();
+	Report->Begin("Rebuild SAS plan");
+	SASPlan outputPlan = reformulator->RebuildSASPlan(instance, reformulatedSASPlan);
+	Report->Stop();
+	return InterfaceStep<SASPlan>(outputPlan);
+}
 
-	// Output the new SAS plan
+InterfaceStep<void> CommonInterface::GenerateNewSASPlan(SASPlan outputPlan) {
 	ConsoleHelper::PrintInfo("Output new SAS Plan...");
-	report->Begin("Output SAS plan");
+	Report->Begin("Output SAS plan");
 	SASCodeGenerator sasGenerator;
 	sasGenerator.GenerateCode(outputPlan, CommonInterface::OutputSASName);
-	t = report->Stop();
+	Report->Stop();
+	return InterfaceStep<void>();
+}
+
+enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
+
+	auto getReformulatorStep = GetReformulator(reformulatorIndex);
+	if (!getReformulatorStep.RanWithoutErrors)
+		return CommonInterface::RunResult::ErrorsEncountered;
 
 	if (config.GetItem<bool>("debugmode")) {
-		// Validate reformulated plan works with original domain and problem
-		ConsoleHelper::PrintDebugInfo("Validate new SAS plan...");
-		report->Begin("Validate new SAS plan");
-		auto newSASValidatorResult = PlanValidator::ValidatePlan(config, config.GetItem<filesystem::path>("domain"), config.GetItem<filesystem::path>("problem"), CommonInterface::OutputSASName);
-		if (newSASValidatorResult != PlanValidator::PlanMatch) {
-			ConsoleHelper::PrintDebugError("Output plan is not valid for original domain and problem!");
-			t = report->Stop();
+		auto checkFilePathsStep = CheckFilePaths();
+		if (!checkFilePathsStep.RanWithoutErrors)
 			return CommonInterface::RunResult::ErrorsEncountered;
-		}
-		t = report->Stop();
 	}
-	
+
+	auto parsePDDLFilesStep = ParsePDDLFiles();
+	if (!parsePDDLFilesStep.RanWithoutErrors)
+		return CommonInterface::RunResult::ErrorsEncountered;
+
+	auto convertPDDLFormatStep = ConvertPDDLFormat(parsePDDLFilesStep.Data);
+	if (!convertPDDLFormatStep.RanWithoutErrors)
+		return CommonInterface::RunResult::ErrorsEncountered;
+
+	if (!isDirect) {
+		auto runIterativelyStep = RunIteratively(getReformulatorStep.Data, convertPDDLFormatStep.Data);
+		if (!runIterativelyStep.RanWithoutErrors)
+			return CommonInterface::RunResult::ErrorsEncountered;
+	}
+	else {
+		auto runNonIterativelyStep = RunDirect(getReformulatorStep.Data, convertPDDLFormatStep.Data);
+		if (!runNonIterativelyStep.RanWithoutErrors)
+			return CommonInterface::RunResult::ErrorsEncountered;
+	}
+
+	if (config.GetItem<bool>("debugmode")) {
+		auto validateSASPlanStep = ValidatePlans(CommonInterface::TempDomainName, CommonInterface::TempProblemName, CommonInterface::FastDownwardSASName);
+		if (!validateSASPlanStep.RanWithoutErrors)
+			return CommonInterface::RunResult::ErrorsEncountered;
+	}
+
+	auto parseSASPlanStep = ParseSASPlan();
+	if (!parseSASPlanStep.RanWithoutErrors)
+		return CommonInterface::RunResult::ErrorsEncountered;
+
+	auto rebuildSASPlanStep = RebuildSASPlan(&parseSASPlanStep.Data, getReformulatorStep.Data, convertPDDLFormatStep.Data);
+	if (!rebuildSASPlanStep.RanWithoutErrors)
+		return CommonInterface::RunResult::ErrorsEncountered;
+
+	auto generateNewSASPlanStep = GenerateNewSASPlan(rebuildSASPlanStep.Data);
+	if (!generateNewSASPlanStep.RanWithoutErrors)
+		return CommonInterface::RunResult::ErrorsEncountered;
+
+	if (config.GetItem<bool>("debugmode")) {
+		auto validateSASPlanStep = ValidatePlans(config.GetItem<filesystem::path>("domain"), config.GetItem<filesystem::path>("problem"), CommonInterface::OutputSASName);
+		if (!validateSASPlanStep.RanWithoutErrors)
+			return CommonInterface::RunResult::ErrorsEncountered;
+	}
+
 	return CommonInterface::RunResult::RanWithoutErrors;
 }

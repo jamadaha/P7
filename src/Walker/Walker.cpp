@@ -7,21 +7,16 @@ Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const 
     std::unordered_set<PDDLState> visitedStates; visitedStates.reserve(depth);
 
     PDDLState tempState = PDDLState(state->unaryFacts, state->multiFacts);
-    if (config->GetItem<bool>("printwalkersteps")) {
-        std::string command = "echo '" + tempState.ToString(instance)+ "'" + " >> walkerLog"; 
-        system(command.c_str());
-    }
-    
+   
+    if (OnTempStateMade != nullptr)
+        OnTempStateMade(this->instance, &tempState);
+
     for (int i = 0; i < depth; i++) {
         std::vector<PDDLActionInstance> possibleActions;
-        report->Resume(reportActionGenID);
         possibleActions = actionGenerator.GenerateActions(&tempState);
-        report->Pause(reportActionGenID);
 
         if (possibleActions.size() == 0) break;
-        report->Resume(reportHeuristicID);
         PDDLActionInstance *chosenAction = heuristic->NextChoice(&tempState, &possibleActions);
-        report->Pause(reportHeuristicID);
         tempState.DoAction(chosenAction);
 
         if (visitedStates.contains(tempState))
@@ -30,13 +25,8 @@ Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const 
             visitedStates.emplace(tempState);
             steps.push_back(*chosenAction);
 
-            if (config->GetItem<bool>("printwalkersteps")) {
-                std::string stateinfo = tempState.ToString(this->instance);
-                std::string actioninfo = chosenAction->ToString(this->instance);
-                std::string content = "echo '" + actioninfo + "\n" + stateinfo + "'" + " >> walkerLog";
-
-                system(content.c_str());
-            }
+            if (OnStateWalk != nullptr)
+                OnStateWalk(this->instance, &tempState, chosenAction);
         }
     }
 
@@ -44,29 +34,18 @@ Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const 
 }
 
 std::vector<Path> Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc) {
-    if (config->GetItem<bool>("printwalkersteps")) {
-        std::string command = "truncate -s 0 walkerLog";
-        system(command.c_str());
-    }
-
-    ProgressBarHelper* bar;
-	if (config->GetItem<bool>("debugmode"))
-		bar = new ProgressBarHelper(widthFunc->max, "Walking", 1);
-
-    reportActionGenID = report->Begin("Action Generation"); report->Pause(reportActionGenID);
-    reportHeuristicID = report->Begin("Heuristic"); report->Pause(reportHeuristicID);
-
     std::vector<Path> paths;
     unsigned int current;
+    if (OnWalkerStart != nullptr)
+        OnWalkerStart();
     while (widthFunc->Iterate(&current)) {
         Path path = Walk(heuristic, depthFunc, &this->instance->problem->initState);
         paths.push_back(path);
 
-        if (config->GetItem<bool>("debugmode"))
-            bar->SetTo(current);
+        if (OnWalkerStep != nullptr)
+            OnWalkerStep(current);
     }
-    if (config->GetItem<bool>("debugmode"))
-        bar->End();
-    report->Stop(reportActionGenID); report->Stop(reportHeuristicID);
+    if (OnWalkerEnd != nullptr)
+        OnWalkerEnd();
     return paths;
 }

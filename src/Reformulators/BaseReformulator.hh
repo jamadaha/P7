@@ -8,7 +8,10 @@
 
 class BaseReformulator {
 public:
-	BaseReformulator(Config* config, RunReport *report) : Configs(config), report(report) {
+	int TimeLimit = 1000;
+	int Iteration = 1;
+	int ReportID = -1;
+	BaseReformulator(Config* config, RunReport* report) : Configs(config), Report(report) {
 
 	}
 
@@ -16,7 +19,7 @@ public:
 	virtual SASPlan RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) = 0;
 protected:
 	Config* Configs;
-	RunReport *report;
+	RunReport* Report;
 };
 
 #endif

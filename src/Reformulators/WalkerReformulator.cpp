@@ -34,7 +34,7 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 	if (Configs->GetItem<bool>("debugmode")) {
 		ProgressBarHelper* bar;
 		walker.OnWalkerStart = [&]() {
-			bar = new ProgressBarHelper(widthFunc->max, "Walking)", debugIndent + 1);
+			bar = new ProgressBarHelper(widthFunc->max, "Walking", debugIndent + 1);
 
 			if (Configs->GetItem<bool>("printwalkersteps")) {
 				std::string command = "truncate -s 0 walkerLog";
@@ -192,8 +192,6 @@ PDDLInstance WalkerReformulator::GenerateMacros(vector<EntanglementOccurance> ca
 }
 
 SASPlan WalkerReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) {
-	if (Configs->GetItem<bool>("debugmode"))
-		ConsoleHelper::PrintDebugInfo("[SAS Rebuilder] Rebuilding SAS plan...", debugIndent);
 	std::vector<SASAction> actions;
 	for (int i = 0; i < reformulatedSAS->actions.size(); i++) {
 		auto sasAction = reformulatedSAS->actions.at(i);

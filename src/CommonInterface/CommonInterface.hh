@@ -44,8 +44,8 @@ public:
 private:
 	InterfaceStep<BaseReformulator*> GetReformulator(int reformulatorIndex = 0);
 	InterfaceStep<void> CheckFilePaths();
-	InterfaceStep<PDDLDriver> ParsePDDLFiles();
-	InterfaceStep<PDDLInstance> ConvertPDDLFormat(PDDLDriver driver);
+	InterfaceStep<PDDLDriver*> ParsePDDLFiles();
+	InterfaceStep<PDDLInstance*> ConvertPDDLFormat(PDDLDriver* driver);
 	InterfaceStep<void> RunIteratively(BaseReformulator* reformulator, PDDLInstance* instance);
 	InterfaceStep<void> RunSingle(BaseReformulator* reformulator, PDDLInstance* instance);
 	InterfaceStep<void> ValidatePlans(std::string domainFile, std::string problemFile, std::string sasFile);

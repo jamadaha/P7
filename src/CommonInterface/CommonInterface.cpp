@@ -32,30 +32,30 @@ InterfaceStep<void> CommonInterface::CheckFilePaths() {
 	return InterfaceStep<void>();
 }
 
-InterfaceStep<PDDLDriver> CommonInterface::ParsePDDLFiles() {
+InterfaceStep<PDDLDriver*> CommonInterface::ParsePDDLFiles() {
 	ConsoleHelper::PrintInfo("Parsing PDDL files...");
-	PDDLDriver originalDriver;
+	PDDLDriver* originalDriver = new PDDLDriver();
 	Report->Begin("Parsing PDDL Files");
-	if (originalDriver.parse(config.GetItem<filesystem::path>("domain"))) {
+	if (originalDriver->parse(config.GetItem<filesystem::path>("domain"))) {
 		ConsoleHelper::PrintError("Error parsing the domain file!");
-		return InterfaceStep<PDDLDriver>(originalDriver, false);
+		return InterfaceStep<PDDLDriver*>(originalDriver, false);
 	}
-	if (originalDriver.parse(config.GetItem<filesystem::path>("problem"))) {
+	if (originalDriver->parse(config.GetItem<filesystem::path>("problem"))) {
 		ConsoleHelper::PrintError("Error parsing the problem file!");
-		return InterfaceStep<PDDLDriver>(originalDriver, false);
+		return InterfaceStep<PDDLDriver*>(originalDriver, false);
 	}
 	Report->Stop();
-	return InterfaceStep<PDDLDriver>(originalDriver);
+	return InterfaceStep<PDDLDriver*>(originalDriver);
 }
 
-InterfaceStep<PDDLInstance> CommonInterface::ConvertPDDLFormat(PDDLDriver driver) {
+InterfaceStep<PDDLInstance*> CommonInterface::ConvertPDDLFormat(PDDLDriver* driver) {
 	ConsoleHelper::PrintInfo("Converting PDDL format...");
 	Report->Begin("Converison of PDDL format");
-	PDDLDomain domain = PDDLConverter::Convert(driver.domain);
-	PDDLProblem problem = PDDLConverter::Convert(&domain, driver.problem);
-	PDDLInstance instance = PDDLInstance(&domain, &problem);
+	static PDDLDomain domain = PDDLConverter::Convert(driver->domain);
+	static PDDLProblem problem = PDDLConverter::Convert(&domain, driver->problem);
+	PDDLInstance* instance = new PDDLInstance(&domain, &problem);
 	Report->Stop();
-	return InterfaceStep<PDDLInstance>(instance);
+	return InterfaceStep<PDDLInstance*>(instance);
 }
 
 InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulator, PDDLInstance* instance) {
@@ -199,12 +199,12 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 		return CommonInterface::RunResult::ErrorsEncountered;
 
 	if (config.GetItem<bool>("runIteratively")) {
-		auto runIterativelyStep = RunIteratively(getReformulatorStep.Data, &convertPDDLFormatStep.Data);
+		auto runIterativelyStep = RunIteratively(getReformulatorStep.Data, convertPDDLFormatStep.Data);
 		if (!runIterativelyStep.RanWithoutErrors)
 			return CommonInterface::RunResult::ErrorsEncountered;
 	}
 	else {
-		auto runNonIterativelyStep = RunSingle(getReformulatorStep.Data, &convertPDDLFormatStep.Data);
+		auto runNonIterativelyStep = RunSingle(getReformulatorStep.Data, convertPDDLFormatStep.Data);
 		if (!runNonIterativelyStep.RanWithoutErrors)
 			return CommonInterface::RunResult::ErrorsEncountered;
 	}
@@ -219,7 +219,7 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 	if (!parseSASPlanStep.RanWithoutErrors)
 		return CommonInterface::RunResult::ErrorsEncountered;
 
-	auto rebuildSASPlanStep = RebuildSASPlan(&parseSASPlanStep.Data, getReformulatorStep.Data, &convertPDDLFormatStep.Data);
+	auto rebuildSASPlanStep = RebuildSASPlan(&parseSASPlanStep.Data, getReformulatorStep.Data, convertPDDLFormatStep.Data);
 	if (!rebuildSASPlanStep.RanWithoutErrors)
 		return CommonInterface::RunResult::ErrorsEncountered;
 

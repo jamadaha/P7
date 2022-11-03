@@ -105,11 +105,6 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *sta
     return legalActions;
 }
 
-bool Comp(pair<unsigned int, unsigned int> a, pair<unsigned int, unsigned int> b)
-{
-    return a < b;
-}
-
 vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *action, const PDDLState *state) const {
     vector<PDDLActionInstance> legalActions;
 

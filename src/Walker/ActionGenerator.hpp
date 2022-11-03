@@ -49,10 +49,7 @@ public:
     /// @brief Checks whether the objects are valid for each of the \p literals
     /// @param literals Some multi literals
     static bool IsLegal(const std::vector<PDDLLiteral> *literals, const PDDLState *state, const std::vector<unsigned int> *objects);
-    /// @brief Checks whether the objects are valid for the given \p literal
-    /// @param literal Some multi literal
-    static bool IsLegal(const PDDLLiteral *literal, const PDDLState *state, const std::vector<unsigned int> *objects);
-
+    
 private:
     const PDDLDomain *domain;
     const PDDLProblem *problem;

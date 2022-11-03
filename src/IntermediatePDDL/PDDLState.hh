@@ -114,8 +114,9 @@ namespace std {
     struct hash<PDDLState> {
         auto operator()(const PDDLState& s) const -> size_t {
             size_t h1 = s.unaryFacts.size();
-            size_t h2 = s.multiFacts.size();
-            return h1 ^ (h2 << 1);
+            size_t h2 = s.binaryFacts.size();
+            size_t h3 = s.multiFacts.size();
+            return (h1 ^ (h2 << 1)) ^ (h3 << 1);
         }
     };
 }

@@ -175,7 +175,6 @@ bool ActionGenerator::GetCandidateObjects(vector<unordered_set<unsigned int>> &c
     return true;
 }
 
-// Assumes atleast 1 literal
 unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) const {
     unordered_set<unsigned int> candidateObjects;
 

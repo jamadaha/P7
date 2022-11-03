@@ -187,17 +187,17 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered
     if (candidateObjects.size() == 0)
         candidateObjects = objects;
     
-    RemoveIllegal(candidateObjects, literals, &state->unaryFacts);
+    RemoveIllegal(candidateObjects, literals, state);
 
     return candidateObjects;
 }
 
-void ActionGenerator::RemoveIllegal(std::unordered_set<unsigned int> &set, const std::unordered_set<const PDDLLiteral*> *literals, const std::unordered_map<unsigned int, std::unordered_set<unsigned int>> *unaryFacts) {
+void ActionGenerator::RemoveIllegal(std::unordered_set<unsigned int> &set, const std::unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) {
     for (auto literal = literals->begin(); literal != literals->end(); literal++)
         if ((*literal)->value)
-            Algorithms::Intersect(set, unaryFacts->at((*literal)->predicateIndex));
+            Algorithms::Intersect(set, state->unaryFacts.at((*literal)->predicateIndex));
         else
-            Algorithms::Difference(set, unaryFacts->at((*literal)->predicateIndex));
+            Algorithms::Difference(set, state->unaryFacts.at((*literal)->predicateIndex));
 }
 
 std::vector<std::vector<unsigned int>> ActionGenerator::PermuteAll(std::vector<std::unordered_set<unsigned int>> candidateObjects, std::unordered_map<std::pair<unsigned int, unsigned int>, std::unordered_set<std::pair<unsigned int, unsigned int>>> candidatePairs) {

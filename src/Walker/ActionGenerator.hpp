@@ -35,10 +35,6 @@ public:
     /// @param literal Some unary literal
     static void RemoveIllegal(std::unordered_set<unsigned int> &set, const PDDLLiteral *literal, const PDDLState *state);
 
-    /// @brief Removes those in \p set which do not match the given literal
-    /// @param literal Some unary literal
-    static void RemoveIllegal(std::unordered_set<std::pair<unsigned int, unsigned int>> &set, const PDDLLiteral *literal, const PDDLState *state);
-
     static void Intersect(std::unordered_set<unsigned int> &a, const std::unordered_set<unsigned int> &b);
     static void Intersect(std::unordered_set<std::pair<unsigned int, unsigned int>> &a, const std::unordered_set<std::pair<unsigned int, unsigned int>> &b);
 
@@ -49,7 +45,7 @@ public:
     /// @brief Checks whether the objects are valid for each of the \p literals
     /// @param literals Some multi literals
     static bool IsLegal(const std::vector<PDDLLiteral> *literals, const PDDLState *state, const std::vector<unsigned int> *objects);
-    
+
 private:
     const PDDLDomain *domain;
     const PDDLProblem *problem;

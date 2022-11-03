@@ -14,7 +14,9 @@
 class ActionGenerator {
 public:
     unsigned int GetTotalActionsGenerated() { return totalActions; };
-    ActionGenerator(const PDDLDomain *domain, const PDDLProblem *problem) : domain(domain), problem(problem) {
+    ActionGenerator(const std::vector<PDDLAction> *actions, const unsigned int objectCount) : actions(actions) {
+        for (int i = 0; i < objectCount; i++)
+            objects.emplace(i);
     };
 
     /// @brief For a given state, generate all possible action instances
@@ -31,8 +33,8 @@ public:
 
     /// @brief Removes those in \p set which do not match the given literals
     /// @param literals Some unary literals
-    static void RemoveIllegal(std::unordered_set<unsigned int> &set, const std::unordered_set<const PDDLLiteral*> *literals, const PDDLState *state);
-    
+    static void RemoveIllegal(std::unordered_set<unsigned int> &set, const std::unordered_set<const PDDLLiteral*> *literals, const std::unordered_map<unsigned int, std::unordered_set<unsigned int>> *unaryFacts);
+
     static std::vector<std::vector<unsigned int>> PermuteAll(std::vector<std::unordered_set<unsigned int>> candidateObjects, std::unordered_map<std::pair<unsigned int, unsigned int>, std::unordered_set<std::pair<unsigned int, unsigned int>>> candidatePairs);
 
     static void Permute(std::vector<std::unordered_set<unsigned int>> &candidateObjects, std::unordered_map<std::pair<unsigned int, unsigned int>, std::unordered_set<std::pair<unsigned int, unsigned int>>> &candidatePairs, std::vector<std::vector<unsigned int>> *permutations, std::vector<unsigned int> *permutation);
@@ -42,9 +44,9 @@ public:
     static bool IsLegal(const std::vector<PDDLLiteral> *literals, const PDDLState *state, const std::vector<unsigned int> *objects);
 
 private:
-    const PDDLDomain *domain;
-    const PDDLProblem *problem;
     unsigned int totalActions = 0;
+    const std::vector<PDDLAction> *actions;
+    std::unordered_set<unsigned int> objects;
 };
 
 #endif

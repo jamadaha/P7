@@ -37,6 +37,16 @@ target_sources(Hashes
 target_include_directories(Hashes
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR})
+
+add_library(Algorithms "Algorithms.hh")
+    target_sources(Algorithms
+        PRIVATE
+            ${CMAKE_CURRENT_LIST_DIR}/Algorithms.cpp
+        PUBLIC
+            ${CMAKE_CURRENT_LIST_DIR}/Algorithms.hh)
+    target_include_directories(Algorithms
+        PUBLIC
+            ${CMAKE_CURRENT_LIST_DIR})
         
 add_library(ProgressBarHelper "ProgressBarHelper.cpp")
 target_sources(ProgressBarHelper

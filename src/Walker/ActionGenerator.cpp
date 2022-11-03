@@ -141,12 +141,12 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *ac
         if (!candidatePairs.contains(indexPair)) {
             candidatePairs[indexPair] = pairs;
             // Remove those from candidate objects which are not in any pairs
-            Intersect(candidateObjects.at(indexPair.first), indexFirsts);
-            Intersect(candidateObjects.at(indexPair.second), indexSecond);
+            Algorithms::Intersect(candidateObjects.at(indexPair.first), indexFirsts);
+            Algorithms::Intersect(candidateObjects.at(indexPair.second), indexSecond);
         } else {
             // This happens if two preconditions have the same index pair, i.e. pre1: ?x, ?y & pre2: ?x, ?y
             // In this case the legal pairs is the intersection between the two
-            Intersect(candidatePairs.at(indexPair), pairs);
+            Algorithms::Intersect(candidatePairs.at(indexPair), pairs);
         }
     }
 
@@ -199,25 +199,10 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered
 
 void ActionGenerator::RemoveIllegal(std::unordered_set<unsigned int> &set, const std::unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) {
     for (auto literal = literals->begin(); literal != literals->end(); literal++)
-        RemoveIllegal(set, (*literal), state);
-}
-
-void ActionGenerator::RemoveIllegal(std::unordered_set<unsigned int> &set, const PDDLLiteral *literal, const PDDLState *state) {
-    // Find intersection of candidateobjects and the new literal
-    const std::unordered_set<unsigned int> *newObjectRef = &(state->unaryFacts.at(literal->predicateIndex));
-    // Returns true, i.e. object should be deleted, depending on the literal state
-    const auto NewObjectNegContains = [&](auto const& x) { return newObjectRef->contains(x) != literal->value; };
-    // Remove those which are(n't) contained in both depending on literal value
-    std::erase_if(set, NewObjectNegContains);
-}
-
-void ActionGenerator::Intersect(std::unordered_set<unsigned int> &a, const std::unordered_set<unsigned int> &b) {
-    const auto Contains = [&](auto const& x) { return !b.contains(x);};
-    std::erase_if(a, Contains);
-}
-void ActionGenerator::Intersect(std::unordered_set<std::pair<unsigned int, unsigned int>> &a, const std::unordered_set<std::pair<unsigned int, unsigned int>> &b) {
-    const auto Contains = [&](auto const& x) { return !b.contains(x);};
-    std::erase_if(a, Contains);
+        if ((*literal)->value)
+            Algorithms::Intersect(set, state->unaryFacts.at((*literal)->predicateIndex));
+        else
+            Algorithms::Difference(set, state->unaryFacts.at((*literal)->predicateIndex));
 }
 
 std::vector<std::vector<unsigned int>> ActionGenerator::PermuteAll(std::vector<std::unordered_set<unsigned int>> candidateObjects, std::unordered_map<std::pair<unsigned int, unsigned int>, std::unordered_set<std::pair<unsigned int, unsigned int>>> candidatePairs) {

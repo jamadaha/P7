@@ -9,6 +9,7 @@
 
 #include "../IntermediatePDDL/PDDLActionInstance.hh"
 #include "../IntermediatePDDL/PDDLInstance.hh"
+#include "../Helpers/Algorithms.hh"
 
 class ActionGenerator {
 public:
@@ -31,13 +32,7 @@ public:
     /// @brief Removes those in \p set which do not match the given literals
     /// @param literals Some unary literals
     static void RemoveIllegal(std::unordered_set<unsigned int> &set, const std::unordered_set<const PDDLLiteral*> *literals, const PDDLState *state);
-    /// @brief Removes those in \p set which do not match the given literal
-    /// @param literal Some unary literal
-    static void RemoveIllegal(std::unordered_set<unsigned int> &set, const PDDLLiteral *literal, const PDDLState *state);
-
-    static void Intersect(std::unordered_set<unsigned int> &a, const std::unordered_set<unsigned int> &b);
-    static void Intersect(std::unordered_set<std::pair<unsigned int, unsigned int>> &a, const std::unordered_set<std::pair<unsigned int, unsigned int>> &b);
-
+    
     static std::vector<std::vector<unsigned int>> PermuteAll(std::vector<std::unordered_set<unsigned int>> candidateObjects, std::unordered_map<std::pair<unsigned int, unsigned int>, std::unordered_set<std::pair<unsigned int, unsigned int>>> candidatePairs);
 
     static void Permute(std::vector<std::unordered_set<unsigned int>> &candidateObjects, std::unordered_map<std::pair<unsigned int, unsigned int>, std::unordered_set<std::pair<unsigned int, unsigned int>>> &candidatePairs, std::vector<std::vector<unsigned int>> *permutations, std::vector<unsigned int> *permutation);

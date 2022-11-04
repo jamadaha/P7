@@ -8,35 +8,9 @@ class GreedyHeuristic : public BaseHeuristic {
 public:
 	GreedyHeuristic(const PDDLDomain *domain, const PDDLProblem *problem) : BaseHeuristic(domain, problem){};
 
-	PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const override {
-	    int value = 0
-        std::set<std::string> candidates;
-        std::pair<int, std::string> solution;
-        std::unordered_map<int, std::string> solutions;
-
-
-        for(auto obj : this->problem->objects){
-            /*Make candidates*/
-            candidates.insert(obj);
-            /*Find good bester solutions*/
-            while(true){
-                if (candidates.empty) break;
-                for (auto i : candidates){
-                    if (/*not in the solution vector*/){
-                        /*Calculatings greed for each index*/
-                        solutions.enplace(this.Eval(i, solutions), /*id*/);
-                    }
-                }
-                /*Add highest pair to solution*/
-            }
-            /*Sort solutions*/
-            /*solution = highest solution*/
-        }
-        /*return new state at best value (solution)*/
-	}
-
-	int Eval(const PDDLState *state, /*std::unordered_map<int, std::string> solutions*/) const override {
-	};
+	PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const override;
+private:
+    int Eval(const PDDLState *state, int i) const; /*std::unordered_map<int, std::string> solutions*/
 };
 
 #endif

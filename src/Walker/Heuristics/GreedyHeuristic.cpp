@@ -1,31 +1,40 @@
 #include "GreedyHeuristic.hh"
+#include <unordered_map>
+#include <unordered_set>
 
 PDDLActionInstance* GreedyHeuristic::NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const {
     int value = 0;
-    std::set<std::string> candidates;
-    std::pair<int, std::string> solution;
-    std::unordered_map<std::string, int> solutions;
+    std::unordered_set<PDDLActionInstance> candidates;
+    std::pair<PDDLActionInstance, int> solution;
+    PDDLActionInstance *solutionPtr;
+    std::unordered_map<PDDLActionInstance, int> solutions;
 
-
-    for(auto obj : this->problem->objects){
+    for(auto obj : *choices){
         /*Make candidates*/
-        candidates.insert(obj);
+        candidates.emplace(obj);
         /*Find good bester solutions*/
-        while(true){
-            if (candidates.empty()) break;
-            int i = 0;
-            for (std::string s : candidates){
-                if (!solutions.contains(s)){
-                    /*Calculatings greed for each index*/
-                    solutions.emplace(s, this->Eval(state, i));
-                }
-                ++i;
+        int i = 0;
+        for (PDDLActionInstance s : candidates){
+            if (!solutions.contains(s)){
+                /*Calculatings greed for each index*/
+                solutions.emplace(s, this->Eval(state, i));
+            }
+            ++i;
+        }
+        /*Add highest pair to solution*/
+        int currentMax = 0;
+        PDDLActionInstance currentAction;
+        for(auto iter = solutions.cbegin(); iter != solutions.cend(); ++iter){
+            if (iter->second > currentMax) {
+                currentMax = iter->second; 
+                currentAction = iter->first;                
             }
         }
-        /*Sort solutions*/
-        /*solution = highest solution*/
+        solution = std::pair<PDDLActionInstance, int>(currentAction, currentMax);
     }
     /*return new state at best value (solution)*/
+    solutionPtr = &(solution.first);
+    return solutionPtr;
 }
 
 int GreedyHeuristic::Eval(const PDDLState *state, int i) const {

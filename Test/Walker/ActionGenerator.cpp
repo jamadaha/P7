@@ -4,35 +4,7 @@
 #include "../../src/Walker/ActionGenerator.hpp"
 
 const std::string TAG = "ActionGenerator ";
-#pragma region IsLegal
-//static bool IsLegal(const PDDLLiteral *literal, const PDDLState *state, std::vector<unsigned int> *objects);
-TEST_CASE(TAG + "IsLegal SingleLiteral") {
-    const PDDLState state {
-        std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{},
-        std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>>{},
-        std::unordered_map<unsigned int, std::unordered_set<MultiFact>>{
-            {2, {MultiFact({ 0, 1, 2 })}}
-        }
-    };
-    SECTION("Not Legal") {
-        std::vector<unsigned int> candidateSet{ 0, 1, 2 };
-        SECTION("3 parameters") {
-            const PDDLLiteral literal{2, { 2, 1, 0 }, true};
-            REQUIRE(!ActionGenerator::IsLegal(&literal, &state, &candidateSet));
-        }
-    };
-    SECTION("Legal") {
-        std::vector<unsigned int> candidateSet{ 0, 1, 2 };
-        SECTION("3 parameters") {
-            const PDDLLiteral literal{2, { 0, 1, 2 }, true};
-            REQUIRE(ActionGenerator::IsLegal(&literal, &state, &candidateSet));
-        }
-    };
-
-}
-#pragma endregion IsLegal
 #pragma region GenerateActions
-
 PDDLDomain GenerateDomain(std::vector<PDDLAction> actions = std::vector<PDDLAction>()) {
     return PDDLDomain("Test",
     std::vector<std::string>{},
@@ -65,7 +37,7 @@ PDDLDomain *domain = nullptr, std::vector<std::string> objects = std::vector<std
 
 TEST_CASE(TAG + "GenerateActions Empty") {
     PDDLInstance instance = PDDLInstance(new PDDLDomain(), new PDDLProblem());
-    ActionGenerator AG = ActionGenerator(instance.domain, instance.problem);
+    ActionGenerator AG = ActionGenerator(&instance.domain->actions, instance.problem->objects.size());
     std::vector<PDDLActionInstance> actions = AG.GenerateActions(&instance.problem->initState);
     REQUIRE(actions.size() == 0);
     free(instance.domain);
@@ -93,7 +65,7 @@ TEST_CASE(TAG + "GenerateActions Unary - 1 Legal") {
     });
 
     PDDLInstance instance = PDDLInstance(&domain, &problem);
-    ActionGenerator AG = ActionGenerator(instance.domain, instance.problem);
+    ActionGenerator AG = ActionGenerator(&instance.domain->actions, instance.problem->objects.size());
     std::vector<PDDLActionInstance> actions = AG.GenerateActions(&(instance.problem->initState));
     REQUIRE(1 == actions.size());
 }
@@ -119,7 +91,7 @@ TEST_CASE(TAG + "GenerateActions Unary - 0 Legal") {
     });
 
     PDDLInstance instance = PDDLInstance(&domain, &problem);
-    ActionGenerator AG = ActionGenerator(instance.domain, instance.problem);
+    ActionGenerator AG = ActionGenerator(&instance.domain->actions, instance.problem->objects.size());
     std::vector<PDDLActionInstance> actions = AG.GenerateActions(&(instance.problem->initState));
     REQUIRE(0 == actions.size());
 }
@@ -145,7 +117,7 @@ TEST_CASE(TAG + "GenerateActions Equal") {
     });
 
     PDDLInstance instance = PDDLInstance(&domain, &problem);
-    ActionGenerator AG = ActionGenerator(instance.domain, instance.problem);
+    ActionGenerator AG = ActionGenerator(&instance.domain->actions, instance.problem->objects.size());
     std::vector<PDDLActionInstance> actions = AG.GenerateActions(&(instance.problem->initState));
     REQUIRE(3 == actions.size());
 }
@@ -171,7 +143,7 @@ TEST_CASE(TAG + "GenerateActions Not Equal") {
     });
 
     PDDLInstance instance = PDDLInstance(&domain, &problem);
-    ActionGenerator AG = ActionGenerator(instance.domain, instance.problem);
+    ActionGenerator AG = ActionGenerator(&instance.domain->actions, instance.problem->objects.size());
     std::vector<PDDLActionInstance> actions = AG.GenerateActions(&(instance.problem->initState));
     REQUIRE(6 == actions.size());
 }
@@ -197,7 +169,7 @@ TEST_CASE(TAG + "GenerateActions Multi - 1 Legal") {
     });
 
     PDDLInstance instance = PDDLInstance(&domain, &problem);
-    ActionGenerator AG = ActionGenerator(instance.domain, instance.problem);
+    ActionGenerator AG = ActionGenerator(&instance.domain->actions, instance.problem->objects.size());
     std::vector<PDDLActionInstance> actions = AG.GenerateActions(&(instance.problem->initState));
     REQUIRE(1 == actions.size());
 }
@@ -224,17 +196,7 @@ TEST_CASE(TAG + "GetCandidateObjects") {
     PDDLProblem problem{
         "", &domain, { "O1", "O2", "O3" }, {}, {}, {}
     };
-    ActionGenerator actionGenerator{&domain, &problem};
-
-    SECTION("No Facts") {
-        PDDLState state{
-            {}, {}, {}
-        };
-        const PDDLAction *action = &domain.actions.at(0);
-        auto literals = &action->applicableUnaryLiterals.at(0);
-        std::unordered_set<unsigned int> candidateObjects = actionGenerator.GetCandidateObjects(literals, &state);
-        REQUIRE(candidateObjects.size() == 0);
-    }
+    ActionGenerator actionGenerator = ActionGenerator(&domain.actions, problem.objects.size());
 
     SECTION("No Literals") {
         PDDLState state{

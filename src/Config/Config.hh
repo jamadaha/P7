@@ -26,7 +26,7 @@ public:
 
     void Clear();
 private:
-    enum ValidTypes {NONE, INT, DOUBLE, BOOL, STRING, PATH};
+    enum ValidTypes {NONE, INT, DOUBLE, BOOL, STRING, PATH, EXTERNAL};
     ValidTypes GetTypeEnum(std::string typeName);
 
     std::string GetTypeName(std::string line);

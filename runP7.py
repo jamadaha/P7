@@ -10,8 +10,21 @@ from Lab.Benchmarks import get_suite, make_tasks
 
 args = set_arguments()
 
+with open("baseSettings.ini", 'r') as file:
+    lines_base = file.readlines()
+
 with open(args.settings, 'r') as file:
     lines = file.readlines()
+
+lines = lines_base + lines
+
+sanitizedLines = []
+for line in lines:
+    strpLine = line
+    if not strpLine.lstrip(" ").startswith(";"):
+        sanitizedLines.append(line)
+
+print(sanitizedLines)
 
 search = ""
 heuristic = ""
@@ -25,7 +38,7 @@ benchmarksline = ""
 settingscontent = ""
 
 #Parse config file and remove lab specific settings
-for line in lines:
+for line in sanitizedLines:
     if "downwardsearch" in line:
         search = line.split("=")[1].strip("\n")
         settingscontent += line
@@ -45,7 +58,7 @@ for line in lines:
     elif "downward" in line or "validator" in line:
         argument = line.split("=")
         settingscontent += argument[0] + "=" + abs_path(__file__, argument[1]) 
-    else:
+    elif "EXTERNAL" not in line:
         settingscontent += line
 
 #if not found in config file the default values are used
@@ -89,6 +102,7 @@ for task in tasks:
     content += "PATH:problem=" + task.problem_file + "\n"
 
     run = experiment.add_run()
+    baseContent = "";
     run.add_new_file("config","TempSettings.ini",content)
     run.add_command("planner", [abs_path(__file__,projectfile),"{config}"])
 

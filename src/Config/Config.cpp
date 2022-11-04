@@ -97,6 +97,9 @@ void Config::ParseConfigItem(std::string line) {
     string typeNameStr = GetTypeName(line);
     string name = GetName(line);
     string value = GetStringValue(line);
+    
+    if (items.contains(name))
+        items.erase(name);
 
     if (typeNameStr.starts_with("LIST")) {
         string subTypeStr = GetSubTypeName(typeNameStr);
@@ -152,6 +155,10 @@ void Config::ParseConfigItem(std::string line) {
         case Config::PATH:
             items.emplace(name, new filesystem::path(GetNewItem<filesystem::path>(value)));
             break;
+        case Config::EXTERNAL:
+            if (typeNameStr == "EXTERNAL")
+                ParseConfigFile(filesystem::path(name));
+            break;
         default:
             throw invalid_argument("Invalid config type!");
             break;
@@ -174,6 +181,9 @@ Config::ValidTypes Config::GetTypeEnum(std::string typeName) {
     }
     else if (typeName == "PATH") {
         return Config::ValidTypes::PATH;
+    }
+    else if (typeName == "EXTERNAL") {
+        return Config::ValidTypes::EXTERNAL;
     }
     return Config::ValidTypes::NONE;
 }

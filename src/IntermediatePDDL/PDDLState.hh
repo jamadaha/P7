@@ -104,7 +104,7 @@ struct PDDLState {
 
     // Very slow, please only use with caution
     friend bool operator== (const PDDLState &lhs, const PDDLState &rhs) {
-        return (lhs.unaryFacts == rhs.unaryFacts && lhs.multiFacts == rhs.multiFacts);
+        return (lhs.unaryFacts == rhs.unaryFacts && lhs.binaryFacts == rhs.binaryFacts && lhs.multiFacts == rhs.multiFacts);
     };
     
 };
@@ -114,8 +114,9 @@ namespace std {
     struct hash<PDDLState> {
         auto operator()(const PDDLState& s) const -> size_t {
             size_t h1 = s.unaryFacts.size();
-            size_t h2 = s.multiFacts.size();
-            return h1 ^ (h2 << 1);
+            size_t h2 = s.binaryFacts.size();
+            size_t h3 = s.multiFacts.size();
+            return (h1 ^ (h2 << 1)) ^ (h3 << 1);
         }
     };
 }

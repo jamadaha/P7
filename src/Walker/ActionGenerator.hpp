@@ -9,7 +9,7 @@
 
 #include "../IntermediatePDDL/PDDLActionInstance.hh"
 #include "../IntermediatePDDL/PDDLInstance.hh"
-#include "../Helpers/Algorithms.hh"
+#include "../Helpers/AlgorithmHelper.hh"
 
 class ActionGenerator {
 public:

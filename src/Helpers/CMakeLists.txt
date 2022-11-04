@@ -38,13 +38,13 @@ target_include_directories(Hashes
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR})
 
-add_library(Algorithms "Algorithms.hh")
-    target_sources(Algorithms
+add_library(AlgorithmHelper "AlgorithmHelper.hh")
+    target_sources(AlgorithmHelper
         PRIVATE
-            ${CMAKE_CURRENT_LIST_DIR}/Algorithms.cpp
+            ${CMAKE_CURRENT_LIST_DIR}/AlgorithmHelper.cpp
         PUBLIC
-            ${CMAKE_CURRENT_LIST_DIR}/Algorithms.hh)
-    target_include_directories(Algorithms
+            ${CMAKE_CURRENT_LIST_DIR}/AlgorithmHelper.hh)
+    target_include_directories(AlgorithmHelper
         PUBLIC
             ${CMAKE_CURRENT_LIST_DIR})
         

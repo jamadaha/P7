@@ -1,5 +1,5 @@
-#ifndef ALGORITHMS
-#define ALGORITHMS
+#ifndef ALGORITHM_HELPER
+#define ALGORITHM_HELPER
 
 #include <vector>
 #include <unordered_set>
@@ -7,7 +7,7 @@
 
 #include "Hashes.hh"
 
-class Algorithms {
+class AlgorithmHelper {
 public:
     static void Intersect(std::unordered_set<unsigned int> &a, const std::unordered_set<unsigned int> &b);
     static void Intersect(std::unordered_set<std::pair<unsigned int, unsigned int>> &a, const std::unordered_set<std::pair<unsigned int, unsigned int>> &b);

@@ -24,7 +24,6 @@ target_link_libraries(P7
         DepthFunction
         Hashes
         ProgressBarHelper
-        MacroGenerator
-        Algorithms)
+        MacroGenerator)
 
 add_executable(P7Lab "P7Lab.cpp")

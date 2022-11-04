@@ -22,4 +22,4 @@ target_sources(ActionGenerator
 target_include_directories(ActionGenerator
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR})
-target_link_libraries(ActionGenerator Algorithms)
+target_link_libraries(ActionGenerator AlgorithmHelper)

@@ -76,7 +76,7 @@ std::unordered_map<GroundedLiteral, bool> priorEffs) {
         if (priorEffs.contains(iter.first)) continue;
         if (preconditions.contains(iter.first)) continue; // maybe
         if (iter.first.predicate == 0) continue;
-        if (domain->staticPredicates.contains(iter.first.predicate)) continue;
+        if (domain != nullptr && domain->staticPredicates.contains(iter.first.predicate)) continue;
         preconditions.emplace(iter.first, iter.second);
     }
 

@@ -40,7 +40,7 @@ PDDLInstance WalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 }
 
 vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
-	walker = new Walker(instance, ActionGenerator(instance->domain, instance->problem));
+	walker = new Walker(instance, ActionGenerator(&instance->domain->actions, instance->problem->objects.size()));
 	BaseHeuristic *heuristic;
 	if (Configs->GetItem<string>("heuristic") == "random")
 		heuristic = new RandomHeuristic(Configs->GetItem<bool>("debugmode"));

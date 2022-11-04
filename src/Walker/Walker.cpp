@@ -1,6 +1,5 @@
 #include "Walker.hpp"
 
-
 Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const PDDLState *state) {
     const int depth = depthFunc->GetDepth();
     std::vector<PDDLActionInstance> steps; steps.reserve(depth);
@@ -32,19 +31,22 @@ Path Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const 
     return Path(steps);
 }
 
-std::vector<Path> Walker::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc) {
+std::vector<Path> Walker::Walk() {
     std::vector<Path> paths;
     unsigned int current;
     if (OnWalkerStart != nullptr)
-        OnWalkerStart();
+        OnWalkerStart(this);
+    auto startTime = std::chrono::steady_clock::now();
     while (widthFunc->Iterate(&current)) {
         Path path = Walk(heuristic, depthFunc, &this->instance->problem->initState);
         paths.push_back(path);
 
         if (OnWalkerStep != nullptr)
-            OnWalkerStep(current);
+            OnWalkerStep(this, current);
+        _totalIterations++;
     }
+    auto ellapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - startTime).count();
     if (OnWalkerEnd != nullptr)
-        OnWalkerEnd();
+        OnWalkerEnd(this, ellapsed);
     return paths;
 }

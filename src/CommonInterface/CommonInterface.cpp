@@ -60,28 +60,33 @@ InterfaceStep<PDDLInstance*> CommonInterface::ConvertPDDLFormat(PDDLDriver* driv
 }
 
 InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulator, PDDLInstance* instance) {
-	int timeLimit = config.GetItem<int>("totalTimeLimit");
+	int timeLeft = config.GetItem<int>("totalTimeLimit");
 	int currentIncrementTimeLimit = config.GetItem<int>("startIncrement");
-	bool isDirect = false;
 
 	int iterativeProcess = Report->Begin("Reformulating Iteratively");
 
-	if (isDirect)
-		currentIncrementTimeLimit = timeLimit;
-
 	DownwardRunner::DownwardRunnerResult runRes;
 	int counter = 1;
-	while (currentIncrementTimeLimit <= timeLimit) {
+	while (timeLeft > 0) {
 		int iterationID = Report->Begin("Iteration " + to_string(counter), iterativeProcess);
 		ConsoleHelper::PrintInfo("Iteration " + to_string(counter) + "(" + to_string(currentIncrementTimeLimit) + "s)");
-		reformulator->TimeLimit = currentIncrementTimeLimit;
 
+		// Run an iteration of our reformulation method
+		reformulator->TimeLimit = currentIncrementTimeLimit;
 		auto result = RunSingle(reformulator, instance, iterationID, currentIncrementTimeLimit);
 		if (result.RanWithoutErrors) {
+			// If we found a solution, stop iterating
 			runRes = result.Data;
 			break;
 		}
+
+		// Subtract the time it took to execute this iteration from the total allowed time
+		timeLeft -= currentIncrementTimeLimit * 2;
+		// Increase the time limit for the next iteration
 		currentIncrementTimeLimit *= config.GetItem<int>("incrementModifier");
+		// If the next iteration will take too long, only spend the amount of time possible within the overall time limit
+		if (timeLeft - currentIncrementTimeLimit * 2 < 0)
+			currentIncrementTimeLimit = timeLeft / 2;
 		counter++;
 	}
 	Report->Stop(iterativeProcess);

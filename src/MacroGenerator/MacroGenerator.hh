@@ -10,7 +10,7 @@
 
 class MacroGenerator {
 public:
-    MacroGenerator(){};
+    MacroGenerator() : domain(nullptr), problem(nullptr) {};
     MacroGenerator(const PDDLDomain *domain, const PDDLProblem *problem) : domain(domain), problem(problem) {};
     Macro GenerateMacro(const std::vector<PDDLActionInstance*> *actions);
 

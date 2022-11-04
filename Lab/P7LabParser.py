@@ -88,6 +88,7 @@ planner_memory_limit missing -> can't compute planner memory score
 """
 
 import re
+from urllib.request import ProxyBasicAuthHandler
 from lab.parser import Parser
 
 def get_times(content, props):
@@ -98,20 +99,21 @@ def get_times(content, props):
     ...
     Total Time
     """
-    result = content.split("(%)\n")[1].split("Total Time")[0]
-    
-    #match for the description
-    all_names = re.findall(r"(([a-zA-Z]+\s)+)",result)
+    results = content.split("(%)\n")[1].split("Total Time")[0]
 
-    #match for the time in ms and %
-    all_times = re.findall(r"(\d+\.\d+)", result)
-    
-    times = all_times[::2]
-    procents = all_times[1::2]
+    results = re.findall(r"(([a-zA-Z\s0-9]+)\s+(\d+\.\d+)\s+(\d+\.\d+))",results)
 
-    for index in range(len(all_names)):
-        props[all_names[index][0].lower().replace(" ","_")+"ms"] = times[index]
-        props[all_names[index][0].lower().replace(" ","_")+"procent"] = procents[index]
+    #The iterations have the same name so the values from all iterations are seperated by a comma and placed in the same cell.
+    for result in results:
+        description = result[1].strip().lower().replace(" ","_")
+        if description + "_ms" in props:
+            props[description + "_ms"] += ", " + result[2]
+        else:
+            props[description + "_ms"] = result[2]
+        if description + "_procent" in props:
+            props[description + "_procent"] += ", " + result[3]
+        else:
+            props[description + "_procent"] = result[3]
 
 parser = Parser()
 parser.add_function(get_times, file="run.log")

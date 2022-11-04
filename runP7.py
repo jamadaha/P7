@@ -24,8 +24,6 @@ for line in lines:
     if not strpLine.lstrip(" ").startswith(";"):
         sanitizedLines.append(line)
 
-print(sanitizedLines)
-
 search = ""
 heuristic = ""
 domainline = ""

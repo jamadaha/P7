@@ -122,10 +122,10 @@ def add_scores(content, props):
         print("search time limit missing -> can't compute time scores")
     else:
         props["score_total_time"] = tools.compute_log_score(
-            success, props.get("total_time"), lower_bound=1.0, upper_bound=max_time
+            success, props.get("total_time"), lower_bound=0.5, upper_bound=max_time
         )
         props["score_search_time"] = tools.compute_log_score(
-            success, props.get("search_time"), lower_bound=1.0, upper_bound=max_time
+            success, props.get("search_time"), lower_bound=0.5, upper_bound=max_time
         )
 
     try:

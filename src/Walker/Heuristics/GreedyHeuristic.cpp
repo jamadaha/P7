@@ -21,8 +21,6 @@ PDDLActionInstance* GreedyHeuristic::NextChoice(PDDLState * state, std::vector<P
                 }
                 ++i;
             }
-            
-            /*Add highest pair to solution*/
         }
         /*Sort solutions*/
         /*solution = highest solution*/

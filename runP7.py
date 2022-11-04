@@ -10,8 +10,21 @@ from Lab.Benchmarks import get_suite, make_tasks
 
 args = set_arguments()
 
+with open("baseSettings.ini", 'r') as file:
+    lines_base = file.readlines()
+
 with open(args.settings, 'r') as file:
     lines = file.readlines()
+
+lines = lines_base + lines
+
+sanitizedLines = []
+for line in lines:
+    strpLine = line
+    if not strpLine.lstrip(" ").startswith(";"):
+        sanitizedLines.append(line)
+
+print(sanitizedLines)
 
 search = ""
 heuristic = ""
@@ -27,7 +40,7 @@ settingscontent = ""
 
 
 #Parse config file and remove lab specific settings
-for line in lines:
+for line in sanitizedLines:
     if "downwardsearch" in line:
         search = line.split("=")[1].strip("\n")
         settingscontent += line
@@ -49,7 +62,7 @@ for line in lines:
         settingscontent += argument[0] + "=" + abs_path(__file__, argument[1]) 
     elif "reformulator=" in line:
         reformulators = line.split("=")[1].strip("\n").split(",")
-    else:
+    elif "EXTERNAL" not in line:
         settingscontent += line
 
 #if not found in config file the default values are used
@@ -103,7 +116,6 @@ for reformulator in reformulators:
         run.set_property("domain", task.domain)
         run.set_property("problem", task.problem)
         run.set_property("algorithm", reformulator)
-    
 
 if path.exists(reportfolder):
     experiment.add_step("rm-exp-dir", shutil.rmtree, reportfolder)

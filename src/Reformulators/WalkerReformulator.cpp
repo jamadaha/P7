@@ -57,7 +57,7 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 			walkers.push_back(newWalker);
 
 			if (Configs->GetItem<bool>("debugmode"))
-				SetupWalkerDebugInfo(newWalker, timeLimit);
+				SetupWalkerDebugInfo(newWalker);
 		}
 	}
 
@@ -81,10 +81,9 @@ BaseHeuristic* WalkerReformulator::FindHeuristic(string name, PDDLInstance* inst
 		throw std::invalid_argument("Invalid heuristic specified in config");
 }
 
-void WalkerReformulator::SetupWalkerDebugInfo(BaseWalker* walker, int timeLimit) {
-	ProgressBarHelper* bar;
+void WalkerReformulator::SetupWalkerDebugInfo(BaseWalker* walker) {
 	walker->OnWalkerStart = [&](BaseWalker* sender) {
-		bar = new ProgressBarHelper(sender->widthFunc->max, "Walking", debugIndent + 1);
+		walkerBar = new ProgressBarHelper(sender->widthFunc->max, "Walking (" + sender->WalkerName + ")", debugIndent + 1);
 
 		if (Configs->GetItem<bool>("printwalkersteps")) {
 			std::string command = "truncate -s 0 walkerLog";
@@ -92,18 +91,17 @@ void WalkerReformulator::SetupWalkerDebugInfo(BaseWalker* walker, int timeLimit)
 		}
 	};
 	walker->OnWalkerStep = [&](BaseWalker* sender, int currentStep) {
-		bar->SetTo(currentStep);
+		walkerBar->SetTo(currentStep);
 	};
-	walker->OnWalkerEnd = [&](BaseWalker* sender) {
-		bar->End();
+	walker->OnWalkerEnd = [&](BaseWalker* sender, int timePassed) {
+		walkerBar->End();
 		unsigned int totalIterations = sender->GetTotalIterations();
 		unsigned int totalActionCount = sender->GetTotalActionsGenerated();
-		ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + to_string(timeLimit) + "ms", debugIndent);
-		double iterationsPrSecond = (totalIterations * 1000) / (timeLimit + 1);
+		ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + to_string(timePassed) + "ms", debugIndent);
+		double iterationsPrSecond = (totalIterations * 1000) / (timePassed + 1);
 		ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + to_string(totalIterations) + " [" + to_string(iterationsPrSecond) + "/s]", debugIndent);
-		double actionsPrSecond = (totalActionCount * 1000) / (timeLimit + 1);
+		double actionsPrSecond = (totalActionCount * 1000) / (timePassed + 1);
 		ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", debugIndent);
-		free(bar);
 	};
 	if (Configs->GetItem<bool>("printwalkersteps")) {
 		walker->OnTempStateMade = [&](PDDLInstance* instance, PDDLState* state) {

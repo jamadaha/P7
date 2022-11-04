@@ -38,12 +38,14 @@ namespace std {
 
 class BaseWalker {
 public:
+    std::string WalkerName;
+
     BaseHeuristic* heuristic;
     BaseDepthFunction* depthFunc;
     BaseWidthFunction* widthFunc;
 
-    BaseWalker(PDDLInstance* instance, ActionGenerator actionGenerator, BaseHeuristic* heuristic, BaseDepthFunction* depthFunc, BaseWidthFunction* widthFunc) :
-        instance(instance), actionGenerator(actionGenerator), heuristic(heuristic), depthFunc(depthFunc), widthFunc(widthFunc) {}
+    BaseWalker(std::string walkerName, PDDLInstance* instance, ActionGenerator actionGenerator, BaseHeuristic* heuristic, BaseDepthFunction* depthFunc, BaseWidthFunction* widthFunc) :
+        WalkerName(walkerName), instance(instance), actionGenerator(actionGenerator), heuristic(heuristic), depthFunc(depthFunc), widthFunc(widthFunc) {}
 
     virtual std::vector<Path> Walk() = 0;
     void Free() {
@@ -56,7 +58,7 @@ public:
 
     std::function<const void(BaseWalker* sender)> OnWalkerStart;
     std::function<const void(BaseWalker* sender, int currentStep)> OnWalkerStep;
-    std::function<const void(BaseWalker* sender)> OnWalkerEnd;
+    std::function<const void(BaseWalker* sender, int timeTaken)> OnWalkerEnd;
 
     std::function<const void(PDDLInstance* instance, PDDLState* state)> OnTempStateMade;
     std::function<const void(PDDLInstance* instance, PDDLState* state, PDDLActionInstance* chosenAction)> OnStateWalk;

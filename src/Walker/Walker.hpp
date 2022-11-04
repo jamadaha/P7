@@ -19,7 +19,7 @@
 class Walker : public BaseWalker {
 public:
     Walker(PDDLInstance* instance, ActionGenerator actionGenerator, BaseHeuristic* heuristic, BaseDepthFunction* depthFunc, BaseWidthFunction* widthFunc) 
-        : BaseWalker(instance, actionGenerator, heuristic, depthFunc, widthFunc) {}
+        : BaseWalker("Default", instance, actionGenerator, heuristic, depthFunc, widthFunc) {}
     std::vector<Path> Walk() override;
 private:
     Path Walk(BaseHeuristic* heuristic, BaseDepthFunction* depthFunction, const PDDLState* state);

@@ -36,6 +36,7 @@ std::vector<Path> Walker::Walk() {
     unsigned int current;
     if (OnWalkerStart != nullptr)
         OnWalkerStart(this);
+    auto startTime = std::chrono::steady_clock::now();
     while (widthFunc->Iterate(&current)) {
         Path path = Walk(heuristic, depthFunc, &this->instance->problem->initState);
         paths.push_back(path);
@@ -44,7 +45,8 @@ std::vector<Path> Walker::Walk() {
             OnWalkerStep(this, current);
         _totalIterations++;
     }
+    auto ellapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - startTime).count();
     if (OnWalkerEnd != nullptr)
-        OnWalkerEnd(this);
+        OnWalkerEnd(this, ellapsed);
     return paths;
 }

@@ -42,12 +42,13 @@ private:
 	MacroGenerator* macroGenerator;
 	std::vector<Path> paths;
 	std::vector<Macro> macros;
+	ProgressBarHelper* walkerBar;
 
 	void PrintEntanglerSteps(std::vector<EntanglementOccurance>* candidates, PDDLInstance* instance);
 	void PrintWalkerDebugData(double ellapsed);
 	void PrintEntanglerDebugData(double ellapsed, std::vector<EntanglementOccurance>* candidates);
 	BaseHeuristic* FindHeuristic(std::string name, PDDLInstance* instance);
-	void SetupWalkerDebugInfo(BaseWalker* walker, int timeLimit);
+	void SetupWalkerDebugInfo(BaseWalker* walker);
 };
 
 #endif

@@ -31,10 +31,6 @@ PDDLInstance WalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 		ConsoleHelper::PrintDebugInfo("[Macro Generator] Total generation time:         " + to_string(ellapsed) + "ms", debugIndent);
 	}
 
-	for (int i = 0; i < walkers.size(); i++) {
-		walkers.at(i)->Free();
-		free(walkers.at(i));
-	}
 	free(entanglementFinder);
 	free(entanglementEvaluator);
 	free(macroGenerator);
@@ -43,7 +39,7 @@ PDDLInstance WalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 }
 
 vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
-	walkers.clear();
+	std::vector<BaseWalker*> walkers;
 	auto walkerNames = Configs->GetItem<vector<string>>("walkers");
 	auto walkerHeuistics = Configs->GetItem<vector<string>>("walkersHeuristic");
 	auto walkersTimes = Configs->GetItem<vector<double>>("walkersTimeDistribution");
@@ -53,9 +49,8 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 			BaseDepthFunction* depthFunc = new ConstantDepthFunction(1000, instance, 1);
 			int timeLimit = TimeLimit * walkersTimes.at(i);
 			BaseWidthFunction* widthFunc = new TimeWidthFunction(timeLimit);
-			BaseWalker* newWalker = new Walker(instance, ActionGenerator(&instance->domain->actions, instance->problem->objects.size()), heuristic, depthFunc, widthFunc);
+			BaseWalker *newWalker = new Walker(instance, ActionGenerator(&instance->domain->actions, instance->problem->objects.size()), heuristic, depthFunc, widthFunc);
 			walkers.push_back(newWalker);
-
 			if (Configs->GetItem<bool>("debugmode"))
 				SetupWalkerDebugInfo(newWalker);
 		}
@@ -66,6 +61,9 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 		auto addPaths = walkers.at(i)->Walk();
 		paths.insert(paths.end(), addPaths.begin(), addPaths.end());
 	}
+	
+	for (auto w : walkers)
+		delete(w);
 
 	return paths;
 }

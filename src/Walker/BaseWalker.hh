@@ -46,13 +46,13 @@ public:
 
     BaseWalker(std::string walkerName, PDDLInstance* instance, ActionGenerator actionGenerator, BaseHeuristic* heuristic, BaseDepthFunction* depthFunc, BaseWidthFunction* widthFunc) :
         WalkerName(walkerName), instance(instance), actionGenerator(actionGenerator), heuristic(heuristic), depthFunc(depthFunc), widthFunc(widthFunc) {}
-
-    virtual std::vector<Path> Walk() = 0;
-    void Free() {
+    ~BaseWalker() {
         free(heuristic);
         free(depthFunc);
         free(widthFunc);
     }
+
+    virtual std::vector<Path> Walk() = 0;
     unsigned int GetTotalActionsGenerated() { return actionGenerator.GetTotalActionsGenerated(); };
     unsigned int GetTotalIterations() { return _totalIterations; };
 

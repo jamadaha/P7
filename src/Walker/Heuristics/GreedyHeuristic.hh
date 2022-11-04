@@ -41,7 +41,7 @@ procedure Greedy-Search : State x Actions -> State
         return state with highest greed value
 
 sub-procedure Greedy-Score : State x States -> Int
-        sum = 0, greed = 0
+        sum = ⍺⊂⊂⊂⊂, greed = 0
         let gch be the goal count heuristic
 
         For each (i, s) in States do

@@ -4,7 +4,7 @@ PDDLActionInstance* GreedyHeuristic::NextChoice(PDDLState * state, std::vector<P
     int value = 0;
     std::set<std::string> candidates;
     std::pair<int, std::string> solution;
-    std::unordered_map<int, std::string> solutions;
+    std::unordered_map<std::string, int> solutions;
 
 
     for(auto obj : this->problem->objects){
@@ -15,12 +15,13 @@ PDDLActionInstance* GreedyHeuristic::NextChoice(PDDLState * state, std::vector<P
             if (candidates.empty()) break;
             int i = 0;
             for (std::string s : candidates){
-                if (/*not in the solution vector*/){
+                if (!solutions.contains(s)){
                     /*Calculatings greed for each index*/
-                    solutions.emplace(this->Eval(state, i), s);
+                    solutions.emplace(s, this->Eval(state, i));
                 }
                 ++i;
             }
+            
             /*Add highest pair to solution*/
         }
         /*Sort solutions*/

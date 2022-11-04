@@ -49,61 +49,15 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 	auto walkersTimes = Configs->GetItem<vector<double>>("walkersTimeDistribution");
 	for (int i = 0; i < walkerNames.size(); i++) {
 		if (walkerNames.at(i) == "walker") {
-			BaseHeuristic* heuristic;
-			if (walkerHeuistics.at(i) == "random")
-				heuristic = new RandomHeuristic(Configs->GetItem<bool>("debugmode"));
-			else if (walkerHeuistics.at(i) == "goalCount")
-				heuristic = new GoalCountHeuristic(instance->domain, instance->problem);
-			else if (walkerHeuistics.at(i) == "goalPredicateCount")
-				heuristic = new GoalPredicateCountHeuristic(instance->domain, instance->problem);
-			else
-				throw std::invalid_argument("Invalid heuristic specified in config");
-
-			BaseDepthFunction* depthFunc = new ConstantDepthFunction(1000, *instance, 1);
+			BaseHeuristic* heuristic = FindHeuristic(walkerHeuistics.at(i), instance);
+			BaseDepthFunction* depthFunc = new ConstantDepthFunction(1000, instance, 1);
 			int timeLimit = TimeLimit * walkersTimes.at(i);
 			BaseWidthFunction* widthFunc = new TimeWidthFunction(timeLimit);
 			BaseWalker* newWalker = new Walker(instance, ActionGenerator(&instance->domain->actions, instance->problem->objects.size()), heuristic, depthFunc, widthFunc);
 			walkers.push_back(newWalker);
 
-			if (Configs->GetItem<bool>("debugmode")) {
-				ProgressBarHelper* bar;
-				newWalker->OnWalkerStart = [&](BaseWalker* sender) {
-					bar = new ProgressBarHelper(sender->widthFunc->max, "Walking", debugIndent + 1);
-
-					if (Configs->GetItem<bool>("printwalkersteps")) {
-						std::string command = "truncate -s 0 walkerLog";
-						system(command.c_str());
-					}
-				};
-				newWalker->OnWalkerStep = [&](BaseWalker* sender, int currentStep) {
-					bar->SetTo(currentStep);
-				};
-				newWalker->OnWalkerEnd = [&](BaseWalker* sender) {
-					bar->End();
-					unsigned int totalIterations = sender->GetTotalIterations();
-					unsigned int totalActionCount = sender->GetTotalActionsGenerated();
-					ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + to_string(timeLimit) + "ms", debugIndent);
-					double iterationsPrSecond = (totalIterations * 1000) / (timeLimit + 1);
-					ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + to_string(totalIterations) + " [" + to_string(iterationsPrSecond) + "/s]", debugIndent);
-					double actionsPrSecond = (totalActionCount * 1000) / (timeLimit + 1);
-					ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", debugIndent);
-					free(bar);
-				};
-				if (Configs->GetItem<bool>("printwalkersteps")) {
-					newWalker->OnTempStateMade = [&](PDDLInstance* instance, PDDLState* state) {
-						std::string command = "echo '" + state->ToString(instance) + "'" + " >> walkerLog";
-						system(command.c_str());
-
-					};
-					newWalker->OnStateWalk = [&](PDDLInstance* instance, PDDLState* state, PDDLActionInstance* chosenAction) {
-						std::string stateinfo = state->ToString(instance);
-						std::string actioninfo = chosenAction->ToString(instance);
-						std::string content = "echo '" + actioninfo + "\n" + stateinfo + "'" + " >> walkerLog";
-
-						system(content.c_str());
-					};
-				}
-			}
+			if (Configs->GetItem<bool>("debugmode"))
+				SetupWalkerDebugInfo(newWalker, timeLimit);
 		}
 	}
 
@@ -114,6 +68,57 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 	}
 
 	return paths;
+}
+
+BaseHeuristic* WalkerReformulator::FindHeuristic(string name, PDDLInstance* instance) {
+	if (name == "random")
+		return new RandomHeuristic(Configs->GetItem<bool>("debugmode"));
+	else if (name == "goalCount")
+		return new GoalCountHeuristic(instance->domain, instance->problem);
+	else if (name == "goalPredicateCount")
+		return new GoalPredicateCountHeuristic(instance->domain, instance->problem);
+	else
+		throw std::invalid_argument("Invalid heuristic specified in config");
+}
+
+void WalkerReformulator::SetupWalkerDebugInfo(BaseWalker* walker, int timeLimit) {
+	ProgressBarHelper* bar;
+	walker->OnWalkerStart = [&](BaseWalker* sender) {
+		bar = new ProgressBarHelper(sender->widthFunc->max, "Walking", debugIndent + 1);
+
+		if (Configs->GetItem<bool>("printwalkersteps")) {
+			std::string command = "truncate -s 0 walkerLog";
+			system(command.c_str());
+		}
+	};
+	walker->OnWalkerStep = [&](BaseWalker* sender, int currentStep) {
+		bar->SetTo(currentStep);
+	};
+	walker->OnWalkerEnd = [&](BaseWalker* sender) {
+		bar->End();
+		unsigned int totalIterations = sender->GetTotalIterations();
+		unsigned int totalActionCount = sender->GetTotalActionsGenerated();
+		ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + to_string(timeLimit) + "ms", debugIndent);
+		double iterationsPrSecond = (totalIterations * 1000) / (timeLimit + 1);
+		ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + to_string(totalIterations) + " [" + to_string(iterationsPrSecond) + "/s]", debugIndent);
+		double actionsPrSecond = (totalActionCount * 1000) / (timeLimit + 1);
+		ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", debugIndent);
+		free(bar);
+	};
+	if (Configs->GetItem<bool>("printwalkersteps")) {
+		walker->OnTempStateMade = [&](PDDLInstance* instance, PDDLState* state) {
+			std::string command = "echo '" + state->ToString(instance) + "'" + " >> walkerLog";
+			system(command.c_str());
+
+		};
+		walker->OnStateWalk = [&](PDDLInstance* instance, PDDLState* state, PDDLActionInstance* chosenAction) {
+			std::string stateinfo = state->ToString(instance);
+			std::string actioninfo = chosenAction->ToString(instance);
+			std::string content = "echo '" + actioninfo + "\n" + stateinfo + "'" + " >> walkerLog";
+
+			system(content.c_str());
+		};
+	}
 }
 
 vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>* paths, PDDLInstance* instance) {

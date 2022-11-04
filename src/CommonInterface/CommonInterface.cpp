@@ -60,20 +60,22 @@ InterfaceStep<PDDLInstance*> CommonInterface::ConvertPDDLFormat(PDDLDriver* driv
 }
 
 InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulator, PDDLInstance* instance) {
-	int timeLeft = config.GetItem<int>("totalTimeLimit");
-	int currentIncrementTimeLimit = config.GetItem<int>("startIncrement");
+	int timeLeft = config.GetItem<int>("totalTimeLimit") * 1000;
+	int currentIncrementTimeLimit = config.GetItem<int>("startIncrement") * 1000;
 
 	int iterativeProcess = Report->Begin("Reformulating Iteratively");
 
 	DownwardRunner::DownwardRunnerResult runRes;
 	int counter = 1;
 	while (timeLeft > 0) {
+		int reformulatorTimeLimit = (currentIncrementTimeLimit * 2) * config.GetItem<double>("timelimitSplit");
+		int downwardTimeLimit = (currentIncrementTimeLimit * 2) - reformulatorTimeLimit;
+
 		int iterationID = Report->Begin("Iteration " + to_string(counter), iterativeProcess);
-		ConsoleHelper::PrintInfo("Iteration " + to_string(counter) + "(" + to_string(currentIncrementTimeLimit) + "s)");
+		ConsoleHelper::PrintInfo("Iteration " + to_string(counter) + "(reformulator: " + to_string(reformulatorTimeLimit) + "ms, downward: " + to_string(downwardTimeLimit) + "ms)");
 
 		// Run an iteration of our reformulation method
-		reformulator->TimeLimit = currentIncrementTimeLimit;
-		auto result = RunSingle(reformulator, instance, iterationID, currentIncrementTimeLimit);
+		auto result = RunSingle(reformulator, instance, iterationID, reformulatorTimeLimit, downwardTimeLimit);
 		if (result.RanWithoutErrors) {
 			// If we found a solution, stop iterating
 			runRes = result.Data;
@@ -99,18 +101,19 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 
 InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, PDDLInstance* instance) {
 	int iterativeProcess = Report->Begin("Reformulating Directly");
-	int timeLimit = config.GetItem<int>("totalTimeLimit");
+	int timeLimit = config.GetItem<int>("totalTimeLimit") * 1000;
 
-	if (RunSingle(reformulator, instance, iterativeProcess, timeLimit).RanWithoutErrors)
+	if (RunSingle(reformulator, instance, iterativeProcess, 0, timeLimit).RanWithoutErrors)
 		return InterfaceStep<void>();
 	else
 		return InterfaceStep<void>(false);
 }
 
-InterfaceStep<DownwardRunner::DownwardRunnerResult> CommonInterface::RunSingle(BaseReformulator* reformulator, PDDLInstance* instance, int reportID, int timeLimit) {
+InterfaceStep<DownwardRunner::DownwardRunnerResult> CommonInterface::RunSingle(BaseReformulator* reformulator, PDDLInstance* instance, int reportID, int reformulatorTimeLimit, int downwardTimeLimit) {
 	ConsoleHelper::PrintInfo("Reformulating PDDL...", 1);
 	int reformulationID = Report->Begin("Reformulation of PDDL", reportID);
 	reformulator->ReportID = reformulationID;
+	reformulator->TimeLimit = reformulatorTimeLimit;
 	PDDLInstance reformulatedInstance = reformulator->ReformulatePDDL(instance);
 	Report->Stop();
 	Report->Stop(reformulationID);
@@ -126,7 +129,7 @@ InterfaceStep<DownwardRunner::DownwardRunnerResult> CommonInterface::RunSingle(B
 	ConsoleHelper::PrintInfo("Run new PDDL files with Fast Downward...", 1);
 	Report->Begin("Running FastDownward", reportID);
 	DownwardRunner runner = DownwardRunner();
-	runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, timeLimit);
+	runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, downwardTimeLimit);
 	auto runRes = runner.ParseDownwardLog();
 	Report->Stop();
 	Report->Stop(reportID);

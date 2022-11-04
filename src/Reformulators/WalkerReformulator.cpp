@@ -51,7 +51,7 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 	else
 		throw std::invalid_argument("Invalid heuristic specified in config");
 	BaseDepthFunction *depthFunc = new ConstantDepthFunction(1000, *instance, 1);
-	BaseWidthFunction *widthFunc = new TimeWidthFunction(TimeLimit * 1000);
+	BaseWidthFunction *widthFunc = new TimeWidthFunction(TimeLimit);
 
 	if (Configs->GetItem<bool>("debugmode")) {
 		ProgressBarHelper* bar;

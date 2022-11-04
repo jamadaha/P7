@@ -62,7 +62,7 @@ public:
 		return &choices->at(bestIndex);
 	}
 
-	int Eval(const PDDLState *state) const override {
+	int Eval(const PDDLState *state) const {
 		int value = 0;
 		for (auto iter = problem->goalState.unaryFacts.begin(); iter != problem->goalState.unaryFacts.end(); iter++)
 			for (auto factIter = (*iter).second.begin(); factIter != (*iter).second.end(); factIter++)

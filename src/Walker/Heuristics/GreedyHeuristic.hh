@@ -8,7 +8,7 @@ class GreedyHeuristic : public BaseHeuristic {
 public:
 	GreedyHeuristic(const PDDLDomain *domain, const PDDLProblem *problem) : BaseHeuristic(domain, problem){};
 
-	PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const override;
+	PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const;
 private:
     int Eval(const PDDLState *state, int i) const; /*std::unordered_map<int, std::string> solutions*/
 };

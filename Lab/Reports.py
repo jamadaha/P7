@@ -45,12 +45,15 @@ def add_parsers(experiment):
     ANYTIME_SEARCH_PARSER = os.path.join(os.path.dirname(os.path.abspath(__file__)),"AnytimeSearchParser.py")
     P7_LAB_PARSER = os.path.join(os.path.dirname(os.path.abspath(__file__)),"P7LabParser.py")
 
+    #reads from the downwardLog file
+    experiment.add_parser(P7_LAB_PARSER)
+    experiment.add_parser(TRANSLATOR_PARSER)
+    experiment.add_parser(ANYTIME_SEARCH_PARSER)
+    experiment.add_parser(SINGLE_SEARCH_PARSER)
+
     #reads from the driver.log file
     experiment.add_parser(EXITCODE_PARSER)
     experiment.add_parser(PLANNER_PARSER)
 
-    #reads from the downwardLog file
-    experiment.add_parser(TRANSLATOR_PARSER)
-    experiment.add_parser(SINGLE_SEARCH_PARSER)
-    experiment.add_parser(ANYTIME_SEARCH_PARSER)
-    experiment.add_parser(P7_LAB_PARSER)
+    
+    

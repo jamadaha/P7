@@ -88,7 +88,6 @@ planner_memory_limit missing -> can't compute planner memory score
 """
 
 import re
-from urllib.request import ProxyBasicAuthHandler
 from lab.parser import Parser
 
 def get_times(content, props):

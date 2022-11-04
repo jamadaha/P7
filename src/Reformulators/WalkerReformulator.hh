@@ -6,6 +6,7 @@
 #include <unordered_set>
 
 #include "BaseReformulator.hh"
+#include "../Walker/BaseWalker.hh"
 #include "../Walker/Walker.hpp"
 #include "../Walker/Heuristics/RandomHeuristic.hh"
 #include "../Walker/Heuristics/GoalCountHeuristic.hh"
@@ -35,7 +36,7 @@ private:
 	std::vector<EntanglementOccurance> FindEntanglements(std::vector<Path>* paths, PDDLInstance* instance);
 	PDDLInstance GenerateMacros(std::vector<EntanglementOccurance>* candidates, PDDLInstance* instance);
 
-	Walker* walker;
+	std::vector<BaseWalker*> walkers;
 	EntanglementFinder* entanglementFinder;
 	EntanglementEvaluator* entanglementEvaluator;
 	MacroGenerator* macroGenerator;

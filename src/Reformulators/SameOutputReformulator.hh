@@ -7,11 +7,11 @@
 
 class SameOutputReformulator : public BaseReformulator {
 public:
-	SameOutputReformulator(Config *config) : BaseReformulator(config) {
+	SameOutputReformulator(Config *config, RunReport* report) : BaseReformulator(config, report) {
 
 	}
 	PDDLInstance ReformulatePDDL(PDDLInstance* instance) override;
-	SASPlan RebuildSASPlan(SASPlan* reformulatedSAS) override;
+	SASPlan RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) override;
 };
 
 #endif

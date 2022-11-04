@@ -11,7 +11,10 @@ TEST_CASE(TAG + "DoAction Unary") {
             {0, std::unordered_set<unsigned int>{ }},
             {1, std::unordered_set<unsigned int>{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }}
         },
-        std::unordered_map<unsigned int, std::vector<MultiFact>> {
+        std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> {
+
+        },
+        std::unordered_map<unsigned int, std::unordered_set<MultiFact>> {
 
         }
     );
@@ -80,11 +83,14 @@ TEST_CASE(TAG + "DoAction Multi") {
         std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{
             
         },
-        std::unordered_map<unsigned int, std::vector<MultiFact>> {
-            {0, std::vector<MultiFact>{ MultiFact(std::vector<unsigned int>{ 0, 1 }), MultiFact(std::vector<unsigned int>{ 1, 2 }), MultiFact(std::vector<unsigned int>{ 0, 0 })}},
-            {1, std::vector<MultiFact>{ MultiFact(std::vector<unsigned int>{ 0, 1 }), MultiFact(std::vector<unsigned int>{ 1, 2 }), MultiFact(std::vector<unsigned int>{ 0, 0 })}},
-            {2, std::vector<MultiFact>{ MultiFact(std::vector<unsigned int>{ 0, 1, 2 }), MultiFact(std::vector<unsigned int>{ 1, 1, 0 })}},
-            {3, std::vector<MultiFact>{}}
+        std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> {
+
+        },
+        std::unordered_map<unsigned int, std::unordered_set<MultiFact>> {
+            {0, std::unordered_set<MultiFact>{ MultiFact(std::vector<unsigned int>{ 0, 1 }), MultiFact(std::vector<unsigned int>{ 1, 2 }), MultiFact(std::vector<unsigned int>{ 0, 0 })}},
+            {1, std::unordered_set<MultiFact>{ MultiFact(std::vector<unsigned int>{ 0, 1 }), MultiFact(std::vector<unsigned int>{ 1, 2 }), MultiFact(std::vector<unsigned int>{ 0, 0 })}},
+            {2, std::unordered_set<MultiFact>{ MultiFact(std::vector<unsigned int>{ 0, 1, 2 }), MultiFact(std::vector<unsigned int>{ 1, 1, 0 })}},
+            {3, std::unordered_set<MultiFact>{}}
         }
     );
 

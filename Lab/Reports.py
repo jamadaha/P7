@@ -32,24 +32,8 @@ def add_reports(experiment):
 
     ATTRIBUTES = ERROR_ATTRIBUTES + PREDEFINED_ATTRIBUTES
     experiment.add_report(AbsoluteReport(attributes=ATTRIBUTES), outfile="report.html")
-
-    EXTRA = ["parsing_pddl", 
-                  "converison_of_pddl_format", 
-                  "reformulation_of_pddl", 
-                  "generating_pddl",
-                  "running_fastdownward",
-                  "parse_sas_plan",
-                  "rebuild_sas_plan",
-                  "output_sas_plan"]
-
-    MS = [x+"_ms" for x in EXTRA]
-    add_taskwisereport(experiment, "report_ms.html", MS)
-    
-    PROCENT = [x+"_procent" for x in EXTRA]
-    add_taskwisereport(experiment, "report_procent.html", PROCENT)
-
-def add_taskwisereport(experiment, name, attributes):
-    experiment.add_report(TaskwiseReport(attributes=attributes), outfile=name)
+    experiment.add_report(TaskwiseReport(attributes=["*_ms"]), outfile="report_ms.html")
+    experiment.add_report(TaskwiseReport(attributes=["*_procent"]), outfile="report_procent.html")
 
 def add_parsers(experiment):
     EXITCODE_PARSER = os.path.join(os.path.dirname(os.path.abspath(__file__)),"ExitcodeParser.py")

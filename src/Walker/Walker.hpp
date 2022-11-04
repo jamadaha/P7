@@ -10,8 +10,6 @@
 #include "DepthFunctions/ObjectActionDepthFunction.hh"
 #include "WidthFunctions/BaseWidthFunction.hh"
 #include "ActionGenerator.hpp"
-#include "../RunReport/RunReport.hh"
-#include "../Helpers/ProgressBarHelper.hh"
 
 #include "../Config/Config.hh"
 #include "../Helpers/Hashes.hh"
@@ -40,15 +38,22 @@ namespace std {
 
 class Walker {
 public:
-    Walker(PDDLInstance* instance, ActionGenerator actionGenerator, Config *config) : 
-    instance(instance), actionGenerator(actionGenerator), config(config) {}
+    Walker(PDDLInstance* instance, ActionGenerator actionGenerator) : 
+    instance(instance), actionGenerator(actionGenerator) {}
     Path Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunction, const PDDLState *state);
     std::vector<Path> Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc);
     unsigned int GetTotalActionsGenerated() { return actionGenerator.GetTotalActionsGenerated(); };
+
+    std::function<const void()> OnWalkerStart;
+    std::function<const void(int currentStep)> OnWalkerStep;
+    std::function<const void()> OnWalkerEnd;
+
+    std::function<const void(PDDLInstance* instance, PDDLState* state)> OnTempStateMade;
+    std::function<const void(PDDLInstance* instance, PDDLState* state, PDDLActionInstance* chosenAction)> OnStateWalk;
+
 private:
     PDDLInstance* instance;
     ActionGenerator actionGenerator;
-    Config *config;
 };
 
 #endif

@@ -112,8 +112,11 @@ struct PDDLState {
 namespace std {
     template <>
     struct hash<PDDLState> {
-        auto operator()(const PDDLState& s) const -> size_t {
+        auto operator()(const PDDLState& s) const -> size_t {   
             size_t h1 = s.unaryFacts.size();
+            for (auto map : s.unaryFacts) {
+                h1 = hash<unordered_set<unsigned int>>{}(map.second) + 0x9e3779b9 + (h1 << 6) + (h1 >> 2);
+            }
             size_t h2 = s.binaryFacts.size();
             size_t h3 = s.multiFacts.size();
             return (h1 ^ (h2 << 1)) ^ (h3 << 1);

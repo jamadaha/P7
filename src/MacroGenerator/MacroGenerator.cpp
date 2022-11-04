@@ -75,6 +75,7 @@ std::unordered_map<GroundedLiteral, bool> priorEffs) {
         // Assumes that the precondition and effect cannot have different values
         if (priorEffs.contains(iter.first)) continue;
         if (preconditions.contains(iter.first)) continue; // maybe
+        if (iter.first.predicate == 0) continue;
         preconditions.emplace(iter.first, iter.second);
     }
 

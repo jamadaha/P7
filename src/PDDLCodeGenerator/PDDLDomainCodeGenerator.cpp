@@ -60,19 +60,11 @@ string PDDLDomainCodeGenerator::GetAction(PDDLAction action) {
 	}
 	retStr += "\n";
 	retStr += GetTabs(2) + ")\n";
-	retStr += GetTabs(2) + ":precondition (";
-	if (action.preconditions.size() > 1)
-		retStr += "and\n";
-	else
-		retStr += "\n";
+	retStr += GetTabs(2) + ":precondition (and\n";
 	for (auto i : action.preconditions)
 		retStr += GetTabs(3) + GetLiteral(action, i) + "\n";
 	retStr += GetTabs(2) + ")\n";
-	retStr += GetTabs(2) + ":effect (";
-	if (action.effects.size() > 1)
-		retStr += "and\n";
-	else
-		retStr += "\n";
+	retStr += GetTabs(2) + ":effect (and\n";
 	for (auto i : action.effects)
 		retStr += GetTabs(3) + GetLiteral(action, i) + "\n";
 	retStr += GetTabs(2) + ")\n";

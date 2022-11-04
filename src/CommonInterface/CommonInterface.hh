@@ -19,21 +19,48 @@
 #include "../IntermediatePDDL/PDDLConverter.hh"
 #include "../Helpers/ConsoleHelper.hh"
 
+template <class T>
+struct InterfaceStep {
+	bool RanWithoutErrors;
+	T Data;
+
+	InterfaceStep(T data, bool ranWithoutErrors = true) : Data(data), RanWithoutErrors(ranWithoutErrors) {};
+};
+template <>
+struct InterfaceStep<void> {
+	bool RanWithoutErrors;
+
+	InterfaceStep(bool ranWithoutErrors = true) : RanWithoutErrors(ranWithoutErrors) {};
+};
+
 class CommonInterface {
 public:
 	enum RunResult { None, RanWithoutErrors, ErrorsEncountered };
-	CommonInterface(Config config, std::string tempDomainName = "tempDomain.pddl", std::string tempProblemName = "tempProblem.pddl", std::string fastDownwardSASName = "sas_plan", std::string outputSASName = "real_sas_plan") :
-	config(config), TempDomainName(tempDomainName), TempProblemName(tempProblemName), FastDownwardSASName(fastDownwardSASName), OutputSASName(outputSASName){};
+	CommonInterface(Config config, RunReport* report, std::string tempDomainName = "tempDomain.pddl", std::string tempProblemName = "tempProblem.pddl", std::string fastDownwardSASName = "sas_plan", std::string outputSASName = "real_sas_plan") :
+	config(config), Report(report), TempDomainName(tempDomainName), TempProblemName(tempProblemName), FastDownwardSASName(fastDownwardSASName), OutputSASName(outputSASName) {};
 
-	enum RunResult Run(RunReport* report, int reformulatorIndex = 0);
+	enum RunResult Run(int reformulatorIndex = 0);
 
 private:
+	InterfaceStep<BaseReformulator*> GetReformulator(int reformulatorIndex = 0);
+	InterfaceStep<void> CheckFilePaths();
+	InterfaceStep<PDDLDriver*> ParsePDDLFiles();
+	InterfaceStep<PDDLInstance*> ConvertPDDLFormat(PDDLDriver* driver);
+	InterfaceStep<void> RunIteratively(BaseReformulator* reformulator, PDDLInstance* instance);
+	InterfaceStep<void> RunDirect(BaseReformulator* reformulator, PDDLInstance* instance);
+	InterfaceStep<DownwardRunner::DownwardRunnerResult> RunSingle(BaseReformulator* reformulator, PDDLInstance* instance, int reportID, int timeLimit);
+	InterfaceStep<void> ValidatePlans(std::string domainFile, std::string problemFile, std::string sasFile);
+	InterfaceStep<SASPlan> ParseSASPlan();
+	InterfaceStep<SASPlan> RebuildSASPlan(SASPlan* reformulatedSASPlan, BaseReformulator* reformulator, PDDLInstance* instance);
+	InterfaceStep<void> GenerateNewSASPlan(SASPlan outputPlan);
+
+	RunReport* Report;
 	Config config;
 	std::string TempDomainName;
 	std::string TempProblemName;
 	std::string FastDownwardSASName;
 	std::string OutputSASName;
-	
+	bool isDirect = false;
 };
 
 #endif

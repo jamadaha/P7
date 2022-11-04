@@ -43,7 +43,7 @@ PDDLInstance InstanceGenerator::GenerateInstance(const PDDLDomain *domain, const
 
 
     PDDLProblem *newProblem = new PDDLProblem(problem->name, 
-    newDomain, problem->objects, problem->objectMap, PDDLState(unaryFacts, problem->initState.multiFacts), problem->goalState);
+    newDomain, problem->objects, problem->objectMap, PDDLState(unaryFacts, problem->initState.binaryFacts, problem->initState.multiFacts), problem->goalState);
 
     return PDDLInstance(newDomain, newProblem);
 }

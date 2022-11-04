@@ -13,6 +13,11 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *sta
     return legalActions;
 }
 
+bool Comp(pair<unsigned int, unsigned int> a, pair<unsigned int, unsigned int> b)
+{
+    return a < b;
+}
+
 vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *action, const PDDLState *state) const {
     vector<PDDLActionInstance> legalActions;
 
@@ -22,28 +27,52 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *ac
     if (!GetCandidateObjects(candidateObjects, action, state))
         return legalActions;
     
+    unordered_map<pair<unsigned int, unsigned int>, unordered_set<pair<unsigned int, unsigned int>>> candidatePairs;
+    for (int i = 0; i < action->preconditions.size(); i++) {
+        auto precondition = &action->preconditions.at(i);
+        if (precondition->args.size() != 2)
+            continue;
+        
+        auto indexPair = make_pair(precondition->args.at(0), precondition->args.at(1));
 
-    vector<unordered_set<unsigned int>::iterator> iteration;
-    const int candidateObjectsLength = candidateObjects.size();
-    iteration.reserve(candidateObjectsLength);
-    for (int i = 0; i < candidateObjectsLength; i++)
-        iteration.push_back(candidateObjects[i].begin());
+        auto pairs = unordered_set<pair<unsigned int, unsigned int>>();
+        auto indexFirsts = unordered_set<unsigned int>();
+        auto indexSecond = unordered_set<unsigned int>();
+        for (auto iter = candidateObjects.at(indexPair.first).begin(); iter != candidateObjects.at(indexPair.first).end(); iter++) {
+            for (auto iter2 = candidateObjects.at(indexPair.second).begin(); iter2 != candidateObjects.at(indexPair.second).end(); iter2++) {
+                auto pair = make_pair(*iter, *iter2);
+                if (state->ContainsFact(precondition->predicateIndex, pair) == precondition->value) {
+                    pairs.emplace(pair);
+                    indexFirsts.emplace(pair.first);
+                    indexSecond.emplace(pair.second);
+                }
+            }
+        }
+        if (pairs.size() == 0)
+            return legalActions;
 
-    // Iterate over each pairing of candidate objects
-    // Then remove those that do not match non-unary preconditions
-    // Those that match all are added as a legal action
-    const int iterationSize = iteration.size();
-    do {
-        vector<unsigned int> objects;
-        objects.reserve(action->parameters.size());
+        if (!candidatePairs.contains(indexPair)) {
+            candidatePairs[indexPair] = pairs;
+            // Remove those from candidate objects which are not in any pairs
+            Intersect(candidateObjects.at(indexPair.first), indexFirsts);
+            Intersect(candidateObjects.at(indexPair.second), indexSecond);
+        } else {
+            // This happens if two preconditions have the same index pair, i.e. pre1: ?x, ?y & pre2: ?x, ?y
+            // In this case the legal pairs is the intersection between the two
+            Intersect(candidatePairs.at(indexPair), pairs);
+        }
+    }
 
-        for (int i = 0; i < iterationSize; i++)
-            objects.push_back((*iteration[i]));
-
-        if (IsLegal(&action->preconditions, state, &objects))
-            legalActions.push_back(PDDLActionInstance(action, objects));
-
-    } while (Iterate(&iteration, &candidateObjects));
+    std::vector<std::vector<unsigned int>> candidatePermutations;
+    if (candidateObjects.size() == 1) {
+        for (auto iter = candidateObjects.at(0).begin(); iter != candidateObjects.at(0).end(); iter++)
+            candidatePermutations.push_back({ *iter });
+    } else
+        candidatePermutations = PermuteAll(candidateObjects, candidatePairs);
+        
+    for (int i = 0; i < candidatePermutations.size(); i++)
+        if (IsLegal(&action->preconditions, state, &candidatePermutations.at(i)))
+            legalActions.push_back(PDDLActionInstance(action, candidatePermutations.at(i)));
  
     return legalActions;
 }
@@ -105,11 +134,56 @@ void ActionGenerator::RemoveIllegal(std::unordered_set<unsigned int> &set, const
     std::erase_if(set, NewObjectNegContains);
 }
 
+void ActionGenerator::Intersect(std::unordered_set<unsigned int> &a, const std::unordered_set<unsigned int> &b) {
+    const auto Contains = [&](auto const& x) { return !b.contains(x);};
+    std::erase_if(a, Contains);
+}
+void ActionGenerator::Intersect(std::unordered_set<std::pair<unsigned int, unsigned int>> &a, const std::unordered_set<std::pair<unsigned int, unsigned int>> &b) {
+    const auto Contains = [&](auto const& x) { return !b.contains(x);};
+    std::erase_if(a, Contains);
+}
+
+std::vector<std::vector<unsigned int>> ActionGenerator::PermuteAll(std::vector<std::unordered_set<unsigned int>> candidateObjects, std::unordered_map<std::pair<unsigned int, unsigned int>, std::unordered_set<std::pair<unsigned int, unsigned int>>> candidatePairs) {
+    vector<vector<unsigned int>> permutations;
+    vector<unsigned int> permutation;
+    permutation.reserve(candidateObjects.size());
+    for (auto iter = candidateObjects.at(0).begin(); iter != candidateObjects.at(0).end(); iter++) {
+        permutation.push_back(*iter);
+        Permute(candidateObjects, candidatePairs, &permutations, &permutation);
+        permutation.pop_back();
+    }
+    return permutations;
+}
+
+void ActionGenerator::Permute(std::vector<std::unordered_set<unsigned int>> &candidateObjects, std::unordered_map<std::pair<unsigned int, unsigned int>, std::unordered_set<std::pair<unsigned int, unsigned int>>> &candidatePairs, std::vector<std::vector<unsigned int>> *permutations, std::vector<unsigned int> *permutation) {
+    for (auto iter = candidateObjects.at(permutation->size()).begin(); iter != candidateObjects.at(permutation->size()).end(); iter++) {
+        permutation->push_back(*iter);
+        bool validPerm = true;
+
+        for (int i = 0; i < permutation->size(); i++) {
+            auto pair = make_pair(i, permutation->size() - 1);
+            if (candidatePairs.contains(pair) && (!candidatePairs.at(pair).contains(make_pair(permutation->at(pair.first), permutation->at(pair.second))))) {
+                validPerm = false;
+                break;
+            }
+        }
+
+        if (validPerm) {
+            if (permutation->size() == candidateObjects.size()) {
+                permutations->push_back(*permutation);
+            } else {
+                Permute(candidateObjects, candidatePairs, permutations, permutation);
+            }
+        }
+        permutation->pop_back();
+    }
+}
+
 bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLState *state, const vector<unsigned int> *objects) {
     const int literalsLength = literals->size();
     for (int i = 0; i < literalsLength; i++) {
         const PDDLLiteral *literal = &(literals->at(i));
-        if (literal->args.size() == 1)
+        if (literal->args.size() < 3)
             continue;
         if (!IsLegal(literal, state, objects))
             return false;
@@ -118,32 +192,5 @@ bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLSta
 }
 
 bool ActionGenerator::IsLegal(const PDDLLiteral *literal, const PDDLState *state, const std::vector<unsigned int> *objects) {
-    if (objects->size() == 0)
-        return false;
-    if (literal->predicateIndex == 0) {
-        if ((objects->at(literal->args.at(0)) == objects->at(literal->args.at(1))) != literal->value)
-            return false;
-        else
-            return true;
-    } else {
-        if (state->ContainsFact(literal->predicateIndex, &literal->args, objects) != literal->value)
-            return false;
-        else
-            return true;
-    }
-}
-
-bool ActionGenerator::Iterate(vector<unordered_set<unsigned int>::iterator> *iteration, vector<unordered_set<unsigned int>> *candidateObjects) {
-    int incrementIndex = -1;
-    for (int i = 0; i < iteration->size(); i++) {
-        auto next = std::next((*iteration)[i], 1);
-        if (next != (*candidateObjects)[i].end()) {
-            (*iteration)[i]++;
-            incrementIndex = i;
-            break;
-        }
-    }
-    for (int i = 0; i < incrementIndex; i++)
-        (*iteration)[i] = (*candidateObjects)[i].begin();
-    return (incrementIndex != -1);
+    return (state->ContainsFact(literal->predicateIndex, &literal->args, objects) == literal->value);
 }

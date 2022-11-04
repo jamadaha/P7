@@ -3,13 +3,14 @@
 
 #include <string>
 #include <fstream>
+#include <limits>
 
 #include "../Config/Config.hh"
 
 class DownwardRunner {
 public:
     enum DownwardRunnerResult { None, FoundPlan, DidNotFindPlan };
-    void RunDownward(Config config, std::string reformulatedDomain, std::string reformulatedProblem);
+    void RunDownward(Config config, std::string reformulatedDomain, std::string reformulatedProblem, int timeLimitMs);
     DownwardRunnerResult ParseDownwardLog();
 
     std::string RunnerLogName = "downwardLog";

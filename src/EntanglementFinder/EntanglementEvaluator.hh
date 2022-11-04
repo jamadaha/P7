@@ -15,14 +15,8 @@
 class EntanglementEvaluator {
 public:
 	struct RunData {
-		/// <summary>
-		/// What bottom percentage of candidates to cut away from the candidates
-		/// </summary>
-		double MinimumOccurancePercent = 5;
-		/// <summary>
-		/// What bottom percentage of candidates to cut away from the candidates
-		/// </summary>
-		double MinimumCrossOccurancePercent = 5;
+		double MinimumQualityPercent = 0;
+		int MaxCandidates = 1;
 	};
 
 	RunData Data;
@@ -41,25 +35,15 @@ public:
 
 private:
 	unsigned int _RemovedCandidates;
-	int _MinimumOccurance = 1;
-	int _MinimumCrossOccurance = 1;
 
 	/// <summary>
 	/// Sets the modifiers to some default values, if they have not been set to begin with.
 	/// </summary>
 	void SetModifiersIfNotSet();
 	/// <summary>
-	/// Sets the modifiers to some default values, if they have not been set to begin with.
-	/// </summary>
-	void FindMinimumOccurances(std::unordered_map<size_t, EntanglementOccurance>* candidates);
-	/// <summary>
 	/// Removes those values in the unordered_map where the occurance is less than the "MinimumOccurance" variable.
 	/// </summary>
-	void RemoveMinimumOccurances(std::unordered_map<size_t, EntanglementOccurance>* candidates);
-	/// <summary>
-	/// Removes those values in the unordered_map where the occurance is less than the "MinimumCrossOccurance" variable.
-	/// </summary>
-	void RemoveMinimumCrossOccurances(std::unordered_map<size_t, EntanglementOccurance>* candidates);
+	void RemoveMinimumQuality(std::unordered_map<size_t, EntanglementOccurance>* candidates);
 	/// <summary>
 	/// Updates the Quality parameter of the occurances based on their lengths
 	/// </summary>

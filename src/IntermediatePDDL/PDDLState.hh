@@ -63,12 +63,15 @@ namespace std {
 struct PDDLState {
     // Key - Index of predicate | Value - Set of objects which the predicate is true for
     std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts;
-    // Key - Index of predicate | Value - List of combinations of objcets which the predicate is true for (Should be a set, but cpp has a stroke trying to has a vector)
+    std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts;
+    // Key - Index of predicate | Value - List of permutations of objcets which the predicate is true for
     std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts;
 
     PDDLState() {};
-    PDDLState(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts, std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts) :
-        unaryFacts(unaryFacts), multiFacts(multiFacts) {};
+    PDDLState(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts, 
+              std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts, 
+              std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts) :
+        unaryFacts(unaryFacts), binaryFacts(binaryFacts), multiFacts(multiFacts) {};
 
 #pragma region ContainsFact
 
@@ -78,6 +81,12 @@ struct PDDLState {
     bool ContainsFact(const unsigned int &key, const unsigned int &value) const {
         return unaryFacts.at(key).contains(value);
     };
+
+    bool ContainsFact(const unsigned int &key, const std::pair<unsigned int, unsigned int> &value) const {
+        if (key == 0)
+            return value.first == value.second;
+        return binaryFacts.at(key).contains(value);
+    }
 
     bool ContainsFact(const unsigned int &key, const MultiFact *value) const {
         return multiFacts.at(key).contains(*value);

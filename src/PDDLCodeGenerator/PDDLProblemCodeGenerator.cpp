@@ -64,6 +64,18 @@ std::string PDDLProblemCodeGenerator::GetFacts(PDDLState literals) {
 			retStr += AddParen(tempString);
 		}
 	}
+
+	// Binary Facts
+	for (auto uItr = literals.binaryFacts.begin(); uItr != literals.binaryFacts.end(); uItr++) {
+		for (auto itr = (*uItr).second.begin(); itr != (*uItr).second.end(); itr++) {
+			std::string tempString = domain->predicates.at((*uItr).first).name;
+			tempString += " " + problem->objects.at((*itr).first);
+			tempString += " " + problem->objects.at((*itr).second);
+			retStr += AddParen(tempString);
+		}
+	}
+
+	// Multi Facts
 	for (auto uItr = literals.multiFacts.begin(); uItr != literals.multiFacts.end(); uItr++) {
 		for (auto itr = (*uItr).second.begin(); itr != (*uItr).second.end(); itr++) {
 			std::string tempString = domain->predicates.at((*uItr).first).name;

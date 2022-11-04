@@ -3,7 +3,8 @@ target_link_libraries(Tests-IntermediatePDDL
     PRIVATE 
         Catch2::Catch2WithMain
         IntermediatePDDL
-        PDDLParser)
+        PDDLParser
+        StringHelper)
 
 file(COPY Test/IntermediatePDDL/TestFiles DESTINATION ${CMAKE_BINARY_DIR})
 

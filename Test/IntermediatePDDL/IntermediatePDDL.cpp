@@ -14,7 +14,7 @@ const string TAG = "IntermediatePDDL ";
 const string domainFile = "./TestFiles/gripper.pddl";
 const string exDomainName = "gripper";
 const vector<string> exDomainReq = {":strips", ":equality"};
-const vector<string> exConditions = {"ROOM", "BALL", "GRIPPER", "at-lobby", "at-ball", "free", "carry"};
+const vector<string> exConditions = {"ROOM", "BALL", "GRIPPER", "AT-LOBBY", "AT-BALL", "FREE", "CARRY"};
 const vector<string> exActions = {"move", "pick-up", "drop"};
 const vector<string> exArgs = {"?z", "?y", "?x"};
 

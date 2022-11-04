@@ -3,7 +3,8 @@ target_sources(Walker
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/Walker.cpp
     PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR}/Walker.hpp)
+        ${CMAKE_CURRENT_LIST_DIR}/Walker.hpp
+        ${CMAKE_CURRENT_LIST_DIR}/BaseWalker.hh)
 target_include_directories(Walker
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR})

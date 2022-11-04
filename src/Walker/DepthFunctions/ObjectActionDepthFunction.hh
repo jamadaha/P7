@@ -6,7 +6,7 @@
 
 class ObjectActionDepthFunction : public BaseDepthFunction {
 public:
-    ObjectActionDepthFunction(PDDLInstance instance, double modifier = 1) : BaseDepthFunction(instance, modifier) {}
+    ObjectActionDepthFunction(PDDLInstance* instance, double modifier = 1) : BaseDepthFunction(instance, modifier) {}
     int GetDepth() override;
 };
 

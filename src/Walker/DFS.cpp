@@ -18,7 +18,7 @@ Path DFS::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const PDD
         if (searchStack.size() == 0)
             break;
         
-        std::pair<std::vector<PDDLActionInstance>, PDDLState> currentNode = searchStack.at(searchStack.size());
+        std::pair<std::vector<PDDLActionInstance>, PDDLState> currentNode = searchStack.at(searchStack.size() - 1);
         searchStack.pop_back();
 
         if (!visitedStates.contains(currentNode.second)) {

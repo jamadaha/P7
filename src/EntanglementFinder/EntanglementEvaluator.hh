@@ -24,6 +24,7 @@ public:
 
 	unsigned int RemovedCandidates() const { return _RemovedCandidates; }
 	unsigned int CombinedCandidates() const { return _CombinedCandidates; }
+	unsigned int PartialCandidates() const { return _PartialCandidates; }
 
 	EntanglementEvaluator(RunData data) : Data(data) {};
 
@@ -36,8 +37,9 @@ public:
 	std::function<double(double occurance, double maxOccurance)> OccuranceModifier;
 
 private:
-	unsigned int _RemovedCandidates;
-	unsigned int _CombinedCandidates;
+	unsigned int _RemovedCandidates = 0;
+	unsigned int _CombinedCandidates = 0;
+	unsigned int _PartialCandidates = 0;
 
 	/// <summary>
 	/// Sets the modifiers to some default values, if they have not been set to begin with.

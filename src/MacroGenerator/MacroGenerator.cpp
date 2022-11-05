@@ -3,9 +3,56 @@
 using namespace std;
 
 Macro MacroGenerator::GenerateMacro(const MacroCandidate* candidate) {
+    if (candidate->Entanglements.size() > 1)
+        return GeneratePartiallyGroundedMacro(candidate);
+    else
+        return GenerateGroundedMacro(candidate);
+}
+
+Macro MacroGenerator::GeneratePartiallyGroundedMacro(const MacroCandidate* candidate) {
+    partials.clear();
+    partials = FindPartialPreconditions(&candidate->Entanglements);
+
     vector<GroundedAction> groundedActions = GroundActions(&candidate->Entanglements.at(0));
     GroundedAction combinedAction = CombineActions(&groundedActions);
-    return Macro(combinedAction, CloneOriginalPath(&candidate->Entanglements.at(0)));
+
+    return Macro(combinedAction, CloneOriginalPath(&candidate->Entanglements.at(0)), partials);
+}
+
+Macro MacroGenerator::GenerateGroundedMacro(const MacroCandidate* candidate) {
+    partials.clear();
+    partials = GenerateStaticList(&candidate->Entanglements);
+
+    vector<GroundedAction> groundedActions = GroundActions(&candidate->Entanglements.at(0));
+    GroundedAction combinedAction = CombineActions(&groundedActions);
+    
+    return Macro(combinedAction, CloneOriginalPath(&candidate->Entanglements.at(0)), partials);
+}
+
+unordered_map<unsigned int, bool> MacroGenerator::FindPartialPreconditions(const vector<vector<PDDLActionInstance*>>* actions) {
+    unordered_map<unsigned int, bool> partials;
+
+    for (int i = 0; i < actions->at(0).size(); i++) {
+        for (int j = 0; j < actions->size(); j++) {
+            for (int k = j + 1; k < actions->size(); k++) {
+                for (int l = 0; l < actions->at(j).at(i)->objects.size(); l++) {
+                    if (!partials.contains(actions->at(j).at(i)->objects.at(l)))
+                        partials.emplace(actions->at(j).at(i)->objects.at(l), actions->at(j).at(i)->objects.at(l) != actions->at(k).at(i)->objects.at(l));
+                }
+            }
+        }
+    }
+
+    return partials;
+}
+
+unordered_map<unsigned int, bool> MacroGenerator::GenerateStaticList(const vector<vector<PDDLActionInstance*>>* actions) {
+    unordered_map<unsigned int, bool> partials;
+    for (int i = 0; i < actions->at(0).size(); i++)
+        for (int j = 0; j < actions->at(0).at(i)->objects.size(); j++)
+            if (!partials.contains(actions->at(0).at(i)->objects.at(j)))
+                partials.emplace(actions->at(0).at(i)->objects.at(j), false);
+    return partials;
 }
 
 vector<PDDLActionInstance> MacroGenerator::CloneOriginalPath(const vector<PDDLActionInstance*> *actions) {
@@ -77,7 +124,9 @@ unordered_map<GroundedLiteral, bool> priorEffs) {
         if (priorEffs.contains(iter.first)) continue;
         if (preconditions.contains(iter.first)) continue; // maybe
         if (iter.first.predicate == 0) continue;
-        if (domain != nullptr && domain->staticPredicates.contains(iter.first.predicate)) continue;
+        // If the first object is a partial one, dont remove the identifying predicate
+        if (!partials.at(iter.first.objects.at(0)))
+            if (domain != nullptr && domain->staticPredicates.contains(iter.first.predicate)) continue;
         preconditions.emplace(iter.first, iter.second);
     }
 

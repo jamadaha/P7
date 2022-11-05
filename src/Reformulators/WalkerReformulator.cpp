@@ -262,6 +262,7 @@ void WalkerReformulator::PrintEntanglerDebugData(double ellapsed, vector<MacroCa
 	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + to_string(paths.size()) + " paths with " + to_string(totalActions) + " steps in total", debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total evaluation time:  " + to_string(ellapsed) + "ms", debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Combined Candidates:    " + to_string(entanglementEvaluator->CombinedCandidates()), debugIndent);
+	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Partial Candidates:     " + to_string(entanglementEvaluator->PartialCandidates()), debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Macro Candidates: " + to_string(candidates->size()) + " (" + to_string(entanglementEvaluator->RemovedCandidates()) + " removed)", debugIndent);
 }
 

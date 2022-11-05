@@ -5,6 +5,7 @@ using namespace std;
 vector<MacroCandidate> EntanglementEvaluator::EvaluateAndSanitizeCandidates(unordered_map<size_t, EntanglementOccurance> candidates) {
 	// Setup default modifiers
 	SetModifiersIfNotSet();
+	_PartialCandidates = 0;
 
 	auto macroCandidates = CombineCandidates(&candidates);
 	_CombinedCandidates = macroCandidates.size();
@@ -87,6 +88,10 @@ vector<MacroCandidate> EntanglementEvaluator::CombineCandidates(unordered_map<si
 		if (!foundAny)
 			combinedCandidates.push_back(MacroCandidate(vector<vector<PDDLActionInstance*>> { i->second.Chain }, i->second.Occurance, i->second.BetweenDifferentPaths));
 	}
+
+	for (auto i : combinedCandidates)
+		if (i.Entanglements.size() > 1)
+			_PartialCandidates++;
 
 	return combinedCandidates;
 }

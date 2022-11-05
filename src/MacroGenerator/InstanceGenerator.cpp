@@ -8,12 +8,14 @@ PDDLInstance InstanceGenerator::GenerateInstance(const PDDLDomain *domain, const
     for (int i = 0; i < macros->size(); i++) {
         const Macro *macro = &macros->at(i);
         for (auto iter = macro->groundedAction.parameters.begin(); iter != macro->groundedAction.parameters.end(); iter++) {
-            std::string predicate = "is-" + problem->objects.at(*iter);
-            if (predicateMap.contains(predicate)) continue;
-            unaryFacts.emplace(predicates.size(), std::unordered_set<unsigned int>());
-            unaryFacts.at(predicates.size()).emplace(*iter);
-            predicateMap.emplace(predicate, predicates.size());
-            predicates.push_back(PDDLPredicate(predicate, 1));
+            if (!macro->Partials.at(*iter)) {
+                std::string predicate = "is-" + problem->objects.at(*iter);
+                if (predicateMap.contains(predicate)) continue;
+                unaryFacts.emplace(predicates.size(), std::unordered_set<unsigned int>());
+                unaryFacts.at(predicates.size()).emplace(*iter);
+                predicateMap.emplace(predicate, predicates.size());
+                predicates.push_back(PDDLPredicate(predicate, 1));
+            }
         }
     }
 
@@ -21,6 +23,7 @@ PDDLInstance InstanceGenerator::GenerateInstance(const PDDLDomain *domain, const
     for (int i = 0; i < domain->actions.size(); i++)
         actions.push_back(domain->actions.at(i));
     for (int i = 0; i < macros->size(); i++) {
+        int paramsCounter = 0;
         const Macro *macro = &macros->at(i);
         const std::unordered_set<unsigned int> *macroParameters = &macro->groundedAction.parameters;
         std::unordered_map<unsigned int, unsigned int> groundedToIndex; groundedToIndex.reserve(macroParameters->size());
@@ -29,7 +32,11 @@ PDDLInstance InstanceGenerator::GenerateInstance(const PDDLDomain *domain, const
         
         std::vector<std::string> parameters; parameters.reserve(macroParameters->size());
         for (auto iter = macroParameters->begin(); iter != macroParameters->end(); iter++) {
-            std::string parameter = "?" + problem->objects.at(*iter);
+            std::string parameter = "";
+            if (!macro->Partials.at(*iter))
+                parameter = "?" + problem->objects.at(*iter);
+            else
+                parameter = "?x" + std::to_string(paramsCounter++);
             parameters.push_back(parameter);
         }
 
@@ -66,6 +73,7 @@ const std::vector<std::string> parameters) {
     for (unsigned int i = 0; i < parameters.size(); i++) {
         std::string object = parameters.at(i).substr(1);
         std::string predicate = "is-" + object;
-        literals->push_back(PDDLLiteral(predicateMap.at(predicate), std::vector<unsigned int>{ i }, true));
+        if (predicateMap.contains(predicate))
+            literals->push_back(PDDLLiteral(predicateMap.at(predicate), std::vector<unsigned int>{ i }, true));
     }
 }

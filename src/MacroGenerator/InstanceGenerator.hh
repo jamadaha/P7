@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <set>
+#include <string>
 
 #include "../IntermediatePDDL/PDDLInstance.hh"
 #include "Macro.hh"

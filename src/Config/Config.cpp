@@ -60,6 +60,7 @@ template double Config::GetItem<double>(string name);
 template filesystem::path Config::GetItem<filesystem::path>(string name);
 template vector<string> Config::GetItem<vector<string>>(string name);
 template vector<double> Config::GetItem<vector<double>>(string name);
+template vector<bool> Config::GetItem<vector<bool>>(string name);
 
 #pragma endregion
 

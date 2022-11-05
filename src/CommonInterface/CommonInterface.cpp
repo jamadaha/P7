@@ -8,7 +8,6 @@ InterfaceStep<BaseReformulator*> CommonInterface::GetReformulator(int reformulat
 	BaseReformulator* reformulator;
 	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "sameoutput") {
 		reformulator = new SameOutputReformulator(&config, Report);
-		isDirect = true;
 	}
 	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "walker") {
 		reformulator = new WalkerReformulator(&config, Report);

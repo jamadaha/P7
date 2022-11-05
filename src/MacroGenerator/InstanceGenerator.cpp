@@ -33,15 +33,18 @@ PDDLInstance InstanceGenerator::GenerateInstance(const PDDLDomain *domain, const
         std::vector<std::string> parameters;
 
         std::unordered_map<unsigned int, unsigned int> groundedToIndex;
+        int index = 0;
         for (auto iter = macro->groundedAction.parameters.begin(); iter != macro->groundedAction.parameters.end(); iter++) {
             for (auto iter2 = iter->begin(); iter2 != iter->end(); iter2++)
-                groundedToIndex.emplace((*iter2), groundedToIndex.size());
+                groundedToIndex.emplace((*iter2), index);
+
+            index++;
 
             std::string parameter = "?";
             for (auto iter2 = iter->begin(); iter2 != iter->end(); iter2++) {
                 parameter += problem->objects.at(*iter2) + "-";
             }
-            parameter = parameter.substr(0, parameter.size() - 1);
+            parameter += std::to_string(index);
             parameters.push_back(parameter);
         }
 
@@ -61,11 +64,11 @@ PDDLInstance InstanceGenerator::GenerateInstance(const PDDLDomain *domain, const
 }
 
 std::vector<PDDLLiteral> InstanceGenerator::GenerateLiterals(const std::unordered_map<GroundedLiteral, bool> *groundedLiterals, 
-std::unordered_map<unsigned int, unsigned int> *groundedToIndex) {
-    std::vector<PDDLLiteral> literals; literals.reserve(groundedLiterals->size());
+        std::unordered_map<unsigned int, unsigned int> *groundedToIndex) {
+    std::vector<PDDLLiteral> literals; 
+    literals.reserve(groundedLiterals->size());
     for (auto iter = groundedLiterals->begin(); iter != groundedLiterals->end(); iter++) {
-        std::vector<unsigned int> args; 
-        args.reserve((*iter).first.objects.at(0).size());
+        std::vector<unsigned int> args;
         for (int i = 0; i < (*iter).first.objects.at(0).size(); i++)
             args.push_back(groundedToIndex->at((*iter).first.objects.at(0).at(i)));
         literals.push_back(PDDLLiteral((*iter).first.predicate, args, (*iter).second));
@@ -74,10 +77,11 @@ std::unordered_map<unsigned int, unsigned int> *groundedToIndex) {
 }
 
 void InstanceGenerator::AppendObjectPreconditions(std::vector<PDDLLiteral> *literals, 
-const std::unordered_map<std::string, unsigned int> predicateMap,
-const std::vector<std::string> parameters) {
+        const std::unordered_map<std::string, unsigned int> predicateMap,
+        const std::vector<std::string> parameters) {
     for (unsigned int i = 0; i < parameters.size(); i++) {
         std::string object = parameters.at(i).substr(1);
+        object = object.substr(0, object.size() - 2);
         std::string predicate = "IS-" + object;
         literals->push_back(PDDLLiteral(predicateMap.at(predicate), std::vector<unsigned int>{ i }, true));
     }

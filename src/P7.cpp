@@ -37,7 +37,7 @@ int main(int argc, char** argv){
 		RunReport report = RunReport(config.GetItem<vector<string>>("reformulator").at(0));
 		CommonInterface interface = CommonInterface(config, &report);
 		auto runResult = interface.Run();
-		//if (runResult == CommonInterface::RunResult::RanWithoutErrors)
+		if (runResult == CommonInterface::RunResult::RanWithoutErrors)
 			report.Print();
 	}
 

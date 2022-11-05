@@ -74,15 +74,16 @@ vector<GroundedAction> MacroGenerator::GroundActions(const vector<vector<PDDLAct
         unordered_map<GroundedLiteral, bool> effects; 
         effects.reserve(actionEffs->size());
         for (int t = 0; t < actionEffs->size(); t++) {
+
             const PDDLLiteral* lit = &actionEffs->at(t);
             vector<vector<unsigned int>> groupArgs;
             for (int j = 0; j < actions->size(); j++) {
                 const PDDLActionInstance* innerAction = actions->at(j).at(i);;
-                const vector<PDDLLiteral>* innerActionPrecon = &innerAction->action->preconditions;
+                const vector<PDDLLiteral>* innerActionPrecon = &innerAction->action->effects;
                 const PDDLLiteral* innerLit = &innerActionPrecon->at(t);
                 vector<unsigned int> args;
                 for (int q = 0; q < innerLit->args.size(); q++) {
-                    args.push_back(action->objects.at(lit->args.at(q)));
+                    args.push_back(innerAction->objects.at(innerLit->args.at(q)));
                 }
                 groupArgs.push_back(args);
             }

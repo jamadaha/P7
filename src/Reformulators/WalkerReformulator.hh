@@ -8,6 +8,7 @@
 #include "BaseReformulator.hh"
 #include "../Walker/BaseWalker.hh"
 #include "../Walker/Walker.hpp"
+#include "../Walker/BFS.hpp"
 #include "../Walker/DFS.hpp"
 #include "../Walker/Heuristics/RandomHeuristic.hh"
 #include "../Walker/Heuristics/GoalCountHeuristic.hh"

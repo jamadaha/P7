@@ -10,12 +10,12 @@
 #include "EntanglementOccurance.hh"
 
 struct MacroCandidate {
-    std::vector<EntanglementOccurance> Entanglements;
+    std::vector<std::vector<PDDLActionInstance*>> Entanglements;
     int Occurance;
     int BetweenDifferentPaths;
     double Quality = 1;
 
-    MacroCandidate(std::vector<EntanglementOccurance> entanglements, int occurance, int betweenPaths) : Entanglements(entanglements), Occurance(occurance), BetweenDifferentPaths(betweenPaths) {};
+    MacroCandidate(std::vector<std::vector<PDDLActionInstance*>> entanglements, int occurance, int betweenPaths) : Entanglements(entanglements), Occurance(occurance), BetweenDifferentPaths(betweenPaths) {};
 };
 
 #endif

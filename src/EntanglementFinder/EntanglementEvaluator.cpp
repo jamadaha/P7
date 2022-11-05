@@ -41,11 +41,11 @@ void EntanglementEvaluator::RemoveMinimumQuality(vector<MacroCandidate>* candida
 void EntanglementEvaluator::SetQualityByLength(vector<MacroCandidate>* candidates) {
 	double maxLength = 0;
 	for (auto itt = candidates->begin(); itt != candidates->end(); itt++) {
-		if ((*itt).Entanglements.at(0).Chain.size() > maxLength)
-			maxLength = (*itt).Entanglements.at(0).Chain.size();
+		if ((*itt).Entanglements.at(0).size() > maxLength)
+			maxLength = (*itt).Entanglements.at(0).size();
 	}
 	for (auto itt = candidates->begin(); itt != candidates->end(); itt++) {
-		double newQuality = (*itt).Quality * LengthModifier((*itt).Entanglements.at(0).Chain.size(), maxLength);
+		double newQuality = (*itt).Quality * LengthModifier((*itt).Entanglements.at(0).size(), maxLength);
 		(*itt).Quality *= min((double)1, newQuality);
 	}
 }
@@ -53,7 +53,7 @@ void EntanglementEvaluator::SetQualityByLength(vector<MacroCandidate>* candidate
 void EntanglementEvaluator::SetQualityByOccurance(vector<MacroCandidate>* candidates) {
 	double maxOccurance = 0;
 	for (auto itt = candidates->begin(); itt != candidates->end(); itt++) {
-		if ((*itt).Entanglements.at(0).Occurance > maxOccurance)
+		if ((*itt).Occurance > maxOccurance)
 			maxOccurance = (*itt).Occurance;
 	}
 	for (auto itt = candidates->begin(); itt != candidates->end(); itt++) {
@@ -69,23 +69,23 @@ vector<MacroCandidate> EntanglementEvaluator::CombineCandidates(unordered_map<si
 		bool foundAny = false;
 		for (auto j = combinedCandidates.begin(); j != combinedCandidates.end(); j++) {
 			bool isSame = true;
-			if (i->second.Chain.size() != j->Entanglements.at(0).Chain.size())
+			if (i->second.Chain.size() != j->Entanglements.at(0).size())
 				continue;
 			for (int k = 0; k < i->second.Chain.size(); k++) {
-				if (i->second.Chain.at(k)->action->name != j->Entanglements.at(0).Chain.at(k)->action->name) {
+				if (i->second.Chain.at(k)->action->name != j->Entanglements.at(0).at(k)->action->name) {
 					isSame = false;
 					break;
 				}
 			}
 			if (isSame) {
-				j->Entanglements.push_back(i->second);
+				j->Entanglements.push_back(i->second.Chain);
 				j->BetweenDifferentPaths += i->second.BetweenDifferentPaths;
 				j->Occurance += i->second.Occurance;
 				foundAny = true;
 			}
 		}
 		if (!foundAny)
-			combinedCandidates.push_back(MacroCandidate(vector<EntanglementOccurance> { i->second }, i->second.Occurance, i->second.BetweenDifferentPaths));
+			combinedCandidates.push_back(MacroCandidate(vector<vector<PDDLActionInstance*>> { i->second.Chain }, i->second.Occurance, i->second.BetweenDifferentPaths));
 	}
 
 	return combinedCandidates;

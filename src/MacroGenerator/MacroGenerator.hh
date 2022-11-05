@@ -7,12 +7,13 @@
 #include "Macro.hh"
 #include "GroundedAction.hh"
 #include "../IntermediatePDDL/PDDLInstance.hh"
+#include "../EntanglementFinder/MacroCandidate.hh"
 
 class MacroGenerator {
 public:
     MacroGenerator() : domain(nullptr), problem(nullptr) {};
     MacroGenerator(const PDDLDomain *domain, const PDDLProblem *problem) : domain(domain), problem(problem) {};
-    Macro GenerateMacro(const std::vector<PDDLActionInstance*> *actions);
+    Macro GenerateMacro(const MacroCandidate* candidate);
 
 
 private:

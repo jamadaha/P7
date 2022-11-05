@@ -178,7 +178,7 @@ PDDLInstance WalkerReformulator::GenerateMacros(vector<MacroCandidate>* candidat
 		bar = new ProgressBarHelper(candidates->size(), "", debugIndent + 1);
 	}
 	for (int i = 0; i < candidates->size(); i++) {
-		macros.push_back(macroGenerator->GenerateMacro(&candidates->at(i).Entanglements.at(0).Chain));
+		macros.push_back(macroGenerator->GenerateMacro(&candidates->at(i)));
 		if (Configs->GetItem<bool>("debugmode"))
 			bar->Update();
 	}
@@ -228,8 +228,8 @@ void WalkerReformulator::PrintEntanglerSteps(vector<MacroCandidate>* candidates,
 	int counter = 0;
 	for (auto i = candidates->begin(); i != candidates->end(); i++) {
 		string actionStr = "";
-		for (int j = 0; j < (*i).Entanglements.at(0).Chain.size(); j++) {
-			auto item = (*i).Entanglements.at(0).Chain.at(j);
+		for (int j = 0; j < (*i).Entanglements.at(0).size(); j++) {
+			auto item = (*i).Entanglements.at(0).at(j);
 			string paramStr = "";
 			for (int l = 0; l < item->objects.size(); l++) {
 				paramStr += instance->problem->objects[item->objects[l]];
@@ -237,7 +237,7 @@ void WalkerReformulator::PrintEntanglerSteps(vector<MacroCandidate>* candidates,
 					paramStr += ", ";
 			}
 			actionStr += item->action->name + "(" + paramStr + ")";
-			if (j != (*i).Entanglements.at(0).Chain.size() - 1)
+			if (j != (*i).Entanglements.at(0).size() - 1)
 				actionStr += " -> ";
 		}
 		ConsoleHelper::PrintDebugInfo("[Entanglements] " + to_string((*i).Quality) + " : " + actionStr, debugIndent + 1);

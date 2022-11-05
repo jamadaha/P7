@@ -53,6 +53,15 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 			walkers.push_back(newWalker);
 			if (Configs->GetItem<bool>("debugmode"))
 				SetupWalkerDebugInfo(newWalker);
+		} else if (walkerNames.at(i) == "DFS") {
+			BaseHeuristic* heuristic = FindHeuristic(walkerHeuistics.at(i), instance);
+			BaseDepthFunction* depthFunc = new ConstantDepthFunction(100, instance, 1);
+			int timeLimit = TimeLimit * walkersTimes.at(i);
+			BaseWidthFunction* widthFunc = new TimeWidthFunction(timeLimit);
+			BaseWalker *newWalker = new DFS(instance, ActionGenerator(&instance->domain->actions, instance->problem->objects.size()), heuristic, depthFunc, widthFunc);
+			walkers.push_back(newWalker);
+			if (Configs->GetItem<bool>("debugmode"))
+				SetupWalkerDebugInfo(newWalker);
 		}
 	}
 

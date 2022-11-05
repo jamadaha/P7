@@ -36,6 +36,7 @@ public:
 	int CurrentLevel() const { return _CurrentLevel; }
 	int TotalLevels() const { return _TotalLevels; }
 	unsigned int TotalComparisons() const { return _TotalComparisons; }
+	unsigned int TotalEntanglements() const { return _TotalEntanglements; }
 
 	EntanglementFinder(RunData data) : Data(data) {};
 
@@ -52,6 +53,7 @@ private:
 	int _CurrentLevel;
 	int _TotalLevels;
 	unsigned int _TotalComparisons;
+	unsigned int _TotalEntanglements;
 
 	/// <summary>
 	/// Validate the input data

@@ -1,0 +1,21 @@
+#ifndef MACROCANDIDATE_HH
+#define MACROCANDIDATE_HH
+
+#include <string>
+#include <vector>
+#include <unordered_set>
+#include <unordered_map>
+#include <algorithm>
+
+#include "EntanglementOccurance.hh"
+
+struct MacroCandidate {
+    std::vector<EntanglementOccurance> Entanglements;
+    int Occurance;
+    int BetweenDifferentPaths;
+    double Quality = 1;
+
+    MacroCandidate(std::vector<EntanglementOccurance> entanglements, int occurance, int betweenPaths) : Entanglements(entanglements), Occurance(occurance), BetweenDifferentPaths(betweenPaths) {};
+};
+
+#endif

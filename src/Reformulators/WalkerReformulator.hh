@@ -20,6 +20,7 @@
 #include "../EntanglementFinder/EntanglementOccurance.hh"
 #include "../EntanglementFinder/EntanglementEvaluator.hh"
 #include "../EntanglementFinder/EntanglementEvaluatorModifiers.hh"
+#include "../EntanglementFinder/MacroCandidate.hh"
 #include "../Helpers/ProgressBarHelper.hh"
 #include "../MacroGenerator/MacroGenerator.hh"
 #include "../MacroGenerator/InstanceGenerator.hh"
@@ -33,8 +34,8 @@ public:
 	SASPlan RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) override;
 private:
 	std::vector<Path> PerformWalk(PDDLInstance* instance);
-	std::vector<EntanglementOccurance> FindEntanglements(std::vector<Path>* paths, PDDLInstance* instance);
-	PDDLInstance GenerateMacros(std::vector<EntanglementOccurance>* candidates, PDDLInstance* instance);
+	std::vector<MacroCandidate> FindEntanglements(std::vector<Path>* paths, PDDLInstance* instance);
+	PDDLInstance GenerateMacros(std::vector<MacroCandidate>* candidates, PDDLInstance* instance);
 	
 	EntanglementFinder* entanglementFinder;
 	EntanglementEvaluator* entanglementEvaluator;
@@ -43,9 +44,9 @@ private:
 	std::vector<Macro> macros;
 	ProgressBarHelper* walkerBar;
 
-	void PrintEntanglerSteps(std::vector<EntanglementOccurance>* candidates, PDDLInstance* instance);
+	void PrintEntanglerSteps(std::vector<MacroCandidate>* candidates, PDDLInstance* instance);
 	void PrintWalkerDebugData(double ellapsed);
-	void PrintEntanglerDebugData(double ellapsed, std::vector<EntanglementOccurance>* candidates);
+	void PrintEntanglerDebugData(double ellapsed, std::vector<MacroCandidate>* candidates);
 	BaseHeuristic* FindHeuristic(std::string name, PDDLInstance* instance);
 	void SetupWalkerDebugInfo(BaseWalker* walker);
 };

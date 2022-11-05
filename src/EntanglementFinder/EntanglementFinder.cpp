@@ -114,6 +114,7 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 				else {
 					// Add new candidate
 					EntanglementOccurance newOcc(iValue->second, iValue->first.first, 1 + (iValue->first.second != (&currentValues->at(j))->first.second));
+					_TotalEntanglements++;
 					candidates->emplace(iValue->first.first, newOcc);
 					containsThisKey = true;
 					currentOcc = &candidates->at(iValue->first.first);

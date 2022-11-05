@@ -3,24 +3,10 @@
 using namespace std;
 
 Macro MacroGenerator::GenerateMacro(const MacroCandidate* candidate) {
-    if (candidate->Entanglements.size() > 1)
-        return GeneratePartiallyGroundedMacro(candidate);
-    else
-        return GenerateGroundedMacro(candidate);
-}
-
-Macro MacroGenerator::GeneratePartiallyGroundedMacro(const MacroCandidate* candidate) {
     vector<GroundedAction> groundedActions = GroundActions(&candidate->Entanglements);
     GroundedAction combinedAction = CombineActions(&groundedActions);
 
-    return Macro(combinedAction, CloneOriginalPath(&candidate->Entanglements.at(0)));
-}
-
-Macro MacroGenerator::GenerateGroundedMacro(const MacroCandidate* candidate) {
-    vector<GroundedAction> groundedActions = GroundActions(&candidate->Entanglements);
-    GroundedAction combinedAction = CombineActions(&groundedActions);
-    
-    return Macro(combinedAction, CloneOriginalPath(&candidate->Entanglements.at(0)));
+    return Macro(combinedAction, candidate->Entanglements);
 }
 
 vector<PDDLActionInstance> MacroGenerator::CloneOriginalPath(const vector<PDDLActionInstance*> *actions) {

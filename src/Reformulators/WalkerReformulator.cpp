@@ -204,14 +204,44 @@ SASPlan WalkerReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* refo
 			actions.push_back(SASAction(sasAction.name, args));
 		} else {
 			for (auto macro : macros) {
-				if (sasAction.name == macro.name)
-					for (auto macroAction : macro.path) {
-						std::vector<std::string> args; args.reserve(macroAction.objects.size());
-						for (auto object : macroAction.objects) 
-							args.push_back(instance->problem->objects.at(object));
-						actions.push_back(SASAction(macroAction.action->name, args));
+				if (sasAction.name == macro.name) {
+					bool foundAny = false;
+					for (int j = 0; j < macro.paths.size(); j++) {
+						std::vector<SASAction> tempActions;
+						bool isValid = false;
+
+						for (auto macroAction : macro.paths.at(j)) {
+							std::vector<std::string> args;
+							args.reserve(macroAction->objects.size());
+							for (auto object : macroAction->objects) {
+								isValid = false;
+								string name = instance->problem->objects.at(object);
+								for (auto checkNames : sasAction.parameters)
+								{
+									if (checkNames == name) {
+										isValid = true;
+										break;
+									}
+								}
+								if (!isValid)
+									break;
+								args.push_back(name);
+							}
+							if (!isValid)
+								break;
+							tempActions.push_back(SASAction(macroAction->action->name, args));
+						}
+
+						if (isValid) {
+							foundAny = true;
+							for (auto action : tempActions)
+								actions.push_back(action);
+								break;
+						}
 					}
-						
+					if (!foundAny)
+						throw exception();
+				}					
 			}
 		}
 	}

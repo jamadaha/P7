@@ -23,9 +23,6 @@ private:
     unsigned int groundedActionsCount = 0;
     unsigned int macroCount = 0;
 
-    Macro GeneratePartiallyGroundedMacro(const MacroCandidate* candidate);
-    Macro GenerateGroundedMacro(const MacroCandidate* candidate);
-
     std::vector<PDDLActionInstance> CloneOriginalPath(const std::vector<PDDLActionInstance*> *actions);
     std::vector<GroundedAction> GroundActions(const std::vector<std::vector<PDDLActionInstance*>>* actions);
     GroundedAction CombineActions(const std::vector<GroundedAction> *actions);

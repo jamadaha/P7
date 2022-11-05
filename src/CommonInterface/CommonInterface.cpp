@@ -102,7 +102,7 @@ InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, P
 	int iterativeProcess = Report->Begin("Reformulating Directly");
 	int timeLimit = config.GetItem<int>("totalTimeLimit") * 1000;
 
-	if (RunSingle(reformulator, instance, iterativeProcess, 0, timeLimit).RanWithoutErrors)
+	if (RunSingle(reformulator, instance, iterativeProcess, timeLimit, timeLimit).RanWithoutErrors)
 		return InterfaceStep<void>();
 	else
 		return InterfaceStep<void>(false);

@@ -40,8 +40,7 @@ int main(int argc, char** argv){
 		RunReport report = RunReport(reformulators.at(0));
 		CommonInterface interface = CommonInterface(config, &report, reformulatorsRunStyles.at(0));
 		auto runResult = interface.Run();
-		if (runResult == CommonInterface::RunResult::RanWithoutErrors)
-			report.Print();
+		report.Print();
 	}
 
 	config.Clear();

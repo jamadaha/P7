@@ -138,15 +138,16 @@ InterfaceStep<DownwardRunner::DownwardRunnerResult> CommonInterface::RunSingle(B
 	return InterfaceStep<DownwardRunner::DownwardRunnerResult>(runRes);
 }
 
-InterfaceStep<void> CommonInterface::ValidatePlans(string domainFile, string problemFile, string sasFile) {
-	ConsoleHelper::PrintDebugInfo("Validate reformulated SAS plan...");
-	Report->Begin("Validating reformulated SAS plan");
+InterfaceStep<void> CommonInterface::ValidatePlans(string domainFile, string problemFile, string sasFile, string reportName) {
+	ConsoleHelper::PrintDebugInfo(reportName);
+	int parent = Report->Begin(reportName);
 	auto reformulatedSASValidatorResult = PlanValidator::ValidatePlan(config, domainFile, problemFile, sasFile);
-	Report->Stop();
 	if (reformulatedSASValidatorResult != PlanValidator::PlanMatch) {
+		Report->Stop(parent, "false");
 		ConsoleHelper::PrintDebugError("Output plan is not valid for reformulated domain and problem!");
 		return InterfaceStep<void>(false);
 	}
+	Report->Stop(parent, "true");
 	return InterfaceStep<void>(true);
 }
 
@@ -209,7 +210,7 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 	}
 
 	if (config.GetItem<bool>("validate")) {
-		auto validateSASPlanStep = ValidatePlans(CommonInterface::TempDomainName, CommonInterface::TempProblemName, CommonInterface::FastDownwardSASName);
+		auto validateSASPlanStep = ValidatePlans(CommonInterface::TempDomainName, CommonInterface::TempProblemName, CommonInterface::FastDownwardSASName, "Validating reformulated plan");
 		if (!validateSASPlanStep.RanWithoutErrors)
 			return CommonInterface::RunResult::ErrorsEncountered;
 	}
@@ -227,7 +228,7 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 		return CommonInterface::RunResult::ErrorsEncountered;
 
 	if (config.GetItem<bool>("validate")) {
-		auto validateSASPlanStep = ValidatePlans(config.GetItem<filesystem::path>("domain"), config.GetItem<filesystem::path>("problem"), CommonInterface::OutputSASName);
+		auto validateSASPlanStep = ValidatePlans(config.GetItem<filesystem::path>("domain"), config.GetItem<filesystem::path>("problem"), CommonInterface::OutputSASName, "Validating rebuilded plan");
 		if (!validateSASPlanStep.RanWithoutErrors)
 			return CommonInterface::RunResult::ErrorsEncountered;
 	}

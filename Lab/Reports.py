@@ -29,7 +29,9 @@ PREDEFINED_ATTRIBUTES= ['cost',
                         'search_time', 
                         'total_time', 
                         'unsolvable',
-                        'p7_solving_problem_ms']
+                        'p7_solving_problem_ms',
+                        'p7_validating_reformulated_plan',
+                        'p7_validating_rebuilded_plan']
 
 ATTRIBUTES = ERROR_ATTRIBUTES + PREDEFINED_ATTRIBUTES
 

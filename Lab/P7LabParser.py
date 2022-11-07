@@ -114,6 +114,10 @@ def get_times(content, props):
         else:
             props[description + "_procent"] = result[3]
 
+    for prop in props:
+        if props is "p7_validating_reformulated_plan":
+
+
 parser = Parser()
 parser.add_function(get_times, file="run.log")
 parser.parse()

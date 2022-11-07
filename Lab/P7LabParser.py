@@ -44,23 +44,29 @@ def get_times(content, props):
     #The iterations have the same name so the values from all iterations are seperated by a comma and placed in the same cell.
     for result in results:
         description = "p7_" + result[1].strip().lower().replace(" ","_")
-        if description + "_ms" in props:
-            props[description + "_ms"] += ", " + float(result[2])
-        else:
-            props[description + "_ms"] = float(result[2])
+        checkName = description + "_ms"
+        counter = 0
+        while checkName in props:
+            checkName = description + "_ms" + str(counter)
+            counter += 1
+        props[checkName] = float(result[2])
 
-        if description + "_procent" in props:
-            props[description + "_procent"] += ", " + result[3]
-        else:
-            props[description + "_procent"] = result[3]
+        checkName = description + "_procent"
+        counter = 0
+        while checkName in props:
+            checkName = description + "_procent" + str(counter)
+            counter += 1
+        props[checkName] = result[3]
 
         note = result[4].strip()
         if note == "":
             note = " "
-        if description + "_notes" in props:
-            props[description + "_notes"] += ", " + note
-        else:
-            props[description + "_notes"] = note
+        checkName = description + "_notes"
+        counter = 0
+        while checkName in props:
+            checkName = description + "_notes" + str(counter)
+            counter += 1
+        props[checkName] = note
 
 
 parser = Parser()

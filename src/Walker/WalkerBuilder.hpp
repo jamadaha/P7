@@ -2,8 +2,8 @@
 #define WALKER_BUILDER
 
 #include "BaseWalker.hh"
-#include "Walker.hpp"
-#include "WalkerResume.hpp"
+#include "Variants/Walker.hpp"
+#include "Variants/WalkerResume.hpp"
 
 #include "DepthFunctions/BaseDepthFunction.hh"
 #include "DepthFunctions/ConstantDepthFunction.hh"

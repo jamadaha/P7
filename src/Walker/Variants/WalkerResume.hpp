@@ -4,16 +4,16 @@
 #include <vector>
 #include <list>
 
-#include "../IntermediatePDDL/PDDLActionInstance.hh"
-#include "Heuristics/BaseHeuristic.hh"
-#include "DepthFunctions/BaseDepthFunction.hh"
-#include "WidthFunctions/BaseWidthFunction.hh"
-#include "ActionGenerator.hpp"
+#include "../../IntermediatePDDL/PDDLActionInstance.hh"
+#include "../Heuristics/BaseHeuristic.hh"
+#include "../DepthFunctions/BaseDepthFunction.hh"
+#include "../WidthFunctions/BaseWidthFunction.hh"
+#include "../ActionGenerator.hpp"
 
-#include "../Config/Config.hh"
-#include "../Helpers/Hashes.hh"
+#include "../../Config/Config.hh"
+#include "../../Helpers/Hashes.hh"
 
-#include "BaseWalker.hh"
+#include "../BaseWalker.hh"
 
 class WalkerResume : public BaseWalker {
 public:

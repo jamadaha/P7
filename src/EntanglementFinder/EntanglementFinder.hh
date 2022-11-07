@@ -8,8 +8,8 @@
 #include <chrono>
 
 #include "../IntermediatePDDL/PDDLInstance.hh"
-#include "../Walker/Walker.hpp"
 #include "EntanglementOccurance.hh"
+#include "../Walker/Path.hpp"
 
 class EntanglementFinder {
 public:

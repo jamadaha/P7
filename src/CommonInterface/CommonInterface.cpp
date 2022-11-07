@@ -63,7 +63,7 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 	int timeLeft = config.GetItem<int>("totalTimeLimit") * 1000;
 	int currentIncrementTimeLimit = config.GetItem<int>("startIncrement") * 1000;
 
-	int iterativeProcess = Report->Begin("Reformulating Iteratively");
+	int iterativeProcess = Report->Begin("Solving Problem");
 
 	DownwardRunner::DownwardRunnerResult runRes;
 	int counter = 1;
@@ -100,7 +100,7 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 }
 
 InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, PDDLInstance* instance) {
-	int iterativeProcess = Report->Begin("Reformulating Directly");
+	int iterativeProcess = Report->Begin("Solving Problem");
 	int timeLimit = config.GetItem<int>("totalTimeLimit") * 1000;
 
 	if (RunSingle(reformulator, instance, iterativeProcess, 0, timeLimit).RanWithoutErrors)

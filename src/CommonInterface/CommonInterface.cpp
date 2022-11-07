@@ -208,7 +208,7 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 			return CommonInterface::RunResult::ErrorsEncountered;
 	}
 
-	if (config.GetItem<bool>("debugmode")) {
+	if (config.GetItem<bool>("validate")) {
 		auto validateSASPlanStep = ValidatePlans(CommonInterface::TempDomainName, CommonInterface::TempProblemName, CommonInterface::FastDownwardSASName);
 		if (!validateSASPlanStep.RanWithoutErrors)
 			return CommonInterface::RunResult::ErrorsEncountered;
@@ -226,7 +226,7 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 	if (!generateNewSASPlanStep.RanWithoutErrors)
 		return CommonInterface::RunResult::ErrorsEncountered;
 
-	if (config.GetItem<bool>("debugmode")) {
+	if (config.GetItem<bool>("validate")) {
 		auto validateSASPlanStep = ValidatePlans(config.GetItem<filesystem::path>("domain"), config.GetItem<filesystem::path>("problem"), CommonInterface::OutputSASName);
 		if (!validateSASPlanStep.RanWithoutErrors)
 			return CommonInterface::RunResult::ErrorsEncountered;

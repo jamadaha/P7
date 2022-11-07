@@ -7,7 +7,7 @@ BaseWalker* WalkerBuilder::BuildWalker(std::string walkerName, unsigned int widt
 }
 
 BaseWidthFunction* WalkerBuilder::GetWidthFunction(unsigned int width) {
-    return new ConstantWidthFunction(width);
+    return new TimeWidthFunction(width);
 }
 
 BaseHeuristic* WalkerBuilder::GetHeuristic(std::string heuristicName, PDDLInstance *instance) {

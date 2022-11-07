@@ -11,9 +11,7 @@ ERROR_ATTRIBUTES= ['domain',
                     'algorithm', 
                     'unexplained_errors', 
                     'error', 
-                    'planner_wall_clock_time', 
-                    'raw_memory', 
-                    'node']
+                    'raw_memory']
 
 PREDEFINED_ATTRIBUTES= ['cost', 
                         'coverage', 
@@ -24,14 +22,11 @@ PREDEFINED_ATTRIBUTES= ['cost',
                         'initial_h_value', 
                         'plan_length', 
                         'planner_time', 
-                        'quality', 
-                        'score_*', 
                         'search_time', 
-                        'total_time', 
                         'unsolvable',
                         'p7_solving_problem_ms',
-                        'p7_validating_reformulated_plan',
-                        'p7_validating_rebuilded_plan']
+                        'p7_validating_reformulated_plan_notes',
+                        'p7_validating_rebuilded_plan_notes']
 
 ATTRIBUTES = ERROR_ATTRIBUTES + PREDEFINED_ATTRIBUTES
 
@@ -64,6 +59,7 @@ def add_taskwise_reports(experiment, reformulators):
     for reformulator in reformulators:
         experiment.add_report(TaskwiseReport(attributes=["*_ms"],filter_algorithm=[reformulator]), outfile=reformulator+"_report_ms.html")
         experiment.add_report(TaskwiseReport(attributes=["*_procent"],filter_algorithm=[reformulator]), outfile=reformulator+"_report_procent.html")
+        experiment.add_report(TaskwiseReport(attributes=["*_notes"],filter_algorithm=[reformulator]), outfile=reformulator+"_report_notes.html")
 
 def add_parsers(experiment):
     EXITCODE_PARSER = os.path.join(os.path.dirname(os.path.abspath(__file__)),"ExitcodeParser.py")

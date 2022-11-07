@@ -162,7 +162,7 @@ InterfaceStep<SASPlan> CommonInterface::ParseSASPlan() {
 	SASParser sasParser;
 	filesystem::path sasPath = filesystem::path(CommonInterface::FastDownwardSASName);
 	SASPlan reformulatedSASPlan = sasParser.Parse(sasPath);
-	Report->Stop();
+	Report->Stop(to_string(reformulatedSASPlan.cost));
 	return InterfaceStep<SASPlan>(reformulatedSASPlan);
 }
 
@@ -170,7 +170,7 @@ InterfaceStep<SASPlan> CommonInterface::RebuildSASPlan(SASPlan* reformulatedSASP
 	ConsoleHelper::PrintInfo("Rebuilding the SAS plan...");
 	Report->Begin("Rebuild SAS plan");
 	SASPlan outputPlan = reformulator->RebuildSASPlan(instance, reformulatedSASPlan);
-	Report->Stop();
+	Report->Stop(to_string(outputPlan.cost));
 	return InterfaceStep<SASPlan>(outputPlan);
 }
 

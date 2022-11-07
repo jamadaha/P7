@@ -21,13 +21,13 @@
 
 class WalkerBuilder {
 public:
-    static BaseWalker* BuildWalker(std::string walkerName, unsigned int width, std::string heuristicName, PDDLInstance *instance);
+    static BaseWalker* BuildWalker(std::string walkerName, unsigned int width, std::string heuristicName, PDDLInstance *instance, ActionGenerator* actionGenerator);
 private:
 
     static BaseDepthFunction* GetDepthFunction();
     static BaseWidthFunction* GetWidthFunction(unsigned int width);
 	static BaseHeuristic* GetHeuristic(std::string heuristicName, PDDLInstance *instance);
-	static BaseWalker* GetWalker(std::string walkerName, BaseWidthFunction *widthFunction, BaseHeuristic *heuristic, PDDLInstance *instance);
+	static BaseWalker* GetWalker(std::string walkerName, BaseWidthFunction *widthFunction, BaseHeuristic *heuristic, PDDLInstance *instance, ActionGenerator* actionGenerator);
 };
 
 #endif

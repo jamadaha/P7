@@ -5,6 +5,7 @@
 #include "../SASParser/SASParser.hh"
 #include "../Config/Config.hh"
 #include "../RunReport/RunReport.hh"
+#include "../Walker/ActionGenerator.hpp"
 
 class BaseReformulator {
 public:
@@ -17,6 +18,8 @@ public:
 
 	virtual PDDLInstance ReformulatePDDL(PDDLInstance* instance) = 0;
 	virtual SASPlan RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) = 0;
+
+	ActionGenerator* actionGenerator;
 protected:
 	Config* Configs;
 	RunReport* Report;

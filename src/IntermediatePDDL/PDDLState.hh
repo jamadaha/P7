@@ -120,7 +120,7 @@ namespace std {
                 hashValue ^= hash<unordered_set<unsigned int>>{}(i.second) << (s.unaryFacts.size() * i.first);
             for (auto i : s.binaryFacts)
                 for (auto j : i.second)
-                    hashValue ^= s.binaryFacts.size() << (i.first ^ (j.first * j.second));
+                    hashValue ^= s.binaryFacts.size() << (i.first ^ (j.first >> j.second));
             for (auto i : s.multiFacts) {
                 for (auto j : i.second) {
                     size_t multiHash = hash<MultiFact>{}(j);

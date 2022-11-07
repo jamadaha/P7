@@ -64,6 +64,8 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 
 	int iterativeProcess = Report->Begin("Solving Problem");
 
+	reformulator->actionGenerator = new ActionGenerator(&instance->domain->actions, instance->problem->objects.size());
+
 	DownwardRunner::DownwardRunnerResult runRes;
 	int counter = 1;
 	while (timeLeft > 0) {

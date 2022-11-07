@@ -1,9 +1,9 @@
 #include "WalkerBuilder.hpp"
 
-BaseWalker* WalkerBuilder::BuildWalker(std::string walkerName, unsigned int width, std::string heuristicName, PDDLInstance *instance) {
+BaseWalker* WalkerBuilder::BuildWalker(std::string walkerName, unsigned int width, std::string heuristicName, PDDLInstance *instance, ActionGenerator* actionGenerator) {
     BaseWidthFunction *widthFunction = GetWidthFunction(width);
     BaseHeuristic *heuristic = GetHeuristic(heuristicName, instance);
-    return GetWalker(walkerName, widthFunction, heuristic, instance);
+    return GetWalker(walkerName, widthFunction, heuristic, instance, actionGenerator);
 }
 
 BaseWidthFunction* WalkerBuilder::GetWidthFunction(unsigned int width) {
@@ -23,9 +23,9 @@ BaseHeuristic* WalkerBuilder::GetHeuristic(std::string heuristicName, PDDLInstan
 		throw std::invalid_argument("Invalid heuristic specified in config");
 }
 
-BaseWalker* WalkerBuilder::GetWalker(std::string walkerName, BaseWidthFunction *widthFunction, BaseHeuristic *heuristic, PDDLInstance *instance) {
+BaseWalker* WalkerBuilder::GetWalker(std::string walkerName, BaseWidthFunction *widthFunction, BaseHeuristic *heuristic, PDDLInstance *instance, ActionGenerator* actionGenerator) {
     if (walkerName == "walker")
-		return new Walker(instance, heuristic, widthFunction);
+		return new Walker(instance, heuristic, widthFunction, actionGenerator);
 	else
 		throw std::invalid_argument("Invalid walker specified in config");
 }

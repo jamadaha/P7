@@ -17,8 +17,8 @@
 
 class Walker : public BaseWalker {
 public:
-    Walker(PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) 
-        : BaseWalker("Default", instance, heuristic, widthFunc) {}
+    Walker(PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc, ActionGenerator* actionGenerator) 
+        : BaseWalker("Default", instance, heuristic, widthFunc, actionGenerator) {}
     std::vector<Path> Walk() override;
 private:
     const unsigned int maxStepCount = 1000;

@@ -21,7 +21,6 @@
 class WalkerReformulator : public BaseReformulator {
 public:
 	WalkerReformulator(Config* config, RunReport* report) : BaseReformulator(config, report) {
-
 	}
 	PDDLInstance ReformulatePDDL(PDDLInstance* instance) override;
 	SASPlan RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) override;

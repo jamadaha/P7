@@ -20,6 +20,7 @@ struct MultiFact {
         for (int i = 0; i < indexes->size(); i++)
             fact.push_back(objects->at(indexes->at(i)));
     };
+    MultiFact(const MultiFact &mf) : fact(mf.fact) {};
 
 #pragma region Operators
 #pragma region Equality
@@ -72,6 +73,7 @@ struct PDDLState {
               std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts, 
               std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts) :
         unaryFacts(unaryFacts), binaryFacts(binaryFacts), multiFacts(multiFacts) {};
+    PDDLState(const PDDLState &state) : unaryFacts(state.unaryFacts), binaryFacts(state.binaryFacts), multiFacts(state.multiFacts) {};
 
 #pragma region ContainsFact
 

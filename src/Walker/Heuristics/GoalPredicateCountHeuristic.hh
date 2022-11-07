@@ -68,15 +68,21 @@ public:
 			for (auto factIter = (*iter).second.begin(); factIter != (*iter).second.end(); factIter++)
 				if (state->ContainsFact((*iter).first, &(*factIter)))
 					value += 1000;
+		for (auto iter = problem->goalState.binaryFacts.begin(); iter != problem->goalState.binaryFacts.end(); iter++)
+			for (auto factIter = (*iter).second.begin(); factIter != (*iter).second.end(); factIter++)
+				if (state->ContainsFact((*iter).first, (*factIter)))
+					value += 2000;
 		for (auto iter = problem->goalState.multiFacts.begin(); iter != problem->goalState.multiFacts.end(); iter++)
 			for (auto factIter = (*iter).second.begin(); factIter != (*iter).second.end(); factIter++)
 				if (state->ContainsFact((*iter).first, &(*factIter)))
-					value += 1000;
+					value += 3000;
 		for (auto iter = goalPreconditions.begin(); iter != goalPreconditions.end(); iter++) {
 			if (domain->predicates.at((*iter)).arguments.size() == 1)
 				value += state->unaryFacts.at((*iter)).size();
+			else if (domain->predicates.at((*iter)).arguments.size() == 2)
+				value += 2 * state->binaryFacts.at((*iter)).size();
 			else
-				value += 2 * state->multiFacts.at((*iter)).size();
+				value += 3 * state->multiFacts.at((*iter)).size();
 		}
 		
 		return value;

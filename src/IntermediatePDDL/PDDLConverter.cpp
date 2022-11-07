@@ -136,7 +136,7 @@ std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsi
 std::unordered_map<unsigned int, std::unordered_set<MultiFact>> PDDLConverter::GetMultiFacts(PDDLDomain *domain, std::unordered_map<std::string, unsigned int> *objectMap, LiteralList *literalList) {
     std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts;
     for (int i = 0; i < domain->predicates.size(); i++)
-        if (domain->predicates[i].argumentCount > 1)
+        if (domain->predicates[i].argumentCount > 2)
             multiFacts[i] = std::unordered_set<MultiFact>();
 
     for (int i = 0; i < literalList->size(); i++) {

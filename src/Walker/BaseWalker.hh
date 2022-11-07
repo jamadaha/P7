@@ -5,6 +5,7 @@
 #include <list>
 
 #include "../IntermediatePDDL/PDDLActionInstance.hh"
+#include "Path.hpp"
 #include "Heuristics/BaseHeuristic.hh"
 #include "DepthFunctions/BaseDepthFunction.hh"
 #include "WidthFunctions/BaseWidthFunction.hh"
@@ -12,15 +13,6 @@
 
 #include "../Config/Config.hh"
 #include "../Helpers/Hashes.hh"
-
-struct Path {
-    std::vector<PDDLActionInstance> steps;
-    Path(std::vector<PDDLActionInstance> steps) : steps(steps) {};
-
-    friend bool operator==(const Path& lhs, const Path& rhs) {
-        return lhs.steps == rhs.steps;
-    }
-};
 
 namespace std {
     template <>

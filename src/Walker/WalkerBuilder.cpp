@@ -3,7 +3,7 @@
 BaseWalker* WalkerBuilder::BuildWalker(std::string walkerName, unsigned int width, std::string heuristicName, PDDLInstance *instance) {
     BaseWidthFunction *widthFunction = GetWidthFunction(width);
     BaseHeuristic *heuristic = GetHeuristic(heuristicName, instance);
-    return GetWalker(walkerName, widthFunction, heuristic);
+    return GetWalker(walkerName, widthFunction, heuristic, instance);
 }
 
 BaseWidthFunction* WalkerBuilder::GetWidthFunction(unsigned int width) {
@@ -21,6 +21,13 @@ BaseHeuristic* WalkerBuilder::GetHeuristic(std::string heuristicName, PDDLInstan
 		throw std::invalid_argument("Invalid heuristic specified in config");
 }
 
-BaseWalker* WalkerBuilder::GetWalker(std::string walkerName, BaseWidthFunction *widthFunction, BaseHeuristic *heuristic) {
-    
+BaseWalker* WalkerBuilder::GetWalker(std::string walkerName, BaseWidthFunction *widthFunction, BaseHeuristic *heuristic, PDDLInstance *instance) {
+    if (walkerName == "walker")
+		return new Walker(instance, heuristic, widthFunction);
+	else if (walkerName == "DFS")
+		return new DFS(instance, heuristic, widthFunction);
+	else if (walkerName == "BFS")
+		return new BFS(instance, heuristic, widthFunction);
+	else
+		throw std::invalid_argument("Invalid walker specified in config");
 }

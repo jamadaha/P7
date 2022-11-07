@@ -28,7 +28,7 @@ private:
     static BaseDepthFunction* GetDepthFunction();
     static BaseWidthFunction* GetWidthFunction(unsigned int width);
 	static BaseHeuristic* GetHeuristic(std::string heuristicName, PDDLInstance *instance);
-	static BaseWalker* GetWalker(std::string walkerName, BaseWidthFunction *widthFunction, BaseHeuristic *heuristic);
+	static BaseWalker* GetWalker(std::string walkerName, BaseWidthFunction *widthFunction, BaseHeuristic *heuristic, PDDLInstance *instance);
 };
 
 #endif

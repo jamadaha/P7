@@ -26,7 +26,8 @@ def add_absolute_report(experiment):
                             'score_*', 
                             'search_time', 
                             'total_time', 
-                            'unsolvable']
+                            'unsolvable',
+                            'p7_solving_problem_ms']
 
     ATTRIBUTES = ERROR_ATTRIBUTES + PREDEFINED_ATTRIBUTES
     experiment.add_report(AbsoluteReport(attributes=ATTRIBUTES), outfile="report.html")

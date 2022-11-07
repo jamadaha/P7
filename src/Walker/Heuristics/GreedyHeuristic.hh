@@ -9,29 +9,27 @@ public:
 	GreedyHeuristic(const PDDLDomain *domain, const PDDLProblem *problem) : BaseHeuristic(domain, problem){};
 
 	PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const override {
-		std::pair<PDDLActionInstance*, int> solution;
 		std::unordered_map<PDDLActionInstance*, int> solutions;
 
 		/*Find good bester solutions*/
-		for (auto iter = choices->begin(); iter != choices->end(); iter++){
-			if (!solutions.contains(&(*iter))){
+		for (int i = 0; i < choices->size(); i++) {
+			if (!solutions.contains(&choices->at(i))){
 				/*Calculatings score for each index*/
-				solutions.emplace(&(*iter), this->Eval(state));
+				solutions.emplace(&choices->at(i), this->Eval(state));
 			}
 		}
 
 		/*Add highest pair to solution*/
-		unsigned int currentMax = 0;
+		int currentMax = -1;
 		PDDLActionInstance *currentAction;
 		for(auto iter = solutions.begin(); iter != solutions.end(); ++iter){
-			if (iter->second > currentMax) {
-				currentMax = iter->second; 
-				currentAction = iter->first;                
+			if ((*iter).second > currentMax) {
+				currentMax = (*iter).second; 
+				currentAction = (*iter).first;                
 			}
 		}
 
-		solution = std::pair<PDDLActionInstance*, int>(currentAction, currentMax);
-		return solution.first;
+		return currentAction;
 	}
 
     int Eval(const PDDLState *state) const override {

@@ -8,7 +8,6 @@ InterfaceStep<BaseReformulator*> CommonInterface::GetReformulator(int reformulat
 	BaseReformulator* reformulator;
 	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "sameoutput") {
 		reformulator = new SameOutputReformulator(&config, Report);
-		isDirect = true;
 	}
 	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "walker") {
 		reformulator = new WalkerReformulator(&config, Report);
@@ -103,7 +102,7 @@ InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, P
 	int iterativeProcess = Report->Begin("Solving Problem");
 	int timeLimit = config.GetItem<int>("totalTimeLimit") * 1000;
 
-	if (RunSingle(reformulator, instance, iterativeProcess, 0, timeLimit).RanWithoutErrors)
+	if (RunSingle(reformulator, instance, iterativeProcess, timeLimit, timeLimit).RanWithoutErrors)
 		return InterfaceStep<void>();
 	else
 		return InterfaceStep<void>(false);
@@ -209,7 +208,7 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 			return CommonInterface::RunResult::ErrorsEncountered;
 	}
 
-	if (config.GetItem<bool>("debugmode")) {
+	if (config.GetItem<bool>("validate")) {
 		auto validateSASPlanStep = ValidatePlans(CommonInterface::TempDomainName, CommonInterface::TempProblemName, CommonInterface::FastDownwardSASName);
 		if (!validateSASPlanStep.RanWithoutErrors)
 			return CommonInterface::RunResult::ErrorsEncountered;
@@ -227,7 +226,7 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 	if (!generateNewSASPlanStep.RanWithoutErrors)
 		return CommonInterface::RunResult::ErrorsEncountered;
 
-	if (config.GetItem<bool>("debugmode")) {
+	if (config.GetItem<bool>("validate")) {
 		auto validateSASPlanStep = ValidatePlans(config.GetItem<filesystem::path>("domain"), config.GetItem<filesystem::path>("problem"), CommonInterface::OutputSASName);
 		if (!validateSASPlanStep.RanWithoutErrors)
 			return CommonInterface::RunResult::ErrorsEncountered;

@@ -43,8 +43,11 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 	auto walkerNames = Configs->GetItem<vector<string>>("walkers");
 	auto walkerHeuistics = Configs->GetItem<vector<string>>("walkersHeuristic");
 	auto walkersTimes = Configs->GetItem<vector<double>>("walkersTimeDistribution");
-	for (int i = 0; i < walkerNames.size(); i++)
+	for (int i = 0; i < walkerNames.size(); i++) {
 		walkers.push_back(WalkerBuilder::BuildWalker(walkerNames.at(i), walkersTimes.at(i), walkerHeuistics.at(i), instance));
+		if (Configs->GetItem<bool>("debugmode"))
+			SetupWalkerDebugInfo(walkers.at(walkers.size() - 1));
+	}
 
 	std::vector<Path> paths;
 	for (int i = 0; i < walkers.size(); i++) {

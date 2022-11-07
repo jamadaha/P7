@@ -15,19 +15,19 @@
 class ActionGenerator {
 public:
     unsigned int GetTotalActionsGenerated() { return totalActions; };
-    ActionGenerator(const std::vector<PDDLAction> *actions, const unsigned int objectCount) : actions(actions) {
+    ActionGenerator(std::vector<PDDLAction> *actions, const unsigned int objectCount) : actions(actions) {
         for (int i = 0; i < objectCount; i++)
             objects.emplace(i);
     };
 
     /// @brief For a given state, generate all possible action instances
-    std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state);
+    std::vector<PDDLActionInstance> GenerateActions(PDDLState *state);
     /// @brief For a given action, generate all possible action instances
-    std::vector<PDDLActionInstance> GenerateActions(const PDDLAction *action, const PDDLState *state);
+    std::vector<PDDLActionInstance> GenerateActions(PDDLAction *action, PDDLState *state);
 
     /// @brief For the given \p action append all possible object permutations to candidate objects, only looks at unary literals
     /// @return Returns true if there is some legal permutation, false if not
-    bool GetCandidateObjects(std::vector<std::unordered_set<unsigned int>> &candidateObjects, const PDDLAction *action, const PDDLState *state);
+    bool GetCandidateObjects(std::vector<std::unordered_set<unsigned int>> &candidateObjects, PDDLAction *action, PDDLState *state);
     /// @brief Finds all object permutations which are legal for the given literals
     /// @param literals Some unary literals
     std::unordered_set<unsigned int> GetCandidateObjects(const std::unordered_set<const PDDLLiteral*> *literals, const PDDLState *state);
@@ -46,10 +46,10 @@ public:
 
 private:
     unsigned int totalActions = 0;
-    const std::vector<PDDLAction> *actions;
+    std::vector<PDDLAction> *actions;
     std::unordered_set<unsigned int> objects;
 
-    std::unordered_map<size_t, std::unordered_set<unsigned int>> CandidateObjectsCache;
+    std::unordered_map<size_t, std::vector<PDDLActionInstance>> ActionsCache;
 };
 
 #endif

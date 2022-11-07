@@ -58,6 +58,13 @@ namespace std {
             return hash<vector<unsigned int>>{}(s.fact);
         }
     };
+
+    template <>
+    struct hash<MultiFact*> {
+        auto operator()(MultiFact* s) -> size_t {
+            return hash<vector<unsigned int>>{}(s->fact);
+        }
+    };
 }
 
 struct PDDLState {
@@ -72,6 +79,8 @@ struct PDDLState {
               std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts, 
               std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts) :
         unaryFacts(unaryFacts), binaryFacts(binaryFacts), multiFacts(multiFacts) {};
+
+    std::size_t GetHash();
 
 #pragma region ContainsFact
 
@@ -107,6 +116,8 @@ struct PDDLState {
         return (lhs.unaryFacts == rhs.unaryFacts && lhs.binaryFacts == rhs.binaryFacts && lhs.multiFacts == rhs.multiFacts);
     };
     
+private:
+    std::size_t HashValue;
 };
 
 namespace std {
@@ -117,6 +128,26 @@ namespace std {
             size_t h2 = s.binaryFacts.size();
             size_t h3 = s.multiFacts.size();
             return (h1 ^ (h2 << 1)) ^ (h3 << 1);
+        }
+    };
+
+    template <>
+    struct hash<PDDLState*> {
+        auto operator()(PDDLState* s) -> size_t {
+            size_t hashValue;
+            hashValue = (s->unaryFacts.size() ^ (s->binaryFacts.size() << 6)) ^ (s->multiFacts.size() << 1);
+            for (auto i : s->unaryFacts)
+                hashValue ^= i.first >> hash<unordered_set<unsigned int>>{}(i.second);
+            for (auto i : s->binaryFacts)
+                for (auto j : i.second)
+                    hashValue ^= i.first >> j.first >> j.second;
+            for (auto i : s->multiFacts) {
+                for (auto j : i.second) {
+                    size_t multiHash = hash<MultiFact*>{}(&j);
+                    hashValue ^= i.first >> multiHash;
+                }
+            }
+            return hashValue;
         }
     };
 }

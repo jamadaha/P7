@@ -2,17 +2,24 @@
 
 using namespace std;
 
-vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *state) {
+vector<PDDLActionInstance> ActionGenerator::GenerateActions(PDDLState *state) {
+    size_t hashValue = state->GetHash();
+    if (ActionsCache.contains(hashValue))
+        return ActionsCache.at(hashValue);
+
     vector<PDDLActionInstance> legalActions;
     for (auto iter = actions->begin(); iter != actions->end(); iter++) {
-        vector<PDDLActionInstance> tempActions = GenerateActions(&(*iter), state);
+        vector<PDDLActionInstance> tempActions = GenerateActions(&*iter, state);
         copy(tempActions.begin(), tempActions.end(), back_inserter(legalActions));
     }
+
+    ActionsCache.emplace(state->GetHash(), legalActions);
+
     totalActions += legalActions.size();
     return legalActions;
 }
 
-vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *action, const PDDLState *state) {
+vector<PDDLActionInstance> ActionGenerator::GenerateActions(PDDLAction *action, PDDLState *state) {
     vector<PDDLActionInstance> legalActions;
 
     // Object which fulfill the unary literals of the action preconditions
@@ -71,7 +78,7 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *ac
     return legalActions;
 }
 
-bool ActionGenerator::GetCandidateObjects(vector<unordered_set<unsigned int>> &candidateObjects, const PDDLAction *action, const PDDLState *state) {
+bool ActionGenerator::GetCandidateObjects(vector<unordered_set<unsigned int>> &candidateObjects, PDDLAction *action, PDDLState *state) {
     const int parameterLength = action->parameters.size();
     for (int i = 0; i < parameterLength; i++) {
         std::unordered_set<unsigned int> tempCandididateObjects = GetCandidateObjects(&action->applicableUnaryLiterals.at(i), state);
@@ -84,10 +91,6 @@ bool ActionGenerator::GetCandidateObjects(vector<unordered_set<unsigned int>> &c
 }
 
 unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) {
-    size_t hash = std::hash<const unordered_set<const PDDLLiteral*>*>{}(literals);
-    if (CandidateObjectsCache.contains(hash))
-        return CandidateObjectsCache.at(hash);
-
     unordered_set<unsigned int> candidateObjects;
 
     for (auto iter = literals->begin(); iter != literals->end(); iter++)
@@ -100,8 +103,6 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered
         candidateObjects = objects;
     
     RemoveIllegal(candidateObjects, literals, state);
-
-    CandidateObjectsCache.emplace(hash, candidateObjects);
 
     return candidateObjects;
 }

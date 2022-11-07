@@ -17,7 +17,7 @@ struct PDDLDomain {
     // Goes from predicate name to index in "predicates"
     // e.g. "ROOM" => 0, "IsBall" => 1,...
     const std::unordered_map<std::string, unsigned int> predicateMap;
-    const std::vector<PDDLAction> actions;
+    std::vector<PDDLAction> actions;
     // Set of predicates which are in no effects
     const std::unordered_set<unsigned int> staticPredicates;
     PDDLDomain() : name("Not Set") {};

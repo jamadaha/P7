@@ -2,6 +2,11 @@
 
 #include "PDDLInstance.hh"
 
+std::size_t PDDLState::GetHash() {
+    HashValue = std::hash<PDDLState*>{}(this);
+    return HashValue;
+}
+
 void PDDLState::DoAction(const PDDLActionInstance *action) {
     int actionEffectLength = action->action->effects.size();
     for (int i = 0; i < actionEffectLength; i++) {

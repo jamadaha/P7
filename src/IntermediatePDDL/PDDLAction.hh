@@ -32,6 +32,8 @@ struct PDDLAction {
         applicableMultiLiterals(GenerateApplicableLiterals(false)),
         applicableUnaryPredicates(GenerateApplicablePredicates(true)) {};
 
+    std::size_t GetHash();
+
     /// @return Returns true if name, parameters and preconditions are the same, ignores parameter names
     friend bool operator==(const PDDLAction& lhs, const PDDLAction& rhs) {
         if (lhs.name.compare(rhs.name) != 0)
@@ -46,6 +48,7 @@ struct PDDLAction {
     }
 
 private:
+    std::size_t HashValue;
     std::vector<std::unordered_set<const PDDLLiteral*>> GenerateApplicableLiterals(bool unary) const;
     std::vector<std::unordered_set<unsigned int>> GenerateApplicablePredicates(bool unary) const;
 };
@@ -54,6 +57,13 @@ namespace std {
     template <>
     struct hash<const PDDLAction*> {
         auto operator()(const PDDLAction* s) const -> size_t {
+            return hash<string>{}(s->name) << s->preconditions.size() << s->effects.size() << s->parameters.size();
+        }
+    };
+
+    template <>
+    struct hash<PDDLAction*> {
+        auto operator()(PDDLAction* s) -> size_t {
             return hash<string>{}(s->name) << s->preconditions.size() << s->effects.size() << s->parameters.size();
         }
     };

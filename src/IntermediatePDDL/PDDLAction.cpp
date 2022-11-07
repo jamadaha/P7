@@ -1,5 +1,12 @@
 #include "PDDLAction.hh"
 
+std::size_t PDDLAction::GetHash() {
+    if (HashValue != 0)
+        return HashValue;
+    HashValue = std::hash<PDDLAction*>{}(this);
+    return HashValue;
+}
+
 std::vector<std::unordered_set<const PDDLLiteral*>> PDDLAction::GenerateApplicableLiterals(bool unary) const {
     std::vector<std::unordered_set<const PDDLLiteral*>> set;
     if (parameters.size() == 0 || preconditions.size() == 0)

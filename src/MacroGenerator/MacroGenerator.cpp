@@ -1,5 +1,6 @@
 ﻿#include "MacroGenerator.hh"
-
+#include "../AlgorithmHelper.hh"
+/*Check if a macro can be reduced into a simpler macro (or something like that :D)*/
 Macro MacroGenerator::CheckMacro(Macro m) {
     /*Get macro chain*/
     std::vector<PDDLActionInstance> instanceChain = m.path;
@@ -7,14 +8,17 @@ Macro MacroGenerator::CheckMacro(Macro m) {
     for (auto iter = instanceChain.rbegin(); iter != instanceChain.rend();){
         std::vector<PDDLLiteral> futureEff = iter->action->effects;
         ++iter;
+        std::vector<PDDLLiteral> currentPre = iter->action->preconditions;
         for (auto eff : futureEff){
-            for (auto prec : iter->action->preconditions){
+            for (auto pre : currentPre){
                 /*Make sure the macro is good*/
-                if (eff == prec){
-                    /*keep the good good ingelligent macro*/
+                if (AlgorithmHelper::Difference(eff, pre)){
+                    /*Keep the good good ingelligent macro*/
+                    continue;
                 }
                 else {
-                    /*keep the bad bad stupid macro*/
+                    /*remove the bad bad stupid macro*/
+                    /*Delete the action from the chain, how? I dont know man :D*/
                 }
             }
         }

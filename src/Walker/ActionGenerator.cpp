@@ -12,7 +12,7 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *sta
     return legalActions;
 }
 
-vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *action, const PDDLState *state) const {
+vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *action, const PDDLState *state) {
     vector<PDDLActionInstance> legalActions;
 
     // Object which fulfill the unary literals of the action preconditions
@@ -71,7 +71,7 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *ac
     return legalActions;
 }
 
-bool ActionGenerator::GetCandidateObjects(vector<unordered_set<unsigned int>> &candidateObjects, const PDDLAction *action, const PDDLState *state) const {
+bool ActionGenerator::GetCandidateObjects(vector<unordered_set<unsigned int>> &candidateObjects, const PDDLAction *action, const PDDLState *state) {
     const int parameterLength = action->parameters.size();
     for (int i = 0; i < parameterLength; i++) {
         std::unordered_set<unsigned int> tempCandididateObjects = GetCandidateObjects(&action->applicableUnaryLiterals.at(i), state);
@@ -83,7 +83,11 @@ bool ActionGenerator::GetCandidateObjects(vector<unordered_set<unsigned int>> &c
     return true;
 }
 
-unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) const {
+unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) {
+    size_t hash = std::hash<const unordered_set<const PDDLLiteral*>*>{}(literals);
+    if (CandidateObjectsCache.contains(hash))
+        return CandidateObjectsCache.at(hash);
+
     unordered_set<unsigned int> candidateObjects;
 
     for (auto iter = literals->begin(); iter != literals->end(); iter++)
@@ -96,6 +100,8 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered
         candidateObjects = objects;
     
     RemoveIllegal(candidateObjects, literals, state);
+
+    CandidateObjectsCache.emplace(hash, candidateObjects);
 
     return candidateObjects;
 }

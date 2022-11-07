@@ -6,6 +6,7 @@
 #include <map>
 #include <set>
 #include <iterator>
+#include <unordered_map>
 
 #include "../IntermediatePDDL/PDDLActionInstance.hh"
 #include "../IntermediatePDDL/PDDLInstance.hh"
@@ -22,14 +23,14 @@ public:
     /// @brief For a given state, generate all possible action instances
     std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state);
     /// @brief For a given action, generate all possible action instances
-    std::vector<PDDLActionInstance> GenerateActions(const PDDLAction *action, const PDDLState *state) const;
+    std::vector<PDDLActionInstance> GenerateActions(const PDDLAction *action, const PDDLState *state);
 
     /// @brief For the given \p action append all possible object permutations to candidate objects, only looks at unary literals
     /// @return Returns true if there is some legal permutation, false if not
-    bool GetCandidateObjects(std::vector<std::unordered_set<unsigned int>> &candidateObjects, const PDDLAction *action, const PDDLState *state) const;
+    bool GetCandidateObjects(std::vector<std::unordered_set<unsigned int>> &candidateObjects, const PDDLAction *action, const PDDLState *state);
     /// @brief Finds all object permutations which are legal for the given literals
     /// @param literals Some unary literals
-    std::unordered_set<unsigned int> GetCandidateObjects(const std::unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) const;
+    std::unordered_set<unsigned int> GetCandidateObjects(const std::unordered_set<const PDDLLiteral*> *literals, const PDDLState *state);
 
     /// @brief Removes those in \p set which do not match the given literals
     /// @param literals Some unary literals
@@ -47,6 +48,8 @@ private:
     unsigned int totalActions = 0;
     const std::vector<PDDLAction> *actions;
     std::unordered_set<unsigned int> objects;
+
+    std::unordered_map<size_t, unordered_set<unsigned int>> CandidateObjectsCache;
 };
 
 #endif

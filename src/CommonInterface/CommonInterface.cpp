@@ -75,6 +75,7 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 
 		// Run an iteration of our reformulation method
 		auto result = RunSingle(reformulator, instance, iterationID, reformulatorTimeLimit, downwardTimeLimit);
+		Report->Stop(iterationID);
 		if (result.RanWithoutErrors) {
 			// If we found a solution, stop iterating
 			runRes = result.Data;
@@ -90,22 +91,27 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 			currentIncrementTimeLimit = timeLeft / 2;
 		counter++;
 	}
-	Report->Stop(iterativeProcess);
 	if (runRes != DownwardRunner::FoundPlan) {
+		Report->Stop(iterativeProcess, "false");
 		ConsoleHelper::PrintError("Fast downward did not find a plan in time!");
 		return InterfaceStep<void>(false);
 	}
+	Report->Stop(iterativeProcess, "true");
 	return InterfaceStep<void>();
 }
 
 InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, PDDLInstance* instance) {
-	int iterativeProcess = Report->Begin("Solving Problem");
+	int directProcess = Report->Begin("Solving Problem");
 	int timeLimit = config.GetItem<int>("totalTimeLimit") * 1000;
 
-	if (RunSingle(reformulator, instance, iterativeProcess, timeLimit, timeLimit).RanWithoutErrors)
+	if (RunSingle(reformulator, instance, directProcess, timeLimit, timeLimit).RanWithoutErrors) {
+		Report->Stop(directProcess, "true");
 		return InterfaceStep<void>();
-	else
+	}
+	else {
+		Report->Stop(directProcess, "true");
 		return InterfaceStep<void>(false);
+	}
 }
 
 InterfaceStep<DownwardRunner::DownwardRunnerResult> CommonInterface::RunSingle(BaseReformulator* reformulator, PDDLInstance* instance, int reportID, int reformulatorTimeLimit, int downwardTimeLimit) {
@@ -131,7 +137,6 @@ InterfaceStep<DownwardRunner::DownwardRunnerResult> CommonInterface::RunSingle(B
 	runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, downwardTimeLimit);
 	auto runRes = runner.ParseDownwardLog();
 	Report->Stop();
-	Report->Stop(reportID);
 	if (runRes != DownwardRunner::FoundPlan) {
 		return InterfaceStep<DownwardRunner::DownwardRunnerResult>(runRes, false);
 	}

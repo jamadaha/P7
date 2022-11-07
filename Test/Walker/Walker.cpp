@@ -1,7 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "../../src/Walker/ActionGenerator.hpp"
-#include "../../src/Walker/Walker.hpp"
+#include "../../src/IntermediatePDDL/PDDLState.hh"
 
 const std::string TAG = "Walker ";
 

@@ -26,7 +26,8 @@ PREDEFINED_ATTRIBUTES= ['cost',
                         'unsolvable',
                         'p7_solving_problem_ms',
                         'p7_validating_reformulated_plan_notes',
-                        'p7_validating_rebuilded_plan_notes']
+                        'p7_validating_rebuilded_plan_notes',
+                        'p7_solving_problem_notes']
 
 ATTRIBUTES = ERROR_ATTRIBUTES + PREDEFINED_ATTRIBUTES
 

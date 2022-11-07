@@ -4,29 +4,21 @@
 #include <unordered_set>
 
 PDDLActionInstance* GreedyHeuristic::NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const {
-    int value = 0;
-    std::unordered_set<PDDLActionInstance> candidates;
-    std::pair<PDDLActionInstance, int> solution;
+    std::pair<PDDLActionInstance*, int> solution;
     PDDLActionInstance *solutionPtr;
-    std::unordered_map<PDDLActionInstance, int> solutions;
-
-    /*Is this nested badness even needed anymore? Probably not.*/
-    for(auto obj : *choices){
-        /*Make candidates*/
-        candidates.emplace(obj);
-    }
+    std::unordered_map<PDDLActionInstance*, int> solutions;
 
     /*Find good bester solutions*/
-    for (PDDLActionInstance s : candidates){
-        if (!solutions.contains(s)){
+    for (auto iter = choices->begin(); iter != choices->end(); iter++){
+        if (!solutions.contains(&(*iter))){
             /*Calculatings score for each index*/
-            solutions.emplace(s, this->Eval(state));
+            solutions.emplace(&(*iter), this->Eval(state));
         }
     }
 
     /*Add highest pair to solution*/
-    int currentMax = 0;
-    PDDLActionInstance currentAction;
+    unsigned int currentMax = 0;
+    PDDLActionInstance *currentAction;
     for(auto iter = solutions.begin(); iter != solutions.end(); ++iter){
         if (iter->second > currentMax) {
             currentMax = iter->second; 
@@ -34,10 +26,8 @@ PDDLActionInstance* GreedyHeuristic::NextChoice(PDDLState * state, std::vector<P
         }
     }
 
-    solution = std::pair<PDDLActionInstance, int>(currentAction, currentMax);
-    /*return new state at best value (solution)*/
-    solutionPtr = &(solution.first);
-    return solutionPtr;
+    solution = std::pair<PDDLActionInstance*, int>(currentAction, currentMax);
+    return solution.first;
 }
 
 int GreedyHeuristic::Eval(const PDDLState *state) const {

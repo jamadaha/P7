@@ -5,7 +5,6 @@
 
 PDDLActionInstance* GreedyHeuristic::NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const {
     std::pair<PDDLActionInstance*, int> solution;
-    PDDLActionInstance *solutionPtr;
     std::unordered_map<PDDLActionInstance*, int> solutions;
 
     /*Find good bester solutions*/

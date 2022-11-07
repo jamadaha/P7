@@ -23,6 +23,7 @@ add_subdirectory(src/EntanglementFinder)
 add_subdirectory(src/MacroGenerator)
 add_subdirectory(src/Walker/)
 add_subdirectory(src/Walker/DepthFunctions/)
+add_subdirectory(src/Walker/Heuristics/)
 add_subdirectory(src/)
 
 

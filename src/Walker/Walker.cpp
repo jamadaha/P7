@@ -12,14 +12,16 @@ Path Walker::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
         std::vector<PDDLActionInstance> possibleActions;
         possibleActions = actionGenerator.GenerateActions(&tempState);
 
-        if (possibleActions.size() == 0) break;
+        if (possibleActions.size() == 0) 
+            break;
         PDDLActionInstance *chosenAction = heuristic->NextChoice(&tempState, &possibleActions);
         tempState.DoAction(chosenAction);
+        size_t newHash = tempState.GetHash();
 
-        if (visitedStates.contains(tempState.GetHash()))
+        if (visitedStates.contains(newHash))
             break;
         else {
-            visitedStates.emplace(tempState.GetHash());
+            visitedStates.emplace(newHash);
             steps.push_back(*chosenAction);
 
             if (OnStateWalk != nullptr)

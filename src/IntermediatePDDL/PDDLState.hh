@@ -58,13 +58,6 @@ namespace std {
             return hash<vector<unsigned int>>{}(s.fact);
         }
     };
-
-    template <>
-    struct hash<MultiFact*> {
-        auto operator()(MultiFact* s) -> size_t {
-            return hash<vector<unsigned int>>{}(s->fact);
-        }
-    };
 }
 
 struct PDDLState {
@@ -115,35 +108,22 @@ struct PDDLState {
     friend bool operator== (const PDDLState &lhs, const PDDLState &rhs) {
         return (lhs.unaryFacts == rhs.unaryFacts && lhs.binaryFacts == rhs.binaryFacts && lhs.multiFacts == rhs.multiFacts);
     };
-    
-private:
-    std::size_t HashValue;
 };
 
 namespace std {
     template <>
     struct hash<PDDLState> {
-        auto operator()(const PDDLState& s) const -> size_t {
-            size_t h1 = s.unaryFacts.size();
-            size_t h2 = s.binaryFacts.size();
-            size_t h3 = s.multiFacts.size();
-            return (h1 ^ (h2 << 1)) ^ (h3 << 1);
-        }
-    };
-
-    template <>
-    struct hash<PDDLState*> {
-        auto operator()(PDDLState* s) -> size_t {
-            size_t hashValue;
-            hashValue = (s->unaryFacts.size() ^ (s->binaryFacts.size() << 6)) ^ (s->multiFacts.size() << 1);
-            for (auto i : s->unaryFacts)
-                hashValue ^= i.first >> hash<unordered_set<unsigned int>>{}(i.second);
-            for (auto i : s->binaryFacts)
+        auto operator()(PDDLState& s) const -> size_t {
+            size_t hashValue = s.unaryFacts.size();
+            hashValue = (s.unaryFacts.size() * (s.binaryFacts.size() << 1)) ^ (s.multiFacts.size() << 1);
+            for (auto i : s.unaryFacts)
+                hashValue ^= hash<unordered_set<unsigned int>>{}(i.second) << (s.unaryFacts.size() * i.first);
+            for (auto i : s.binaryFacts)
                 for (auto j : i.second)
-                    hashValue ^= i.first >> j.first >> j.second;
-            for (auto i : s->multiFacts) {
+                    hashValue ^= s.binaryFacts.size() << (i.first ^ (j.first * j.second));
+            for (auto i : s.multiFacts) {
                 for (auto j : i.second) {
-                    size_t multiHash = hash<MultiFact*>{}(&j);
+                    size_t multiHash = hash<MultiFact>{}(j);
                     hashValue ^= i.first >> multiHash;
                 }
             }

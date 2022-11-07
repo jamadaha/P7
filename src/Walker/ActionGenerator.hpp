@@ -45,6 +45,7 @@ public:
     static bool IsLegal(const std::vector<PDDLLiteral> *literals, const PDDLState *state, const std::vector<unsigned int> *objects);
 
 private:
+    int _uniqueStates = 0;
     unsigned int totalActions = 0;
     std::vector<PDDLAction> *actions;
     std::unordered_set<unsigned int> objects;

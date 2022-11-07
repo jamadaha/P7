@@ -16,6 +16,7 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(PDDLState *state) {
     ActionsCache.emplace(state->GetHash(), legalActions);
 
     totalActions += legalActions.size();
+    _uniqueStates++;
     return legalActions;
 }
 

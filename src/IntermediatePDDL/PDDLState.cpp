@@ -3,8 +3,7 @@
 #include "PDDLInstance.hh"
 
 std::size_t PDDLState::GetHash() {
-    HashValue = std::hash<PDDLState*>{}(this);
-    return HashValue;
+    return std::hash<PDDLState>{}(*this);
 }
 
 void PDDLState::DoAction(const PDDLActionInstance *action) {

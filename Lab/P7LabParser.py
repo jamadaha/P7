@@ -91,18 +91,28 @@ import re
 from lab.parser import Parser
 
 def get_times(content, props):
+    """
+    Only care about the ouput of P7 from:
 
-    result = content.split("(%)\n")[1].split("Total Time")[0]
-    
-    all_names = re.findall(r"(([a-zA-Z]+\s)+)",result)
-    all_times = re.findall(r"(\d+\.\d+)", result)
-    
-    times = all_times[::2]
-    procents = all_times[1::2]
+    Description Time Taken (ms) Time Taken (%)
+    ...
+    Total Time
+    """
+    results = content.split("(%)\n")[1].split("Total Time")[0]
 
-    for index in range(len(all_names)):
-        props[all_names[index][0].lower().replace(" ","_")+"ms"] = times[index]
-        props[all_names[index][0].lower().replace(" ","_")+"procent"] = procents[index]
+    results = re.findall(r"(([a-zA-Z\s0-9]+)\s+(\d+\.\d+)\s+(\d+\.\d+))",results)
+
+    #The iterations have the same name so the values from all iterations are seperated by a comma and placed in the same cell.
+    for result in results:
+        description = result[1].strip().lower().replace(" ","_")
+        if description + "_ms" in props:
+            props[description + "_ms"] += ", " + result[2]
+        else:
+            props[description + "_ms"] = result[2]
+        if description + "_procent" in props:
+            props[description + "_procent"] += ", " + result[3]
+        else:
+            props[description + "_procent"] = result[3]
 
 parser = Parser()
 parser.add_function(get_times, file="run.log")

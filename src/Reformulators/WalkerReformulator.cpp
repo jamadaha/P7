@@ -31,7 +31,6 @@ PDDLInstance WalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 		ConsoleHelper::PrintDebugInfo("[Macro Generator] Total generation time:         " + to_string(ellapsed) + "ms", debugIndent);
 	}
 
-	free(walker);
 	free(entanglementFinder);
 	free(entanglementEvaluator);
 	free(macroGenerator);
@@ -40,55 +39,82 @@ PDDLInstance WalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 }
 
 vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
-	walker = new Walker(instance, ActionGenerator(&instance->domain->actions, instance->problem->objects.size()));
-	BaseHeuristic *heuristic;
-	if (Configs->GetItem<string>("heuristic") == "random")
-		heuristic = new RandomHeuristic(Configs->GetItem<bool>("debugmode"));
-	else if (Configs->GetItem<string>("heuristic") == "goalCount")
-		heuristic = new GoalCountHeuristic(instance->domain, instance->problem);
-	else if (Configs->GetItem<string>("heuristic") == "goalPredicateCount")
-		heuristic = new GoalPredicateCountHeuristic(instance->domain, instance->problem);
-	else
-		throw std::invalid_argument("Invalid heuristic specified in config");
-	BaseDepthFunction *depthFunc = new ConstantDepthFunction(1000, *instance, 1);
-	BaseWidthFunction *widthFunc = new TimeWidthFunction(TimeLimit);
-
-	if (Configs->GetItem<bool>("debugmode")) {
-		ProgressBarHelper* bar;
-		walker->OnWalkerStart = [&]() {
-			bar = new ProgressBarHelper(widthFunc->max, "Walking", debugIndent + 1);
-
-			if (Configs->GetItem<bool>("printwalkersteps")) {
-				std::string command = "truncate -s 0 walkerLog";
-				system(command.c_str());
-			}
-		};
-		walker->OnWalkerStep = [&](int currentStep) {
-			bar->SetTo(currentStep);
-		};
-		walker->OnWalkerEnd = [&]() {
-			bar->End();
-		};
-		if (Configs->GetItem<bool>("printwalkersteps")) {
-			walker->OnTempStateMade = [&](PDDLInstance* instance, PDDLState* state) {
-				std::string command = "echo '" + state->ToString(instance) + "'" + " >> walkerLog";
-				system(command.c_str());
-
-			};
-			walker->OnStateWalk = [&](PDDLInstance* instance, PDDLState* state, PDDLActionInstance* chosenAction) {
-				std::string stateinfo = state->ToString(instance);
-				std::string actioninfo = chosenAction->ToString(instance);
-				std::string content = "echo '" + actioninfo + "\n" + stateinfo + "'" + " >> walkerLog";
-
-				system(content.c_str());
-			};
+	std::vector<BaseWalker*> walkers;
+	auto walkerNames = Configs->GetItem<vector<string>>("walkers");
+	auto walkerHeuistics = Configs->GetItem<vector<string>>("walkersHeuristic");
+	auto walkersTimes = Configs->GetItem<vector<double>>("walkersTimeDistribution");
+	for (int i = 0; i < walkerNames.size(); i++) {
+		if (walkerNames.at(i) == "walker") {
+			BaseHeuristic* heuristic = FindHeuristic(walkerHeuistics.at(i), instance);
+			BaseDepthFunction* depthFunc = new ConstantDepthFunction(1000, instance, 1);
+			int timeLimit = TimeLimit * walkersTimes.at(i);
+			BaseWidthFunction* widthFunc = new TimeWidthFunction(timeLimit);
+			BaseWalker *newWalker = new Walker(instance, ActionGenerator(&instance->domain->actions, instance->problem->objects.size()), heuristic, depthFunc, widthFunc);
+			walkers.push_back(newWalker);
+			if (Configs->GetItem<bool>("debugmode"))
+				SetupWalkerDebugInfo(newWalker);
 		}
 	}
 
-	std::vector<Path> paths = walker->Walk(heuristic, depthFunc, widthFunc);
-	free(heuristic); free(widthFunc); free(depthFunc);
+	std::vector<Path> paths;
+	for (int i = 0; i < walkers.size(); i++) {
+		auto addPaths = walkers.at(i)->Walk();
+		paths.insert(paths.end(), addPaths.begin(), addPaths.end());
+	}
+	
+	for (auto w : walkers)
+		delete(w);
 
 	return paths;
+}
+
+BaseHeuristic* WalkerReformulator::FindHeuristic(string name, PDDLInstance* instance) {
+	if (name == "random")
+		return new RandomHeuristic(Configs->GetItem<bool>("debugmode"));
+	else if (name == "goalCount")
+		return new GoalCountHeuristic(instance->domain, instance->problem);
+	else if (name == "goalPredicateCount")
+		return new GoalPredicateCountHeuristic(instance->domain, instance->problem);
+	else
+		throw std::invalid_argument("Invalid heuristic specified in config");
+}
+
+void WalkerReformulator::SetupWalkerDebugInfo(BaseWalker* walker) {
+	walker->OnWalkerStart = [&](BaseWalker* sender) {
+		walkerBar = new ProgressBarHelper(sender->widthFunc->max, "Walking (" + sender->WalkerName + ")", debugIndent + 1);
+
+		if (Configs->GetItem<bool>("printwalkersteps")) {
+			std::string command = "truncate -s 0 walkerLog";
+			system(command.c_str());
+		}
+	};
+	walker->OnWalkerStep = [&](BaseWalker* sender, int currentStep) {
+		walkerBar->SetTo(currentStep);
+	};
+	walker->OnWalkerEnd = [&](BaseWalker* sender, int timePassed) {
+		walkerBar->End();
+		unsigned int totalIterations = sender->GetTotalIterations();
+		unsigned int totalActionCount = sender->GetTotalActionsGenerated();
+		ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + to_string(timePassed) + "ms", debugIndent);
+		double iterationsPrSecond = (totalIterations * 1000) / (timePassed + 1);
+		ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + to_string(totalIterations) + " [" + to_string(iterationsPrSecond) + "/s]", debugIndent);
+		double actionsPrSecond = (totalActionCount * 1000) / (timePassed + 1);
+		ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", debugIndent);
+	};
+	if (Configs->GetItem<bool>("printwalkersteps")) {
+		walker->OnTempStateMade = [&](PDDLInstance* instance, PDDLState* state) {
+			std::string command = "echo '" + state->ToString(instance) + "'" + " >> walkerLog";
+			system(command.c_str());
+
+		};
+		walker->OnStateWalk = [&](PDDLInstance* instance, PDDLState* state, PDDLActionInstance* chosenAction) {
+			std::string stateinfo = state->ToString(instance);
+			std::string actioninfo = chosenAction->ToString(instance);
+			std::string content = "echo '" + actioninfo + "\n" + stateinfo + "'" + " >> walkerLog";
+
+			system(content.c_str());
+		};
+	}
 }
 
 vector<EntanglementOccurance> WalkerReformulator::FindEntanglements(vector<Path>* paths, PDDLInstance* instance) {
@@ -222,13 +248,7 @@ void WalkerReformulator::PrintEntanglerSteps(vector<EntanglementOccurance>* cand
 }
 
 void WalkerReformulator::PrintWalkerDebugData(double ellapsed) {
-	unsigned int totalIterations = paths.size();
-	unsigned int totalActionCount = walker->GetTotalActionsGenerated();
 	ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + to_string(ellapsed) + "ms", debugIndent);
-	double iterationsPrSecond = (totalIterations * 1000) / (ellapsed + 1);
-	ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + to_string(totalIterations) + " [" + to_string(iterationsPrSecond) + "/s]", debugIndent);
-	double actionsPrSecond = (totalActionCount * 1000) / (ellapsed + 1);
-	ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + to_string(totalActionCount) + " [" + to_string(actionsPrSecond) + "/s]", debugIndent);
 }
 
 void WalkerReformulator::PrintEntanglerDebugData(double ellapsed, vector<EntanglementOccurance>* candidates) {
@@ -241,7 +261,7 @@ void WalkerReformulator::PrintEntanglerDebugData(double ellapsed, vector<Entangl
 	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + to_string(entanglementEvaluator->RemovedCandidates() + candidates->size()), debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + to_string(paths.size()) + " paths with " + to_string(totalActions) + " steps in total", debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total evaluation time:  " + to_string(ellapsed) + "ms", debugIndent);
-	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + to_string(entanglementEvaluator->RemovedCandidates() + candidates->size()) + " (" + to_string(entanglementEvaluator->RemovedCandidates()) + " removed)", debugIndent);
+	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + to_string(candidates->size()) + " (" + to_string(entanglementEvaluator->RemovedCandidates()) + " removed)", debugIndent);
 }
 
 #pragma endregion

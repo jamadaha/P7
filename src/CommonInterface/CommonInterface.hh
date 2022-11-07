@@ -36,8 +36,8 @@ struct InterfaceStep<void> {
 class CommonInterface {
 public:
 	enum RunResult { None, RanWithoutErrors, ErrorsEncountered };
-	CommonInterface(Config config, RunReport* report, std::string tempDomainName = "tempDomain.pddl", std::string tempProblemName = "tempProblem.pddl", std::string fastDownwardSASName = "sas_plan", std::string outputSASName = "real_sas_plan") :
-	config(config), Report(report), TempDomainName(tempDomainName), TempProblemName(tempProblemName), FastDownwardSASName(fastDownwardSASName), OutputSASName(outputSASName) {};
+	CommonInterface(Config config, RunReport* report, bool isDirect, std::string tempDomainName = "tempDomain.pddl", std::string tempProblemName = "tempProblem.pddl", std::string fastDownwardSASName = "sas_plan", std::string outputSASName = "real_sas_plan") :
+	config(config), Report(report), isDirect(isDirect), TempDomainName(tempDomainName), TempProblemName(tempProblemName), FastDownwardSASName(fastDownwardSASName), OutputSASName(outputSASName) {};
 
 	enum RunResult Run(int reformulatorIndex = 0);
 

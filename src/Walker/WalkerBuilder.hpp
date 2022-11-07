@@ -3,6 +3,7 @@
 
 #include "BaseWalker.hh"
 #include "Walker.hpp"
+#include "WalkerResume.hpp"
 
 #include "DepthFunctions/BaseDepthFunction.hh"
 #include "DepthFunctions/ConstantDepthFunction.hh"

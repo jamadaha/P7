@@ -128,3 +128,5 @@ add_absolute_report(experiment)
 add_taskwise_reports(experiment, reformulators)
 
 experiment.run_steps()
+
+add_csv_report(experiment)

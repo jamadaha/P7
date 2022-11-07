@@ -11,6 +11,7 @@ struct ReportStep {
     bool isRunning;
     int indent = 0;
     std::string desc;
+    std::string overideOutput;
     // How long the step took in nano seconds
     int64_t time = 0;
     // Initial time
@@ -39,11 +40,11 @@ public:
 
     // Returns time taken
     // Default is in ms
-    int64_t Stop();
+    int64_t Stop(std::string overideOutput = "");
 
     // Returns time taken
     // Default is in ms
-    int64_t Stop(int i);
+    int64_t Stop(int i, std::string overideOutput = "");
 
 
 

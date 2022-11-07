@@ -62,7 +62,7 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 	int timeLeft = config.GetItem<int>("totalTimeLimit") * 1000;
 	int currentIncrementTimeLimit = config.GetItem<int>("startIncrement") * 1000;
 
-	int iterativeProcess = Report->Begin("Reformulating Iteratively");
+	int iterativeProcess = Report->Begin("Solving Problem");
 
 	DownwardRunner::DownwardRunnerResult runRes;
 	int counter = 1;
@@ -75,6 +75,7 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 
 		// Run an iteration of our reformulation method
 		auto result = RunSingle(reformulator, instance, iterationID, reformulatorTimeLimit, downwardTimeLimit);
+		Report->Stop(iterationID);
 		if (result.RanWithoutErrors) {
 			// If we found a solution, stop iterating
 			runRes = result.Data;
@@ -90,22 +91,27 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 			currentIncrementTimeLimit = timeLeft / 2;
 		counter++;
 	}
-	Report->Stop(iterativeProcess);
 	if (runRes != DownwardRunner::FoundPlan) {
+		Report->Stop(iterativeProcess, "false");
 		ConsoleHelper::PrintError("Fast downward did not find a plan in time!");
 		return InterfaceStep<void>(false);
 	}
+	Report->Stop(iterativeProcess, "true");
 	return InterfaceStep<void>();
 }
 
 InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, PDDLInstance* instance) {
-	int iterativeProcess = Report->Begin("Reformulating Directly");
+	int directProcess = Report->Begin("Solving Problem");
 	int timeLimit = config.GetItem<int>("totalTimeLimit") * 1000;
 
-	if (RunSingle(reformulator, instance, iterativeProcess, timeLimit, timeLimit).RanWithoutErrors)
+	if (RunSingle(reformulator, instance, directProcess, timeLimit, timeLimit).RanWithoutErrors) {
+		Report->Stop(directProcess, "true");
 		return InterfaceStep<void>();
-	else
+	}
+	else {
+		Report->Stop(directProcess, "true");
 		return InterfaceStep<void>(false);
+	}
 }
 
 InterfaceStep<DownwardRunner::DownwardRunnerResult> CommonInterface::RunSingle(BaseReformulator* reformulator, PDDLInstance* instance, int reportID, int reformulatorTimeLimit, int downwardTimeLimit) {
@@ -131,22 +137,22 @@ InterfaceStep<DownwardRunner::DownwardRunnerResult> CommonInterface::RunSingle(B
 	runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, downwardTimeLimit);
 	auto runRes = runner.ParseDownwardLog();
 	Report->Stop();
-	Report->Stop(reportID);
 	if (runRes != DownwardRunner::FoundPlan) {
 		return InterfaceStep<DownwardRunner::DownwardRunnerResult>(runRes, false);
 	}
 	return InterfaceStep<DownwardRunner::DownwardRunnerResult>(runRes);
 }
 
-InterfaceStep<void> CommonInterface::ValidatePlans(string domainFile, string problemFile, string sasFile) {
-	ConsoleHelper::PrintDebugInfo("Validate reformulated SAS plan...");
-	Report->Begin("Validating reformulated SAS plan");
+InterfaceStep<void> CommonInterface::ValidatePlans(string domainFile, string problemFile, string sasFile, string reportName) {
+	ConsoleHelper::PrintDebugInfo(reportName);
+	int parent = Report->Begin(reportName);
 	auto reformulatedSASValidatorResult = PlanValidator::ValidatePlan(config, domainFile, problemFile, sasFile);
-	Report->Stop();
 	if (reformulatedSASValidatorResult != PlanValidator::PlanMatch) {
+		Report->Stop(parent, "false");
 		ConsoleHelper::PrintDebugError("Output plan is not valid for reformulated domain and problem!");
 		return InterfaceStep<void>(false);
 	}
+	Report->Stop(parent, "true");
 	return InterfaceStep<void>(true);
 }
 
@@ -209,7 +215,7 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 	}
 
 	if (config.GetItem<bool>("validate")) {
-		auto validateSASPlanStep = ValidatePlans(CommonInterface::TempDomainName, CommonInterface::TempProblemName, CommonInterface::FastDownwardSASName);
+		auto validateSASPlanStep = ValidatePlans(CommonInterface::TempDomainName, CommonInterface::TempProblemName, CommonInterface::FastDownwardSASName, "Validating reformulated plan");
 		if (!validateSASPlanStep.RanWithoutErrors)
 			return CommonInterface::RunResult::ErrorsEncountered;
 	}
@@ -227,7 +233,7 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 		return CommonInterface::RunResult::ErrorsEncountered;
 
 	if (config.GetItem<bool>("validate")) {
-		auto validateSASPlanStep = ValidatePlans(config.GetItem<filesystem::path>("domain"), config.GetItem<filesystem::path>("problem"), CommonInterface::OutputSASName);
+		auto validateSASPlanStep = ValidatePlans(config.GetItem<filesystem::path>("domain"), config.GetItem<filesystem::path>("problem"), CommonInterface::OutputSASName, "Validating rebuilded plan");
 		if (!validateSASPlanStep.RanWithoutErrors)
 			return CommonInterface::RunResult::ErrorsEncountered;
 	}

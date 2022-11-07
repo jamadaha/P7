@@ -42,11 +42,11 @@ void RunReport::Resume(int i) {
     }
 }
 
-int64_t RunReport::Stop() {
-    return Stop(steps.size() - 1);
+int64_t RunReport::Stop(string overideOutput) {
+    return Stop(steps.size() - 1, overideOutput);
 }
 
-int64_t RunReport::Stop(int i) {
+int64_t RunReport::Stop(int i, string overideOutput) {
     if (steps[i].finished)
         return steps[i].time;
 
@@ -55,6 +55,7 @@ int64_t RunReport::Stop(int i) {
         steps[i].time += chrono::duration_cast<chrono::milliseconds>(steps[i].eTime - steps[i].iTime).count();
     }
     steps[i].finished = true;
+    steps[i].overideOutput = overideOutput;
 
     if (steps[i].parent == -1)
         TotalTime += steps[i].time;
@@ -71,24 +72,35 @@ double RunReport::GetTotalChildrenTime(int parentID) {
 }
 
 void RunReport::Print() {
-    int lDesc = 0;
+    string descriptionLabel = "Description";
+    string timeTakenMsLabel = "Time Taken (ms)";
+    string timeTakenPercentLabel = "Time Taken (%)";
+    string notesLabel = "Notes";
+
+    int lDesc = descriptionLabel.size();
+    int lTimeTakenMs = timeTakenMsLabel.size();
+    int lTimeTakenPercent = timeTakenPercentLabel.size();
+    int lNotes = notesLabel.size();
+
     map<int, double> totalTimeMap;
     for (auto step : steps) {
         lDesc = max(lDesc, (int)step.desc.size() + step.indent);
+        lNotes = max(lNotes, (int)step.overideOutput.size());
+        lTimeTakenMs = max(lTimeTakenMs, (int)to_string(step.time).size() + step.indent);
+        lTimeTakenPercent = max(lTimeTakenPercent, 6 + step.indent);
         if (step.parent != -1 && !totalTimeMap.contains(step.parent)) {
             totalTimeMap.emplace(step.parent, GetTotalChildrenTime(step.parent));
         }
     }
 
-    printf("---- Time Taken ----\n");
-    string ttl = "Time Taken (ms)";
-    printf("%-*s %-*s %s\n", lDesc, "Description", (int)ttl.size(), ttl.c_str(), "Time Taken (%)");
+    printf("---- Run Report ----\n");
+    printf("%-*s %-*s %-*s %-*s\n", lDesc, descriptionLabel.c_str(), lTimeTakenMs, timeTakenMsLabel.c_str(), lTimeTakenPercent, timeTakenPercentLabel.c_str(), lNotes, notesLabel.c_str());
     for (auto step : steps) {
         if (step.parent != -1) {
-            printf("%-*s%-*s %-*.2f %-3.2f\n", step.indent, "", lDesc, step.desc.c_str(), (int)ttl.size() + step.indent, (float)step.time, (step.time / (float)totalTimeMap.at(step.parent)) * 100.0);
+            printf("%-*s%-*s %-*.2f %-*.2f %-*s\n", step.indent, "", lDesc, step.desc.c_str(), lTimeTakenMs, (float)step.time, lTimeTakenPercent, (step.time / (float)totalTimeMap.at(step.parent)) * 100.0, lNotes, step.overideOutput.c_str());
         }
         else
-            printf("%-*s %-*.2f %-3.2f\n", lDesc, step.desc.c_str(), (int)ttl.size(), (float)step.time, (step.time / (float)TotalTime) * 100.0);
+            printf("%-*s %-*.2f %-*.2f %-*s\n", lDesc, step.desc.c_str(), lTimeTakenMs, (float)step.time, lTimeTakenPercent, (step.time / (float)TotalTime) * 100.0, lNotes, step.overideOutput.c_str());
     }
     printf("%-*s %.3f\n", lDesc, "Total Time", (float)TotalTime);
 }

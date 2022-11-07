@@ -49,7 +49,7 @@ private:
 	InterfaceStep<void> RunIteratively(BaseReformulator* reformulator, PDDLInstance* instance);
 	InterfaceStep<void> RunDirect(BaseReformulator* reformulator, PDDLInstance* instance);
 	InterfaceStep<DownwardRunner::DownwardRunnerResult> RunSingle(BaseReformulator* reformulator, PDDLInstance* instance, int reportID, int reformulatorTimeLimit, int downwardTimeLimit);
-	InterfaceStep<void> ValidatePlans(std::string domainFile, std::string problemFile, std::string sasFile);
+	InterfaceStep<void> ValidatePlans(std::string domainFile, std::string problemFile, std::string sasFile, std::string reportName);
 	InterfaceStep<SASPlan> ParseSASPlan();
 	InterfaceStep<SASPlan> RebuildSASPlan(SASPlan* reformulatedSASPlan, BaseReformulator* reformulator, PDDLInstance* instance);
 	InterfaceStep<void> GenerateNewSASPlan(SASPlan outputPlan);

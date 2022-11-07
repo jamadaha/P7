@@ -7,7 +7,6 @@
 #include "../IntermediatePDDL/PDDLActionInstance.hh"
 #include "Heuristics/BaseHeuristic.hh"
 #include "DepthFunctions/BaseDepthFunction.hh"
-#include "DepthFunctions/ObjectActionDepthFunction.hh"
 #include "WidthFunctions/BaseWidthFunction.hh"
 #include "ActionGenerator.hpp"
 
@@ -44,11 +43,13 @@ public:
     BaseDepthFunction* depthFunc;
     BaseWidthFunction* widthFunc;
 
-    BaseWalker(std::string walkerName, PDDLInstance* instance, ActionGenerator actionGenerator, BaseHeuristic* heuristic, BaseDepthFunction* depthFunc, BaseWidthFunction* widthFunc) :
-        WalkerName(walkerName), instance(instance), actionGenerator(actionGenerator), heuristic(heuristic), depthFunc(depthFunc), widthFunc(widthFunc) {}
+    BaseWalker(std::string walkerName, PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) :
+        WalkerName(walkerName), 
+        instance(instance), 
+        actionGenerator(ActionGenerator(&instance->domain->actions, instance->problem->objects.size())), 
+        heuristic(heuristic), widthFunc(widthFunc) {}
     ~BaseWalker() {
         free(heuristic);
-        free(depthFunc);
         free(widthFunc);
     }
 

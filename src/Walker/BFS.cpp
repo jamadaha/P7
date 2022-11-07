@@ -1,7 +1,7 @@
 #include "BFS.hpp"
 
 // https://en.wikipedia.org/wiki/Breadth-first_search
-Path BFS::Walk(BaseHeuristic *heuristic, BaseDepthFunction *depthFunc, const PDDLState *state) {
+Path BFS::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
     const int depth = depthFunc->GetDepth();
     std::pair<std::vector<PDDLActionInstance>, unsigned int> bestPath;
     std::vector<PDDLActionInstance> steps; steps.reserve(depth);

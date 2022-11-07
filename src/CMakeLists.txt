@@ -21,7 +21,6 @@ target_link_libraries(P7
         Walker
         EntanglementFinder
         ActionGenerator
-        DepthFunction
         Hashes
         ProgressBarHelper
         MacroGenerator)

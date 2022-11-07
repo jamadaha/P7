@@ -42,6 +42,7 @@ std::vector<Path> WalkerResume::Walk() {
     if (OnWalkerStart != nullptr)
         OnWalkerStart(this);
     bestState = this->instance->problem->initState;
+    bestValue = 0;
     auto startTime = std::chrono::steady_clock::now();
     while (widthFunc->Iterate(&current)) {
         Path path = Walk(heuristic, &bestState);

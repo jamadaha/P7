@@ -2,10 +2,9 @@
 
 // https://en.wikipedia.org/wiki/Breadth-first_search
 Path BFS::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
-    const int depth = 100;
     std::pair<std::vector<PDDLActionInstance>, unsigned int> bestPath;
-    std::vector<PDDLActionInstance> steps; steps.reserve(depth);
-    std::unordered_set<PDDLState> visitedStates; visitedStates.reserve(depth);
+    std::vector<PDDLActionInstance> steps; steps.reserve(maxStepCount);
+    std::unordered_set<PDDLState> visitedStates; visitedStates.reserve(maxStepCount);
 
     PDDLState tempState = PDDLState(state->unaryFacts, state->binaryFacts, state->multiFacts);
     if (OnTempStateMade != nullptr)
@@ -14,7 +13,7 @@ Path BFS::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
 
     std::queue<std::pair<std::vector<PDDLActionInstance>, PDDLState>> searchQueue;
     searchQueue.push(std::make_pair(steps, tempState));
-    for (int i = 0; i < depth; i++) {
+    for (int i = 0; i < maxStepCount; i++) {
         if (searchQueue.size() == 0)
             break;
         

@@ -1,15 +1,14 @@
 #include "Walker.hpp"
 
 Path Walker::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
-    const int depth = 100;
-    std::vector<PDDLActionInstance> steps; steps.reserve(depth);
-    std::unordered_set<PDDLState> visitedStates; visitedStates.reserve(depth);
+    std::vector<PDDLActionInstance> steps; steps.reserve(maxStepCount);
+    std::unordered_set<PDDLState> visitedStates; visitedStates.reserve(maxStepCount);
 
     PDDLState tempState = PDDLState(state->unaryFacts, state->binaryFacts, state->multiFacts);
     if (OnTempStateMade != nullptr)
         OnTempStateMade(this->instance, &tempState);
 
-    for (int i = 0; i < depth; i++) {
+    for (int i = 0; i < maxStepCount; i++) {
         std::vector<PDDLActionInstance> possibleActions;
         possibleActions = actionGenerator.GenerateActions(&tempState);
 

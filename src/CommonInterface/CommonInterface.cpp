@@ -8,7 +8,6 @@ InterfaceStep<BaseReformulator*> CommonInterface::GetReformulator(int reformulat
 	BaseReformulator* reformulator;
 	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "sameoutput") {
 		reformulator = new SameOutputReformulator(&config, Report);
-		isDirect = true;
 	}
 	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "walker") {
 		reformulator = new WalkerReformulator(&config, Report);
@@ -103,7 +102,7 @@ InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, P
 	int iterativeProcess = Report->Begin("Reformulating Directly");
 	int timeLimit = config.GetItem<int>("totalTimeLimit") * 1000;
 
-	if (RunSingle(reformulator, instance, iterativeProcess, 0, timeLimit).RanWithoutErrors)
+	if (RunSingle(reformulator, instance, iterativeProcess, timeLimit, timeLimit).RanWithoutErrors)
 		return InterfaceStep<void>();
 	else
 		return InterfaceStep<void>(false);

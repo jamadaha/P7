@@ -10,7 +10,7 @@ public:
 
 	PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const;
 private:
-    int Eval(const PDDLState *state, int i) const; /*std::unordered_map<int, std::string> solutions*/
+    int Eval(const PDDLState *state) const; /*std::unordered_map<int, std::string> solutions*/
 };
 
 #endif

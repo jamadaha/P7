@@ -14,32 +14,33 @@ PDDLActionInstance* GreedyHeuristic::NextChoice(PDDLState * state, std::vector<P
     for(auto obj : *choices){
         /*Make candidates*/
         candidates.emplace(obj);
-        /*Find good bester solutions*/
-        int i = 0;
-        for (PDDLActionInstance s : candidates){
-            if (!solutions.contains(s)){
-                /*Calculatings score for each index*/
-                solutions.emplace(s, this->Eval(state, i));
-            }
-            ++i;
-        }
-        /*Add highest pair to solution*/
-        int currentMax = 0;
-        PDDLActionInstance currentAction;
-        for(auto iter = solutions.cbegin(); iter != solutions.cend(); ++iter){
-            if (iter->second > currentMax) {
-                currentMax = iter->second; 
-                currentAction = iter->first;                
-            }
-        }
-        solution = std::pair<PDDLActionInstance, int>(currentAction, currentMax);
     }
+
+    /*Find good bester solutions*/
+    for (PDDLActionInstance s : candidates){
+        if (!solutions.contains(s)){
+            /*Calculatings score for each index*/
+            solutions.emplace(s, this->Eval(state));
+        }
+    }
+
+    /*Add highest pair to solution*/
+    int currentMax = 0;
+    PDDLActionInstance currentAction;
+    for(auto iter = solutions.begin(); iter != solutions.end(); ++iter){
+        if (iter->second > currentMax) {
+            currentMax = iter->second; 
+            currentAction = iter->first;                
+        }
+    }
+
+    solution = std::pair<PDDLActionInstance, int>(currentAction, currentMax);
     /*return new state at best value (solution)*/
     solutionPtr = &(solution.first);
     return solutionPtr;
 }
 
-int GreedyHeuristic::Eval(const PDDLState *state, int i) const {
+int GreedyHeuristic::Eval(const PDDLState *state) const {
     GoalCountHeuristic gch = GoalCountHeuristic(this->domain, this->problem);
     return gch.Eval(state);
 }

@@ -72,9 +72,10 @@ def add_initial_h_values(content, props):
         else:
             init_h = int(init_h)
         if heuristic in initial_h_values:
-            props.add_unexplained_error(
-                f"multiple initial h values found for {heuristic}"
-            )
+            print(f"multiple initial h values found for {heuristic}")
+            #props.add_unexplained_error(
+            #    f"multiple initial h values found for {heuristic}"
+            #)
         initial_h_values[heuristic] = init_h
 
     props["initial_h_values"] = initial_h_values
@@ -121,10 +122,10 @@ def add_scores(content, props):
         print("search time limit missing -> can't compute time scores")
     else:
         props["score_total_time"] = tools.compute_log_score(
-            success, props.get("total_time"), lower_bound=1.0, upper_bound=max_time
+            success, props.get("total_time"), lower_bound=0.5, upper_bound=max_time
         )
         props["score_search_time"] = tools.compute_log_score(
-            success, props.get("search_time"), lower_bound=1.0, upper_bound=max_time
+            success, props.get("search_time"), lower_bound=0.5, upper_bound=max_time
         )
 
     try:

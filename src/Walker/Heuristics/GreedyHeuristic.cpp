@@ -1,4 +1,5 @@
 #include "GreedyHeuristic.hh"
+#include "GoalCountHeuristic.hh"
 #include <unordered_map>
 #include <unordered_set>
 
@@ -16,7 +17,7 @@ PDDLActionInstance* GreedyHeuristic::NextChoice(PDDLState * state, std::vector<P
         int i = 0;
         for (PDDLActionInstance s : candidates){
             if (!solutions.contains(s)){
-                /*Calculatings greed for each index*/
+                /*Calculatings score for each index*/
                 solutions.emplace(s, this->Eval(state, i));
             }
             ++i;
@@ -38,5 +39,6 @@ PDDLActionInstance* GreedyHeuristic::NextChoice(PDDLState * state, std::vector<P
 }
 
 int GreedyHeuristic::Eval(const PDDLState *state, int i) const {
-    return 1;
+    GoalCountHeuristic gch = new GoalCountHeuristic(this->domain, this->problem);
+    return gch.Eval(state);
 }

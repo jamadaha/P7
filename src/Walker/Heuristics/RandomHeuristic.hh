@@ -17,7 +17,7 @@ public:
 		return &choices->at(rand() % choices->size());
 	}
 
-	int Eval(const PDDLState *state) const {
+	int Eval(const PDDLState *state) const override {
 		return rand();
 	};
 };

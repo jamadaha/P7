@@ -7,14 +7,7 @@
 
 #include "BaseReformulator.hh"
 #include "../Walker/BaseWalker.hh"
-#include "../Walker/Walker.hpp"
-#include "../Walker/Heuristics/RandomHeuristic.hh"
-#include "../Walker/Heuristics/GoalCountHeuristic.hh"
-#include "../Walker/Heuristics/GoalPredicateCountHeuristic.hh"
-#include "../Walker/Heuristics/GreedyHeuristic.hh"
-#include "../Walker/DepthFunctions/ConstantDepthFunction.hh"
-#include "../Walker/WidthFunctions/ConstantWidthFunction.hh"
-#include "../Walker/WidthFunctions/TimeWidthFunction.hh"
+#include "../Walker/WalkerBuilder.hpp"
 #include "../Config/Config.hh"
 #include "../Helpers/ConsoleHelper.hh"
 #include "../EntanglementFinder/EntanglementFinder.hh"
@@ -47,7 +40,6 @@ private:
 	void PrintEntanglerSteps(std::vector<EntanglementOccurance>* candidates, PDDLInstance* instance);
 	void PrintWalkerDebugData(double ellapsed);
 	void PrintEntanglerDebugData(double ellapsed, std::vector<EntanglementOccurance>* candidates);
-	BaseHeuristic* FindHeuristic(std::string name, PDDLInstance* instance);
 	void SetupWalkerDebugInfo(BaseWalker* walker);
 };
 

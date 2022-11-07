@@ -7,7 +7,6 @@
 #include "../IntermediatePDDL/PDDLActionInstance.hh"
 #include "Heuristics/BaseHeuristic.hh"
 #include "DepthFunctions/BaseDepthFunction.hh"
-#include "DepthFunctions/ObjectActionDepthFunction.hh"
 #include "WidthFunctions/BaseWidthFunction.hh"
 #include "ActionGenerator.hpp"
 
@@ -18,11 +17,12 @@
 
 class Walker : public BaseWalker {
 public:
-    Walker(PDDLInstance* instance, ActionGenerator actionGenerator, BaseHeuristic* heuristic, BaseDepthFunction* depthFunc, BaseWidthFunction* widthFunc) 
-        : BaseWalker("Default", instance, actionGenerator, heuristic, depthFunc, widthFunc) {}
+    Walker(PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) 
+        : BaseWalker("Default", instance, heuristic, widthFunc) {}
     std::vector<Path> Walk() override;
 private:
-    Path Walk(BaseHeuristic* heuristic, BaseDepthFunction* depthFunction, const PDDLState* state);
+    const unsigned int maxStepCount = 1000;
+    Path Walk(BaseHeuristic* heuristic, const PDDLState* state);
 };
 
 #endif

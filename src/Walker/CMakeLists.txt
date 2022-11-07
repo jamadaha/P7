@@ -2,13 +2,9 @@ add_library(Walker "Walker.cpp")
 target_sources(Walker
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/Walker.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/BFS.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/DFS.cpp
         ${CMAKE_CURRENT_LIST_DIR}/WalkerBuilder.cpp
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}/Walker.hpp
-        ${CMAKE_CURRENT_LIST_DIR}/BFS.hpp
-        ${CMAKE_CURRENT_LIST_DIR}/DFS.hpp
         
         ${CMAKE_CURRENT_LIST_DIR}/BaseWalker.hh
         ${CMAKE_CURRENT_LIST_DIR}/WalkerBuilder.hpp)

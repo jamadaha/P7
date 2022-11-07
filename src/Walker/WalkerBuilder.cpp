@@ -26,10 +26,6 @@ BaseHeuristic* WalkerBuilder::GetHeuristic(std::string heuristicName, PDDLInstan
 BaseWalker* WalkerBuilder::GetWalker(std::string walkerName, BaseWidthFunction *widthFunction, BaseHeuristic *heuristic, PDDLInstance *instance) {
     if (walkerName == "walker")
 		return new Walker(instance, heuristic, widthFunction);
-	else if (walkerName == "DFS")
-		return new DFS(instance, heuristic, widthFunction);
-	else if (walkerName == "BFS")
-		return new BFS(instance, heuristic, widthFunction);
 	else
 		throw std::invalid_argument("Invalid walker specified in config");
 }

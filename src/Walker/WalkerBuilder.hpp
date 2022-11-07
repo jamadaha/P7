@@ -2,8 +2,6 @@
 #define WALKER_BUILDER
 
 #include "BaseWalker.hh"
-#include "BFS.hpp"
-#include "DFS.hpp"
 #include "Walker.hpp"
 
 #include "DepthFunctions/BaseDepthFunction.hh"

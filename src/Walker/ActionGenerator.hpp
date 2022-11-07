@@ -49,7 +49,7 @@ private:
     const std::vector<PDDLAction> *actions;
     std::unordered_set<unsigned int> objects;
 
-    std::unordered_map<size_t, unordered_set<unsigned int>> CandidateObjectsCache;
+    std::unordered_map<size_t, std::unordered_set<unsigned int>> CandidateObjectsCache;
 };
 
 #endif

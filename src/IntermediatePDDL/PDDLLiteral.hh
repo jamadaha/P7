@@ -35,6 +35,23 @@ namespace std {
             return h1 ^ (h2 << 1);
         }
     };
+    template <>
+    struct hash<const PDDLLiteral*> {
+        auto operator()(const PDDLLiteral* s) const -> size_t {
+            std::size_t h1 = hash<unsigned int>{}(s->predicateIndex);
+            std::size_t h2 = hash<vector<unsigned int>>{}(s->args);
+            return h1 ^ (h2 << 1);
+        }
+    };
+    template <>
+    struct hash<const unordered_set<const PDDLLiteral*>*> {
+        auto operator()(const unordered_set<const PDDLLiteral*>* s) const -> size_t {
+            std::size_t value = s->size();
+            for (auto lit = s->begin(); lit != s->end(); lit++)
+                value ^= hash<const PDDLLiteral*>{}(*lit);
+            return value;
+        }
+    };
 }
 
 #endif

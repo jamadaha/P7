@@ -10,6 +10,7 @@ PDDLActionInstance* GreedyHeuristic::NextChoice(PDDLState * state, std::vector<P
     PDDLActionInstance *solutionPtr;
     std::unordered_map<PDDLActionInstance, int> solutions;
 
+    /*Is this nested badness even needed anymore? Probably not.*/
     for(auto obj : *choices){
         /*Make candidates*/
         candidates.emplace(obj);
@@ -39,6 +40,6 @@ PDDLActionInstance* GreedyHeuristic::NextChoice(PDDLState * state, std::vector<P
 }
 
 int GreedyHeuristic::Eval(const PDDLState *state, int i) const {
-    GoalCountHeuristic gch = new GoalCountHeuristic(this->domain, this->problem);
+    GoalCountHeuristic gch = GoalCountHeuristic(this->domain, this->problem);
     return gch.Eval(state);
 }

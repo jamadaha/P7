@@ -1,5 +1,27 @@
 ﻿#include "MacroGenerator.hh"
 
+Macro MacroGenerator::CheckMacro(Macro m) {
+    /*Get macro chain*/
+    std::vector<PDDLActionInstance> instanceChain = m.path;
+    /*Get the effect of the very last PDDLLiteral and the previous PDDLLiteral preconditions*/
+    for (auto iter = instanceChain.rbegin(); iter != instanceChain.rend();){
+        std::vector<PDDLLiteral> futureEff = iter->action->effects;
+        ++iter;
+        for (auto eff : futureEff){
+            for (auto prec : iter->action->preconditions){
+                /*Make sure the macro is good*/
+                if (eff == prec){
+                    /*keep the good good ingelligent macro*/
+                }
+                else {
+                    /*keep the bad bad stupid macro*/
+                }
+            }
+        }
+    }
+    return m; /*to make compiler happy happy*/
+}
+
 Macro MacroGenerator::GenerateMacro(const std::vector<PDDLActionInstance*> *actions) {
     std::vector<GroundedAction> groundedActions = GroundActions(actions);
     GroundedAction combinedAction = CombineActions(&groundedActions);

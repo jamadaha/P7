@@ -13,6 +13,7 @@ public:
     MacroGenerator() : domain(nullptr), problem(nullptr) {};
     MacroGenerator(const PDDLDomain *domain, const PDDLProblem *problem) : domain(domain), problem(problem) {};
     Macro GenerateMacro(const std::vector<PDDLActionInstance*> *actions);
+    Macro CheckMacro(Macro m);
 
 
 private:

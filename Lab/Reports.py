@@ -1,36 +1,62 @@
 from downward.reports.absolute import AbsoluteReport
 from downward.reports.taskwise import TaskwiseReport
 
+import json
+import csv
+
 import os
 
+ERROR_ATTRIBUTES= ['domain', 
+                    'problem', 
+                    'algorithm', 
+                    'unexplained_errors', 
+                    'error', 
+                    'planner_wall_clock_time', 
+                    'raw_memory', 
+                    'node']
+
+PREDEFINED_ATTRIBUTES= ['cost', 
+                        'coverage', 
+                        'dead_ends', 
+                        'evaluations', 
+                        'expansions', 
+                        'generated', 
+                        'initial_h_value', 
+                        'plan_length', 
+                        'planner_time', 
+                        'quality', 
+                        'score_*', 
+                        'search_time', 
+                        'total_time', 
+                        'unsolvable',
+                        'p7_solving_problem_ms']
+
+ATTRIBUTES = ERROR_ATTRIBUTES + PREDEFINED_ATTRIBUTES
+
 def add_absolute_report(experiment):
-    ERROR_ATTRIBUTES= ['domain', 
-                       'problem', 
-                       'algorithm', 
-                       'unexplained_errors', 
-                       'error', 
-                       'planner_wall_clock_time', 
-                       'raw_memory', 
-                       'node']
-
-    PREDEFINED_ATTRIBUTES= ['cost', 
-                            'coverage', 
-                            'dead_ends', 
-                            'evaluations', 
-                            'expansions', 
-                            'generated', 
-                            'initial_h_value', 
-                            'plan_length', 
-                            'planner_time', 
-                            'quality', 
-                            'score_*', 
-                            'search_time', 
-                            'total_time', 
-                            'unsolvable',
-                            'p7_solving_problem_ms']
-
-    ATTRIBUTES = ERROR_ATTRIBUTES + PREDEFINED_ATTRIBUTES
     experiment.add_report(AbsoluteReport(attributes=ATTRIBUTES), outfile="report.html")
+
+def add_csv_report(experiment):
+    basePath = os.path.dirname(__file__)
+    propertiesFileName = os.path.join(basePath, '../LabReport-eval/properties')
+    outputCSVFileName = os.path.join(basePath, '../LabReport-eval/report.csv')
+    propertiesFile = open(propertiesFileName)
+    jsonData = json.load(propertiesFile)
+
+    outputCSVFile = open(outputCSVFileName, 'w')
+    outputCSVWriter = csv.writer(outputCSVFile)
+
+    outputCSVWriter.writerow(ATTRIBUTES)
+
+    for key in jsonData:
+        row = [" "] * len(ATTRIBUTES)
+        for checkKey in jsonData[key]:
+            if checkKey in ATTRIBUTES:
+                row[ATTRIBUTES.index(checkKey)] = jsonData[key][checkKey]
+        outputCSVWriter.writerow(row)
+
+    propertiesFile.close()
+    outputCSVFile.close()
 
 def add_taskwise_reports(experiment, reformulators):
     for reformulator in reformulators:

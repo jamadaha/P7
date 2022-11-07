@@ -106,13 +106,13 @@ def get_times(content, props):
     for result in results:
         description = "p7_" + result[1].strip().lower().replace(" ","_")
         if description + "_ms" in props:
-            props[description + "_ms"] += ", " + float(result[2])
+            props[description + "_ms"] += ", " + result[2]
         else:
-            props[description + "_ms"] = float(result[2])
+            props[description + "_ms"] = result[2]
         if description + "_procent" in props:
-            props[description + "_procent"] += ", " + float(result[3])
+            props[description + "_procent"] += ", " + result[3]
         else:
-            props[description + "_procent"] = float(result[3])
+            props[description + "_procent"] = result[3]
 
 parser = Parser()
 parser.add_function(get_times, file="run.log")

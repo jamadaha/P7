@@ -44,16 +44,9 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 	auto walkerHeuistics = Configs->GetItem<vector<string>>("walkersHeuristic");
 	auto walkersTimes = Configs->GetItem<vector<double>>("walkersTimeDistribution");
 	for (int i = 0; i < walkerNames.size(); i++) {
-		if (walkerNames.at(i) == "walker") {
-			BaseHeuristic* heuristic = FindHeuristic(walkerHeuistics.at(i), instance);
-			BaseDepthFunction* depthFunc = new ConstantDepthFunction(1000, instance, 1);
-			int timeLimit = TimeLimit * walkersTimes.at(i);
-			BaseWidthFunction* widthFunc = new TimeWidthFunction(timeLimit);
-			BaseWalker *newWalker = new Walker(instance, ActionGenerator(&instance->domain->actions, instance->problem->objects.size()), heuristic, depthFunc, widthFunc);
-			walkers.push_back(newWalker);
-			if (Configs->GetItem<bool>("debugmode"))
-				SetupWalkerDebugInfo(newWalker);
-		}
+		walkers.push_back(WalkerBuilder::BuildWalker(walkerNames.at(i), TimeLimit * walkersTimes.at(i), walkerHeuistics.at(i), instance));
+		if (Configs->GetItem<bool>("debugmode"))
+			SetupWalkerDebugInfo(walkers.at(walkers.size() - 1));
 	}
 
 	std::vector<Path> paths;
@@ -66,19 +59,6 @@ vector<Path> WalkerReformulator::PerformWalk(PDDLInstance* instance) {
 		delete(w);
 
 	return paths;
-}
-
-BaseHeuristic* WalkerReformulator::FindHeuristic(string name, PDDLInstance* instance) {
-	if (name == "random")
-		return new RandomHeuristic(Configs->GetItem<bool>("debugmode"));
-	else if (name == "goalCount")
-		return new GoalCountHeuristic(instance->domain, instance->problem);
-	else if (name == "goalPredicateCount")
-		return new GoalPredicateCountHeuristic(instance->domain, instance->problem);
-	else if (name == "greedyHeuristic")
-		return new GreedyHeuristic(instance->domain, instance->problem);
-	else
-		throw std::invalid_argument("Invalid heuristic specified in config");
 }
 
 void WalkerReformulator::SetupWalkerDebugInfo(BaseWalker* walker) {

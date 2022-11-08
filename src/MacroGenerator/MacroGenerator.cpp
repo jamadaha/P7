@@ -1,28 +1,31 @@
 ﻿#include "MacroGenerator.hh"
-#include "../AlgorithmHelper.hh"
-/*Check if a macro can be reduced into a simpler macro (or something like that :D)*/
+#include "../Helpers/AlgorithmHelper.hh"
+
 Macro MacroGenerator::CheckMacro(Macro m) {
     /*Get macro chain*/
-    std::vector<PDDLActionInstance> instanceChain = m.path;
-    /*Get the effect of the very last PDDLLiteral and the previous PDDLLiteral preconditions*/
-    for (auto iter = instanceChain.rbegin(); iter != instanceChain.rend();){
-        std::vector<PDDLLiteral> futureEff = iter->action->effects;
+    std::vector<PDDLActionInstance> chain = m.path;
+    bool noDiff = true;
+
+    for (auto iter = chain.rbegin(); iter != chain.rend();){
+        /*Get future and current objects*/
+        std::vector<unsigned int> future = (*iter).objects;
         ++iter;
-        std::vector<PDDLLiteral> currentPre = iter->action->preconditions;
-        for (auto eff : futureEff){
-            for (auto pre : currentPre){
-                /*Make sure the macro is good*/
-                if (AlgorithmHelper::Difference(eff, pre)){
-                    /*Keep the good good ingelligent macro*/
-                    continue;
-                }
-                else {
-                    /*remove the bad bad stupid macro*/
-                    /*Delete the action from the chain, how? I dont know man :D*/
-                }
+        std::vector<unsigned int> current = (*iter).objects;
+        /*Check the macro*/
+        for (auto i : future){
+            for(auto j : current){
+                noDiff = noDiff && i == j;
             }
         }
+        /**/
+        if (noDiff){
+            continue;
+        } else {
+            //remove
+        }
+        
     }
+
     return m; /*to make compiler happy happy*/
 }
 

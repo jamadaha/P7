@@ -4,8 +4,6 @@
 #include "../BaseReformulator.hh"
 
 class BaseWalkerReformulator : BaseReformulator {
-public:
-
 protected:
 
 };

@@ -8,43 +8,61 @@
 using namespace std;
 
 int main(int argc, char** argv){
-	Config config;
+	std::vector<PDDLActionInstance*> actions;
+    // predicates:
+    // (on ?x ?y)
+    // (ontable ?x)
+    // (clear ?x)
+    // (handempty)
+    // (holding ?x)
 
-	std::filesystem::path fileName = std::filesystem::path("settings.ini");
-	if (argc > 1)
-		fileName = std::filesystem::path(argv[1]);
-	config.ParseConfigFile(fileName); 
+    // example macro, not necessarily a good one
+    // actions: pickup 0, stack 0 on 1, pickup 2
+    PDDLAction _act1 = PDDLAction(
+        "pickup",
+        std::vector<std::string> {"?x"},
+        // (clear ?x) (ontable ?x) (handempty)
+        std::vector<PDDLLiteral> {PDDLLiteral(3, std::vector<unsigned int> {0}, true), PDDLLiteral(2, std::vector<unsigned int> {0}, true), PDDLLiteral(4, std::vector<unsigned int> {}, true)},
+        // (not (ontable ?x)) (not (clear ?x)) (not (handempty)) (holding ?x)))
+        std::vector<PDDLLiteral> {PDDLLiteral(2, std::vector<unsigned int> {0}, false), PDDLLiteral(3, std::vector<unsigned int> {0}, false), PDDLLiteral(4, std::vector<unsigned int> {}, false), PDDLLiteral(5, std::vector<unsigned int> {0}, true)}
+    );
+    PDDLAction _act2 = PDDLAction(
+        "stack",
+        std::vector<std::string> {"?x", "?y"},
+        // (holding ?x) (clear ?y)
+        std::vector<PDDLLiteral> {PDDLLiteral(5, std::vector<unsigned int> {0}, true), PDDLLiteral(3, std::vector<unsigned int> {1}, true)},
+        // (not (holding ?x)) (not (clear ?y)) (clear ?x) (handempty) (on ?x ?y)))
+        std::vector<PDDLLiteral> {PDDLLiteral(5, std::vector<unsigned int> {0}, false), PDDLLiteral(3, std::vector<unsigned int> {1}, false), PDDLLiteral(3, std::vector<unsigned int> {0}, true), PDDLLiteral(4, std::vector<unsigned int> {}, true), PDDLLiteral(1, std::vector<unsigned int> {0, 1}, true)}
+    );
+	PDDLAction _useless = PDDLAction(
+		"putdown",
+		std::vector<std::string> {"?x"},
+		//:precondition (and (holding ?ob))
+		std::vector<PDDLLiteral> {PDDLLiteral(5, std::vector<unsigned int> {0}, true)},
+		//  :effect (and (clear ?ob) (arm-empty) (on-table ?ob) (not (holding ?ob))))
+		std::vector<PDDLLiteral> {PDDLLiteral(1, std::vector<unsigned int> {0}, true), PDDLLiteral(3, std::vector<unsigned int> {1}, true), PDDLLiteral(4, std::vector<unsigned int> {1}, false)}
+	);
 
-	auto reformulators = config.GetItem<vector<string>>("reformulator");
-	auto reformulatorsRunStyles = config.GetItem<vector<bool>>("runDirect");
+    PDDLActionInstance act1     = PDDLActionInstance(&_act1, std::vector<unsigned int> {0});
+    PDDLActionInstance act2     = PDDLActionInstance(&_act2, std::vector<unsigned int> {0, 1});
+	PDDLActionInstance useless1 = PDDLActionInstance(&_act1, std::vector<unsigned int> {1});
+	PDDLActionInstance useless2 = PDDLActionInstance(&_useless, std::vector<unsigned int> {1});
+    PDDLActionInstance act3     = PDDLActionInstance(&_act1, std::vector<unsigned int> {2});
 
-	if (reformulators.size() > 1) {
-		CompareRunReport compareReport;
-		bool isAllGood = true;
-		for (int i = 0; i < reformulators.size(); i++) {
-			RunReport report = RunReport(reformulators.at(i));
-			CommonInterface interface = CommonInterface(config, &report, reformulatorsRunStyles.at(i));
-			auto runResult = interface.Run(i);
-			if (runResult != CommonInterface::RunResult::RanWithoutErrors) {
-				isAllGood = false;
-				break;
-			}
-			report.Print();
-			compareReport.AddReport(report);
+    actions.push_back(&act1);
+    actions.push_back(&act2);
+	actions.push_back(&useless1);
+	actions.push_back(&useless2);
+    actions.push_back(&act3);
+
+    // Generate macro
+    MacroGenerator macroGenerator = MacroGenerator();
+    Macro m = macroGenerator.GenerateMacro(&actions);
+
+	cout << "Name: " << m.name << endl;
+	for (auto inst : m.path){
+		for (auto obj : inst.objects){
+			cout << "Object: " << obj << endl;
 		}
-		if (isAllGood)
-			compareReport.Print();
 	}
-	else 
-	{
-		RunReport report = RunReport(reformulators.at(0));
-		CommonInterface interface = CommonInterface(config, &report, reformulatorsRunStyles.at(0));
-		auto runResult = interface.Run();
-		if (runResult == CommonInterface::RunResult::RanWithoutErrors)
-			report.Print();
-	}
-
-	config.Clear();
-
-	return 0;
 }

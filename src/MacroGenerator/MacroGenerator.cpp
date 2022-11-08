@@ -4,6 +4,7 @@
 Macro MacroGenerator::CheckMacro(Macro m) {
     /*Get macro chain*/
     std::vector<PDDLActionInstance> chain = m.path;
+    std::vector<unsigned int> remove;
     bool noDiff = true;
 
     for (auto iter = chain.rbegin(); iter != chain.rend();){
@@ -15,16 +16,18 @@ Macro MacroGenerator::CheckMacro(Macro m) {
         for (auto i : future){
             for(auto j : current){
                 noDiff = noDiff && i == j;
+                /*If both objects are equal, we keep them*/
+                if (noDiff){
+                    continue;
+                /*Otherwise we add them to a delete list*/
+                } else {
+                    remove.push_back(j);
+                }
             }
         }
-        /**/
-        if (noDiff){
-            continue;
-        } else {
-            //remove
-        }
-        
     }
+    /*Delete from list*/
+    /*Remake macro*/
 
     return m; /*to make compiler happy happy*/
 }

@@ -15,9 +15,9 @@
 
 #include "../BaseWalker.hh"
 
-class WalkerResume : public BaseWalker {
+class WalkerGreedyResume : public BaseWalker {
 public:
-    WalkerResume(PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) 
+    WalkerGreedyResume(PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) 
         : BaseWalker("Default", instance, heuristic, widthFunc) {}
     std::vector<Path> Walk() override;
 private:

@@ -1,6 +1,6 @@
-#include "WalkerResume.hpp"
+#include "WalkerGreedy.hpp"
 
-Path WalkerResume::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
+Path WalkerGreedy::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
     std::vector<PDDLActionInstance> steps; steps.reserve(maxStepCount);
     std::unordered_set<PDDLState> visitedStates; visitedStates.reserve(maxStepCount);
 
@@ -21,12 +21,6 @@ Path WalkerResume::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
         else {
             visitedStates.emplace(tempState);
             steps.push_back(*chosenAction);
-            int value = heuristic->Eval(&tempState); 
-            if (value > bestValue) {
-                bestState = tempState;
-                bestValue = value;
-            }
-
 
             if (OnStateWalk != nullptr)
                 OnStateWalk(this->instance, &tempState, chosenAction);
@@ -36,16 +30,14 @@ Path WalkerResume::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
     return Path(steps);
 }
 
-std::vector<Path> WalkerResume::Walk() {
+std::vector<Path> WalkerGreedy::Walk() {
     std::vector<Path> paths;
     unsigned int current;
     if (OnWalkerStart != nullptr)
         OnWalkerStart(this);
-    bestState = this->instance->problem->initState;
-    bestValue = 0;
     auto startTime = std::chrono::steady_clock::now();
     while (widthFunc->Iterate(&current)) {
-        Path path = Walk(heuristic, &bestState);
+        Path path = Walk(heuristic, &this->instance->problem->initState);
         paths.push_back(path);
 
         if (OnWalkerStep != nullptr)

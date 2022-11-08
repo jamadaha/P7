@@ -26,9 +26,11 @@ public:
 
 protected:
     virtual std::vector<Path> PerformWalk(PDDLInstance *instance, bool debugMode) = 0;
+    void SetupWalkerDebugInfo(BaseWalker* walker);
 
 private:
     std::vector<Macro> macros;
+    ProgressBarHelper* walkerBar;
 
     std::vector<Path> FindPaths(PDDLInstance *instance, bool debugMode);
     std::vector<EntanglementOccurance> FindEntanglements(PDDLInstance* instance, std::vector<Path>* paths, bool debugMode);

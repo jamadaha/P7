@@ -29,11 +29,12 @@ protected:
     void SetupWalkerDebugInfo(BaseWalker* walker);
 
 private:
+    std::vector<Path> paths;
     std::vector<Macro> macros;
     ProgressBarHelper* walkerBar;
 
-    std::vector<Path> FindPaths(PDDLInstance *instance, bool debugMode);
-    std::vector<EntanglementOccurance> FindEntanglements(PDDLInstance* instance, std::vector<Path>* paths, bool debugMode);
+    void FindPaths(PDDLInstance *instance, bool debugMode);
+    std::vector<EntanglementOccurance> FindEntanglements(PDDLInstance* instance, bool debugMode);
     EntanglementFinder GetEntanglementFinder(bool debugMode);
     EntanglementEvaluator GetEntanglementEvaluator();
     std::vector<Macro> GenerateMacros(PDDLInstance* instance, std::vector<EntanglementOccurance>* candidates, bool debugMode);
@@ -41,8 +42,7 @@ private:
 
     void PrintEntanglerSteps(std::vector<EntanglementOccurance>* candidates, PDDLInstance* instance);
 	void PrintWalkerDebugData(double ellapsed);
-	void PrintEntanglerDebugData(double ellapsed, std::vector<EntanglementOccurance> *candidates, 
-std::vector<Path> *paths, EntanglementFinder *entanglementFinder, EntanglementEvaluator *entanglementEvaluator);
+	void PrintEntanglerDebugData(double ellapsed, std::vector<EntanglementOccurance> *candidates, EntanglementFinder *entanglementFinder, EntanglementEvaluator *entanglementEvaluator);
 };
 
 #endif

@@ -3,70 +3,33 @@
 PDDLInstance BaseWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
     bool debugMode = Configs->GetItem<bool>("debugmode");
 
-    std::vector<Path> paths = FindPaths(instance, debugMode);
-    std::vector<EntanglementOccurance> candidates = FindEntanglements(instance, &paths, debugMode);
+    FindPaths(instance, debugMode);
+    std::vector<EntanglementOccurance> candidates = FindEntanglements(instance, debugMode);
     GenerateMacros(instance, &candidates, debugMode);
     PDDLInstance macroInstance = GenerateMacroInstance(instance, &macros, debugMode);
 
     return macroInstance;
 }
 
-std::vector<Path> BaseWalkerReformulator::FindPaths(PDDLInstance *instance, bool debugMode) {
+void BaseWalkerReformulator::FindPaths(PDDLInstance *instance, bool debugMode) {
     int walkID = Report->Begin("Walking", ReportID);
-	auto paths = PerformWalk(instance, debugMode);
+	auto tempPaths = PerformWalk(instance, debugMode);
+	for (auto iter = tempPaths.begin(); iter != tempPaths.end(); iter++)
+		paths.push_back((*iter));
 	auto ellapsed = Report->Stop(walkID);
 	if (debugMode)
 		PrintWalkerDebugData(ellapsed);
-    return paths;
 }
 
-void BaseWalkerReformulator::SetupWalkerDebugInfo(BaseWalker* walker) {
-    walker->OnWalkerStart = [&](BaseWalker* sender) {
-		walkerBar = new ProgressBarHelper(sender->widthFunc->max, "Walking (" + sender->WalkerName + ")", debugIndent + 1);
-
-		if (Configs->GetItem<bool>("printwalkersteps")) {
-			std::string command = "truncate -s 0 walkerLog";
-			system(command.c_str());
-		}
-	};
-	walker->OnWalkerStep = [&](BaseWalker* sender, int currentStep) {
-		walkerBar->SetTo(currentStep);
-	};
-	walker->OnWalkerEnd = [&](BaseWalker* sender, int timePassed) {
-		walkerBar->End();
-		unsigned int totalIterations = sender->GetTotalIterations();
-		unsigned int totalActionCount = sender->GetTotalActionsGenerated();
-		ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + std::to_string(timePassed) + "ms", debugIndent);
-		double iterationsPrSecond = (totalIterations * 1000) / (timePassed + 1);
-		ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + std::to_string(totalIterations) + " [" + std::to_string(iterationsPrSecond) + "/s]", debugIndent);
-		double actionsPrSecond = (totalActionCount * 1000) / (timePassed + 1);
-		ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + std::to_string(totalActionCount) + " [" + std::to_string(actionsPrSecond) + "/s]", debugIndent);
-	};
-	if (Configs->GetItem<bool>("printwalkersteps")) {
-		walker->OnTempStateMade = [&](PDDLInstance* instance, PDDLState* state) {
-			std::string command = "echo '" + state->ToString(instance) + "'" + " >> walkerLog";
-			system(command.c_str());
-
-		};
-		walker->OnStateWalk = [&](PDDLInstance* instance, PDDLState* state, PDDLActionInstance* chosenAction) {
-			std::string stateinfo = state->ToString(instance);
-			std::string actioninfo = chosenAction->ToString(instance);
-			std::string content = "echo '" + actioninfo + "\n" + stateinfo + "'" + " >> walkerLog";
-
-			system(content.c_str());
-        };
-    }
-}
-
-std::vector<EntanglementOccurance> BaseWalkerReformulator::FindEntanglements(PDDLInstance* instance, std::vector<Path>* paths, bool debugMode) {
+std::vector<EntanglementOccurance> BaseWalkerReformulator::FindEntanglements(PDDLInstance* instance, bool debugMode) {
     EntanglementFinder entanglementFinder = GetEntanglementFinder(debugMode);
     EntanglementEvaluator entanglementEvaluator = GetEntanglementEvaluator();
     int entangleID = Report->Begin("Finding Entanglements", ReportID);
-    auto candidates = entanglementFinder.FindEntangledCandidates(paths);
+    auto candidates = entanglementFinder.FindEntangledCandidates(&paths);
     auto sanitizedCandidates = entanglementEvaluator.EvaluateAndSanitizeCandidates(candidates);
 	double ellapsed = Report->Stop();
 	if (debugMode)
-		PrintEntanglerDebugData(ellapsed, &sanitizedCandidates, paths, &entanglementFinder, &entanglementEvaluator);
+		PrintEntanglerDebugData(ellapsed, &sanitizedCandidates, &entanglementFinder, &entanglementEvaluator);
 	if (Configs->GetItem<bool>("printentanglersteps"))
 		PrintEntanglerSteps(&sanitizedCandidates, instance);
     return sanitizedCandidates;
@@ -171,6 +134,44 @@ SASPlan BaseWalkerReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* 
 
 #pragma region Debug Items
 
+void BaseWalkerReformulator::SetupWalkerDebugInfo(BaseWalker* walker) {
+    walker->OnWalkerStart = [&](BaseWalker* sender) {
+		walkerBar = new ProgressBarHelper(sender->widthFunc->max, "Walking (" + sender->WalkerName + ")", debugIndent + 1);
+
+		if (Configs->GetItem<bool>("printwalkersteps")) {
+			std::string command = "truncate -s 0 walkerLog";
+			system(command.c_str());
+		}
+	};
+	walker->OnWalkerStep = [&](BaseWalker* sender, int currentStep) {
+		walkerBar->SetTo(currentStep);
+	};
+	walker->OnWalkerEnd = [&](BaseWalker* sender, int timePassed) {
+		walkerBar->End();
+		unsigned int totalIterations = sender->GetTotalIterations();
+		unsigned int totalActionCount = sender->GetTotalActionsGenerated();
+		ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + std::to_string(timePassed) + "ms", debugIndent);
+		double iterationsPrSecond = (totalIterations * 1000) / (timePassed + 1);
+		ConsoleHelper::PrintDebugInfo("[Walker] Total walker iterations: " + std::to_string(totalIterations) + " [" + std::to_string(iterationsPrSecond) + "/s]", debugIndent);
+		double actionsPrSecond = (totalActionCount * 1000) / (timePassed + 1);
+		ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + std::to_string(totalActionCount) + " [" + std::to_string(actionsPrSecond) + "/s]", debugIndent);
+	};
+	if (Configs->GetItem<bool>("printwalkersteps")) {
+		walker->OnTempStateMade = [&](PDDLInstance* instance, PDDLState* state) {
+			std::string command = "echo '" + state->ToString(instance) + "'" + " >> walkerLog";
+			system(command.c_str());
+
+		};
+		walker->OnStateWalk = [&](PDDLInstance* instance, PDDLState* state, PDDLActionInstance* chosenAction) {
+			std::string stateinfo = state->ToString(instance);
+			std::string actioninfo = chosenAction->ToString(instance);
+			std::string content = "echo '" + actioninfo + "\n" + stateinfo + "'" + " >> walkerLog";
+
+			system(content.c_str());
+        };
+    }
+}
+
 void BaseWalkerReformulator::PrintEntanglerSteps(std::vector<EntanglementOccurance>* candidates, PDDLInstance* instance) {
 	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Top 10 Entanglements:", debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglements] Quality  : Chain", debugIndent + 1);
@@ -200,16 +201,15 @@ void BaseWalkerReformulator::PrintWalkerDebugData(double ellapsed) {
 	ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + std::to_string(ellapsed) + "ms", debugIndent);
 }
 
-void BaseWalkerReformulator::PrintEntanglerDebugData(double ellapsed, std::vector<EntanglementOccurance> *candidates, 
-std::vector<Path> *paths, EntanglementFinder *entanglementFinder, EntanglementEvaluator *entanglementEvaluator) {
+void BaseWalkerReformulator::PrintEntanglerDebugData(double ellapsed, std::vector<EntanglementOccurance> *candidates, EntanglementFinder *entanglementFinder, EntanglementEvaluator *entanglementEvaluator) {
 	unsigned int totalActions = 0;
-	for (int i = 0; i < paths->size(); i++)
-		totalActions += paths->at(i).steps.size();
+	for (int i = 0; i < paths.size(); i++)
+		totalActions += paths.at(i).steps.size();
 
 	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + std::to_string(ellapsed) + "ms", debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + std::to_string(entanglementFinder->TotalLevels()), debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + std::to_string(entanglementEvaluator->RemovedCandidates() + candidates->size()), debugIndent);
-	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + std::to_string(paths->size()) + " paths with " + std::to_string(totalActions) + " steps in total", debugIndent);
+	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + std::to_string(paths.size()) + " paths with " + std::to_string(totalActions) + " steps in total", debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total evaluation time:  " + std::to_string(ellapsed) + "ms", debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + std::to_string(candidates->size()) + " (" + std::to_string(entanglementEvaluator->RemovedCandidates()) + " removed)", debugIndent);
 }

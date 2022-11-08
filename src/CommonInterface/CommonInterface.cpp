@@ -9,8 +9,14 @@ InterfaceStep<BaseReformulator*> CommonInterface::GetReformulator(int reformulat
 	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "sameoutput") {
 		reformulator = new SameOutputReformulator(&config, Report);
 	}
-	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "walker") {
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "greedyWalker") {
 		reformulator = new GreedyWalkerReformulator(&config, Report);
+	}
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "greedyResumeWalker") {
+		reformulator = new GreedyResumeWalkerReformulator(&config, Report);
+	}
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "queueWalker") {
+		reformulator = new QueueWalkerReformulator(&config, Report);
 	}
 	else {
 		ConsoleHelper::PrintError("Reformulator not found! Reformulator: " + config.GetItem<string>("reformulator"));

@@ -5,7 +5,7 @@ PDDLInstance BaseWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 
     std::vector<Path> paths = FindPaths(instance, debugMode);
     std::vector<EntanglementOccurance> candidates = FindEntanglements(instance, &paths, debugMode);
-    this->macros = GenerateMacros(instance, &candidates, debugMode);
+    GenerateMacros(instance, &candidates, debugMode);
     PDDLInstance macroInstance = GenerateMacroInstance(instance, &macros, debugMode);
 
     return macroInstance;
@@ -124,7 +124,7 @@ EntanglementEvaluator BaseWalkerReformulator::GetEntanglementEvaluator() {
 std::vector<Macro> BaseWalkerReformulator::GenerateMacros(PDDLInstance* instance, std::vector<EntanglementOccurance>* candidates, bool debugMode) {
 	if (debugMode)
 		ConsoleHelper::PrintDebugInfo("[Macro Generator] Generating Macros...", debugIndent);
-    std::vector<Macro> macros;
+    macros.clear();
     for (auto iter = candidates->begin(); iter != candidates->end(); iter++)
         macros.push_back(MacroGenerator::GenerateMacro(&(*iter).Chain));
     return macros;

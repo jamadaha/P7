@@ -33,10 +33,15 @@ private:
 
     std::vector<Path> PerformWalk(PDDLInstance *instance, bool debugMode);
     std::vector<EntanglementOccurance> FindEntanglements(PDDLInstance* instance, std::vector<Path>* paths, bool debugMode);
-    std::unordered_map<long unsigned int, EntanglementOccurance> FindEntanglementCandidates(PDDLInstance* instance, std::vector<Path>* paths, bool debugMode);
-    std::vector<EntanglementOccurance> SanitizeCandidates(std::unordered_map<long unsigned int, EntanglementOccurance> *occurances);
+    EntanglementFinder GetEntanglementFinder(bool debugMode);
+    EntanglementEvaluator GetEntanglementEvaluator();
     std::vector<Macro> GenerateMacros(PDDLInstance* instance, std::vector<EntanglementOccurance>* candidates, bool debugMode);
     PDDLInstance GenerateMacroInstance(PDDLInstance* instance, std::vector<Macro> *macros, bool debugMode);
+
+    void PrintEntanglerSteps(std::vector<EntanglementOccurance>* candidates, PDDLInstance* instance);
+	void PrintWalkerDebugData(double ellapsed);
+	void PrintEntanglerDebugData(double ellapsed, std::vector<EntanglementOccurance> *candidates, 
+std::vector<Path> *paths, EntanglementFinder *entanglementFinder, EntanglementEvaluator *entanglementEvaluator);
 };
 
 #endif

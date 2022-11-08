@@ -15,18 +15,29 @@ std::vector<Path> BaseWalkerReformulator::PerformWalk(PDDLInstance *instance, bo
     int walkID = Report->Begin("Walking", ReportID);
 	auto paths = PerformWalk(instance);
 	auto ellapsed = Report->Stop(walkID);
-	//if (debugMode)
-		//PrintWalkerDebugData(ellapsed);
+	if (debugMode)
+		PrintWalkerDebugData(ellapsed);
     return paths;
 }
 
 std::vector<EntanglementOccurance> BaseWalkerReformulator::FindEntanglements(PDDLInstance* instance, std::vector<Path>* paths, bool debugMode) {
-    auto candidates = FindEntanglementCandidates(instance, paths, debugMode);
-    return SanitizeCandidates(&candidates);
+    EntanglementFinder entanglementFinder = GetEntanglementFinder(debugMode);
+    EntanglementEvaluator entanglementEvaluator = GetEntanglementEvaluator();
+    int entangleID = Report->Begin("Finding Entanglements", ReportID);
+    auto candidates = entanglementFinder.FindEntangledCandidates(paths);
+    auto sanitizedCandidates = entanglementEvaluator.EvaluateAndSanitizeCandidates(candidates);
+	double ellapsed = Report->Stop();
+	if (debugMode)
+		PrintEntanglerDebugData(ellapsed, &sanitizedCandidates, paths, &entanglementFinder, &entanglementEvaluator);
+	if (Configs->GetItem<bool>("printentanglersteps"))
+		PrintEntanglerSteps(&sanitizedCandidates, instance);
+    return sanitizedCandidates;
 }
 
-std::unordered_map<long unsigned int, EntanglementOccurance> BaseWalkerReformulator::FindEntanglementCandidates(PDDLInstance* instance, std::vector<Path>* paths, bool debugMode) {
-	EntanglementFinder::RunData runData = EntanglementFinder::RunData();
+EntanglementFinder BaseWalkerReformulator::GetEntanglementFinder(bool debugMode) {
+    // Find entanglement candidates.
+	auto runData = EntanglementFinder::RunData();
+
 	runData.LevelReductionFactor = Configs->GetItem<int>("levelReductionFactor");
 	runData.SearchCeiling = Configs->GetItem<int>("searchCeiling");
 	runData.SearchFloor = Configs->GetItem<int>("searchFloor");
@@ -35,42 +46,41 @@ std::unordered_map<long unsigned int, EntanglementOccurance> BaseWalkerReformula
 	if (Configs->GetItem<std::string>("levelReductionTypes") == "Subtraction")
 		runData.LevelReductionType = EntanglementFinder::RunData::Subtraction;
 
-	EntanglementFinder entanglementFinder = EntanglementFinder(runData);
+	auto ef = EntanglementFinder(runData);
 
 	if (Configs->GetItem<bool>("debugmode")) {
 		ProgressBarHelper* bar;
-		entanglementFinder.OnNewLevel = [&](int level, int outOf) {
+		ef.OnNewLevel = [&](int level, int outOf) {
 			bar = new ProgressBarHelper(outOf, "Finding Entanglements (level " + std::to_string(level) + ")", debugIndent + 1);
 		};
-		entanglementFinder.OnLevelIteration = [&](int current, int outOf) {
+		ef.OnLevelIteration = [&](int current, int outOf) {
 			bar->Update();
 		};
-		entanglementFinder.OnLevelEnd = [&]() {
+		ef.OnLevelEnd = [&]() {
 			bar->End();
 		};
 	}
 
-	return entanglementFinder.FindEntangledCandidates(paths);
+	return ef;
 }
 
-std::vector<EntanglementOccurance> BaseWalkerReformulator::SanitizeCandidates(std::unordered_map<long unsigned int, EntanglementOccurance> *occurances) {
+EntanglementEvaluator BaseWalkerReformulator::GetEntanglementEvaluator() {
     EntanglementEvaluator::RunData runData;
 	runData.MinimumQualityPercent = Configs->GetItem<double>("minimumQualityPercent");
 	runData.MaxCandidates = Configs->GetItem<int>("maxCandidates");
 
-	EntanglementEvaluator evaluator = EntanglementEvaluator(runData);
+	auto ee = EntanglementEvaluator(runData);
 	if (Configs->GetItem<std::string>("entanglerLengthModifier") == "lengthBias")
-		evaluator.LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::LengthBias;
+		ee.LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::LengthBias;
 	else if (Configs->GetItem<std::string>("entanglerLengthModifier") == "none")
-		evaluator.LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::None;
+		ee.LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::None;
 
 	if (Configs->GetItem<std::string>("entanglerOccuranceModifier") == "none")
-		evaluator.OccuranceModifier = EntanglementEvaluatorModifiers::OccuranceModifiers::None;
-	if (Configs->GetItem<std::string>("entanglerOccuranceModifier") == "lowOccuranceBias")
-		evaluator.OccuranceModifier = EntanglementEvaluatorModifiers::OccuranceModifiers::LowOccuranceBias;
+		ee.OccuranceModifier = EntanglementEvaluatorModifiers::OccuranceModifiers::None;
+	else if (Configs->GetItem<std::string>("entanglerOccuranceModifier") == "lowOccuranceBias")
+		ee.OccuranceModifier = EntanglementEvaluatorModifiers::OccuranceModifiers::LowOccuranceBias;
 
-
-	return evaluator.EvaluateAndSanitizeCandidates(*occurances);
+	return ee;
 }
 
 std::vector<Macro> BaseWalkerReformulator::GenerateMacros(PDDLInstance* instance, std::vector<EntanglementOccurance>* candidates, bool debugMode) {
@@ -119,3 +129,50 @@ SASPlan BaseWalkerReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* 
 	SASPlan newPlan = SASPlan(actions, actions.size());
 	return newPlan;
 }
+
+#pragma region Debug Items
+
+void BaseWalkerReformulator::PrintEntanglerSteps(std::vector<EntanglementOccurance>* candidates, PDDLInstance* instance) {
+	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Top 10 Entanglements:", debugIndent);
+	ConsoleHelper::PrintDebugInfo("[Entanglements] Quality  : Chain", debugIndent + 1);
+	int counter = 0;
+	for (auto i = candidates->begin(); i != candidates->end(); i++) {
+		std::string actionStr = "";
+		for (int j = 0; j < (*i).Chain.size(); j++) {
+			auto item = (*i).Chain.at(j);
+			std::string paramStr = "";
+			for (int l = 0; l < item->objects.size(); l++) {
+				paramStr += instance->problem->objects[item->objects[l]];
+				if (l != item->objects.size() - 1)
+					paramStr += ", ";
+			}
+			actionStr += item->action->name + "(" + paramStr + ")";
+			if (j != (*i).Chain.size() - 1)
+				actionStr += " -> ";
+		}
+		ConsoleHelper::PrintDebugInfo("[Entanglements] " + std::to_string((*i).Quality) + " : " + actionStr, debugIndent + 1);
+		counter++;
+		if (counter > 10)
+			break;
+	}
+}
+
+void BaseWalkerReformulator::PrintWalkerDebugData(double ellapsed) {
+	ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + std::to_string(ellapsed) + "ms", debugIndent);
+}
+
+void BaseWalkerReformulator::PrintEntanglerDebugData(double ellapsed, std::vector<EntanglementOccurance> *candidates, 
+std::vector<Path> *paths, EntanglementFinder *entanglementFinder, EntanglementEvaluator *entanglementEvaluator) {
+	unsigned int totalActions = 0;
+	for (int i = 0; i < paths->size(); i++)
+		totalActions += paths->at(i).steps.size();
+
+	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + std::to_string(ellapsed) + "ms", debugIndent);
+	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + std::to_string(entanglementFinder->TotalLevels()), debugIndent);
+	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + std::to_string(entanglementEvaluator->RemovedCandidates() + candidates->size()), debugIndent);
+	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + std::to_string(paths->size()) + " paths with " + std::to_string(totalActions) + " steps in total", debugIndent);
+	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total evaluation time:  " + std::to_string(ellapsed) + "ms", debugIndent);
+	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + std::to_string(candidates->size()) + " (" + std::to_string(entanglementEvaluator->RemovedCandidates()) + " removed)", debugIndent);
+}
+
+#pragma endregion

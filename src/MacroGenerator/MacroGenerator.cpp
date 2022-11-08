@@ -38,7 +38,6 @@ Macro MacroGenerator::GenerateMacro(const std::vector<PDDLActionInstance*> *acti
     return Macro(combinedAction, CloneOriginalPath(actions));
 }
 
-
 std::vector<PDDLActionInstance> MacroGenerator::CloneOriginalPath(const std::vector<PDDLActionInstance*> *actions) {
     std::vector<PDDLActionInstance> newPath;
     for (int i = 0; i < actions->size(); i++)

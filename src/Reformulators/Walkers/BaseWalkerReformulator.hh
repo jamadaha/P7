@@ -10,7 +10,6 @@
 #include "../../IntermediatePDDL/PDDLActionInstance.hh"
 #include "../../Walker/Path.hpp"
 #include "../../Walker/BaseWalker.hh"
-#include "../../Walker/WalkerBuilder.hpp"
 #include "../../EntanglementFinder/EntanglementFinder.hh"
 #include "../../EntanglementFinder/EntanglementOccurance.hh"
 #include "../../EntanglementFinder/EntanglementEvaluator.hh"
@@ -19,21 +18,19 @@
 #include "../../MacroGenerator/InstanceGenerator.hh"
 
 
-class BaseWalkerReformulator : BaseReformulator {
+class BaseWalkerReformulator : public BaseReformulator {
 public:
-    BaseWalkerReformulator(Config *config, RunReport *report, BaseWalker *walker) : BaseReformulator(config, report), walker(walker) {
-
-	}
+    BaseWalkerReformulator(Config *config, RunReport *report) : BaseReformulator(config, report) {};
 	PDDLInstance ReformulatePDDL(PDDLInstance *instance) override;
     SASPlan RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) override;
+
+protected:
+    virtual std::vector<Path> PerformWalk(PDDLInstance *instance, bool debugMode) = 0;
+
 private:
-    BaseWalker *walker = 0;
     std::vector<Macro> macros;
-    ProgressBarHelper* walkerBar;
 
     std::vector<Path> FindPaths(PDDLInstance *instance, bool debugMode);
-    std::vector<Path> PerformWalk(PDDLInstance *instance, bool debugMode);
-    void SetupWalkerDebugInfo(BaseWalker* walker);
     std::vector<EntanglementOccurance> FindEntanglements(PDDLInstance* instance, std::vector<Path>* paths, bool debugMode);
     EntanglementFinder GetEntanglementFinder(bool debugMode);
     EntanglementEvaluator GetEntanglementEvaluator();

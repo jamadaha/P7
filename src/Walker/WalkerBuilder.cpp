@@ -24,7 +24,7 @@ BaseHeuristic* WalkerBuilder::GetHeuristic(std::string heuristicName, PDDLInstan
 }
 
 BaseWalker* WalkerBuilder::GetWalker(std::string walkerName, BaseWidthFunction *widthFunction, BaseHeuristic *heuristic, PDDLInstance *instance) {
-    if (walkerName == "walker")
+    if (walkerName == "greedyWalker")
 		return new Walker(instance, heuristic, widthFunction);
 	else if (walkerName == "walkerResume")
 		return new WalkerResume(instance, heuristic, widthFunction);

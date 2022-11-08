@@ -125,7 +125,7 @@ std::vector<Macro> BaseWalkerReformulator::GenerateMacros(PDDLInstance* instance
 	if (debugMode)
 		ConsoleHelper::PrintDebugInfo("[Macro Generator] Generating Macros...", debugIndent);
     macros.clear();
-	MacroGenerator macroGenerator = MacroGenerator();
+	MacroGenerator macroGenerator = MacroGenerator(instance->domain);
     for (auto iter = candidates->begin(); iter != candidates->end(); iter++)
         macros.push_back(macroGenerator.GenerateMacro(&(*iter).Chain));
     return macros;

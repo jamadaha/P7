@@ -10,11 +10,14 @@
 
 class MacroGenerator {
 public:
+    MacroGenerator(PDDLDomain *domain) : domain(domain) {};
     Macro GenerateMacro(const std::vector<PDDLActionInstance*> *actions);
 
 
 private:
+    const PDDLDomain *domain;
     unsigned int macroCount = 0;
+
     std::vector<PDDLActionInstance> CloneOriginalPath(const std::vector<PDDLActionInstance*> *actions);
     std::vector<GroundedAction> GroundActions(const std::vector<PDDLActionInstance*> *actions);
     GroundedAction CombineActions(const std::vector<GroundedAction> *actions);

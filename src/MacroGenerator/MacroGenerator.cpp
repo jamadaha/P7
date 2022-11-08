@@ -20,7 +20,7 @@ std::vector<GroundedAction> MacroGenerator::GroundActions(const std::vector<PDDL
 
     for (int i = 0; i < actions->size(); i++) {
         const PDDLActionInstance *action = actions->at(i);
-        std::string name = action->action->name + std::to_string(groundedActionsCount++);
+        std::string name = action->action->name + std::to_string(groundedActions.size());
         // Get parameters
         std::unordered_set<unsigned int> parameters;
         for (int t = 0; t < action->objects.size(); t++) parameters.emplace(action->objects.at(t));

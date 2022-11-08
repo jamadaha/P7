@@ -1,5 +1,5 @@
-#ifndef WALKER
-#define WALKER
+#ifndef WALKER_GREEDY
+#define WALKER_GREEDY
 
 #include <vector>
 #include <list>
@@ -15,9 +15,9 @@
 
 #include "../BaseWalker.hh"
 
-class Walker : public BaseWalker {
+class WalkerGreedy : public BaseWalker {
 public:
-    Walker(PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) 
+    WalkerGreedy(PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) 
         : BaseWalker("Default", instance, heuristic, widthFunc) {}
     std::vector<Path> Walk() override;
 private:

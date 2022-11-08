@@ -20,6 +20,7 @@ public:
 protected:
 	Config* Configs;
 	RunReport* Report;
+	const int debugIndent = 2;
 };
 
 #endif

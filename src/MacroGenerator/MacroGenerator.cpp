@@ -20,7 +20,7 @@ std::vector<GroundedAction> MacroGenerator::GroundActions(const std::vector<PDDL
 
     for (int i = 0; i < actions->size(); i++) {
         const PDDLActionInstance *action = actions->at(i);
-        std::string name = action->action->name + std::to_string(groundedActionsCount++);
+        std::string name = action->action->name + std::to_string(groundedActions.size());
         // Get parameters
         std::unordered_set<unsigned int> parameters;
         for (int t = 0; t < action->objects.size(); t++) parameters.emplace(action->objects.at(t));
@@ -49,6 +49,7 @@ std::vector<GroundedAction> MacroGenerator::GroundActions(const std::vector<PDDL
 
 GroundedAction MacroGenerator::CombineActions(const std::vector<GroundedAction> *actions) {
     // Initialize to first element in actions
+    int macroCount = 0;
     std::string name = std::to_string(macroCount++);
     std::unordered_map<GroundedLiteral, bool> preconditions;
     std::unordered_map<GroundedLiteral, bool> effects;
@@ -76,7 +77,7 @@ std::unordered_map<GroundedLiteral, bool> priorEffs) {
         if (priorEffs.contains(iter.first)) continue;
         if (preconditions.contains(iter.first)) continue; // maybe
         if (iter.first.predicate == 0) continue;
-        if (domain != nullptr && domain->staticPredicates.contains(iter.first.predicate)) continue;
+        //if (domain != nullptr && domain->staticPredicates.contains(iter.first.predicate)) continue;
         preconditions.emplace(iter.first, iter.second);
     }
 

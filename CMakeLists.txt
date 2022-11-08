@@ -35,12 +35,15 @@ configure_file(${PROJECT_SOURCE_DIR}/Lab/SingleSearchParser.py ${CMAKE_BINARY_DI
 configure_file(${PROJECT_SOURCE_DIR}/Lab/TranslatorParser.py ${CMAKE_BINARY_DIR}/Lab/TranslatorParser.py COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/Lab/P7LabParser.py ${CMAKE_BINARY_DIR}/Lab/P7LabParser.py COPYONLY)
 
+configure_file(${PROJECT_SOURCE_DIR}/baseSettings.ini ${CMAKE_BINARY_DIR}/baseSettings.ini COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/settings.ini ${CMAKE_BINARY_DIR}/settings.ini COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/settingsFast.ini ${CMAKE_BINARY_DIR}/settingsFast.ini COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/settingsLab.ini ${CMAKE_BINARY_DIR}/settingsLab.ini COPYONLY)
-configure_file(${PROJECT_SOURCE_DIR}/settingsLabMultiple.ini ${CMAKE_BINARY_DIR}/settingsLabMultiple.ini COPYONLY)
-configure_file(${PROJECT_SOURCE_DIR}/settingsStress.ini ${CMAKE_BINARY_DIR}/settingsStress.ini COPYONLY)
-configure_file(${PROJECT_SOURCE_DIR}/baseSettings.ini ${CMAKE_BINARY_DIR}/baseSettings.ini COPYONLY)
+
+configure_file(${PROJECT_SOURCE_DIR}/LabSettings/settingsLabMultiple1.ini ${CMAKE_BINARY_DIR}/LabSettings/settingsLabMultiple1.ini COPYONLY)
+configure_file(${PROJECT_SOURCE_DIR}/LabSettings/settingsLabMultiple2.ini ${CMAKE_BINARY_DIR}/LabSettings/settingsLabMultiple2.ini COPYONLY)
+configure_file(${PROJECT_SOURCE_DIR}/LabSettings/settingsStress.ini ${CMAKE_BINARY_DIR}/LabSettings/settingsStress.ini COPYONLY)
+
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)

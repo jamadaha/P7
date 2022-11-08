@@ -101,14 +101,7 @@ These are for debugging in VSCode.
             // Resolved by CMake Tools:
             "program": "${command:cmake.launchTargetPath}",
             "args": [
-                "'--all'",
-                "--benchmarks '${workspaceFolder}/Data/Classical tracks/Gripper/'",
-                "--domain 'gripper_domain.pddl'",
-                "--problem 'gripper_problem.pddl'",
-                "--downward '${workspaceFolder}/P7Requirements/downward/fast-downward.py'",
-                "--validate '${workspaceFolder}/P7Requirements/VAL/validate'",
-                "--reformulator RandomWalker",
-                "--timelimit=1000"
+                "'--all'"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -176,41 +169,10 @@ To launch in Visual Studio (Note: This is the inferior version):
       "debuggerConfiguration": "gdb",
       "cwd": "/root/.vs/P7/build",
       "args": [
-        "'--all'",
-        "--settings 'settingsLab.ini'"
+        "'--all'"
       ],
       "env": {
       }
-    },
-    {
-      "type": "cppgdb",
-      "name": "P7 With Lab (Multiple benchmarks)",
-      "project": "CMakeLists.txt",
-      "projectTarget": "P7Lab",
-      "comment": "P7 with Lab",
-      "debuggerConfiguration": "gdb",
-      "cwd": "/root/.vs/P7/build",
-      "args": [
-        "'--all'",
-        "--settings 'settingsLabMultiple.ini'"
-      ],
-      "env": {
-      }
-    },
-    {
-        "type": "cppgdb",
-        "name": "P7 Stresstest",
-        "project": "CMakeLists.txt",
-        "projectTarget": "P7Lab",
-        "comment": "Test all benchmarks",
-        "debuggerConfiguration": "gdb",
-        "cwd": "/home/pc/.vs/P7/build",
-        "args": [
-            "'--all'",
-            "--settings 'settingsStress.ini'"
-        ],
-        "env": {
-        }
     }
   ]
 }

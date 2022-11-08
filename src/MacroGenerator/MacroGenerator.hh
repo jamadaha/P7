@@ -10,12 +10,13 @@
 
 class MacroGenerator {
 public:
+    MacroGenerator(){};
     MacroGenerator(PDDLDomain *domain) : domain(domain) {};
     Macro GenerateMacro(const std::vector<PDDLActionInstance*> *actions);
 
 
 private:
-    const PDDLDomain *domain;
+    const PDDLDomain *domain = nullptr;
     unsigned int macroCount = 0;
 
     std::vector<PDDLActionInstance> CloneOriginalPath(const std::vector<PDDLActionInstance*> *actions);

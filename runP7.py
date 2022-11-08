@@ -6,6 +6,7 @@ import shutil
 from os import path
 from Lab.Reports import *
 from Lab.Benchmarks import get_suite, make_tasks
+from Lab.ConfigParser import *
 
 print("Parsing Lab Settings file")
 linesLab = []
@@ -13,13 +14,6 @@ with open("settingsLab.ini", 'r') as file:
     for line in file.readlines():
         if not line.lstrip(" ").startswith(";"):
             linesLab.append(line)
-
-print("Parsing Baset Settings file")
-lines_base = []
-with open("baseSettings.ini", 'r') as file:
-    for line in file.readlines():
-        if not line.lstrip(" ").startswith(";"):
-            lines_base.append(line)
 
 settingsFiles = []
 for line in linesLab:
@@ -36,17 +30,10 @@ print("Found a total of " + str(len(settingsFiles)) + " settings files to run")
 
 for settingsFile in settingsFiles:
     print("Begining run of settings file " + settingsFile)
+
     if ".ini" not in settingsFile:
         settingsFile = settingsFile + ".ini"
-    fileContent = lines_base;
-    sanitizedContent = []
-    with open("LabSettings/" + settingsFile, 'r') as file:
-        fileContent = fileContent + file.readlines()
-
-    for line in fileContent:
-        strpLine = line
-        if not strpLine.lstrip(" ").startswith(";"):
-            sanitizedContent.append(line)
+    fileContent = get_config("LabSettings/" + settingsFile)
 
     search = ""
     heuristic = ""
@@ -60,7 +47,7 @@ for settingsFile in settingsFiles:
     settingscontent = ""
 
     #Parse config file and remove lab specific settings
-    for line in sanitizedContent:
+    for line in fileContent:
         if "downwardsearch" in line:
             search = line.split("=")[1].strip("\n")
             settingscontent += line

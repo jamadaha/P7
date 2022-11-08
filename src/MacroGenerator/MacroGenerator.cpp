@@ -49,7 +49,6 @@ std::vector<GroundedAction> MacroGenerator::GroundActions(const std::vector<PDDL
 
 GroundedAction MacroGenerator::CombineActions(const std::vector<GroundedAction> *actions) {
     // Initialize to first element in actions
-    int macroCount = 0;
     std::string name = std::to_string(macroCount++);
     std::unordered_map<GroundedLiteral, bool> preconditions;
     std::unordered_map<GroundedLiteral, bool> effects;

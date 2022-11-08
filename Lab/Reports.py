@@ -11,7 +11,8 @@ ERROR_ATTRIBUTES= ['domain',
                     'algorithm', 
                     'unexplained_errors', 
                     'error', 
-                    'raw_memory']
+                    'raw_memory',
+                    'settings_file']
 
 PREDEFINED_ATTRIBUTES= ['cost', 
                         'coverage', 

@@ -5,6 +5,7 @@ import json
 import csv
 
 import os
+from os import path
 
 ERROR_ATTRIBUTES= ['domain', 
                     'problem', 
@@ -40,25 +41,35 @@ def add_absolute_report(experiment):
 
 def add_csv_report(experiment):
     basePath = os.path.dirname(__file__)
-    propertiesFileName = os.path.join(basePath, '../LabReport-eval/properties')
-    outputCSVFileName = os.path.join(basePath, '../LabReport-eval/report.csv')
-    propertiesFile = open(propertiesFileName)
-    jsonData = json.load(propertiesFile)
+    if path.exists(os.path.join(basePath, "../LabReports/")):
+        print("Generating csv file")
+        outputCSVFileName = os.path.join(basePath, "../LabReports/report.csv")
+        outputCSVFile = open(outputCSVFileName, 'w')
+        outputCSVWriter = csv.writer(outputCSVFile)
 
-    outputCSVFile = open(outputCSVFileName, 'w')
-    outputCSVWriter = csv.writer(outputCSVFile)
+        outputCSVWriter.writerow(ATTRIBUTES)
 
-    outputCSVWriter.writerow(ATTRIBUTES)
+        reports = os.listdir(os.path.join(basePath, "../LabReports/"))
+        count = 0
+        for folder in reports:
+            propertiesFileName = os.path.join(basePath, "../LabReports/" + folder + "/properties")
+            if os.path.isfile(propertiesFileName):
+                propertiesFile = open(propertiesFileName)
+                jsonData = json.load(propertiesFile)
 
-    for key in jsonData:
-        row = [" "] * len(ATTRIBUTES)
-        for checkKey in jsonData[key]:
-            if checkKey in ATTRIBUTES:
-                row[ATTRIBUTES.index(checkKey)] = jsonData[key][checkKey]
-        outputCSVWriter.writerow(row)
+                for key in jsonData:
+                    row = [" "] * len(ATTRIBUTES)
+                    for checkKey in jsonData[key]:
+                        if checkKey in ATTRIBUTES:
+                            row[ATTRIBUTES.index(checkKey)] = jsonData[key][checkKey]
+                    outputCSVWriter.writerow(row)
 
-    propertiesFile.close()
-    outputCSVFile.close()
+                propertiesFile.close()
+                count += 1
+
+        print("Combined a total of " + str(count) + " reports.")
+
+        outputCSVFile.close()
 
 def add_taskwise_reports(experiment, reformulators):
     for reformulator in reformulators:

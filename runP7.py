@@ -7,12 +7,14 @@ from os import path
 from Lab.Reports import *
 from Lab.Benchmarks import get_suite, make_tasks
 
+print("Parsing Lab Settings file")
 linesLab = []
 with open("settingsLab.ini", 'r') as file:
     for line in file.readlines():
         if not line.lstrip(" ").startswith(";"):
             linesLab.append(line)
 
+print("Parsing Baset Settings file")
 lines_base = []
 with open("baseSettings.ini", 'r') as file:
     for line in file.readlines():
@@ -27,6 +29,8 @@ for line in linesLab:
 experiments = []
 
 basePath = os.path.dirname(__file__)
+if path.exists("LabReports/"):
+    shutil.rmtree("LabReports/")
 
 print("Found a total of " + str(len(settingsFiles)) + " settings files to run")
 
@@ -119,6 +123,7 @@ for settingsFile in settingsFiles:
             run.set_property("algorithm", reformulator)
             run.set_property("settings_file", settingsFile.replace(".ini",""))
 
+    experiment.set_property("settings_file", settingsFile.replace(".ini",""));
     if path.exists(reportfolder):
         experiment.add_step("rm-exp-dir", shutil.rmtree, reportfolder)
     if path.exists(experiment.eval_dir):

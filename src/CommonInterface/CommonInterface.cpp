@@ -10,7 +10,7 @@ InterfaceStep<BaseReformulator*> CommonInterface::GetReformulator(int reformulat
 		reformulator = new SameOutputReformulator(&config, Report);
 	}
 	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "walker") {
-		reformulator = new WalkerReformulator(&config, Report);
+		reformulator = new GreedyWalkerReformulator(&config, Report);
 	}
 	else {
 		ConsoleHelper::PrintError("Reformulator not found! Reformulator: " + config.GetItem<string>("reformulator"));

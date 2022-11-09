@@ -1,46 +1,91 @@
 #include "WalkerProbe.hpp"
 
-std::unordered_set<Path> WalkerProbe::Walk(BaseHeuristic* heuristic, const PDDLState* state) {
-    auto currentNode = searchQueue.begin();
-    auto currentState = PDDLState((*currentNode).second.first);
-    auto currentPath = Path((*currentNode).second.second);
+using namespace std;
 
-    auto paths = std::unordered_set<Path>();
+Path WalkerProbe::Walk(BaseHeuristic* heuristic, const PDDLState* state) {
+    vector<PDDLActionInstance> steps; steps.reserve(maxStepCount);
+    unordered_set<PDDLState> visitedStates; visitedStates.reserve(maxStepCount);
 
-    auto actions = actionGenerator.GenerateActions(&currentState);
-    for (auto iter = actions.begin(); iter != actions.end(); iter++) {
-        currentPath.steps.push_back((*iter));
-        currentState.DoAction(&(*iter));
-        auto eval = heuristic->Eval(&currentState);
-        searchQueue.emplace(std::make_pair(eval, std::make_pair(currentState, currentPath)));
-        paths.emplace(currentPath);
-        currentState.UndoAction(&(*iter));
-        currentPath.steps.pop_back();
+    PDDLState tempState = PDDLState(state->unaryFacts, state->binaryFacts, state->multiFacts);
+    if (OnTempStateMade != nullptr)
+        OnTempStateMade(this->instance, &tempState);
+
+    for (int i = 0; i < maxStepCount; i++) {
+        vector<PDDLActionInstance> possibleActions;
+        possibleActions = actionGenerator.GenerateActions(&tempState);
+
+        if (possibleActions.size() == 0) break;
+        PDDLActionInstance* chosenAction = heuristic->NextChoice(&tempState, &possibleActions);
+        tempState.DoAction(chosenAction);
+
+        if (visitedStates.contains(tempState))
+            break;
+        else {
+            visitedStates.emplace(tempState);
+            steps.push_back(*chosenAction);
+
+            if (OnStateWalk != nullptr)
+                OnStateWalk(this->instance, &tempState, chosenAction);
+        }
     }
 
-    searchQueue.erase(currentNode);
-    return paths;
+    return Path(steps);
 }
 
-std::vector<Path> WalkerProbe::Walk() {
-    std::vector<Path> paths;
+vector<Path> WalkerProbe::Walk() {
+    vector<Path> paths;
     unsigned int current;
     if (OnWalkerStart != nullptr)
         OnWalkerStart(this);
 
-    searchQueue.emplace(std::make_pair(0, std::make_pair(this->instance->problem->initState, Path(std::vector<PDDLActionInstance>()))));
+    srand(time(NULL));
+    bool takeInitState = true;
 
-    auto startTime = std::chrono::steady_clock::now();
+    auto startTime = chrono::steady_clock::now();
     while (widthFunc->Iterate(&current)) {
-        auto tempPaths = Walk(heuristic, &this->instance->problem->initState);
-        for (auto iter = tempPaths.begin(); iter != tempPaths.end(); iter++)
-            paths.push_back(*iter);
+
+
+
+        auto binarySource = &(this->instance->problem->initState).binaryFacts;
+        unordered_map<unsigned int, unordered_set<pair<unsigned int, unsigned int>>> binaryFacts;
+        if (!takeInitState) {
+            binarySource = &(this->instance->problem->goalState).binaryFacts;
+        }
+        for (auto i : *binarySource) {
+            unordered_set<pair<unsigned int, unsigned int>> newSet;
+            for (auto j : i.second) {
+                if (rand() & 2)
+                    newSet.emplace(j);
+            }
+            binaryFacts.emplace(i.first, newSet);
+        }
+
+        auto multiSource = &(this->instance->problem->initState).multiFacts;
+        unordered_map<unsigned int, unordered_set<MultiFact>> multiFacts;
+        if (!takeInitState) {
+            multiSource = &(this->instance->problem->goalState).multiFacts;
+        }
+        for (auto i : *multiSource) {
+            unordered_set<MultiFact> newSet;
+            for (auto j : i.second) {
+                if (rand() & 2)
+                    newSet.emplace(j);
+            }
+            multiFacts.emplace(i.first, newSet);
+        }
+
+        takeInitState = !takeInitState;
+
+        PDDLState probe = PDDLState(this->instance->problem->initState.unaryFacts, binaryFacts, multiFacts);
+
+        Path path = Walk(heuristic, &probe);
+        paths.push_back(path);
 
         if (OnWalkerStep != nullptr)
             OnWalkerStep(this, current);
         _totalIterations++;
     }
-    auto ellapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - startTime).count();
+    auto ellapsed = chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - startTime).count();
     if (OnWalkerEnd != nullptr)
         OnWalkerEnd(this, ellapsed);
     return paths;

@@ -43,8 +43,19 @@ vector<Path> WalkerProbe::Walk() {
 
     auto startTime = chrono::steady_clock::now();
     while (widthFunc->Iterate(&current)) {
-
-
+        auto unarySource = &(this->instance->problem->initState).unaryFacts;
+        unordered_map<unsigned int, unordered_set<unsigned int>> unaryFacts;
+        if (!takeInitState) {
+            unarySource = &(this->instance->problem->goalState).unaryFacts;
+        }
+        for (auto i : *unarySource) {
+            unordered_set<unsigned int> newSet;
+            for (auto j : i.second) {
+                if (rand() & 2)
+                    newSet.emplace(j);
+            }
+            unaryFacts.emplace(i.first, newSet);
+        }
 
         auto binarySource = &(this->instance->problem->initState).binaryFacts;
         unordered_map<unsigned int, unordered_set<pair<unsigned int, unsigned int>>> binaryFacts;

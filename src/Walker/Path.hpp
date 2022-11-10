@@ -15,4 +15,17 @@ struct Path {
     }
 };
 
+namespace std {
+    template <>
+    struct hash<Path> {
+        auto operator()(const Path& s) const -> size_t {
+            std::size_t seed = s.steps.size();
+            for (auto& i : s.steps) {
+                seed ^= hash<PDDLActionInstance>{}(i)+0x9e3779b9 + (seed << 6) + (seed >> 2);
+            }
+            return seed;
+        }
+    };
+}
+
 #endif

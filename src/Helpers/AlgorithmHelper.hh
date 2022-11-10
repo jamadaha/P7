@@ -9,6 +9,11 @@
 
 class AlgorithmHelper {
 public:
+    template<typename T>
+    static void InsertAll(std::unordered_set<T> &a, const std::unordered_set<T> b) {
+        for (auto iter = b.begin(); iter != b.end(); iter++)
+            a.insert((*iter));
+    }
     static void Intersect(std::unordered_set<unsigned int> &a, const std::unordered_set<unsigned int> &b);
     static void Intersect(std::unordered_set<std::pair<unsigned int, unsigned int>> &a, const std::unordered_set<std::pair<unsigned int, unsigned int>> &b);
     static void Difference(std::unordered_set<unsigned int> &a, const std::unordered_set<unsigned int> &b);

@@ -14,8 +14,7 @@ public:
     PartialActionGenerator(const std::vector<PDDLAction> *actions, const unsigned int objectCount) : actions(actions), objects(GetObjects(objectCount)) {};
     // Expands the state, I.e. generates all actions which makes atleast one of the facts true
     std::unordered_set<PartialAction> ExpandState(const PDDLState *state);
-    // Same as ExpandState, except it only generates a single of those actions
-    PartialAction ExpandStateSingle(const PDDLState *state);
+    
 private:
     const std::vector<PDDLAction> *actions;
     const std::unordered_set<unsigned int> objects;

@@ -3,15 +3,29 @@
 #include <queue>
 
 std::vector<Path> PartialRegressor::Regress(const PDDLState *state) {
+    std::vector<PartialAction> steps;
     std::unordered_set<PDDLState> visitedStates{*state};
     PartialActionGenerator actionGenerator = PartialActionGenerator(&instance->domain->actions, instance->problem->objects.size());
     PDDLState tempState = PDDLState(*state);
     for (int i = 0; i < 100; i++) {
         std::unordered_set<PartialAction> partialActions = actionGenerator.ExpandState(&tempState);
         if (partialActions.size() == 0)
-            continue;
+            break;
+        
+        const PartialAction *chosenAction = &*std::next(partialActions.begin(), rand() % partialActions.size());
+
         std::unordered_set<PDDLState> predecessorStates = GetPredecessorStates(&*partialActions.begin());
-        tempState = *predecessorStates.begin();
+        if (predecessorStates.size() == 0)
+            break;
+
+        tempState = *std::next(predecessorStates.begin(), rand() % predecessorStates.size());
+
+        if (visitedStates.contains(tempState))
+            break;
+        else {
+            visitedStates.emplace(tempState);
+            steps.push_back(*chosenAction);
+        }
     }
     
     printf("\n");
@@ -22,6 +36,10 @@ std::unordered_set<PDDLState> PartialRegressor::GetPredecessorStates(const Parti
 
     for (int i = 0; i < action->action->preconditions.size(); i++) {
         const PDDLLiteral *literal = &action->action->preconditions.at(i);
+
+        // If the literal is static, ignore
+        if (instance->domain->staticPredicates.contains(literal->predicateIndex))
+            continue;
 
         // If the literal contains any partial parameters, ignore
         bool containsPartial = false;

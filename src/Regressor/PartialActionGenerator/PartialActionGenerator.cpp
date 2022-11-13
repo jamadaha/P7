@@ -6,9 +6,9 @@ std::unordered_set<PartialAction> PartialActionGenerator::ExpandState(const PDDL
     std::unordered_set<PartialAction> partialActions;
 
     // Generate actions for unary facts
-    /* for (auto iter = state->unaryFacts.begin(); iter != state->unaryFacts.end(); iter++)
+    for (auto iter = state->unaryFacts.begin(); iter != state->unaryFacts.end(); iter++)
         for (auto objectIter = (*iter).second.begin(); objectIter != (*iter).second.end(); objectIter++)
-            AlgorithmHelper::InsertAll<PartialAction>(partialActions, ExpandUnary(std::make_pair((*iter).first, (*objectIter))));  */
+            AlgorithmHelper::InsertAll<PartialAction>(partialActions, ExpandUnary(std::make_pair((*iter).first, (*objectIter))));
 
     // Generate actions for binary facts
     for (auto iter = state->binaryFacts.begin(); iter != state->binaryFacts.end(); iter++)
@@ -19,10 +19,6 @@ std::unordered_set<PartialAction> PartialActionGenerator::ExpandState(const PDDL
     // To Be Done
 
     return partialActions;
-}
-
-PartialAction PartialActionGenerator::ExpandStateSingle(const PDDLState *state) {
-    
 }
 
 std::unordered_set<PartialAction> PartialActionGenerator::ExpandUnary(std::pair<unsigned int, unsigned int> predicateObject) {

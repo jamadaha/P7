@@ -35,8 +35,6 @@ for settingsFile in settingsFiles:
         settingsFile = settingsFile + ".ini"
     fileContent = get_config("LabSettings/" + settingsFile)
 
-    search = ""
-    heuristic = ""
     domainline = ""
     problemline = ""
     reformulators = []
@@ -48,13 +46,7 @@ for settingsFile in settingsFiles:
 
     #Parse config file and remove lab specific settings
     for line in fileContent:
-        if "downwardsearch" in line:
-            search = line.split("=")[1].strip("\n")
-            settingscontent += line
-        elif "downwardheuristic" in line:
-            heuristic = line.split("=")[1].strip("\n")
-            settingscontent += line
-        elif "domain" in line:
+        if "domain" in line:
             domainline = line.split("=")[1].strip("\n")
         elif "problem" in line:
             problemline = line.split("=")[1].strip("\n")
@@ -62,7 +54,7 @@ for settingsFile in settingsFiles:
             reportline = line.split("=")[1].strip("\n")
         elif "project" in line:
             projectline = line.split("=")[1].strip("\n")
-        elif "downward" in line or "validator" in line:
+        elif "downwardpath" in line or "validatorpath" in line:
             argument = line.split("=")
             settingscontent += argument[0] + "=" + os.path.join(basePath, argument[1]) 
         elif "reformulator=" in line:
@@ -108,7 +100,7 @@ for settingsFile in settingsFiles:
             run.set_property("domain", task.domain)
             run.set_property("problem", task.problem)
             run.set_property("algorithm", reformulator)
-            run.set_property("settings_file", settingsFile.replace(".ini",""))
+            run.set_property("p7_settings_file", settingsFile.replace(".ini",""))
 
     experiment.set_property("settings_file", settingsFile.replace(".ini",""));
     if path.exists(reportfolder):

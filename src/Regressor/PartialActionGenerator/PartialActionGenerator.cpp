@@ -99,10 +99,5 @@ PDDLActionInstance PartialActionGenerator::FillPartialAction(const PDDLInstance 
 }
 
 unsigned int PartialActionGenerator::GetParameterCandidate(const PDDLInstance *instance, const PDDLAction *action, const unsigned int *paramIndex) {
-    // Could be static
-    bool isStatic = action->staticParameters.at(*paramIndex);
-    if (isStatic) {
-        
-    }
-    printf("lol");
+    printf("\b");
 }

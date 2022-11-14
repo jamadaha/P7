@@ -22,7 +22,6 @@ public:
     const std::vector<std::unordered_set<unsigned int>> applicablePredicates;
     // For each parameter, what non unary preconditions mention it
     const std::vector<std::unordered_set<const PDDLLiteral*>> applicableMultiLiterals;
-    const std::vector<bool> staticParameters;
 
     PDDLAction() : name("Not Set") {};
     PDDLAction(std::string name) : name(name) {};
@@ -39,19 +38,7 @@ public:
     applicableUnaryLiterals(a.applicableUnaryLiterals),
     applicableUnaryPredicates(a.applicableUnaryPredicates),
     applicablePredicates(a.applicablePredicates),
-    applicableMultiLiterals(a.applicableMultiLiterals),
-    staticParameters(a.staticParameters) {}
-    
-    PDDLAction(const PDDLAction &a, const std::unordered_set<unsigned int> *staticPredicates) :
-    name(a.name),
-    parameters(a.parameters),
-    preconditions(a.preconditions),
-    effects(a.effects),
-    applicableUnaryLiterals(a.applicableUnaryLiterals),
-    applicableUnaryPredicates(a.applicableUnaryPredicates),
-    applicablePredicates(a.applicablePredicates),
-    applicableMultiLiterals(a.applicableMultiLiterals),
-    staticParameters(GenerateStaticParameters(staticPredicates)) {}
+    applicableMultiLiterals(a.applicableMultiLiterals) {}
 
     /// @return Returns true if name, parameters and preconditions are the same, ignores parameter names
     friend bool operator==(const PDDLAction& lhs, const PDDLAction& rhs) {
@@ -70,7 +57,6 @@ private:
     std::vector<std::unordered_set<const PDDLLiteral*>> GenerateApplicableLiterals(bool unary) const;
     std::vector<std::unordered_set<unsigned int>> GenerateApplicablePredicates() const;
     std::vector<std::unordered_set<unsigned int>> GenerateApplicablePredicates(bool unary) const;
-    std::vector<bool> GenerateStaticParameters(const std::unordered_set<unsigned int> *staticPredicates) const;
 };
 
 namespace std {

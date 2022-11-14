@@ -46,19 +46,3 @@ std::vector<std::unordered_set<unsigned int>> PDDLAction::GenerateApplicablePred
     }
     return set;
 };
-
-std::vector<bool> PDDLAction::GenerateStaticParameters(const std::unordered_set<unsigned int> *staticPredicates) const {
-    std::vector<bool> tempParameters;
-
-    for (int i = 0; i < parameters.size(); i++) {
-        bool isStatic = true;
-        for (auto iter = applicablePredicates.at(i).begin(); iter != applicablePredicates.at(i).end(); iter++)
-            if (!staticPredicates->contains(*iter)) {
-                isStatic = false;
-                break;
-            }
-        tempParameters.push_back(isStatic);
-    }
-
-    return tempParameters;
-}

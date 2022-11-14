@@ -67,7 +67,7 @@ vector<Path> WalkerProbe::Walk() {
 template <typename T>
 unordered_map<unsigned int, T> WalkerProbe::GetFactSubset(unordered_map<unsigned int, T>* initSource, unordered_map<unsigned int, T>* goalSource) {
     unordered_map<unsigned int, T>* targetSource;
-    if (rand() & 2)
+    if (rand() % 2)
         targetSource = initSource;
     else
         targetSource = goalSource;
@@ -76,7 +76,7 @@ unordered_map<unsigned int, T> WalkerProbe::GetFactSubset(unordered_map<unsigned
     for (auto i : *targetSource) {
         T newSet;
         for (auto j : i.second) {
-            if (rand() & 2)
+            if (rand() % 2)
                 newSet.emplace(j);
         }
         returnSet.emplace(i.first, newSet);

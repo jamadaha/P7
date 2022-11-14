@@ -42,6 +42,7 @@ EntanglementFinder BaseWalkerReformulator::GetEntanglementFinder(bool debugMode)
 	runData.LevelReductionFactor = Configs->GetItem<int>("levelReductionFactor");
 	runData.SearchCeiling = Configs->GetItem<int>("searchCeiling");
 	runData.SearchFloor = Configs->GetItem<int>("searchFloor");
+	runData.TimeLimitMs = TimeLimit * Configs->GetItem<double>("reformulationTimeFraction");
 	if (Configs->GetItem<std::string>("levelReductionTypes") == "Division")
 		runData.LevelReductionType = EntanglementFinder::RunData::Division;
 	if (Configs->GetItem<std::string>("levelReductionTypes") == "Subtraction")
@@ -59,6 +60,9 @@ EntanglementFinder BaseWalkerReformulator::GetEntanglementFinder(bool debugMode)
 		};
 		ef.OnLevelEnd = [&]() {
 			bar->End();
+		};
+		ef.OnTimeLimitReached = [&]() {
+			ConsoleHelper::PrintDebugWarning("[Entanglement Finder] Time limit reached!", debugIndent);
 		};
 	}
 
@@ -210,7 +214,6 @@ void BaseWalkerReformulator::PrintEntanglerDebugData(double ellapsed, std::vecto
 	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + std::to_string(entanglementFinder->TotalLevels()), debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + std::to_string(entanglementEvaluator->RemovedCandidates() + candidates->size()), debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + std::to_string(paths.size()) + " paths with " + std::to_string(totalActions) + " steps in total", debugIndent);
-	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total evaluation time:  " + std::to_string(ellapsed) + "ms", debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + std::to_string(candidates->size()) + " (" + std::to_string(entanglementEvaluator->RemovedCandidates()) + " removed)", debugIndent);
 }
 

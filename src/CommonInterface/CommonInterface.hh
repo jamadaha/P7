@@ -10,6 +10,7 @@
 #include "../Reformulators/Walkers/GreedyWalkerReformulator.hh"
 #include "../Reformulators/Walkers/GreedyResumeWalkerReformulator.hh"
 #include "../Reformulators/Walkers/QueueWalkerReformulator.hh"
+#include "../Reformulators/Walkers/ProbeWalkerReformulator.hh"
 #include "../PDDLParser/pddldriver.hh"
 #include "../PDDLCodeGenerator/PDDLCodeGenerator.hh"
 #include "../SASCodeGenerator/SASCodeGenerator.hh"

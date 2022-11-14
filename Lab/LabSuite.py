@@ -15,6 +15,9 @@ from Lab.SettingsParser import SettingsParser
 
 class LabSuite():
     _pathHelper : PathHelper
+    _reportfolder = ""
+    _projectfile = ""
+    _benchmarksfolder = ""
 
     def __init__(self, dir):
         self._pathHelper = PathHelper(dir)
@@ -26,9 +29,9 @@ class LabSuite():
     def RunSuite(self):
         self._PreClean()
 
-        reportfolder = self._pathHelper.CombinePath('LabReport')
-        projectfile = self._pathHelper.CombinePath('src/P7')
-        benchmarksfolder = self._pathHelper.CombinePath("Data/benchmarks/")
+        self._reportfolder = self._pathHelper.CombinePath('LabReport')
+        self._projectfile = self._pathHelper.CombinePath('src/P7')
+        self._benchmarksfolder = self._pathHelper.CombinePath("Data/benchmarks/")
 
         labSettings = LabSettingsParser()
         labSettings.ParseSettingsFile()
@@ -50,10 +53,10 @@ class LabSuite():
             experimentSettings = SettingsParser(self._pathHelper)
             experimentSettings.Parse(fileContent)
 
-            experiment = self._SetupExperiment(reportfolder, experimentSettings, labSettings.Threads, benchmarksfolder, projectfile, settingsFile)
+            experiment = self._SetupExperiment(experimentSettings, labSettings.Threads, settingsFile)
 
             experiment.set_property("p7_settings_file", settingsFile);
-            self._SetupExperimentCleanupSteps(experiment, reportfolder, settingsFile)
+            self._SetupExperimentCleanupSteps(experiment, settingsFile)
             experiment.add_step("build", experiment.build)
             experiment.add_step("start", experiment.start_runs)
             experiment.add_fetcher(name="fetch")
@@ -68,19 +71,18 @@ class LabSuite():
 
             experiments.append(experiment)
 
-        print("")
-
+    def CombineReports(self):
         CSVGenerator.AddCSVReport(ATTRIBUTES)
 
-    def _SetupExperiment(self, reportfolder, experimentSettings, threads, benchmarksfolder, projectfile, settingsFile):
-        experiment = Experiment(reportfolder, LocalEnvironment(threads))
-        tasks = suites.build_suite(benchmarksfolder, get_suite(experimentSettings.Domains, ""))
+    def _SetupExperiment(self, experimentSettings, threads, settingsFile):
+        experiment = Experiment(self._reportfolder, LocalEnvironment(threads))
+        tasks = suites.build_suite(self._benchmarksfolder, get_suite(experimentSettings.Domains, ""))
         for reformulator in experimentSettings.Reformulators:
             for task in tasks:
-                self._SetupTasks(experimentSettings.SettingsContent, task, reformulator, experiment, projectfile, settingsFile)
+                self._SetupTasks(experimentSettings.SettingsContent, task, reformulator, experiment, settingsFile)
         return experiment
 
-    def _SetupTasks(self, content, task, reformulator, experiment, projectfile, settingsFile):
+    def _SetupTasks(self, content, task, reformulator, experiment, settingsFile):
         content += "\nPATH:domain=" + task.domain_file + "\n"
         content += "PATH:problem=" + task.problem_file + "\n"
 
@@ -88,7 +90,7 @@ class LabSuite():
 
         run = experiment.add_run()
         run.add_new_file("config","TempSettings.ini",content)
-        run.add_command("planner", [projectfile,"{config}"])
+        run.add_command("planner", [self._projectfile,"{config}"])
 
         run.set_property("id",[reformulator, task.domain, task.problem])
         run.set_property("domain", task.domain)
@@ -96,9 +98,9 @@ class LabSuite():
         run.set_property("algorithm", reformulator)
         run.set_property("p7_settings_file", settingsFile)
 
-    def _SetupExperimentCleanupSteps(self, experiment, reportfolder, settingsFile):
-        if path.exists(reportfolder):
-            experiment.add_step("rm-exp-dir", shutil.rmtree, reportfolder)
+    def _SetupExperimentCleanupSteps(self, experiment, settingsFile):
+        if path.exists(self._reportfolder):
+            experiment.add_step("rm-exp-dir", shutil.rmtree, self._reportfolder)
         if path.exists(experiment.eval_dir):
             experiment.add_step("rm-eval-dir", shutil.rmtree, experiment.eval_dir)
         if path.exists(self._pathHelper.CombinePath("LabReports/" + settingsFile)):

@@ -1,24 +1,18 @@
-#! /usr/bin/env python
-
 from lab.experiment import Experiment
+from lab.environments import LocalEnvironment
 from downward import suites
 import shutil
+import os
 from os import path
 from Lab.Reports import *
-from Lab.Benchmarks import get_suite, make_tasks
+from Lab.Benchmarks import get_suite
 from Lab.ConfigParser import *
+from Lab.CSVGenerator import CSVGenerator
+from Lab.LabAttributes import ATTRIBUTES
+from Lab.LabSettingsParser import LabSettingsParser
 
-print("Parsing Lab Settings file")
-linesLab = []
-with open("settingsLab.ini", 'r') as file:
-    for line in file.readlines():
-        if not line.lstrip(" ").startswith(";"):
-            linesLab.append(line)
-
-settingsFiles = []
-for line in linesLab:
-    if "SettingsCollection" in line:
-        settingsFiles = line.split("=")[1].strip("\n").split(",")
+labSettings = LabSettingsParser()
+labSettings.ParseSettingsFile()
 
 experiments = []
 
@@ -26,9 +20,10 @@ basePath = os.path.dirname(__file__)
 if path.exists("LabReports/"):
     shutil.rmtree("LabReports/")
 
-print("Found a total of " + str(len(settingsFiles)) + " settings files to run")
+print("Found a total of " + str(len(labSettings.SettingsCollection)) + " settings files to run")
+print("Starting on " + str(labSettings.Threads) + " threads.")
 
-for settingsFile in settingsFiles:
+for settingsFile in labSettings.SettingsCollection:
     print("Begining run of settings file " + settingsFile)
 
     if ".ini" not in settingsFile:
@@ -39,9 +34,6 @@ for settingsFile in settingsFiles:
     problemline = ""
     reformulators = []
 
-    reportline = ""
-    projectline = ""
-
     settingscontent = ""
 
     #Parse config file and remove lab specific settings
@@ -50,10 +42,6 @@ for settingsFile in settingsFiles:
             domainline = line.split("=")[1].strip("\n")
         elif "problem" in line:
             problemline = line.split("=")[1].strip("\n")
-        elif "report" in line:
-            reportline = line.split("=")[1].strip("\n")
-        elif "project" in line:
-            projectline = line.split("=")[1].strip("\n")
         elif "downwardpath" in line or "validatorpath" in line:
             argument = line.split("=")
             settingscontent += argument[0] + "=" + os.path.join(basePath, argument[1]) 
@@ -75,7 +63,7 @@ for settingsFile in settingsFiles:
     domains = domainline.split(":")
     problemsindomains = problemline.split(":")
 
-    experiment = Experiment(reportfolder)
+    experiment = Experiment(reportfolder, LocalEnvironment(labSettings.Threads))
 
     tasks = []
     tasks = suites.build_suite(benchmarksfolder, get_suite(domains, problemsindomains))
@@ -102,7 +90,7 @@ for settingsFile in settingsFiles:
             run.set_property("algorithm", reformulator)
             run.set_property("p7_settings_file", settingsFile.replace(".ini",""))
 
-    experiment.set_property("settings_file", settingsFile.replace(".ini",""));
+    experiment.set_property("p7_settings_file", settingsFile.replace(".ini",""));
     if path.exists(reportfolder):
         experiment.add_step("rm-exp-dir", shutil.rmtree, reportfolder)
     if path.exists(experiment.eval_dir):
@@ -114,7 +102,7 @@ for settingsFile in settingsFiles:
     experiment.add_fetcher(name="fetch")
 
     add_parsers(experiment)
-    add_absolute_report(experiment)
+    add_absolute_report(experiment, ATTRIBUTES)
     add_taskwise_reports(experiment, reformulators)
 
     experiment.run_steps()
@@ -123,4 +111,4 @@ for settingsFile in settingsFiles:
 
     experiments.append(experiment)
 
-add_csv_report(experiments)
+CSVGenerator().AddCSVReport(ATTRIBUTES)

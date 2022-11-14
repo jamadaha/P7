@@ -2,13 +2,12 @@
 
 #include <queue>
 
-std::vector<Path> PartialRegressor::Regress(const PDDLState *state) {
+Path PartialRegressor::Regress(const PDDLState *state) {
     std::vector<PartialAction> steps;
     std::unordered_set<PDDLState> visitedStates{*state};
-    PartialActionGenerator actionGenerator = PartialActionGenerator(&instance->domain->actions, instance->problem->objects.size());
     PDDLState tempState = PDDLState(*state);
     for (int i = 0; i < 100; i++) {
-        std::unordered_set<PartialAction> partialActions = actionGenerator.ExpandState(&tempState);
+        std::unordered_set<PartialAction> partialActions = actionGenerator->ExpandState(&tempState);
         if (partialActions.size() == 0)
             break;
         
@@ -28,7 +27,7 @@ std::vector<Path> PartialRegressor::Regress(const PDDLState *state) {
         }
     }
     
-    printf("\n");
+    return ConvertToPath(steps);
 }
 
 std::unordered_set<PDDLState> PartialRegressor::GetPredecessorStates(const PartialAction *action) {
@@ -83,4 +82,11 @@ PDDLState PartialRegressor::GeneratePreconditionState(const PDDLLiteral *literal
                 {literal->predicateIndex, std::unordered_set<MultiFact>{ MultiFact(literal->args) }}
             }
         );
+}
+
+Path PartialRegressor::ConvertToPath(std::vector<PartialAction> actions) {
+    std::vector<PDDLActionInstance> steps;
+    for (int i = 0; i < actions.size(); i++)
+        steps.push_back(actionGenerator->FillPartialAction(instance, &actions.at(i)));
+    return Path(steps);
 }

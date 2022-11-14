@@ -86,3 +86,23 @@ PartialAction PartialActionGenerator::CreateFromBinay(const PDDLAction *action, 
 
     return PartialAction(action, tempObjects);
 }
+
+PDDLActionInstance PartialActionGenerator::FillPartialAction(const PDDLInstance *instance, const PartialAction *partialAction) {
+    std::vector<unsigned int> objects;
+    for (unsigned int i = 0; i < partialAction->parameters.size(); i++) {
+        if (partialAction->parameters.at(i) != nullptr)
+            objects.push_back(*partialAction->parameters.at(i));
+        else
+            objects.push_back(GetParameterCandidate(instance, partialAction->action, &i));
+    }
+    return PDDLActionInstance(partialAction->action, objects);
+}
+
+unsigned int PartialActionGenerator::GetParameterCandidate(const PDDLInstance *instance, const PDDLAction *action, const unsigned int *paramIndex) {
+    // Could be static
+    bool isStatic = action->staticParameters.at(*paramIndex);
+    if (isStatic) {
+        
+    }
+    printf("lol");
+}

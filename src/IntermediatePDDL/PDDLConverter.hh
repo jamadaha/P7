@@ -24,6 +24,7 @@ private:
     static std::unordered_map<unsigned int, std::unordered_set<unsigned int>> GetUnaryFacts(PDDLDomain *domain, std::unordered_map<std::string, unsigned int> *objectMap, LiteralList *literalList);
     static std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> GetBinaryFacts(PDDLDomain *domain, std::unordered_map<std::string, unsigned int> *objectMap, LiteralList *literalList);
     static std::unordered_map<unsigned int, std::unordered_set<MultiFact>> GetMultiFacts(PDDLDomain *domain, std::unordered_map<std::string, unsigned int> *objectMap, LiteralList *literalList);
+    static std::unordered_set<unsigned int> GetStaticPredicates(const unsigned int predicateCount, const std::vector<PDDLAction> actions);
 };
 
 #endif

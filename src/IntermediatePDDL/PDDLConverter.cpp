@@ -29,12 +29,17 @@ PDDLDomain PDDLConverter::Convert(Domain *domain) {
     }    
 
     // Get Actions
-    std::vector<PDDLAction> actions;
-    actions.reserve(domain->_actions->size());
+    std::vector<PDDLAction> tempActions;
+    tempActions.reserve(domain->_actions->size());
     for (int i = 0; i < domain->_actions->size(); i++) {
         auto action = (*domain->_actions)[i];
-        actions.push_back(GenerateAction(action->_name, action->_params, action->_precond, action->_effects, predicateMap));
+        tempActions.push_back(GenerateAction(action->_name, action->_params, action->_precond, action->_effects, predicateMap));
     }
+    auto staticPredicates = GetStaticPredicates(predicates.size(), tempActions);
+    std::vector<PDDLAction> actions;
+    for (int i = 0; i < tempActions.size(); i++)
+        actions.push_back(PDDLAction(tempActions.at(i), &staticPredicates));
+
     return PDDLDomain(name, requirements, predicates, predicateMap, actions);
 }
 
@@ -152,3 +157,15 @@ std::unordered_map<unsigned int, std::unordered_set<MultiFact>> PDDLConverter::G
     return multiFacts;
 }
    
+std::unordered_set<unsigned int> PDDLConverter::GetStaticPredicates(const unsigned int predicateCount, const std::vector<PDDLAction> actions) {
+    std::unordered_set<unsigned int> candidateIndexes; candidateIndexes.reserve(predicateCount);
+    for (int i = 1; i < predicateCount; i++)
+        candidateIndexes.emplace(i);
+    for (auto iter = actions.begin(); iter != actions.end(); iter++) {
+        for (auto litIter = (*iter).effects.begin(); litIter != (*iter).effects.end(); litIter++) {
+            if (candidateIndexes.contains((*litIter).predicateIndex))
+                candidateIndexes.erase((*litIter).predicateIndex);
+        }
+    }
+    return candidateIndexes;
+}

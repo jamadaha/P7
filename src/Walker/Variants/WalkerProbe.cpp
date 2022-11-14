@@ -39,55 +39,17 @@ vector<Path> WalkerProbe::Walk() {
         OnWalkerStart(this);
 
     srand(time(NULL));
-    bool takeInitState = true;
+
+    auto initState = (this->instance->problem->initState);
+    auto goalState = (this->instance->problem->goalState);
 
     auto startTime = chrono::steady_clock::now();
     while (widthFunc->Iterate(&current)) {
-        auto unarySource = &(this->instance->problem->initState).unaryFacts;
-        unordered_map<unsigned int, unordered_set<unsigned int>> unaryFacts;
-        if (!takeInitState) {
-            unarySource = &(this->instance->problem->goalState).unaryFacts;
-        }
-        for (auto i : *unarySource) {
-            unordered_set<unsigned int> newSet;
-            for (auto j : i.second) {
-                if (rand() & 2)
-                    newSet.emplace(j);
-            }
-            unaryFacts.emplace(i.first, newSet);
-        }
+        auto unaryFacts = GetFactSubset<unordered_set<unsigned int>>(&initState.unaryFacts, &goalState.unaryFacts);
+        auto binaryFacts = GetFactSubset<unordered_set<pair<unsigned int, unsigned int>>>(&initState.binaryFacts, &goalState.binaryFacts);
+        auto multiFacts = GetFactSubset<unordered_set<MultiFact>>(&initState.multiFacts, &goalState.multiFacts);
 
-        auto binarySource = &(this->instance->problem->initState).binaryFacts;
-        unordered_map<unsigned int, unordered_set<pair<unsigned int, unsigned int>>> binaryFacts;
-        if (!takeInitState) {
-            binarySource = &(this->instance->problem->goalState).binaryFacts;
-        }
-        for (auto i : *binarySource) {
-            unordered_set<pair<unsigned int, unsigned int>> newSet;
-            for (auto j : i.second) {
-                if (rand() & 2)
-                    newSet.emplace(j);
-            }
-            binaryFacts.emplace(i.first, newSet);
-        }
-
-        auto multiSource = &(this->instance->problem->initState).multiFacts;
-        unordered_map<unsigned int, unordered_set<MultiFact>> multiFacts;
-        if (!takeInitState) {
-            multiSource = &(this->instance->problem->goalState).multiFacts;
-        }
-        for (auto i : *multiSource) {
-            unordered_set<MultiFact> newSet;
-            for (auto j : i.second) {
-                if (rand() & 2)
-                    newSet.emplace(j);
-            }
-            multiFacts.emplace(i.first, newSet);
-        }
-
-        takeInitState = !takeInitState;
-
-        PDDLState probe = PDDLState(this->instance->problem->initState.unaryFacts, binaryFacts, multiFacts);
+        PDDLState probe = PDDLState(unaryFacts, binaryFacts, multiFacts);
 
         Path path = Walk(heuristic, &probe);
         paths.push_back(path);
@@ -100,4 +62,24 @@ vector<Path> WalkerProbe::Walk() {
     if (OnWalkerEnd != nullptr)
         OnWalkerEnd(this, ellapsed);
     return paths;
+}
+
+template <typename T>
+unordered_map<unsigned int, T> WalkerProbe::GetFactSubset(unordered_map<unsigned int, T>* initSource, unordered_map<unsigned int, T>* goalSource) {
+    unordered_map<unsigned int, T>* targetSource;
+    if (rand() & 2)
+        targetSource = initSource;
+    else
+        targetSource = goalSource;
+
+    unordered_map<unsigned int, T> returnSet;
+    for (auto i : *targetSource) {
+        T newSet;
+        for (auto j : i.second) {
+            if (rand() & 2)
+                newSet.emplace(j);
+        }
+        returnSet.emplace(i.first, newSet);
+    }
+    return returnSet;
 }

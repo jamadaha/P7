@@ -42,6 +42,7 @@ EntanglementFinder BaseWalkerReformulator::GetEntanglementFinder(bool debugMode)
 	runData.LevelReductionFactor = Configs->GetItem<int>("levelReductionFactor");
 	runData.SearchCeiling = Configs->GetItem<int>("searchCeiling");
 	runData.SearchFloor = Configs->GetItem<int>("searchFloor");
+	runData.TimeLimitMs = TimeLimit * Configs->GetItem<double>("reformulationTimeFraction");
 	if (Configs->GetItem<std::string>("levelReductionTypes") == "Division")
 		runData.LevelReductionType = EntanglementFinder::RunData::Division;
 	if (Configs->GetItem<std::string>("levelReductionTypes") == "Subtraction")
@@ -59,6 +60,9 @@ EntanglementFinder BaseWalkerReformulator::GetEntanglementFinder(bool debugMode)
 		};
 		ef.OnLevelEnd = [&]() {
 			bar->End();
+		};
+		ef.OnTimeLimitReached = [&]() {
+			ConsoleHelper::PrintDebugWarning("[Entanglement Finder] Time limit reached!", debugIndent);
 		};
 	}
 

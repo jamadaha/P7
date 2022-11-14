@@ -75,7 +75,7 @@ unordered_map<unsigned int, T> WalkerProbe::GetFactSubset(unordered_map<unsigned
     unordered_map<unsigned int, T> returnSet;
     for (auto i : *targetSource) {
         if (this->instance->domain->staticPredicates.contains(i.first)) {
-            returnSet.emplace(i.first, i.second);
+            returnSet.emplace(i.first, initSource->at(i.first));
         }
         else {
             T newSet;

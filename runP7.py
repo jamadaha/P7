@@ -2,21 +2,22 @@ from lab.experiment import Experiment
 from lab.environments import LocalEnvironment
 from downward import suites
 import shutil
-import os
 from os import path
-from Lab.Reports import *
+from Lab.Reports import Reports
 from Lab.Benchmarks import get_suite
-from Lab.ConfigParser import *
+from Lab.ConfigParser import ConfigParser
 from Lab.CSVGenerator import CSVGenerator
 from Lab.LabAttributes import ATTRIBUTES
 from Lab.LabSettingsParser import LabSettingsParser
+from Lab.PathHelper import PathHelper
+
+pathHelper = PathHelper(path.dirname(__file__))
 
 labSettings = LabSettingsParser()
 labSettings.ParseSettingsFile()
 
 experiments = []
 
-basePath = os.path.dirname(__file__)
 if path.exists("LabReports/"):
     shutil.rmtree("LabReports/")
 
@@ -28,7 +29,7 @@ for settingsFile in labSettings.SettingsCollection:
 
     if ".ini" not in settingsFile:
         settingsFile = settingsFile + ".ini"
-    fileContent = get_config("LabSettings/" + settingsFile)
+    fileContent = ConfigParser().ParseConfig("LabSettings/" + settingsFile)
 
     domainline = ""
     problemline = ""
@@ -44,7 +45,7 @@ for settingsFile in labSettings.SettingsCollection:
             problemline = line.split("=")[1].strip("\n")
         elif "downwardpath" in line or "validatorpath" in line:
             argument = line.split("=")
-            settingscontent += argument[0] + "=" + os.path.join(basePath, argument[1]) 
+            settingscontent += argument[0] + "=" + pathHelper.CombinePath(argument[1]) 
         elif "reformulator=" in line:
             reformulators = line.split("=")[1].strip("\n").split(",")
         elif "EXTERNAL" not in line:
@@ -52,13 +53,12 @@ for settingsFile in labSettings.SettingsCollection:
 
     
     #if not found in config file the default values are used
-    reportfolder = os.path.join(basePath, 'LabReport')
-    projectfile = os.path.join(basePath, 'src/P7')
+    reportfolder = pathHelper.CombinePath('LabReport')
+    projectfile = pathHelper.CombinePath('src/P7')
 
     #decide if labs method to find domains and problems should be used
     #since lab wants the benchmarksfolder to have a specific structure
-    lab_build_suite = True
-    benchmarksfolder = os.path.join(basePath, "Data/benchmarks/")
+    benchmarksfolder = pathHelper.CombinePath("Data/benchmarks/")
 
     domains = domainline.split(":")
     problemsindomains = problemline.split(":")
@@ -101,9 +101,9 @@ for settingsFile in labSettings.SettingsCollection:
     experiment.add_step("start", experiment.start_runs)
     experiment.add_fetcher(name="fetch")
 
-    add_parsers(experiment)
-    add_absolute_report(experiment, ATTRIBUTES)
-    add_taskwise_reports(experiment, reformulators)
+    Reports.AddParsers(experiment)
+    Reports.AddAbsoluteReport(experiment, ATTRIBUTES)
+    Reports.AddTaskwiseReport(experiment, reformulators)
 
     experiment.run_steps()
 

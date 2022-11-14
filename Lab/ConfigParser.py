@@ -1,6 +1,6 @@
 
 class ConfigParser():
-    def ParseConfig(self, fileName):
+    def ParseConfig(fileName):
         fileContent = []
         fileContentPost = []
         with open(fileName, 'r') as file:
@@ -12,7 +12,7 @@ class ConfigParser():
                 value = line.split(":")[1].strip("\n")
                 if "baseSettings.ini" not in value:
                     value = "LabSettings/" + value
-                fileContentPost = self.ParseConfig(value) + fileContentPost
+                fileContentPost = ConfigParser.ParseConfig(value) + fileContentPost
             else:
                 fileContentPost.append(line)
 

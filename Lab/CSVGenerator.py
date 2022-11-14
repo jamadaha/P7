@@ -5,7 +5,7 @@ import os
 from os import path
 
 class CSVGenerator():
-    def AddCSVReport(self, attributes):
+    def AddCSVReport(attributes):
         basePath = os.path.dirname(__file__)
         if path.exists(os.path.join(basePath, "../LabReports/")):
             print("Generating csv file")

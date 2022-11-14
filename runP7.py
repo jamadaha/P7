@@ -10,6 +10,7 @@ from Lab.CSVGenerator import CSVGenerator
 from Lab.LabAttributes import ATTRIBUTES
 from Lab.LabSettingsParser import LabSettingsParser
 from Lab.PathHelper import PathHelper
+from Lab.SettingsParser import SettingsParser
 
 pathHelper = PathHelper(path.dirname(__file__))
 
@@ -29,28 +30,10 @@ for settingsFile in labSettings.SettingsCollection:
 
     if ".ini" not in settingsFile:
         settingsFile = settingsFile + ".ini"
-    fileContent = ConfigParser().ParseConfig("LabSettings/" + settingsFile)
+    fileContent = ConfigParser.ParseConfig("LabSettings/" + settingsFile)
 
-    domainline = ""
-    problemline = ""
-    reformulators = []
-
-    settingscontent = ""
-
-    #Parse config file and remove lab specific settings
-    for line in fileContent:
-        if "domain" in line:
-            domainline = line.split("=")[1].strip("\n")
-        elif "problem" in line:
-            problemline = line.split("=")[1].strip("\n")
-        elif "downwardpath" in line or "validatorpath" in line:
-            argument = line.split("=")
-            settingscontent += argument[0] + "=" + pathHelper.CombinePath(argument[1]) 
-        elif "reformulator=" in line:
-            reformulators = line.split("=")[1].strip("\n").split(",")
-        elif "EXTERNAL" not in line:
-            settingscontent += line
-
+    experimentSettings = SettingsParser(pathHelper)
+    experimentSettings.Parse(fileContent)
     
     #if not found in config file the default values are used
     reportfolder = pathHelper.CombinePath('LabReport')
@@ -60,21 +43,17 @@ for settingsFile in labSettings.SettingsCollection:
     #since lab wants the benchmarksfolder to have a specific structure
     benchmarksfolder = pathHelper.CombinePath("Data/benchmarks/")
 
-    domains = domainline.split(":")
-    problemsindomains = problemline.split(":")
-
     experiment = Experiment(reportfolder, LocalEnvironment(labSettings.Threads))
-
-    tasks = []
-    tasks = suites.build_suite(benchmarksfolder, get_suite(domains, problemsindomains))
+    
+    tasks = suites.build_suite(benchmarksfolder, get_suite(experimentSettings.Domains, ""))
 
     """
     Each task contains a domain file and problem file
     For each task a settings.ini file is made and P7 is given this file as argument
     """
-    for reformulator in reformulators:
+    for reformulator in experimentSettings.Reformulators:
         for task in tasks:
-            content = settingscontent
+            content = experimentSettings.SettingsContent
             content += "\nPATH:domain=" + task.domain_file + "\n"
             content += "PATH:problem=" + task.problem_file + "\n"
 
@@ -103,7 +82,7 @@ for settingsFile in labSettings.SettingsCollection:
 
     Reports.AddParsers(experiment)
     Reports.AddAbsoluteReport(experiment, ATTRIBUTES)
-    Reports.AddTaskwiseReport(experiment, reformulators)
+    Reports.AddTaskwiseReport(experiment, experimentSettings.Reformulators)
 
     experiment.run_steps()
 
@@ -111,4 +90,4 @@ for settingsFile in labSettings.SettingsCollection:
 
     experiments.append(experiment)
 
-CSVGenerator().AddCSVReport(ATTRIBUTES)
+CSVGenerator.AddCSVReport(ATTRIBUTES)

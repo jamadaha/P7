@@ -40,6 +40,8 @@ configure_file(${PROJECT_SOURCE_DIR}/Lab/CSVGenerator.py ${CMAKE_BINARY_DIR}/Lab
 configure_file(${PROJECT_SOURCE_DIR}/Lab/LabSettingsParser.py ${CMAKE_BINARY_DIR}/Lab/LabSettingsParser.py COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/Lab/PathHelper.py ${CMAKE_BINARY_DIR}/Lab/PathHelper.py COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/Lab/SettingsParser.py ${CMAKE_BINARY_DIR}/Lab/SettingsParser.py COPYONLY)
+configure_file(${PROJECT_SOURCE_DIR}/Lab/Benchmarks.py ${CMAKE_BINARY_DIR}/Lab/Benchmarks.py COPYONLY)
+configure_file(${PROJECT_SOURCE_DIR}/Lab/LabSuite.py ${CMAKE_BINARY_DIR}/Lab/LabSuite.py COPYONLY)
 
 configure_file(${PROJECT_SOURCE_DIR}/baseSettings.ini ${CMAKE_BINARY_DIR}/baseSettings.ini COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/settings.ini ${CMAKE_BINARY_DIR}/settings.ini COPYONLY)

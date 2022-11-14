@@ -27,18 +27,24 @@ public:
     PDDLAction(std::string name) : name(name) {};
 
     PDDLAction(std::string name, std::vector<std::string> parameters, std::vector<PDDLLiteral> preconditions, std::vector<PDDLLiteral> effects) : 
-        name(name), parameters(parameters), preconditions(preconditions), effects(effects), applicableUnaryLiterals(GenerateApplicableLiterals(true)), applicableMultiLiterals(GenerateApplicableLiterals(false)),
-        applicablePredicates(GenerateApplicablePredicates()) {};
+        name(name), 
+        parameters(parameters), 
+        preconditions(preconditions), 
+        effects(effects), 
+        applicableUnaryLiterals(GenerateApplicableLiterals(true)), 
+        applicableUnaryPredicates(GenerateApplicablePredicates(true)),
+        applicablePredicates(GenerateApplicablePredicates()),
+        applicableMultiLiterals(GenerateApplicableLiterals(false)) {};
 
     PDDLAction(const PDDLAction &a) : 
-    name(a.name),
-    parameters(a.parameters),
-    preconditions(a.preconditions),
-    effects(a.effects),
-    applicableUnaryLiterals(a.applicableUnaryLiterals),
-    applicableUnaryPredicates(a.applicableUnaryPredicates),
-    applicablePredicates(a.applicablePredicates),
-    applicableMultiLiterals(a.applicableMultiLiterals) {}
+        name(a.name),
+        parameters(a.parameters),
+        preconditions(a.preconditions),
+        effects(a.effects),
+        applicableUnaryLiterals(GenerateApplicableLiterals(true)),
+        applicableUnaryPredicates(GenerateApplicablePredicates(true)),
+        applicablePredicates(GenerateApplicablePredicates()),
+        applicableMultiLiterals(GenerateApplicableLiterals(false)) {}
 
     /// @return Returns true if name, parameters and preconditions are the same, ignores parameter names
     friend bool operator==(const PDDLAction& lhs, const PDDLAction& rhs) {

@@ -12,8 +12,3 @@ PDDLInstance BaseRegressorReformulator::ReformulatePDDL(PDDLInstance* instance) 
 
     return *instance;
 }
-
-SASPlan BaseRegressorReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) {
-
-	return *reformulatedSAS;
-}

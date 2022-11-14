@@ -1,6 +1,7 @@
 add_library(Reformulator "BaseReformulator.hh")
 target_sources(Reformulator
     PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}/BaseReformulator.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Walkers/BaseWalkerReformulator.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Walkers/GreedyWalkerReformulator.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Walkers/GreedyResumeWalkerReformulator.cpp

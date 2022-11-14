@@ -13,7 +13,7 @@ ERROR_ATTRIBUTES= ['domain',
                     'unexplained_errors', 
                     'error', 
                     'raw_memory',
-                    'settings_file']
+                    'p7_settings_file']
 
 PREDEFINED_ATTRIBUTES= ['cost', 
                         'coverage', 

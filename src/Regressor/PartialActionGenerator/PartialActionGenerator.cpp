@@ -99,5 +99,21 @@ PDDLActionInstance PartialActionGenerator::FillPartialAction(const PDDLInstance 
 }
 
 unsigned int PartialActionGenerator::GetParameterCandidate(const PDDLInstance *instance, const PDDLAction *action, const unsigned int *paramIndex) {
-    printf("\b");
+    const PDDLLiteral *staticLiteral = nullptr;
+    for (auto iter = action->applicableUnaryLiterals.at(*paramIndex).begin(); iter != action->applicableUnaryLiterals.at(*paramIndex).end(); iter++)
+        if (instance->domain->staticPredicates.contains((*iter)->predicateIndex)) {
+            staticLiteral = *iter;
+            break;
+        }
+    if (staticLiteral == nullptr) {
+        // do something better at some point
+        return rand() % instance->problem->objects.size();
+    } else {
+        auto predicateIndex = staticLiteral->predicateIndex;
+        auto state = &instance->problem->initState;
+        if (staticLiteral->args.size() == 1) {
+            return *std::next(state->unaryFacts.at(predicateIndex).begin(), rand() % state->unaryFacts.at(predicateIndex).size());
+        } else
+            throw std::logic_error("Not implemented");
+    }
 }

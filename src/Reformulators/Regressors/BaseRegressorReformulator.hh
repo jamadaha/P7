@@ -15,6 +15,7 @@ protected:
     virtual std::vector<Path> PerformRegression(PDDLInstance *instance, bool debugMode) = 0;
 
 private:
+    void FindPaths(PDDLInstance *instance, bool debugMode);
 };
 
 #endif

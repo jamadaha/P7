@@ -86,7 +86,12 @@ def get_times(content, props):
         while checkName in props:
             checkName = description + "_boolvalues" + str(counter)
             counter += 1
-        props[checkName] = bool(note)
+        if note.upper() == "TRUE":
+            props[checkName] = True
+        else:
+            props[checkName] = False
+
+    check_errors(props)
 
 def check_map_name(name):
     for target, newName in ATTRIBUTES_NAME_MAP:
@@ -94,6 +99,13 @@ def check_map_name(name):
             return newName
     return name
 
+def check_errors(props):
+    if "reformulated_plan_valid" in props:
+        if props["reformulated_plan_valid"] == False:
+            props.add_unexplained_error("Reformulated plan was not valid!")
+    if "rebuild_plan_valid" in props:
+        if props["rebuild_plan_valid"] == False:
+            props.add_unexplained_error("Rebuild plan was not valid!")
 
 parser = Parser()
 parser.add_function(get_times, file="run.log")

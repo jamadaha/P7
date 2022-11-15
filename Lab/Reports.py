@@ -1,5 +1,6 @@
 from downward.reports.absolute import AbsoluteReport
 from downward.reports.taskwise import TaskwiseReport
+from downward.reports.scatter import ScatterPlotReport
 
 import os
 
@@ -11,6 +12,26 @@ class Reports():
         for reformulator in reformulators:
             experiment.add_report(TaskwiseReport(attributes=["*_ms"],filter_algorithm=[reformulator]), outfile=reformulator+"_report_ms.html")
             experiment.add_report(TaskwiseReport(attributes=["*_procent"],filter_algorithm=[reformulator]), outfile=reformulator+"_report_procent.html")
+
+    def AddPlots(experiment):
+        matplotlib_options = {
+            "font.family": "serif",
+            "font.weight": "normal",
+            # Used if more specific sizes not set.
+            "font.size": 20,
+            "axes.labelsize": 20,
+            "axes.titlesize": 30,
+            "legend.fontsize": 22,
+            "xtick.labelsize": 10,
+            "ytick.labelsize": 10,
+            "lines.markersize": 10,
+            "lines.markeredgewidth": 0.25,
+            "lines.linewidth": 1,
+            # Width and height in inches.
+            "figure.figsize": [8, 8],
+            "savefig.dpi": 100,
+        }
+        experiment.add_report(ScatterPlotReport(attributes=['reformulation_time'], matplotlib_options=matplotlib_options), name="Reformulation Time")
 
     def AddParsers(experiment):
         EXITCODE_PARSER = os.path.join(os.path.dirname(os.path.abspath(__file__)),"ExitcodeParser.py")

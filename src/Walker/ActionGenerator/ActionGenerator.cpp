@@ -6,7 +6,7 @@ using namespace std;
 
 vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *state) {
     vector<PDDLActionInstance> legalActions;
-    for (auto iter = actions->begin(); iter != actions->end(); iter++) {
+    for (auto iter = instance->domain->actions.begin(); iter != instance->domain->actions.end(); iter++) {
         vector<PDDLActionInstance> tempActions = GenerateActions(&(*iter), state);
         copy(tempActions.begin(), tempActions.end(), back_inserter(legalActions));
     }
@@ -95,7 +95,8 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered
         }
 
     if (candidateObjects.size() == 0)
-        candidateObjects = objects;
+        for (int i = 0; i < instance->problem->objects.size(); i++)
+            candidateObjects.emplace(i);
     
     RemoveIllegal(candidateObjects, literals, state);
 

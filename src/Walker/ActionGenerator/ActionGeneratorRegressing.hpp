@@ -3,13 +3,16 @@
 
 #include "BaseActionGenerator.hpp"
 
+#include <vector>
+
 class ActionGeneratorRegressing : public BaseActionGenerator {
 public:
-    ActionGeneratorRegressing(const std::vector<PDDLAction> *actions, const unsigned int objectCount) : BaseActionGenerator(actions, objectCount) {}
+    ActionGeneratorRegressing(const PDDLInstance *instance) : BaseActionGenerator(instance) {}
 
-    std::vector<PDDLAction> GenerateActions() {
+    std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state) override;
 
-    }
+private:
+
 };
 
 #endif

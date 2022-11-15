@@ -39,7 +39,7 @@ public:
     BaseWalker(std::string walkerName, PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) :
         WalkerName(walkerName), 
         instance(instance), 
-        actionGenerator(ActionGenerator(&instance->domain->actions, instance->problem->objects.size())), 
+        actionGenerator(ActionGenerator(instance)), 
         heuristic(heuristic), widthFunc(widthFunc) {}
     ~BaseWalker() {
         free(heuristic);

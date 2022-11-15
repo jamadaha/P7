@@ -8,10 +8,10 @@
 
 class ActionGenerator : public BaseActionGenerator {
 public:
-    ActionGenerator(const std::vector<PDDLAction> *actions, const unsigned int objectCount) : BaseActionGenerator(actions, objectCount) {};
+    ActionGenerator(const PDDLInstance *instance) : BaseActionGenerator(instance) {};
 
     /// @brief For a given state, generate all possible action instances
-    std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state);
+    std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state) override;
     /// @brief For a given action, generate all possible action instances
     std::vector<PDDLActionInstance> GenerateActions(const PDDLAction *action, const PDDLState *state) const;
 

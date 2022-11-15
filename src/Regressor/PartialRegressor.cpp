@@ -6,28 +6,49 @@ Path PartialRegressor::RegressFromState(const PDDLState *state) {
     std::vector<PartialAction> steps;
     std::unordered_set<PDDLState> visitedStates{*state};
     PDDLState tempState = PDDLState(*state);
-    for (int i = 0; i < 100; i++) {
-        std::unordered_set<PartialAction> partialActions = actionGenerator->ExpandState(&tempState);
+    for (int i = 0; i < this->depthFunction->GetDepth(); i++) {
+        std::vector<PartialAction> partialActions = actionGenerator->ExpandState(&tempState);
         if (partialActions.size() == 0)
             break;
         
-        const PartialAction *chosenAction = &*std::next(partialActions.begin(), rand() % partialActions.size());
+        PartialAction *action = nullptr;
+        std::unordered_set<PDDLState> predecessorStates;
+        action = GetPredecessorStates(&partialActions, predecessorStates);
 
-        std::unordered_set<PDDLState> predecessorStates = GetPredecessorStates(&*partialActions.begin());
+        if (action == nullptr) {
+            SwitchToNonPartial(&partialActions);
+            action = GetPredecessorStates(&partialActions, predecessorStates);
+        }
+
         if (predecessorStates.size() == 0)
             break;
 
-        tempState = *std::next(predecessorStates.begin(), rand() % predecessorStates.size());
+        PDDLActionInstance realAction = actionGenerator->ConvertPartialAction(instance, action);
+
+        GetPredecessorState(&tempState, &realAction);
 
         if (visitedStates.contains(tempState))
             break;
         else {
             visitedStates.emplace(tempState);
-            steps.push_back(*chosenAction);
+            steps.push_back(*action);
         }
     }
     
     return ConvertToPath(steps);
+}
+
+PartialAction* PartialRegressor::GetPredecessorStates(std::vector<PartialAction> *actions, std::unordered_set<PDDLState> &states) {
+    int iter = rand() % actions->size();
+        for (int i = 0; i < actions->size(); i++) {
+            int index = ((iter + i) % actions->size());
+            auto tempStates = GetPredecessorStates(&actions->at(index));
+            if (tempStates.size() > 0) {
+                AlgorithmHelper::InsertAll(states, tempStates);
+                return &actions->at(index);
+            }
+        }
+    return nullptr;
 }
 
 std::unordered_set<PDDLState> PartialRegressor::GetPredecessorStates(const PartialAction *action) {
@@ -84,9 +105,32 @@ PDDLState PartialRegressor::GeneratePreconditionState(const PDDLLiteral *literal
         );
 }
 
+void PartialRegressor::GetPredecessorState(PDDLState *state, const PDDLActionInstance *action) {
+    // Handle preconditions
+    for (int i = 0; i < action->action->preconditions.size(); i++) {
+        PDDLLiteral precondition = action->action->preconditions.at(i);
+        if (precondition.args.size() == 1) {
+            // Handle unary effect
+            if (precondition.value)
+                state->unaryFacts.at(precondition.predicateIndex).emplace(action->objects.at(precondition.args.at(0)));
+        } else if (precondition.args.size() == 2) {
+            // Handle binary effect
+            if (precondition.value)
+                state->binaryFacts.at(precondition.predicateIndex).emplace(std::make_pair(action->objects.at(precondition.args.at(0)), action->objects.at(precondition.args.at(1))));
+        }
+    }
+    // Handle effects
+    state->UndoAction(action);
+}
+
+void PartialRegressor::SwitchToNonPartial(std::vector<PartialAction> *actions) {
+    for (int i = 0; i < actions->size(); i++)
+        actionGenerator->FillPartialAction(instance, &actions->at(i));
+}
+
 Path PartialRegressor::ConvertToPath(std::vector<PartialAction> actions) {
     std::vector<PDDLActionInstance> steps;
     for (int i = 0; i < actions.size(); i++)
-        steps.push_back(actionGenerator->FillPartialAction(instance, &actions.at(i)));
+        steps.push_back(actionGenerator->ConvertPartialAction(instance, &actions.at(i)));
     return Path(steps);
 }

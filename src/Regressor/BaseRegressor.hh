@@ -13,14 +13,14 @@
 class BaseRegressor {
 public:
     BaseRegressor(const PDDLInstance *instance, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc) : instance(instance), depthFunction(depthFunc), widthFunction(widthFunc) {};
-    virtual std::vector<Path> Regress();
+    std::vector<Path> Regress();
     
 protected:
     const PDDLInstance *instance;
     BaseDepthFunction *depthFunction;
     BaseWidthFunction *widthFunction;
 
-    virtual Path Regress(const PDDLState *state) = 0;
+    virtual Path RegressFromState(const PDDLState *state) = 0;
 };
 
 #endif

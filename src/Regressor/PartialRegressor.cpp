@@ -2,7 +2,7 @@
 
 #include <queue>
 
-Path PartialRegressor::Regress(const PDDLState *state) {
+Path PartialRegressor::RegressFromState(const PDDLState *state) {
     std::vector<PartialAction> steps;
     std::unordered_set<PDDLState> visitedStates{*state};
     PDDLState tempState = PDDLState(*state);

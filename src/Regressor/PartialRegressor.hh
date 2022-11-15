@@ -7,7 +7,7 @@
 
 #include "PartialActionGenerator/PartialActionGenerator.hh"
 
-class PartialRegressor : BaseRegressor {
+class PartialRegressor : public BaseRegressor {
 public:
     PartialRegressor(const PDDLInstance *instance, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc) : BaseRegressor(instance, depthFunc, widthFunc) {
         actionGenerator = new PartialActionGenerator(&instance->domain->actions, instance->problem->objects.size());
@@ -15,7 +15,8 @@ public:
     ~PartialRegressor() {
         free(actionGenerator);
     }
-    Path Regress(const PDDLState *state) override;
+protected:
+    Path RegressFromState(const PDDLState *state) override;
     
 private:
     PartialActionGenerator *actionGenerator;

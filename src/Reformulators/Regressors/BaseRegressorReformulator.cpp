@@ -1,14 +1,14 @@
 #include "BaseRegressorReformulator.hh"
 
-#include "../../Regressor/PartialRegressor.hh"
-#include "../../Walker/DepthFunctions/ConstantDepthFunction.hh"
-#include "../../Walker/WidthFunctions/ConstantWidthFunction.hh"
-
 PDDLInstance BaseRegressorReformulator::ReformulatePDDL(PDDLInstance* instance) {
     bool debugMode = Configs->GetItem<bool>("debugmode");
 
-	PartialRegressor regressor = PartialRegressor(instance, new ConstantDepthFunction(100, instance), new ConstantWidthFunction(100));
-	regressor.Regress(&instance->problem->goalState);
+	auto paths = PerformRegression(instance, debugMode);
+    std::vector<EntanglementOccurance> candidates = FindEntanglements(instance, debugMode);
+    GenerateMacros(instance, &candidates, debugMode);
+    PDDLInstance macroInstance = GenerateMacroInstance(instance, &macros, debugMode);
+
+    return macroInstance;
 
     return *instance;
 }

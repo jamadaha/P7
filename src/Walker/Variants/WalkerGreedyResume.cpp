@@ -2,7 +2,7 @@
 
 Path WalkerGreedyResume::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
     std::vector<PDDLActionInstance> steps; steps.reserve(maxStepCount);
-    std::unordered_set<PDDLState> visitedStates; visitedStates.reserve(maxStepCount);
+    std::unordered_set<size_t> visitedStates; visitedStates.reserve(maxStepCount);
 
     PDDLState tempState = PDDLState(state->unaryFacts, state->binaryFacts, state->multiFacts);
     if (OnTempStateMade != nullptr)
@@ -16,10 +16,10 @@ Path WalkerGreedyResume::Walk(BaseHeuristic *heuristic, const PDDLState *state) 
         PDDLActionInstance *chosenAction = heuristic->NextChoice(&tempState, &possibleActions);
         tempState.DoAction(chosenAction);
 
-        if (visitedStates.contains(tempState))
+        if (visitedStates.contains(tempState.GetHash()))
             break;
         else {
-            visitedStates.emplace(tempState);
+            visitedStates.emplace(tempState.GetHash());
             steps.push_back(*chosenAction);
             int value = heuristic->Eval(&tempState); 
             if (value > bestValue) {

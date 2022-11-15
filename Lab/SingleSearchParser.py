@@ -115,12 +115,7 @@ def add_scores(content, props):
         props["score_" + attr] = tools.compute_log_score(
             success, props.get(attr), lower_bound=100, upper_bound=1e6
         )
-
-    for attr in ("p7_solving_problem_ms"):
-        props["score_" + attr] = tools.compute_log_score(
-            success, props.get(attr), lower_bound=0, upper_bound=1e6
-        )
-
+        
     try:
         max_time = props["limit_search_time"]
     except KeyError:

@@ -7,11 +7,19 @@
 #include <map>
 #include <algorithm>
 
+struct ReportData {
+    std::string stringValue;
+    std::string intValue;
+    std::string boolValue;
+
+    ReportData(std::string stringValue = "None", std::string intValue = "-1", std::string boolValue = "None") : stringValue(stringValue), intValue(intValue), boolValue(boolValue){}
+};
+
 struct ReportStep {
     bool isRunning;
     int indent = 0;
     std::string desc;
-    std::string overideOutput;
+    ReportData Data;
     // How long the step took in nano seconds
     int64_t time = 0;
     // Initial time
@@ -40,11 +48,11 @@ public:
 
     // Returns time taken
     // Default is in ms
-    int64_t Stop(std::string overideOutput = "");
+    int64_t Stop(ReportData data = ReportData());
 
     // Returns time taken
     // Default is in ms
-    int64_t Stop(int i, std::string overideOutput = "");
+    int64_t Stop(int i, ReportData data = ReportData());
 
 
 

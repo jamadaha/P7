@@ -64,7 +64,8 @@ class LabSuite():
 
             Reports.AddParsers(experiment)
             Reports.AddAbsoluteReport(experiment, ATTRIBUTES)
-            Reports.AddPlots(experiment)
+            for attribute in labSettings.PlotsAttributes:
+                Reports.AddPlot(experiment, attribute)
             #Reports.AddTaskwiseReport(experiment, experimentSettings.Reformulators)
 
             experiment.run_steps()

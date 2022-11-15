@@ -14,9 +14,8 @@ class PartialActionGenerator {
 public:
     PartialActionGenerator(const std::vector<PDDLAction> *actions, const unsigned int objectCount) : actions(actions), objects(GetObjects(objectCount)) {};
     // Expands the state, I.e. generates all actions which makes atleast one of the facts true
-    std::vector<PartialAction> ExpandState(const PDDLState *state);
-    void FillPartialAction(const PDDLInstance *instance, PartialAction *partialAction);
-    PDDLActionInstance ConvertPartialAction(const PDDLInstance *instance, const PartialAction *partialAction);
+    std::unordered_set<PartialAction> ExpandState(const PDDLState *state);
+    PDDLActionInstance FillPartialAction(const PDDLInstance *instance, const PartialAction *partialAction);
     
 private:
     const std::vector<PDDLAction> *actions;
@@ -29,8 +28,8 @@ private:
             tempObjects.emplace(i);
         return tempObjects;
     }
-    std::vector<PartialAction> ExpandUnary(std::pair<unsigned int, unsigned int> predicateObject);
-    std::vector<PartialAction> ExpandBinary(std::pair<unsigned int, std::pair<unsigned int, unsigned int>> predicateObjects);
+    std::unordered_set<PartialAction> ExpandUnary(std::pair<unsigned int, unsigned int> predicateObject);
+    std::unordered_set<PartialAction> ExpandBinary(std::pair<unsigned int, std::pair<unsigned int, unsigned int>> predicateObjects);
 
     PartialAction CreateFromUnary(const PDDLAction *action, const unsigned int index, const unsigned int object);
     PartialAction CreateFromBinay(const PDDLAction *action, const std::pair<unsigned int, unsigned int> indexes, const std::pair<unsigned int, unsigned int> objects);

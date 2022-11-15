@@ -6,6 +6,6 @@
 #include "../../Walker/WidthFunctions/ConstantWidthFunction.hh"
 
 std::vector<Path> PartialRegressionReformulator::PerformRegression(PDDLInstance *instance, bool debugMode) {
-    PartialRegressor regressor = PartialRegressor(instance, new ConstantDepthFunction(100, instance), new ConstantWidthFunction(1000));
+    PartialRegressor regressor = PartialRegressor(instance, new ConstantDepthFunction(100, instance), new ConstantWidthFunction(100));
 	return regressor.Regress();
 }

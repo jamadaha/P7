@@ -11,7 +11,6 @@ class Reports():
         for reformulator in reformulators:
             experiment.add_report(TaskwiseReport(attributes=["*_ms"],filter_algorithm=[reformulator]), outfile=reformulator+"_report_ms.html")
             experiment.add_report(TaskwiseReport(attributes=["*_procent"],filter_algorithm=[reformulator]), outfile=reformulator+"_report_procent.html")
-            experiment.add_report(TaskwiseReport(attributes=["*_notes"],filter_algorithm=[reformulator]), outfile=reformulator+"_report_notes.html")
 
     def AddParsers(experiment):
         EXITCODE_PARSER = os.path.join(os.path.dirname(os.path.abspath(__file__)),"ExitcodeParser.py")

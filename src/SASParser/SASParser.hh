@@ -24,8 +24,9 @@ struct SASPlan {
 public:
     std::vector<SASAction> actions;
     int cost;
+    int macrosUsed;
 
-    SASPlan(std::vector<SASAction> actions, int cost) : actions(actions), cost(cost) {}
+    SASPlan(std::vector<SASAction> actions, int cost, int macrosUsed) : actions(actions), cost(cost), macrosUsed(macrosUsed) {}
 };
 
 class SASParser {

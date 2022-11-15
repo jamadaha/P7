@@ -106,6 +106,7 @@ PDDLInstance BaseWalkerReformulator::GenerateMacroInstance(PDDLInstance* instanc
 
 SASPlan BaseWalkerReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) {
     std::vector<SASAction> actions;
+	int macrosUsed = 0;
 	for (int i = 0; i < reformulatedSAS->actions.size(); i++) {
 		auto sasAction = reformulatedSAS->actions.at(i);
 		unsigned int actionIndex = -1;
@@ -121,6 +122,7 @@ SASPlan BaseWalkerReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* 
 		} else {
 			for (auto macro : macros) {
 				if (sasAction.name == macro.name)
+					macrosUsed++;
 					for (auto macroAction : macro.path) {
 						std::vector<std::string> args; args.reserve(macroAction.objects.size());
 						for (auto object : macroAction.objects) 
@@ -132,7 +134,7 @@ SASPlan BaseWalkerReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* 
 		}
 	}
 	// Do Something and give a "corrected" SAS plan back
-	SASPlan newPlan = SASPlan(actions, actions.size());
+	SASPlan newPlan = SASPlan(actions, actions.size(), macrosUsed);
 	return newPlan;
 }
 

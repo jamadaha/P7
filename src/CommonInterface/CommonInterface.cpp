@@ -101,11 +101,11 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 		counter++;
 	}
 	if (runRes != DownwardRunner::FoundPlan) {
-		Report->Stop(iterativeProcess, "false");
+		Report->Stop(iterativeProcess, ReportData("None","-1","false"));
 		ConsoleHelper::PrintError("Fast downward did not find a plan in time!");
 		return InterfaceStep<void>(false);
 	}
-	Report->Stop(iterativeProcess, "true");
+	Report->Stop(iterativeProcess, ReportData("None", "-1", "true"));
 	return InterfaceStep<void>();
 }
 
@@ -114,11 +114,11 @@ InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, P
 	int timeLimit = config.GetItem<int>("totalTimeLimit") * 1000;
 
 	if (RunSingle(reformulator, instance, directProcess, timeLimit, timeLimit).RanWithoutErrors) {
-		Report->Stop(directProcess, "true");
+		Report->Stop(directProcess, ReportData("None", "-1", "true"));
 		return InterfaceStep<void>();
 	}
 	else {
-		Report->Stop(directProcess, "true");
+		Report->Stop(directProcess, ReportData("None", "-1", "false"));
 		return InterfaceStep<void>(false);
 	}
 }
@@ -157,11 +157,11 @@ InterfaceStep<void> CommonInterface::ValidatePlans(string domainFile, string pro
 	int parent = Report->Begin(reportName);
 	auto reformulatedSASValidatorResult = PlanValidator::ValidatePlan(config, domainFile, problemFile, sasFile);
 	if (reformulatedSASValidatorResult != PlanValidator::PlanMatch) {
-		Report->Stop(parent, "false");
+		Report->Stop(parent, ReportData("None", "-1", "false"));
 		ConsoleHelper::PrintDebugError("Output plan is not valid for reformulated domain and problem!");
 		return InterfaceStep<void>(false);
 	}
-	Report->Stop(parent, "true");
+	Report->Stop(parent, ReportData("None", "-1", "true"));
 	return InterfaceStep<void>(true);
 }
 
@@ -171,7 +171,7 @@ InterfaceStep<SASPlan> CommonInterface::ParseSASPlan() {
 	SASParser sasParser;
 	filesystem::path sasPath = filesystem::path(CommonInterface::FastDownwardSASName);
 	SASPlan reformulatedSASPlan = sasParser.Parse(sasPath);
-	Report->Stop(to_string(reformulatedSASPlan.cost));
+	Report->Stop(ReportData("None", to_string(reformulatedSASPlan.cost)));
 	return InterfaceStep<SASPlan>(reformulatedSASPlan);
 }
 
@@ -179,7 +179,9 @@ InterfaceStep<SASPlan> CommonInterface::RebuildSASPlan(SASPlan* reformulatedSASP
 	ConsoleHelper::PrintInfo("Rebuilding the SAS plan...");
 	Report->Begin("Rebuild SAS plan");
 	SASPlan outputPlan = reformulator->RebuildSASPlan(instance, reformulatedSASPlan);
-	Report->Stop(to_string(outputPlan.cost));
+	Report->Stop(ReportData("None", to_string(outputPlan.cost)));
+	Report->Begin("Macros Used");
+	Report->Stop(ReportData("None", to_string(outputPlan.macrosUsed)));
 	return InterfaceStep<SASPlan>(outputPlan);
 }
 

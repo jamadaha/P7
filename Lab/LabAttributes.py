@@ -16,13 +16,13 @@ PREDEFINED_ATTRIBUTES= ['cost',
                         'plan_length', 
                         'planner_time', 
                         'search_time', 
-                        'unsolvable',
                         'translator_facts',
-                        'p7_solving_problem_ms',
-                        'p7_validating_reformulated_plan_notes',
-                        'p7_validating_rebuilded_plan_notes',
-                        'p7_solving_problem_notes',
-                        'p7_rebuild_sas_plan_notes',
-                        'p7_parse_sas_plan_notes']
+                        'reformulation_time',
+                        'reformulated_plan_valid',
+                        'rebuild_plan_valid',
+                        'solvable',
+                        'rebuild_plan_length',
+                        'reformulated_plan_length',
+                        'macros_used']
 
 ATTRIBUTES = ERROR_ATTRIBUTES + PREDEFINED_ATTRIBUTES

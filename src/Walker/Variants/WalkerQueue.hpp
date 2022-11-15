@@ -8,7 +8,7 @@
 #include "../Heuristics/BaseHeuristic.hh"
 #include "../DepthFunctions/BaseDepthFunction.hh"
 #include "../WidthFunctions/BaseWidthFunction.hh"
-#include "../ActionGenerator.hpp"
+#include "../ActionGenerator/ActionGenerator.hpp"
 
 #include "../../Config/Config.hh"
 #include "../../Helpers/Hashes.hh"

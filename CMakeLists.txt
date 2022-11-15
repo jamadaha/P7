@@ -22,6 +22,7 @@ add_subdirectory(src/SASParser)
 add_subdirectory(src/EntanglementFinder)
 add_subdirectory(src/MacroGenerator)
 add_subdirectory(src/Walker/)
+add_subdirectory(src/Walker/ActionGenerator/)
 add_subdirectory(src/)
 
 

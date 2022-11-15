@@ -1,23 +1,14 @@
 #ifndef ACTION_GENERATOR
 #define ACTION_GENERATOR
 
-#include <vector>
-#include <string>
-#include <map>
-#include <set>
-#include <iterator>
+#include "BaseActionGenerator.hpp"
 
-#include "../IntermediatePDDL/PDDLActionInstance.hh"
-#include "../IntermediatePDDL/PDDLInstance.hh"
-#include "../Helpers/AlgorithmHelper.hh"
+#include "../../IntermediatePDDL/PDDLActionInstance.hh"
+#include "../../IntermediatePDDL/PDDLInstance.hh"
 
-class ActionGenerator {
+class ActionGenerator : public BaseActionGenerator {
 public:
-    unsigned int GetTotalActionsGenerated() { return totalActions; };
-    ActionGenerator(const std::vector<PDDLAction> *actions, const unsigned int objectCount) : actions(actions) {
-        for (int i = 0; i < objectCount; i++)
-            objects.emplace(i);
-    };
+    ActionGenerator(const std::vector<PDDLAction> *actions, const unsigned int objectCount) : BaseActionGenerator(actions, objectCount) {};
 
     /// @brief For a given state, generate all possible action instances
     std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state);
@@ -42,11 +33,6 @@ public:
     /// @brief Checks whether the objects are valid for each of the \p literals
     /// @param literals Some multi literals
     static bool IsLegal(const std::vector<PDDLLiteral> *literals, const PDDLState *state, const std::vector<unsigned int> *objects);
-
-private:
-    unsigned int totalActions = 0;
-    const std::vector<PDDLAction> *actions;
-    std::unordered_set<unsigned int> objects;
 };
 
 #endif

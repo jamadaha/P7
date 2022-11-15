@@ -1,5 +1,7 @@
 #include "ActionGenerator.hpp"
 
+#include "../../Helpers/AlgorithmHelper.hh"
+
 using namespace std;
 
 vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *state) {

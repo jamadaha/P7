@@ -1,4 +1,3 @@
-
 from aifc import Error
 from downward.suites import Problem
 

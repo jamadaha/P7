@@ -18,7 +18,7 @@
 class WalkerGreedyResume : public BaseWalker {
 public:
     WalkerGreedyResume(PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) 
-        : BaseWalker("Default", instance, heuristic, widthFunc) {}
+        : BaseWalker("Default", instance, heuristic, widthFunc, new ActionGenerator(instance)) {}
     std::vector<Path> Walk() override;
 private:
     const unsigned int maxStepCount = 1000;

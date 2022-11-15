@@ -1,5 +1,5 @@
-#ifndef WALKER_GREEDY
-#define WALKER_GREEDY
+#ifndef WALKER_REGRESSIVE
+#define WALKER_REGRESSIVE
 
 #include <vector>
 #include <list>
@@ -8,17 +8,17 @@
 #include "../Heuristics/BaseHeuristic.hh"
 #include "../DepthFunctions/BaseDepthFunction.hh"
 #include "../WidthFunctions/BaseWidthFunction.hh"
-#include "../ActionGenerator/ActionGenerator.hpp"
+#include "../ActionGenerator/ActionGeneratorRegressing.hpp"
 
 #include "../../Config/Config.hh"
 #include "../../Helpers/Hashes.hh"
 
 #include "../BaseWalker.hh"
 
-class WalkerGreedy : public BaseWalker {
+class WalkerRegressive : public BaseWalker {
 public:
-    WalkerGreedy(PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) 
-        : BaseWalker("Default", instance, heuristic, widthFunc, new ActionGenerator(instance)) {}
+    WalkerRegressive(PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) 
+        : BaseWalker("Default", instance, heuristic, widthFunc, new ActionGeneratorRegressing(instance)) {}
     std::vector<Path> Walk() override;
 private:
     const unsigned int maxStepCount = 1000;

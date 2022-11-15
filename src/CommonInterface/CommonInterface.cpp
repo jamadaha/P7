@@ -21,6 +21,9 @@ InterfaceStep<BaseReformulator*> CommonInterface::GetReformulator(int reformulat
 	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "probeWalker") {
 		reformulator = new ProbeWalkerReformulator(&config, Report);
 	}
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "regressiveWalker") {
+		reformulator = new RegressiveWalkerReformulator(&config, Report);
+	}
 	else {
 		ConsoleHelper::PrintError("Reformulator not found! Reformulator: " + config.GetItem<string>("reformulator"));
 		return InterfaceStep<BaseReformulator*>(reformulator, false);

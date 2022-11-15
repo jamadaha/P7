@@ -7,7 +7,7 @@ std::unordered_set<Path> WalkerQueue::Walk(BaseHeuristic *heuristic, const PDDLS
 
     auto paths = std::unordered_set<Path>();
 
-    auto actions = actionGenerator.GenerateActions(&currentState);
+    auto actions = actionGenerator->GenerateActions(&currentState);
     for (auto iter = actions.begin(); iter != actions.end(); iter++) {
         currentPath.steps.push_back((*iter));
         currentState.DoAction(&(*iter));

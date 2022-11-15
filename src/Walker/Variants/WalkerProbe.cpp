@@ -12,7 +12,7 @@ Path WalkerProbe::Walk(BaseHeuristic* heuristic, const PDDLState* state) {
 
     for (int i = 0; i < maxStepCount; i++) {
         vector<PDDLActionInstance> possibleActions;
-        possibleActions = actionGenerator.GenerateActions(&tempState);
+        possibleActions = actionGenerator->GenerateActions(&tempState);
 
         if (possibleActions.size() == 0) break;
         PDDLActionInstance* chosenAction = heuristic->NextChoice(&tempState, &possibleActions);

@@ -6,6 +6,7 @@
 #include "Variants/WalkerGreedyResume.hpp"
 #include "Variants/WalkerQueue.hpp"
 #include "Variants/WalkerProbe.hpp"
+#include "Variants/WalkerRegressive.hpp"
 
 #include "DepthFunctions/BaseDepthFunction.hh"
 #include "DepthFunctions/ConstantDepthFunction.hh"

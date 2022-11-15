@@ -14,6 +14,8 @@
 class ActionGenerator {
 public:
     unsigned int GetTotalActionsGenerated() { return totalActions; };
+    unsigned int GetTotalCachedActions() { return ActionCache.size(); };
+
     ActionGenerator(const std::vector<PDDLAction> *actions, const unsigned int objectCount) : actions(actions) {
         for (int i = 0; i < objectCount; i++)
             objects.emplace(i);

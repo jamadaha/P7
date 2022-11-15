@@ -30,7 +30,7 @@ std::vector<EntanglementOccurance> BaseWalkerReformulator::FindEntanglements(PDD
 	double ellapsed = Report->Stop();
 	if (debugMode)
 		PrintEntanglerDebugData(ellapsed, &sanitizedCandidates, &entanglementFinder, &entanglementEvaluator);
-	if (Configs->GetItem<bool>("printentanglersteps"))
+	if (Configs->GetItem<bool>("printentanglersteps") == true)
 		PrintEntanglerSteps(&sanitizedCandidates, instance);
     return sanitizedCandidates;
 }
@@ -62,6 +62,7 @@ EntanglementFinder BaseWalkerReformulator::GetEntanglementFinder(bool debugMode)
 			bar->End();
 		};
 		ef.OnTimeLimitReached = [&]() {
+			bar->End();
 			ConsoleHelper::PrintDebugWarning("[Entanglement Finder] Time limit reached!", debugIndent);
 		};
 	}

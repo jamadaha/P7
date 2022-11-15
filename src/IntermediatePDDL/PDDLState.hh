@@ -119,11 +119,14 @@ namespace std {
     template <>
     struct hash<PDDLState> {
         auto operator()(const PDDLState& s) const -> size_t {
-            size_t 
-            size_t h1 = s.unaryFacts.size();
-            size_t h2 = s.binaryFacts.size();
-            size_t h3 = s.multiFacts.size();
-            return (h1 ^ (h2 << 1)) ^ (h3 << 1);
+            size_t hashValue = 0;
+            for (auto predicate : s.unaryFacts)
+                for (auto object : predicate.second)
+                    hashValue += predicate.first * object;
+            for (auto predicate : s.binaryFacts)
+                for (auto object : predicate.second)
+                    hashValue += predicate.first * (object.first + object.second);
+            return hashValue;
         }
     };
 }

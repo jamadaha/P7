@@ -17,19 +17,25 @@ void PDDLState::DoAction(const PDDLActionInstance *action) {
             // Handle unary effect
             auto value = action->objects.at(effect.args.at(0));
             if (effect.value) {
-                hashValue += value * effect.predicateIndex;
+                hashValue += effect.predicateIndex * value;
                 unaryFacts.at(effect.predicateIndex).emplace(value);
             }
             else {
-                hashValue -= value * effect.predicateIndex;
+                hashValue -= effect.predicateIndex * value;
                 unaryFacts.at(effect.predicateIndex).erase(value);
             }
         } else if (effect.args.size() == 2) {
             // Handle binary effect
-            if (effect.value)
-                binaryFacts.at(effect.predicateIndex).emplace(std::make_pair(action->objects.at(effect.args.at(0)), action->objects.at(effect.args.at(1))));
-            else
-                binaryFacts.at(effect.predicateIndex).erase(std::make_pair(action->objects.at(effect.args.at(0)), action->objects.at(effect.args.at(1))));
+            auto value1 = action->objects.at(effect.args.at(0));
+            auto value2 = action->objects.at(effect.args.at(1));
+            if (effect.value) {
+                hashValue += effect.predicateIndex + (value1 + value2);
+                binaryFacts.at(effect.predicateIndex).emplace(std::make_pair(value1, value2));
+            }
+            else {
+                hashValue -= effect.predicateIndex + (value1 + value2);
+                binaryFacts.at(effect.predicateIndex).erase(std::make_pair(value1, value2));
+            }
         } else {
             // Handle multi effect
             if (effect.value)

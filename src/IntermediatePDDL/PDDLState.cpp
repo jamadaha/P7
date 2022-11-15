@@ -2,16 +2,28 @@
 
 #include "PDDLInstance.hh"
 
+size_t PDDLState::GetHash() {
+    if (hashValue != 0)
+        return hashValue;
+    hashValue = std::hash<PDDLState>{}(*this);
+    return hashValue;
+}
+
 void PDDLState::DoAction(const PDDLActionInstance *action) {
     int actionEffectLength = action->action->effects.size();
     for (int i = 0; i < actionEffectLength; i++) {
         PDDLLiteral effect = action->action->effects.at(i);
         if (effect.args.size() == 1) {
             // Handle unary effect
-            if (effect.value)
-                unaryFacts.at(effect.predicateIndex).emplace(action->objects.at(effect.args.at(0)));
-            else
-                unaryFacts.at(effect.predicateIndex).erase(action->objects.at(effect.args.at(0)));
+            auto value = action->objects.at(effect.args.at(0));
+            if (effect.value) {
+                hashValue += value * effect.predicateIndex;
+                unaryFacts.at(effect.predicateIndex).emplace(value);
+            }
+            else {
+                hashValue -= value * effect.predicateIndex;
+                unaryFacts.at(effect.predicateIndex).erase(value);
+            }
         } else if (effect.args.size() == 2) {
             // Handle binary effect
             if (effect.value)

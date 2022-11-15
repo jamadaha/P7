@@ -62,6 +62,7 @@ namespace std {
 }
 
 struct PDDLState {
+    size_t GetHash();
     // Key - Index of predicate | Value - Set of objects which the predicate is true for
     std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts;
     std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts;
@@ -108,6 +109,9 @@ struct PDDLState {
     friend bool operator== (const PDDLState &lhs, const PDDLState &rhs) {
         return (lhs.unaryFacts == rhs.unaryFacts && lhs.binaryFacts == rhs.binaryFacts && lhs.multiFacts == rhs.multiFacts);
     };
+
+private:
+    size_t hashValue = 0;
     
 };
 
@@ -115,6 +119,7 @@ namespace std {
     template <>
     struct hash<PDDLState> {
         auto operator()(const PDDLState& s) const -> size_t {
+            size_t 
             size_t h1 = s.unaryFacts.size();
             size_t h2 = s.binaryFacts.size();
             size_t h3 = s.multiFacts.size();

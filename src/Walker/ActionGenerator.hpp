@@ -20,7 +20,7 @@ public:
     };
 
     /// @brief For a given state, generate all possible action instances
-    std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state);
+    std::vector<PDDLActionInstance> GenerateActions(PDDLState *state);
     /// @brief For a given action, generate all possible action instances
     std::vector<PDDLActionInstance> GenerateActions(const PDDLAction *action, const PDDLState *state) const;
 
@@ -47,6 +47,8 @@ private:
     unsigned int totalActions = 0;
     const std::vector<PDDLAction> *actions;
     std::unordered_set<unsigned int> objects;
+
+    std::unordered_map<size_t, std::vector<PDDLActionInstance>> ActionCache;
 };
 
 #endif

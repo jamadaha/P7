@@ -2,12 +2,16 @@
 
 using namespace std;
 
-vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *state) {
+vector<PDDLActionInstance> ActionGenerator::GenerateActions(PDDLState *state) {
+    if (ActionCache.contains(state->GetHash()))
+        return ActionCache.at(state->GetHash());
+
     vector<PDDLActionInstance> legalActions;
     for (auto iter = actions->begin(); iter != actions->end(); iter++) {
         vector<PDDLActionInstance> tempActions = GenerateActions(&(*iter), state);
         copy(tempActions.begin(), tempActions.end(), back_inserter(legalActions));
     }
+    ActionCache.emplace(state->GetHash(), legalActions);
     totalActions += legalActions.size();
     return legalActions;
 }

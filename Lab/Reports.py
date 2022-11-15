@@ -22,6 +22,8 @@ class Reports():
         ANYTIME_SEARCH_PARSER = os.path.join(os.path.dirname(os.path.abspath(__file__)),"AnytimeSearchParser.py")
         P7_LAB_PARSER = os.path.join(os.path.dirname(os.path.abspath(__file__)),"P7LabParser.py")
 
+        experiment.add_parser(os.path.join(os.path.dirname(os.path.abspath(__file__)),"RunReplacement.py"))
+
         #reads from the driver.log file
         experiment.add_parser(EXITCODE_PARSER)
 

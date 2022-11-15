@@ -77,38 +77,28 @@ class LabSuite():
         lines = []
         with open(fileName, 'r') as file:
             lines = file.readlines()
-        
-        changedLines = []
 
-        changedLines.append("counter = 0\n")
-        changedLines.append("counterMax = 0\n")
-
-        changedLines.append("def Update(*a):\n")
-        changedLines.append("    global counter\n")
-        changedLines.append("    counter += 1\n")
-        changedLines.append("    logging.info(\"Finished (\" + str(counter) + \"/\" + str(counterMax) + \")\")\n")
-
-        skipMode = False
+        taskIDs = ""
         for line in lines:
-            if "result = pool.map_async(process_task, range(1, num_tasks + 1))" in line:
-                changedLines.append("    global counterMax\n")
-                changedLines.append("    counterMax = num_tasks\n")
-                changedLines.append("    for num in range(1,num_tasks + 1):\n")
-                changedLines.append("        result = pool.apply_async(process_task, (num,), callback=Update)\n")
-                skipMode = True
+            if "SHUFFLED_TASK_IDS =" in line:
+                taskIDs = line
+                break;
+        
+        replacementFileName = self._reportfolder + "/RunReplacement.py"
+        replacementLines = []
+        with open(replacementFileName, 'r') as file:
+            replacementLines = file.readlines()
+
+        newLines = []
+        for line in replacementLines:
+            if "SHUFFLED_TASK_IDS =" in line:
+                newLines.append(taskIDs)
             else:
-                if skipMode == False:
-                    changedLines.append(line)
-            if "sys.exit(\"Error: At least one run failed.\")" in line:
-                skipMode = False
-                changedLines.append("    pool.close()\n")
-                changedLines.append("    logging.info(\"Joining pool processes\")\n")
-                changedLines.append("    pool.join()\n")
+                newLines.append(line)
 
         os.remove(fileName)
-
         with open(fileName, 'w') as file:   
-            file.writelines(changedLines)
+            file.writelines(newLines)
 
     def CombineReports(self):
         CSVGenerator.AddCSVReport(ATTRIBUTES)

@@ -180,6 +180,8 @@ InterfaceStep<SASPlan> CommonInterface::RebuildSASPlan(SASPlan* reformulatedSASP
 	Report->Begin("Rebuild SAS plan");
 	SASPlan outputPlan = reformulator->RebuildSASPlan(instance, reformulatedSASPlan);
 	Report->Stop(ReportData("None", to_string(outputPlan.cost)));
+	Report->Begin("Plan Length Difference");
+	Report->Stop(ReportData("None", to_string(outputPlan.cost - reformulatedSASPlan->cost)));
 	Report->Begin("Macros Used");
 	Report->Stop(ReportData("None", to_string(outputPlan.macrosUsed)));
 	return InterfaceStep<SASPlan>(outputPlan);

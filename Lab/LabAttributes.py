@@ -21,8 +21,7 @@ PREDEFINED_ATTRIBUTES= ['cost',
                         'reformulated_plan_valid',
                         'rebuild_plan_valid',
                         'solvable',
-                        'rebuild_plan_length',
-                        'reformulated_plan_length',
+                        'plan_length_difference',
                         'macros_used']
 
 ATTRIBUTES = ERROR_ATTRIBUTES + PREDEFINED_ATTRIBUTES

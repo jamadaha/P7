@@ -42,11 +42,11 @@ void RunReport::Resume(int i) {
     }
 }
 
-int64_t RunReport::Stop(string overideOutput) {
-    return Stop(steps.size() - 1, overideOutput);
+int64_t RunReport::Stop(ReportData data) {
+    return Stop(steps.size() - 1, data);
 }
 
-int64_t RunReport::Stop(int i, string overideOutput) {
+int64_t RunReport::Stop(int i, ReportData data) {
     if (steps[i].finished)
         return steps[i].time;
 
@@ -55,7 +55,7 @@ int64_t RunReport::Stop(int i, string overideOutput) {
         steps[i].time += chrono::duration_cast<chrono::milliseconds>(steps[i].eTime - steps[i].iTime).count();
     }
     steps[i].finished = true;
-    steps[i].overideOutput = overideOutput;
+    steps[i].Data = data;
 
     if (steps[i].parent == -1)
         TotalTime += steps[i].time;
@@ -76,16 +76,22 @@ void RunReport::Print() {
     string timeTakenMsLabel = "Time Taken (ms)";
     string timeTakenPercentLabel = "Time Taken (%)";
     string notesLabel = "Notes";
+    string intValueLabel = "Int Values";
+    string boolValueLabel = "Bool Values";
 
     int lDesc = descriptionLabel.size();
     int lTimeTakenMs = timeTakenMsLabel.size();
     int lTimeTakenPercent = timeTakenPercentLabel.size();
     int lNotes = notesLabel.size();
+    int lintValue = intValueLabel.size();
+    int lboolValue = boolValueLabel.size();
 
     map<int, double> totalTimeMap;
     for (auto step : steps) {
         lDesc = max(lDesc, (int)step.desc.size() + step.indent);
-        lNotes = max(lNotes, (int)step.overideOutput.size());
+        lNotes = max(lNotes, (int)step.Data.stringValue.size());
+        lintValue = max(lintValue, (int)step.Data.intValue.size());
+        lboolValue = max(lboolValue, (int)step.Data.boolValue.size());
         lTimeTakenMs = max(lTimeTakenMs, (int)to_string(step.time).size() + step.indent);
         lTimeTakenPercent = max(lTimeTakenPercent, 6 + step.indent);
         if (step.parent != -1 && !totalTimeMap.contains(step.parent)) {
@@ -94,13 +100,57 @@ void RunReport::Print() {
     }
 
     printf("---- Run Report ----\n");
-    printf("%-*s %-*s %-*s %-*s\n", lDesc, descriptionLabel.c_str(), lTimeTakenMs, timeTakenMsLabel.c_str(), lTimeTakenPercent, timeTakenPercentLabel.c_str(), lNotes, notesLabel.c_str());
+    printf(
+        "%-*s %-*s %-*s %-*s %-*s %-*s\n", 
+        lDesc, 
+        descriptionLabel.c_str(), 
+        lTimeTakenMs, 
+        timeTakenMsLabel.c_str(), 
+        lTimeTakenPercent, 
+        timeTakenPercentLabel.c_str(), 
+        lNotes, 
+        notesLabel.c_str(),
+        lintValue,
+        intValueLabel.c_str(),
+        lboolValue,
+        boolValueLabel.c_str()
+    );
     for (auto step : steps) {
         if (step.parent != -1) {
-            printf("%-*s%-*s %-*.2f %-*.2f %-*s\n", step.indent, "", lDesc, step.desc.c_str(), lTimeTakenMs, (float)step.time, lTimeTakenPercent, (step.time / (float)totalTimeMap.at(step.parent)) * 100.0, lNotes, step.overideOutput.c_str());
+            printf(
+                "%-*s%-*s %-*.2f %-*.2f %-*s %-*s %-*s\n", 
+                step.indent, 
+                "", 
+                lDesc, 
+                step.desc.c_str(), 
+                lTimeTakenMs, 
+                (float)step.time, 
+                lTimeTakenPercent, 
+                (step.time / (float)totalTimeMap.at(step.parent)) * 100.0, 
+                lNotes, 
+                step.Data.stringValue.c_str(),
+                lintValue,
+                step.Data.intValue.c_str(),
+                lboolValue,
+                step.Data.boolValue.c_str()
+            );
         }
         else
-            printf("%-*s %-*.2f %-*.2f %-*s\n", lDesc, step.desc.c_str(), lTimeTakenMs, (float)step.time, lTimeTakenPercent, (step.time / (float)TotalTime) * 100.0, lNotes, step.overideOutput.c_str());
+            printf(
+                "%-*s %-*.2f %-*.2f %-*s %-*s %-*s\n", 
+                lDesc, 
+                step.desc.c_str(),
+                lTimeTakenMs, 
+                (float)step.time, 
+                lTimeTakenPercent, 
+                (step.time / (float)TotalTime) * 100.0, 
+                lNotes,
+                step.Data.stringValue.c_str(),
+                lintValue,
+                step.Data.intValue.c_str(),
+                lboolValue,
+                step.Data.boolValue.c_str()
+            );
     }
     printf("%-*s %.3f\n", lDesc, "Total Time", (float)TotalTime);
 }

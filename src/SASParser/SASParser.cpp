@@ -26,7 +26,7 @@ SASPlan SASParser::Parse(string SAS) {
             actions.push_back(newAction);
         }
     }
-    return SASPlan(actions, cost);
+    return SASPlan(actions, cost, 0);
 }
 
 vector<string> tokenize(string const &str, const char delim) {

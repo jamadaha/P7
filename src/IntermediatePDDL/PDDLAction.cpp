@@ -19,7 +19,7 @@ std::vector<std::unordered_set<const PDDLLiteral*>> PDDLAction::GenerateApplicab
     return set;
 };
 
-std::vector<std::unordered_set<unsigned int>> PDDLAction::GenerateApplicablePredicates(bool unary) const {
+std::vector<std::unordered_set<unsigned int>> PDDLAction::GenerateApplicablePredicates() const {
     std::vector<std::unordered_set<unsigned int>> set;
     if (parameters.size() == 0)
         return set;

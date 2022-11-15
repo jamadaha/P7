@@ -73,8 +73,8 @@ std::unordered_set<std::unordered_set<unsigned int>> PDDLAction::GenerateCluster
             continue;
 
         std::unordered_set<unsigned int> tempCluster{ param };
-        unsigned int priorSize; 
-        do {
+        unsigned int priorSize = 0; 
+        while (priorSize != tempCluster.size()) {
             priorSize = tempCluster.size();
             for (auto clusterIter = tempCluster.begin(); clusterIter != tempCluster.end(); clusterIter++) {
                 if (!handledParameters.contains(*clusterIter)) {
@@ -82,10 +82,30 @@ std::unordered_set<std::unordered_set<unsigned int>> PDDLAction::GenerateCluster
                     handledParameters.emplace(*clusterIter);
                 }
             }
-        } while (priorSize != tempCluster.size());
+        }; 
         
         clusters.emplace(tempCluster);
     }
 
     return clusters;
+}
+
+std::vector<const std::unordered_set<unsigned int>*> PDDLAction::GenerateClusterMembership(const std::unordered_set<std::unordered_set<unsigned int>> *cluster) const {
+    std::vector<const std::unordered_set<unsigned int>*> clusterMembership;
+
+    for (int i = 0; i < parameters.size(); i++) {
+        bool isMember = false;
+
+        for (auto iter = cluster->begin(); iter != cluster->end(); iter++)
+            if ((*iter).contains(i)) {
+                clusterMembership.push_back(&*iter);
+                isMember = true;
+                break;
+            }
+
+        if (!isMember)
+            clusterMembership.push_back(nullptr);
+    }
+
+    return clusterMembership;
 }

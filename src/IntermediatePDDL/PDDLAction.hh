@@ -25,11 +25,11 @@ struct PDDLAction {
     // Specifically for this variable it is through precondition
     const std::unordered_set<std::unordered_set<unsigned int>> preClusters;
     // Links each parameter to their respective cluster, if it exists, if not it is a nullptr
-    const std::vector<std::unordered_set<unsigned int>*> preClusterMembership;
+    const std::vector<const std::unordered_set<unsigned int>*> preClusterMembership;
     // Defines effect clusters
     const std::unordered_set<std::unordered_set<unsigned int>> effClusters;
     // Links each parameter to their respective cluster, if it exists, if not it is a nullptr
-    const std::vector<std::unordered_set<unsigned int>*> effClusterMembership;
+    const std::vector<const std::unordered_set<unsigned int>*> effClusterMembership;
     PDDLAction() : name("Not Set") {};
     PDDLAction(std::string name) : name(name) {};
 
@@ -39,7 +39,9 @@ struct PDDLAction {
         applicableMultiLiterals(GenerateApplicableLiterals(false)),
         applicablePredicates(GenerateApplicablePredicates()),
         preClusters(GenerateClusters(&preconditions)),
-        effClusters(GenerateClusters(&effects)) {};
+        preClusterMembership(GenerateClusterMembership(&preClusters)),
+        effClusters(GenerateClusters(&effects)),
+        effClusterMembership(GenerateClusterMembership(&effClusters)) {};
 
     PDDLAction(const PDDLAction &a) : 
         name(a.name), parameters(a.parameters), preconditions(a.preconditions), effects(a.effects), 
@@ -47,7 +49,9 @@ struct PDDLAction {
         applicableMultiLiterals(GenerateApplicableLiterals(false)),
         applicablePredicates(GenerateApplicablePredicates()),
         preClusters(GenerateClusters(&preconditions)),
-        effClusters(GenerateClusters(&effects)) {};
+        preClusterMembership(GenerateClusterMembership(&preClusters)),
+        effClusters(GenerateClusters(&effects)),
+        effClusterMembership(GenerateClusterMembership(&effClusters)) {};
 
     /// @return Returns true if name, parameters and preconditions are the same, ignores parameter names
     friend bool operator==(const PDDLAction& lhs, const PDDLAction& rhs) {
@@ -66,6 +70,7 @@ private:
     std::vector<std::unordered_set<const PDDLLiteral*>> GenerateApplicableLiterals(bool unary) const;
     std::vector<std::unordered_set<unsigned int>> GenerateApplicablePredicates() const;
     std::unordered_set<std::unordered_set<unsigned int>> GenerateClusters(const std::vector<PDDLLiteral> *literals) const;
+    std::vector<const std::unordered_set<unsigned int>*> GenerateClusterMembership(const std::unordered_set<std::unordered_set<unsigned int>> *cluster) const;
 };
 
 namespace std {

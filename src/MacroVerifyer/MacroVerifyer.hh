@@ -14,6 +14,9 @@ struct BadMacro {
 class MacroVerifyer {
 public:
     std::vector<BadMacro> VerifyMacros(std::vector<Macro>* macros, PDDLDomain* domain);
+private:
+    std::vector<unsigned int> EncodePredicate(unsigned int predicateIndex, std::vector<unsigned int> objectIndexes);
+    std::vector<unsigned int> EncodePredicateActionRef(unsigned int predicateIndex, std::vector<unsigned int> paramIndexes, std::vector<unsigned int> objectIndexes);
 };
 
 #endif

@@ -94,8 +94,12 @@ std::unordered_set<unsigned int> ActionGeneratorRegressing::GetCandidateObjects(
     if (staticLiteral != nullptr) {
         auto clusterRef = action->preClusterMembership.at(*index);
         if (clusterRef == nullptr || clusterRef->size() == 2) {
-            for (auto iter = instance->problem->initState.unaryFacts.at(staticLiteral->predicateIndex).begin(); iter != instance->problem->initState.unaryFacts.at(staticLiteral->predicateIndex).end(); iter++)
-                objects.emplace(*iter);
+            if (state->unaryFacts.at(staticLiteral->predicateIndex).size() == 0)
+                for (auto iter = instance->problem->initState.unaryFacts.at(staticLiteral->predicateIndex).begin(); iter != instance->problem->initState.unaryFacts.at(staticLiteral->predicateIndex).end(); iter++)
+                    objects.emplace(*iter);
+            else
+                for (auto iter = state->unaryFacts.at(staticLiteral->predicateIndex).begin(); iter != state->unaryFacts.at(staticLiteral->predicateIndex).end(); iter++)
+                    objects.emplace(*iter);
         } else {
             throw std::logic_error("Not implemented");
         }

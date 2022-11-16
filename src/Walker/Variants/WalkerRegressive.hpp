@@ -21,10 +21,10 @@ public:
         : BaseWalker("Default", instance, heuristic, widthFunc, new ActionGeneratorRegressing(instance)) {}
     std::vector<Path> Walk() override;
 private:
-    const unsigned int maxStepCount = 1000;
-    Path Walk(BaseHeuristic* heuristic, const PDDLState* state);
+    const unsigned int maxStepCount = 100;
+    std::vector<Path> Walk(BaseHeuristic* heuristic, const PDDLState* state);
 
-    void DoRegressiveAction(PDDLState *state, const PDDLActionInstance *action);
+    PDDLState DoRegressiveAction(const PDDLState *state, const PDDLActionInstance *action);
 };
 
 #endif

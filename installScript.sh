@@ -15,4 +15,4 @@ sudo apt install g++ make flex bison && git clone https://github.com/KCL-Plannin
 # Install Lab
 sudo apt install python3-pip && pip install lab
 # Download data repo
-git clone https://github.com/jamadaha/P7_Data
+cd .. && cd.. && git clone https://github.com/jamadaha/P7_Data

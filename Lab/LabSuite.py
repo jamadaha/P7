@@ -38,41 +38,41 @@ class LabSuite():
 
         experiments = []
 
-        print("Found a total of " + str(len(labSettings.SettingsCollection)) + " settings files to run")
+        print("Found a total of " + str(len(labSettings.SettingsCollection)) + " settings files to run each " + str(labSettings.Rounds) + " times.")
         print("Starting on " + str(labSettings.Threads) + " threads.")
         print("")
 
         for settingsFile in labSettings.SettingsCollection:
-            settingsFileName = settingsFile 
-            if ".ini" not in settingsFileName:
-                settingsFileName = settingsFileName + ".ini"
-
-            print("Begining run of settings file " + settingsFileName)
+            settingsFileName = settingsFile + ".ini"
             fileContent = ConfigParser.ParseConfig(self._pathHelper.CombinePath("LabSettings/" + settingsFileName))
+            for i in range(1,labSettings.Rounds + 1):
+                print("Begining run " + str(i) + "/" + str(labSettings.Rounds) + " of settings file " + settingsFile)
+                
+                settingsFile_override = settingsFile + "-" + str(i);
 
-            experimentSettings = SettingsParser(self._pathHelper)
-            experimentSettings.Parse(fileContent)
+                experimentSettings = SettingsParser(self._pathHelper)
+                experimentSettings.Parse(fileContent)
 
-            experiment = self._SetupExperiment(experimentSettings, labSettings.Threads, settingsFile)
+                experiment = self._SetupExperiment(experimentSettings, labSettings.Threads, settingsFile)
+                
+                self._SetupExperimentCleanupSteps(experiment, settingsFile_override)
+                experiment.add_step("build", experiment.build)
+                experiment.add_step("addextralogging", self.AddLoggingToBuid)
+                experiment.add_step("start", experiment.start_runs)
+                experiment.add_fetcher(name="fetch")
 
-            experiment.set_property("p7_settings_file", settingsFile);  
-            self._SetupExperimentCleanupSteps(experiment, settingsFile)
-            experiment.add_step("build", experiment.build)
-            experiment.add_step("addextralogging", self.AddLoggingToBuid)
-            experiment.add_step("start", experiment.start_runs)
-            experiment.add_fetcher(name="fetch")
+                Reports.AddParsers(experiment)
+                Reports.AddAbsoluteReport(experiment, ATTRIBUTES)
+                for attribute in labSettings.PlotsAttributes:
+                    if attribute != "":
+                        Reports.AddPlot(experiment, attribute)
+                #Reports.AddTaskwiseReport(experiment, experimentSettings.Reformulators)
 
-            Reports.AddParsers(experiment)
-            Reports.AddAbsoluteReport(experiment, ATTRIBUTES)
-            for attribute in labSettings.PlotsAttributes:
-                Reports.AddPlot(experiment, attribute)
-            #Reports.AddTaskwiseReport(experiment, experimentSettings.Reformulators)
+                experiment.run_steps()
 
-            experiment.run_steps()
+                shutil.move(experiment.eval_dir, self._pathHelper.CombinePath("LabReports/" + settingsFile_override))
 
-            shutil.move(experiment.eval_dir, self._pathHelper.CombinePath("LabReports/" + settingsFile))
-
-            experiments.append(experiment)
+                experiments.append(experiment)
 
     def AddLoggingToBuid(self):
         fileName = self._reportfolder + "/run"

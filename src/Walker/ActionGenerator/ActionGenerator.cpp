@@ -4,6 +4,10 @@
 
 using namespace std;
 
+PDDLActionInstance ActionGenerator::GenerateRandomAction(const PDDLState *state) {
+    throw std::logic_error("Not implemented");
+}
+
 vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *state) {
     vector<PDDLActionInstance> legalActions;
     for (auto iter = instance->domain->actions.begin(); iter != instance->domain->actions.end(); iter++) {

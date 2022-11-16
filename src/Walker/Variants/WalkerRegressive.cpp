@@ -4,7 +4,7 @@ Path WalkerRegressive::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
     std::vector<PDDLActionInstance> steps; steps.reserve(maxStepCount);
     std::unordered_set<PDDLState> visitedStates; visitedStates.reserve(maxStepCount);
 
-    PDDLState tempState = PDDLState(state->unaryFacts, state->binaryFacts, state->multiFacts);
+    PDDLState tempState = instance->problem->goalState;
     if (OnTempStateMade != nullptr)
         OnTempStateMade(this->instance, &tempState);
 

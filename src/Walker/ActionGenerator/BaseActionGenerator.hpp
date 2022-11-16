@@ -13,8 +13,14 @@
 class BaseActionGenerator {
 public:
     unsigned int GetTotalActionsGenerated() { return totalActions; };
-    BaseActionGenerator(const PDDLInstance *instance) : instance(instance) {};
+    BaseActionGenerator(const PDDLInstance *instance) : instance(instance) {
+        srand(time(NULL));
+    };
 
+    // Generates a single action for the given state
+    virtual PDDLActionInstance GenerateRandomAction(const PDDLState *state) = 0;
+
+    // Generates all possible actions for the given state
     virtual std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state) = 0;
 
 protected:

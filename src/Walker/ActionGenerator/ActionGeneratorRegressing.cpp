@@ -4,6 +4,10 @@
 
 using namespace std;
 
+PDDLActionInstance ActionGeneratorRegressing::GenerateRandomAction(const PDDLState *state) {
+    throw std::logic_error("Not implemented");
+}
+
 vector<PDDLActionInstance> ActionGeneratorRegressing::GenerateActions(const PDDLState *state) {
     vector<PDDLActionInstance> legalActions;
 
@@ -65,6 +69,45 @@ std::vector<PDDLActionInstance> ActionGeneratorRegressing::GenerateActionsFromBi
     return actions;
 }
 
-std::vector<PDDLActionInstance> ActionGeneratorRegressing::GenerateFromPartial(const PDDLState *state, const PDDLAction *action, const std::unordered_map<unsigned int, unsigned int> partialParameters) {
+std::vector<PDDLActionInstance> ActionGeneratorRegressing::GenerateFromPartial(const PDDLState *state, const PDDLAction *action, const std::map<unsigned int, unsigned int> partialParameters) {
+    std::vector<unordered_set<unsigned int>> candidateObjects;
+    for (unsigned int i = 0; i < action->parameters.size(); i++) {
+        if (!partialParameters.contains(i))
+            candidateObjects.push_back(GetCandidateObjects(state, action, &i));
+        else
+            candidateObjects.push_back({ partialParameters.at(i) });
+    }
     printf("\n");
+}
+
+std::unordered_set<unsigned int> ActionGeneratorRegressing::GetCandidateObjects(const PDDLState *state, const PDDLAction *action, const unsigned int *index) {
+    std::unordered_set<unsigned int> objects;
+    const PDDLLiteral* staticLiteral = IsParamStatic(action, index);
+    if (staticLiteral != nullptr) {
+        auto clusterRef = action->preClusterMembership.at(*index);
+        if (clusterRef == nullptr || clusterRef->size() == 2) {
+            for (auto iter = instance->problem->initState.unaryFacts.at(staticLiteral->predicateIndex).begin(); iter != instance->problem->initState.unaryFacts.at(staticLiteral->predicateIndex).end(); iter++)
+                objects.emplace(*iter);
+        } else {
+            throw std::logic_error("Not implemented");
+        }
+    } else {
+        throw std::logic_error("Not implemented");
+    }
+
+    return objects;
+}
+
+const PDDLLiteral* ActionGeneratorRegressing::IsParamStatic(const PDDLAction *action, const unsigned int *index) {
+    int isStatic = -1;
+
+    for (auto iter = action->applicableUnaryLiterals.at(*index).begin(); iter != action->applicableUnaryLiterals.at(*index).end(); iter++)
+        if (instance->domain->staticPredicates.contains((*iter)->predicateIndex))
+            return *iter;
+    
+    for (auto iter = action->applicableMultiLiterals.at(*index).begin(); iter != action->applicableMultiLiterals.at(*index).end(); iter++)
+        if (instance->domain->staticPredicates.contains((*iter)->predicateIndex))
+            return *iter;
+
+    return nullptr;
 }

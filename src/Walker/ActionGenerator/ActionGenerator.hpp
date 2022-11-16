@@ -10,6 +10,8 @@ class ActionGenerator : public BaseActionGenerator {
 public:
     ActionGenerator(const PDDLInstance *instance) : BaseActionGenerator(instance) {};
 
+    PDDLActionInstance GenerateRandomAction(const PDDLState *state) override;
+
     /// @brief For a given state, generate all possible action instances
     std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state) override;
     /// @brief For a given action, generate all possible action instances

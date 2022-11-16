@@ -108,8 +108,18 @@ PDDLInstance BaseWalkerReformulator::GenerateMacros(PDDLInstance* instance, std:
 		Report->Begin("Verifying Macros", macroGenerateID);
 		ConsoleHelper::PrintDebugInfo("[Macro Generator] Verifying Macros...", debugIndent);
 		MacroVerifyer verifyer;
-		verifyer.VerifyMacros(&macros);
+		auto badMacros = verifyer.VerifyMacros(&macros, instance->domain);
 		Report->Stop();
+		int counter = 0;
+		for (auto macro : badMacros) {
+			ConsoleHelper::PrintDebugError("[Macro Generator] Bad macro: " + macro.macro.name + ", Reason: " + macro.Reason, debugIndent);
+			encounteredErrors = true;
+			counter++;
+			if (counter > 10) {
+				ConsoleHelper::PrintDebugError("[Macro Generator] Many more than these", debugIndent);
+				break;
+			}
+		}
 	}
 
 	if (debugMode)

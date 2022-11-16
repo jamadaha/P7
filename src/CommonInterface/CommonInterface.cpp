@@ -131,6 +131,10 @@ InterfaceStep<DownwardRunner::DownwardRunnerResult> CommonInterface::RunSingle(B
 	PDDLInstance reformulatedInstance = reformulator->ReformulatePDDL(instance);
 	Report->Stop();
 	Report->Stop(reformulationID);
+	if (reformulator->DidEncounterErrors()) {
+		ConsoleHelper::PrintInfo("Reformulator encountered errors!", 1);
+		return InterfaceStep<DownwardRunner::DownwardRunnerResult>(DownwardRunner::DownwardRunnerResult::None, false);
+	}
 
 	// Generate new PDDL files
 	ConsoleHelper::PrintInfo("Generating PDDL files...", 1);

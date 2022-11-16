@@ -1,7 +1,7 @@
 from Lab.LabSuite import LabSuite
 from os import path
 
-newSuite = LabSuite(path.dirname(__file__))
+newSuite = LabSuite(path.abspath(path.dirname(__file__)))
 
 print("Running Lab Suite")
 print("")

@@ -3,12 +3,14 @@
 PDDLInstance BaseWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
     bool debugMode = Configs->GetItem<bool>("debugmode");
 
+	// Walking
     FindPaths(instance, debugMode);
-    std::vector<EntanglementOccurance> candidates = FindEntanglements(instance, debugMode);
-    GenerateMacros(instance, &candidates, debugMode);
-    PDDLInstance macroInstance = GenerateMacroInstance(instance, &macros, debugMode);
 
-	macrosGenerated = macros.size();
+	// Entanglement Finding
+    std::vector<EntanglementOccurance> candidates = FindEntanglements(instance, debugMode);
+
+	// Macro Generation
+	PDDLInstance macroInstance = GenerateMacros(instance, &candidates, debugMode);
 
     return macroInstance;
 }
@@ -90,25 +92,31 @@ EntanglementEvaluator BaseWalkerReformulator::GetEntanglementEvaluator() {
 	return ee;
 }
 
-std::vector<Macro> BaseWalkerReformulator::GenerateMacros(PDDLInstance* instance, std::vector<EntanglementOccurance>* candidates, bool debugMode) {
+PDDLInstance BaseWalkerReformulator::GenerateMacros(PDDLInstance* instance, std::vector<EntanglementOccurance>* candidates, bool debugMode) {
 	if (debugMode)
 		ConsoleHelper::PrintDebugInfo("[Macro Generator] Generating Macros...", debugIndent);
-    macros.clear();
+
+	int macroGenerateID = Report->Begin("Generating Macros", ReportID);
+	macros.clear();
 	MacroGenerator macroGenerator = MacroGenerator(instance->domain);
     for (auto iter = candidates->begin(); iter != candidates->end(); iter++)
         macros.push_back(macroGenerator.GenerateMacro(&(*iter).Chain));
+	macrosGenerated = macros.size();
+
 	if (Configs->GetItem<bool>("verifyMacros"))
 	{
+		Report->Begin("Verifying Macros", macroGenerateID);
+		ConsoleHelper::PrintDebugInfo("[Macro Generator] Verifying Macros...", debugIndent);
 		MacroVerifyer verifyer;
 		verifyer.VerifyMacros(&macros);
+		Report->Stop();
 	}
-    return macros;
-}
 
-PDDLInstance BaseWalkerReformulator::GenerateMacroInstance(PDDLInstance* instance, std::vector<Macro> *macros, bool debugMode) {
-    if (debugMode)
+	if (debugMode)
 		ConsoleHelper::PrintDebugInfo("[Macro Generator] Generating Macro Instance...", debugIndent);
-    return InstanceGenerator::GenerateInstance(instance->domain, instance->problem, macros);
+	auto result = InstanceGenerator::GenerateInstance(instance->domain, instance->problem, &macros);
+	Report->Stop(macroGenerateID);
+	return result;
 }
 
 SASPlan BaseWalkerReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) {

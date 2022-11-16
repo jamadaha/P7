@@ -37,8 +37,7 @@ private:
     std::vector<EntanglementOccurance> FindEntanglements(PDDLInstance* instance, bool debugMode);
     EntanglementFinder GetEntanglementFinder(bool debugMode);
     EntanglementEvaluator GetEntanglementEvaluator();
-    std::vector<Macro> GenerateMacros(PDDLInstance* instance, std::vector<EntanglementOccurance>* candidates, bool debugMode);
-    PDDLInstance GenerateMacroInstance(PDDLInstance* instance, std::vector<Macro> *macros, bool debugMode);
+    PDDLInstance GenerateMacros(PDDLInstance* instance, std::vector<EntanglementOccurance>* candidates, bool debugMode);
 
     void PrintEntanglerSteps(std::vector<EntanglementOccurance>* candidates, PDDLInstance* instance);
     void PrintWalkerDebugData(double ellapsed);

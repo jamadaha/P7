@@ -6,6 +6,7 @@ searches and portfolios.
 """
 
 import re
+import os
 
 from lab.parser import Parser
 
@@ -58,6 +59,8 @@ def main():
     parser = Parser()
 
     downward_log = "downwardLog"
+    if not os.path.exists(downward_log):
+        return;
 
     parser.add_pattern("raw_memory", r"Peak memory: (.+) KB", type=int, file=downward_log),
     parser.add_function(find_all_matches("cost:all", r"Plan cost: (.+)\n", type=float), file=downward_log)

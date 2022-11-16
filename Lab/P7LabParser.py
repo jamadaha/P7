@@ -32,7 +32,8 @@ ATTRIBUTES_NAME_MAP = [
     ('p7_solving_problem_boolvalues', 'solvable'),
     ('p7_plan_length_difference_intvalues', 'plan_length_difference'),
     ('p7_macros_generated_intvalues', 'macros_generated'),
-    ('p7_macros_used_intvalues', 'macros_used')
+    ('p7_macros_used_intvalues', 'macros_used'),
+    ('p7_verifying_macros_boolvalues', 'macros_valid')
 ]
 
 def get_times(content, props):
@@ -50,62 +51,42 @@ def get_times(content, props):
     #The iterations have the same name so the values from all iterations are seperated by a comma and placed in the same cell.
     for result in results:
         description = "p7_" + result[1].strip().lower().replace(" ","_")
-        checkName = check_map_name(description + "_ms")
-        counter = 0
-        while checkName in props:
-            checkName = description + "_ms" + str(counter)
-            counter += 1
-        props[checkName] = float(result[2])
+        generate_prop(description + "_ms", float(result[2]), props)
+        generate_prop(description + "_procent", result[3], props)
+        generate_prop(description + "_notes", result[4].strip(), props)
+        generate_prop(description + "_intvalues", int(result[5].strip()), props)
+        if result[6].strip().upper() == "TRUE":
+            generate_prop(description + "_boolvalues", True, props)
+        if result[6].strip().upper() == "FALSE":
+            generate_prop(description + "_boolvalues", False, props)
 
-        checkName = check_map_name(description + "_procent")
-        counter = 0
-        while checkName in props:
-            checkName = description + "_procent" + str(counter)
-            counter += 1
-        props[checkName] = result[3]
+def generate_prop(name, value, props):
+    newName = name
+    for target, replaceWith in ATTRIBUTES_NAME_MAP:
+        if target in name:
+            newName = replaceWith
+            break
 
-        note = result[4].strip()
-        checkName = check_map_name(description + "_notes")
-        counter = 0
-        while checkName in props:
-            checkName = description + "_notes" + str(counter)
-            counter += 1
-        props[checkName] = note
+    check_errors(newName, value, props)
 
-        note = result[5].strip()
-        checkName = check_map_name(description + "_intvalues")
-        counter = 0
-        while checkName in props:
-            checkName = description + "_intvalues" + str(counter)
-            counter += 1
-        props[checkName] = int(note)
+    counter = 1
+    checkName = newName
+    while checkName in props:
+        checkName = newName + "_" + str(counter)
+        counter += 1
 
-        note = result[6].strip()
-        checkName = check_map_name(description + "_boolvalues")
-        counter = 0
-        while checkName in props:
-            checkName = description + "_boolvalues" + str(counter)
-            counter += 1
-        if note.upper() == "TRUE":
-            props[checkName] = True
-        else:
-            props[checkName] = False
+    props[checkName] = value
 
-    check_errors(props)
-
-def check_map_name(name):
-    for target, newName in ATTRIBUTES_NAME_MAP:
-        if target == name:
-            return newName
-    return name
-
-def check_errors(props):
-    if "reformulated_plan_valid" in props:
-        if props["reformulated_plan_valid"] == False:
+def check_errors(name, value, props):
+    if name == "reformulated_plan_valid":
+        if value == False:
             props.add_unexplained_error("Reformulated plan was not valid!")
-    if "rebuild_plan_valid" in props:
-        if props["rebuild_plan_valid"] == False:
+    if name == "rebuild_plan_valid":
+        if value == False:
             props.add_unexplained_error("Rebuild plan was not valid!")
+    if name == "macros_valid":
+        if value == False:
+            props.add_unexplained_error("Invalid macros was generated!")
 
 parser = Parser()
 parser.add_function(get_times, file="run.log")

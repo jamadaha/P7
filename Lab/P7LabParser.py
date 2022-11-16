@@ -31,6 +31,7 @@ ATTRIBUTES_NAME_MAP = [
     ('p7_validating_rebuilded_plan_boolvalues', 'rebuild_plan_valid'),
     ('p7_solving_problem_boolvalues', 'solvable'),
     ('p7_plan_length_difference_intvalues', 'plan_length_difference'),
+    ('p7_macros_generated_intvalues', 'macros_generated'),
     ('p7_macros_used_intvalues', 'macros_used')
 ]
 

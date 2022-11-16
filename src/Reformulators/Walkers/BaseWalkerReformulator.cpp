@@ -8,6 +8,8 @@ PDDLInstance BaseWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
     GenerateMacros(instance, &candidates, debugMode);
     PDDLInstance macroInstance = GenerateMacroInstance(instance, &macros, debugMode);
 
+	macrosGenerated = macros.size();
+
     return macroInstance;
 }
 

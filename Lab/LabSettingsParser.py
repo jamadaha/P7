@@ -5,6 +5,7 @@ class LabSettingsParser():
     SettingsCollection = []
     PlotsAttributes = []
     Threads = -1
+    Rounds = 1
 
     def ParseSettingsFile(self):
         linesLab = []
@@ -21,6 +22,8 @@ class LabSettingsParser():
                 self.PlotsAttributes = line.split("=")[1].strip("\n").split(",")
             elif "Threads" in line:
                 self.Threads = int(line.split("=")[1].strip("\n"))
+            elif "Rounds" in line:
+                self.Rounds = int(line.split("=")[1].strip("\n"))
 
         if self.Threads == -1:
             self.Threads = multiprocessing.cpu_count()

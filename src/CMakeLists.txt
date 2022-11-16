@@ -23,6 +23,7 @@ target_link_libraries(P7
         ActionGenerator
         Hashes
         ProgressBarHelper
-        MacroGenerator)
+        MacroGenerator
+        MacroVerifyer)
 
 add_executable(P7Lab "P7Lab.cpp")

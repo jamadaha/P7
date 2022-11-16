@@ -16,7 +16,7 @@
 #include "../../EntanglementFinder/EntanglementEvaluatorModifiers.hh"
 #include "../../MacroGenerator/MacroGenerator.hh"
 #include "../../MacroGenerator/InstanceGenerator.hh"
-
+#include "../../MacroVerifyer/MacroVerifyer.hh"
 
 class BaseWalkerReformulator : public BaseReformulator {
 public:

@@ -97,6 +97,11 @@ std::vector<Macro> BaseWalkerReformulator::GenerateMacros(PDDLInstance* instance
 	MacroGenerator macroGenerator = MacroGenerator(instance->domain);
     for (auto iter = candidates->begin(); iter != candidates->end(); iter++)
         macros.push_back(macroGenerator.GenerateMacro(&(*iter).Chain));
+	if (Configs->GetItem<bool>("verifyMacros"))
+	{
+		MacroVerifyer verifyer;
+		verifyer.VerifyMacros(&macros);
+	}
     return macros;
 }
 

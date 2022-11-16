@@ -20,11 +20,11 @@ public:
     std::vector<PDDLActionInstance> GenerateFromPartial(const PDDLState *state, const PDDLAction *action, const std::map<unsigned int, unsigned int> partialParameters);
 
     std::unordered_set<unsigned int> GetCandidateObjects(const PDDLState *state, const PDDLAction *action, const unsigned int *index);
-
     // The index of some precondition refers to a static predicate
     const PDDLLiteral* IsParamStatic(const PDDLAction *action, const unsigned int *index);
 
-    
+    std::vector<std::vector<unsigned int>> PermuteAll(const std::vector<std::unordered_set<unsigned int>> *objects);
+    static void Permute(const std::vector<std::unordered_set<unsigned int>> *objects, std::vector<std::vector<unsigned int>> *permutations, std::vector<unsigned int> *permutation);
 };
 
 #endif

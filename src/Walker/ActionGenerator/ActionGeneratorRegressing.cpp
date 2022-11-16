@@ -37,7 +37,7 @@ std::vector<PDDLActionInstance> ActionGeneratorRegressing::GenerateActionsFromUn
         // Get which efffect is relevant
         for (int i = 0; i < effects->size(); i++) {
             auto effect = &effects->at(i);
-            if (predicate == effect->predicateIndex) {
+            if (predicate == effect->predicateIndex && effect->value) {
                 AlgorithmHelper::InsertAll(actions, GenerateFromPartial(state, action, { { effect->args.at(0), object } }));
                 break;
             }
@@ -58,7 +58,7 @@ std::vector<PDDLActionInstance> ActionGeneratorRegressing::GenerateActionsFromBi
         // Get which efffect is relevant
         for (int i = 0; i < effects->size(); i++) {
             auto effect = &effects->at(i);
-            if (predicate == effect->predicateIndex) {
+            if (predicate == effect->predicateIndex && effect->value) {
                 AlgorithmHelper::InsertAll(actions, GenerateFromPartial(state, action, { { effect->args.at(0), objects.first }, { effect->args.at(1), objects.second } }));
                 break;
             }
@@ -77,7 +77,14 @@ std::vector<PDDLActionInstance> ActionGeneratorRegressing::GenerateFromPartial(c
         else
             candidateObjects.push_back({ partialParameters.at(i) });
     }
-    printf("\n");
+
+    auto permutations = PermuteAll(&candidateObjects);
+    std::vector<PDDLActionInstance> actionInstances; actionInstances.reserve(permutations.size());
+    for (int i = 0; i < permutations.size(); i++) {
+        auto permutation = &permutations.at(i);
+        actionInstances.push_back(PDDLActionInstance(action, *permutation));
+    }
+    return actionInstances;
 }
 
 std::unordered_set<unsigned int> ActionGeneratorRegressing::GetCandidateObjects(const PDDLState *state, const PDDLAction *action, const unsigned int *index) {
@@ -110,4 +117,28 @@ const PDDLLiteral* ActionGeneratorRegressing::IsParamStatic(const PDDLAction *ac
             return *iter;
 
     return nullptr;
+}
+
+std::vector<std::vector<unsigned int>> ActionGeneratorRegressing::PermuteAll(const std::vector<std::unordered_set<unsigned int>> *objects) {
+    vector<vector<unsigned int>> permutations;
+    vector<unsigned int> permutation; permutation.reserve(objects->size());
+    for (auto iter = objects->at(0).begin(); iter != objects->at(0).end(); iter++) {
+        permutation.push_back(*iter);
+        Permute(objects, &permutations, &permutation);
+        permutation.pop_back();
+    }
+    return permutations;
+}
+
+void ActionGeneratorRegressing::Permute(const std::vector<std::unordered_set<unsigned int>> *objects, std::vector<std::vector<unsigned int>> *permutations, std::vector<unsigned int> *permutation) {
+    for (auto iter = objects->at(permutation->size()).begin(); iter != objects->at(permutation->size()).end(); iter++) {
+        permutation->push_back(*iter);
+
+        if (permutation->size() == objects->size())
+            permutations->push_back(*permutation);
+        else
+            Permute(objects, permutations, permutation);
+
+        permutation->pop_back();
+    }
 }

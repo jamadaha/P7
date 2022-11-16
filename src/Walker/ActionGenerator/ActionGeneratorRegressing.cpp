@@ -78,7 +78,8 @@ std::vector<PDDLActionInstance> ActionGeneratorRegressing::GenerateFromPartial(c
             candidateObjects.push_back({ partialParameters.at(i) });
     }
 
-    auto permutations = PermuteAll(&candidateObjects);
+    auto legalPairings = GenerateLegalPairings(state, action, &candidateObjects);
+    auto permutations = PermuteAll(&candidateObjects, &legalPairings);
     std::vector<PDDLActionInstance> actionInstances; actionInstances.reserve(permutations.size());
     for (int i = 0; i < permutations.size(); i++) {
         auto permutation = &permutations.at(i);
@@ -119,26 +120,43 @@ const PDDLLiteral* ActionGeneratorRegressing::IsParamStatic(const PDDLAction *ac
     return nullptr;
 }
 
-std::vector<std::vector<unsigned int>> ActionGeneratorRegressing::PermuteAll(const std::vector<std::unordered_set<unsigned int>> *objects) {
-    vector<vector<unsigned int>> permutations;
-    vector<unsigned int> permutation; permutation.reserve(objects->size());
-    for (auto iter = objects->at(0).begin(); iter != objects->at(0).end(); iter++) {
-        permutation.push_back(*iter);
-        Permute(objects, &permutations, &permutation);
-        permutation.pop_back();
+
+std::unordered_map<std::pair<unsigned int, unsigned int>, std::unordered_set<std::pair<unsigned int, unsigned int>>> 
+ActionGeneratorRegressing::GenerateLegalPairings(const PDDLState *state, const PDDLAction *action, std::vector<std::unordered_set<unsigned int>> *candidateObjects) {
+    unordered_map<pair<unsigned int, unsigned int>, unordered_set<pair<unsigned int, unsigned int>>> candidatePairs;
+    for (int i = 0; i < action->preconditions.size(); i++) {
+        auto precondition = &action->preconditions.at(i);
+        if (precondition->args.size() != 2)
+            continue;
+        
+        auto indexPair = make_pair(precondition->args.at(0), precondition->args.at(1));
+
+        auto pairs = unordered_set<pair<unsigned int, unsigned int>>();
+        auto indexFirsts = unordered_set<unsigned int>();
+        auto indexSecond = unordered_set<unsigned int>();
+        for (auto iter = candidateObjects->at(indexPair.first).begin(); iter != candidateObjects->at(indexPair.first).end(); iter++) {
+            for (auto iter2 = candidateObjects->at(indexPair.second).begin(); iter2 != candidateObjects->at(indexPair.second).end(); iter2++) {
+                auto pair = make_pair(*iter, *iter2);
+                if (precondition->predicateIndex != 0 || ((pair.first == pair.second) == precondition->value)) {
+                    pairs.emplace(pair);
+                    indexFirsts.emplace(pair.first);
+                    indexSecond.emplace(pair.second);
+                }
+            }
+        }
+        if (pairs.size() == 0)
+            return candidatePairs;
+
+        if (!candidatePairs.contains(indexPair)) {
+            candidatePairs[indexPair] = pairs;
+            // Remove those from candidate objects which are not in any pairs
+            AlgorithmHelper::Intersect(candidateObjects->at(indexPair.first), indexFirsts);
+            AlgorithmHelper::Intersect(candidateObjects->at(indexPair.second), indexSecond);
+        } else {
+            // This happens if two preconditions have the same index pair, i.e. pre1: ?x, ?y & pre2: ?x, ?y
+            // In this case the legal pairs is the intersection between the two
+            AlgorithmHelper::Intersect(candidatePairs.at(indexPair), pairs);
+        }
     }
-    return permutations;
-}
-
-void ActionGeneratorRegressing::Permute(const std::vector<std::unordered_set<unsigned int>> *objects, std::vector<std::vector<unsigned int>> *permutations, std::vector<unsigned int> *permutation) {
-    for (auto iter = objects->at(permutation->size()).begin(); iter != objects->at(permutation->size()).end(); iter++) {
-        permutation->push_back(*iter);
-
-        if (permutation->size() == objects->size())
-            permutations->push_back(*permutation);
-        else
-            Permute(objects, permutations, permutation);
-
-        permutation->pop_back();
-    }
+    return candidatePairs;
 }

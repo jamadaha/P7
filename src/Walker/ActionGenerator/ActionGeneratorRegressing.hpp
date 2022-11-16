@@ -23,8 +23,8 @@ public:
     // The index of some precondition refers to a static predicate
     const PDDLLiteral* IsParamStatic(const PDDLAction *action, const unsigned int *index);
 
-    std::vector<std::vector<unsigned int>> PermuteAll(const std::vector<std::unordered_set<unsigned int>> *objects);
-    static void Permute(const std::vector<std::unordered_set<unsigned int>> *objects, std::vector<std::vector<unsigned int>> *permutations, std::vector<unsigned int> *permutation);
+    std::unordered_map<std::pair<unsigned int, unsigned int>, std::unordered_set<std::pair<unsigned int, unsigned int>>> 
+    GenerateLegalPairings(const PDDLState *state, const PDDLAction *action, std::vector<std::unordered_set<unsigned int>> *candidateObjects);
 };
 
 #endif

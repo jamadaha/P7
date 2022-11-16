@@ -14,7 +14,7 @@ Path WalkerRegressive::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
 
         if (possibleActions.size() == 0) break;
         PDDLActionInstance *chosenAction = heuristic->NextChoice(&tempState, &possibleActions);
-        tempState.DoAction(chosenAction);
+        DoRegressiveAction(&tempState, chosenAction);
 
         if (visitedStates.contains(tempState))
             break;
@@ -27,6 +27,7 @@ Path WalkerRegressive::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
         }
     }
 
+    std::reverse(steps.begin(), steps.end());
     return Path(steps);
 }
 
@@ -48,4 +49,19 @@ std::vector<Path> WalkerRegressive::Walk() {
     if (OnWalkerEnd != nullptr)
         OnWalkerEnd(this, ellapsed);
     return paths;
+}
+
+void WalkerRegressive::DoRegressiveAction(PDDLState *state, const PDDLActionInstance *action) {
+    for (int i = 0; i < action->action->preconditions.size(); i++) {
+        auto precon = &action->action->preconditions.at(i);
+        if (!instance->domain->staticPredicates.contains(precon->predicateIndex)) {
+            if (precon->args.size() == 1)
+                state->unaryFacts.at(precon->predicateIndex).emplace(action->objects.at(precon->args.at(0)));
+            else
+                state->binaryFacts.at(precon->predicateIndex).emplace(
+                    std::make_pair(action->objects.at(precon->args.at(0)), action->objects.at(precon->args.at(1)))
+                );
+        }
+    }
+    state->UndoAction(action);
 }

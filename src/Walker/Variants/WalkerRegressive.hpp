@@ -23,6 +23,8 @@ public:
 private:
     const unsigned int maxStepCount = 1000;
     Path Walk(BaseHeuristic* heuristic, const PDDLState* state);
+
+    void DoRegressiveAction(PDDLState *state, const PDDLActionInstance *action);
 };
 
 #endif

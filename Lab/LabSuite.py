@@ -31,10 +31,11 @@ class LabSuite():
 
         self._reportfolder = self._pathHelper.CombinePath('LabReport')
         self._projectfile = self._pathHelper.CombinePath('src/P7')
-        self._benchmarksfolder = self._pathHelper.CombinePath("Data/benchmarks/")
 
         labSettings = LabSettingsParser()
         labSettings.ParseSettingsFile()
+
+        self._benchmarksfolder = self._pathHelper.CombinePath(labSettings.BenchmarksFolder)
 
         experiments = []
 

@@ -5,6 +5,9 @@
 #include <vector>
 
 #include "../Walker/Path.hpp"
+#include "../SASCodeGenerator/SASCodeGenerator.hh"
+#include "../SASParser/SASParser.hh"
+#include "../IntermediatePDDL/PDDLInstance.hh"
 
 struct BadPath {
 	std::string Reason;
@@ -13,7 +16,9 @@ struct BadPath {
 
 class WalkerPathVerifyer {
 public:
-	std::vector<BadPath> VerifyPaths(std::vector<Path>* paths);
+	std::vector<BadPath> VerifyPaths(std::vector<Path>* paths, PDDLInstance* instance);
+private:
+	SASAction GenerateSASActionFromActionInstance(PDDLActionInstance action, PDDLInstance* instance);
 };
 
 #endif

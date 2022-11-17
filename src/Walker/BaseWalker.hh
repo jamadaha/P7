@@ -34,6 +34,7 @@ public:
     BaseHeuristic* heuristic;
     BaseDepthFunction* depthFunc;
     BaseWidthFunction* widthFunc;
+    bool SaveStates = false;
 
     BaseWalker(std::string walkerName, PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) :
         WalkerName(walkerName), 

@@ -27,7 +27,7 @@ void BaseWalkerReformulator::FindPaths(PDDLInstance *instance, bool debugMode) {
 			ConsoleHelper::PrintDebugInfo("[Walker] Verifying paths", debugIndent);
 
 		WalkerPathVerifyer verifyer;
-		auto badPaths = verifyer.VerifyPaths(&paths);
+		auto badPaths = verifyer.VerifyPaths(&paths, instance);
 		if (badPaths.size() == 0)
 			Report->Stop(ReportData("None", "-1", "true"));
 		else

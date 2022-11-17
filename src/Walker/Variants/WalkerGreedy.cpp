@@ -29,9 +29,9 @@ Path WalkerGreedy::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
         }
     }
 
-    if (SaveStates)
-        return Path(steps, *state, tempState);
-    else
+    //if (SaveStates)
+    //    return Path(steps, *state, tempState);
+    //else
         return Path(steps);
 }
 

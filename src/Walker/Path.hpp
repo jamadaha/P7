@@ -7,11 +7,14 @@
 #include "../IntermediatePDDL/PDDLState.hh"
 
 struct Path {
-    mutable PDDLState startState;
-    mutable PDDLState endState;
+    PDDLState* startState;
+    PDDLState* endState;
     std::vector<PDDLActionInstance> steps;
+    
     Path(std::vector<PDDLActionInstance> steps) : steps(steps) {};
-    Path(std::vector<PDDLActionInstance> steps, PDDLState startState, PDDLState endState) : steps(steps), startState(startState), endState(endState) {};
+    //Path(std::vector<PDDLActionInstance> steps, const PDDLState startState, const PDDLState endState) : steps(steps), startState(startState), endState(endState) {};
+    //Path(const Path &path) : steps(path.steps), startState(path.startState), endState(path.endState) {}
+    Path(const Path& path) : steps(path.steps) {};
 
     friend bool operator==(const Path& lhs, const Path& rhs) {
         return lhs.steps == rhs.steps;

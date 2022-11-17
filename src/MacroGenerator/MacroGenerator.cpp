@@ -1,48 +1,48 @@
 ﻿#include "MacroGenerator.hh"
 
-Macro MacroGenerator::GenerateMacro(const std::vector<PDDLActionInstance*> *actions) {
+Macro MacroGenerator::GenerateMacro(const std::vector<PDDLActionInstance> *actions) {
     std::vector<GroundedAction> groundedActions = GroundActions(actions);
     GroundedAction combinedAction = CombineActions(&groundedActions);
     return Macro(combinedAction, CloneOriginalPath(actions));
 }
 
 
-std::vector<PDDLActionInstance> MacroGenerator::CloneOriginalPath(const std::vector<PDDLActionInstance*> *actions) {
+std::vector<PDDLActionInstance> MacroGenerator::CloneOriginalPath(const std::vector<PDDLActionInstance> *actions) {
     std::vector<PDDLActionInstance> newPath;
     for (int i = 0; i < actions->size(); i++)
-        newPath.push_back(PDDLActionInstance(actions->at(i)->action, actions->at(i)->objects));
+        newPath.push_back(PDDLActionInstance(actions->at(i).action, actions->at(i).objects));
     return newPath;
 }
 
 // Duplicate code inside, remove at some point
-std::vector<GroundedAction> MacroGenerator::GroundActions(const std::vector<PDDLActionInstance*> *actions) {
+std::vector<GroundedAction> MacroGenerator::GroundActions(const std::vector<PDDLActionInstance> *actions) {
     std::vector<GroundedAction> groundedActions; groundedActions.reserve(actions->size());
 
     for (int i = 0; i < actions->size(); i++) {
-        const PDDLActionInstance *action = actions->at(i);
-        std::string name = action->action->name + std::to_string(groundedActions.size());
+        const PDDLActionInstance action = actions->at(i);
+        std::string name = action.action->name + std::to_string(groundedActions.size());
         // Get parameters
         std::unordered_set<unsigned int> parameters;
-        for (int t = 0; t < action->objects.size(); t++) parameters.emplace(action->objects.at(t));
+        for (int t = 0; t < action.objects.size(); t++) parameters.emplace(action.objects.at(t));
         // Get preconditions
-        const std::vector<PDDLLiteral> *actionPrecon = &action->action->preconditions;
+        const std::vector<PDDLLiteral> *actionPrecon = &action.action->preconditions;
         std::unordered_map<GroundedLiteral, bool> preconditions; preconditions.reserve(actionPrecon->size());
         for (int t = 0; t < actionPrecon->size(); t++) {
             const PDDLLiteral *lit = &actionPrecon->at(t);
             std::vector<unsigned int> args; args.reserve(lit->args.size());
-            for (int q = 0; q < lit->args.size(); q++) args.push_back(action->objects.at(lit->args.at(q)));
+            for (int q = 0; q < lit->args.size(); q++) args.push_back(action.objects.at(lit->args.at(q)));
             preconditions.emplace(GroundedLiteral(lit->predicateIndex, args), lit->value);
         }
         // Get effects
-        const std::vector<PDDLLiteral> *actionEffs = &action->action->effects;
+        const std::vector<PDDLLiteral> *actionEffs = &action.action->effects;
         std::unordered_map<GroundedLiteral, bool> effects; effects.reserve(actionEffs->size());
         for (int t = 0; t < actionEffs->size(); t++) {
             const PDDLLiteral *lit = &actionEffs->at(t);
             std::vector<unsigned int> args; args.reserve(lit->args.size());
-            for (int q = 0; q < lit->args.size(); q++) args.push_back(action->objects.at(lit->args.at(q)));
+            for (int q = 0; q < lit->args.size(); q++) args.push_back(action.objects.at(lit->args.at(q)));
             effects.emplace(GroundedLiteral(lit->predicateIndex, args), lit->value);
         }
-        groundedActions.push_back(GroundedAction(action->action->name, parameters, preconditions, effects));
+        groundedActions.push_back(GroundedAction(action.action->name, parameters, preconditions, effects));
     }
     return groundedActions;
 }

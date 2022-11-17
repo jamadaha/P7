@@ -16,11 +16,5 @@ sudo apt install g++ make flex bison && git clone https://github.com/KCL-Plannin
 sudo apt install python3-pip && pip install lab
 # Install R
 sudo apt install r-base r-base-dev
-## Enter R
-R
-## Install depends
-install.packages("ggplot2")
-## Exit R
-q()
 # Download data repo
 git clone https://github.com/jamadaha/P7_Data

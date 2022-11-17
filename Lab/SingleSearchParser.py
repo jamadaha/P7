@@ -6,6 +6,7 @@ Regular expressions and functions for parsing single-search runs of Fast Downwar
 
 import re
 import sys
+import os
 
 from lab import tools
 from lab.parser import Parser
@@ -153,6 +154,8 @@ class SingleSearchParser(Parser):
         Parser.__init__(self)
 
         downward_log = "downwardLog"
+        if not os.path.exists(downward_log):
+            return;
 
         for name, pattern, typ in PATTERNS:
             self.add_pattern(name, pattern, type=typ,file=downward_log)

@@ -6,6 +6,7 @@ Regular expressions and functions for parsing translator logs.
 
 import ast
 import re
+import os
 
 from lab.parser import Parser
 
@@ -71,6 +72,8 @@ class TranslatorParser(Parser):
         Parser.__init__(self)
 
         downward_log = "downwardLog"
+        if not os.path.exists(downward_log):
+            return;
 
         self.add_function(parse_translator_timestamps,file=downward_log)
         self.add_function(parse_old_statistics,file=downward_log)

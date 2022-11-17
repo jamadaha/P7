@@ -12,6 +12,7 @@ public:
 	int Iteration = 1;
 	int ReportID = -1;
 	int GetMacrosGenerated() { return macrosGenerated; };
+	bool DidEncounterErrors() { return encounteredErrors; };
 	BaseReformulator(Config* config, RunReport* report) : Configs(config), Report(report) {
 
 	}
@@ -23,6 +24,7 @@ protected:
 	RunReport* Report;
 	const int debugIndent = 2;
 	int macrosGenerated = 0;
+	bool encounteredErrors = false;
 };
 
 #endif

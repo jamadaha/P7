@@ -75,22 +75,21 @@ EntanglementFinder BaseWalkerReformulator::GetEntanglementFinder(bool debugMode)
 
 	auto ef = EntanglementFinder(runData);
 
-	//if (Configs->GetItem<bool>("debugmode")) {
-	//	ProgressBarHelper* bar;
-	//	ef.OnNewLevel = [&](int level, int outOf) {
-	//		bar = new ProgressBarHelper(outOf, "Finding Entanglements (level " + std::to_string(level) + ")", debugIndent + 1);
-	//	};
-	//	ef.OnLevelIteration = [&](int current, int outOf) {
-	//		bar->Update();
-	//	};
-	//	ef.OnLevelEnd = [&]() {
-	//		bar->End();
-	//	};
-	//	ef.OnTimeLimitReached = [&]() {
-	//		bar->End();
-	//		ConsoleHelper::PrintDebugWarning("[Entanglement Finder] Time limit reached!", debugIndent);
-	//	};
-	//}
+	if (Configs->GetItem<bool>("debugmode")) {
+		ProgressBarHelper* bar;
+		ef.OnNewLevel = [&](int level, int outOf) {
+			bar = new ProgressBarHelper(outOf, "Finding Entanglements (level " + std::to_string(level) + ")", debugIndent + 1);
+		};
+		ef.OnLevelIteration = [&](int current, int outOf) {
+			bar->Update();
+		};
+		ef.OnLevelEnd = [&]() {
+			bar->End();
+		};
+		ef.OnTimeLimitReached = [&]() {
+			ConsoleHelper::PrintDebugWarning("[Entanglement Finder] Time limit reached!", debugIndent);
+		};
+	}
 
 	return ef;
 }

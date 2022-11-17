@@ -2,7 +2,7 @@
 
 using namespace std;
 
-int EntanglementFinder::GetInitialLevelIfValid(vector<Path>* paths) {
+int EntanglementFinder::GetInitialLevelIfValid(const vector<Path>* paths) {
 	int level = 2;
 	if (Data.SearchCeiling != -1)
 		level = Data.SearchCeiling;
@@ -28,7 +28,7 @@ int EntanglementFinder::GetInitialLevelIfValid(vector<Path>* paths) {
 	return level;
 }
 
-unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCandidates(vector<Path>* paths) {
+unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCandidates(const vector<Path>* paths) {
 	unordered_map<size_t, EntanglementOccurance> candidates;
 
 	if (paths->size() == 0)
@@ -36,11 +36,9 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 
 	int level = GetInitialLevelIfValid(paths);
 
-	vector<pair<size_t, vector<PDDLActionInstance>>> currentValues;
 	int totalSteps = 0;
 	for (auto path = paths->begin(); path != paths->end(); path++)
 		totalSteps += path->steps.size();
-	currentValues.reserve(totalSteps / Data.SearchFloor);
 
 	_TotalLevels = 0;
 	_TotalComparisons = 0;
@@ -48,8 +46,8 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 	while (level >= Data.SearchFloor) {
 		_TotalLevels++;
 		_CurrentLevel = level;
-		
-		GenerateActionSet(&currentValues, paths, level);
+
+		vector<pair<size_t, vector<PDDLActionInstance>>> currentValues = GenerateActionSet(paths, level, totalSteps);
 
 		AddCandidatesIfThere(&candidates, &currentValues);
 
@@ -74,11 +72,12 @@ int EntanglementFinder::ReduceLevel(int level) {
 	return newLevel;
 }
 
-void EntanglementFinder::GenerateActionSet(vector<pair<size_t, vector<PDDLActionInstance>>>* currentValues, vector<Path>* paths, const int level) {
-	currentValues->clear();
+vector<pair<size_t, vector<PDDLActionInstance>>> EntanglementFinder::GenerateActionSet(const vector<Path>* paths, const int level, const int totalSteps) {
+	vector<pair<size_t, vector<PDDLActionInstance>>> newSet;
+	newSet.reserve(totalSteps / level);
 	const int pathsSize = paths->size();
 	for (int i = 0; i < pathsSize; i++) {
-		Path* path = &paths->at(i);
+		const Path* path = &paths->at(i);
 		const int pathSize = path->steps.size();
 		for (int j = 0; j < pathSize; j += level) {
 			bool doAdd = true;
@@ -94,13 +93,14 @@ void EntanglementFinder::GenerateActionSet(vector<pair<size_t, vector<PDDLAction
 			}
 			if (doAdd) {
 				size_t key = hash<vector<PDDLActionInstance>>{}(currentSet);
-				currentValues->push_back(make_pair(key, currentSet));
+				newSet.push_back(make_pair(key, currentSet));
 			}
 		}
 	}
+	return newSet;
 }
 
-void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, EntanglementOccurance>* candidates, vector<pair<size_t, vector<PDDLActionInstance>>>* currentValues) {
+void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, EntanglementOccurance>* candidates, const vector<pair<size_t, vector<PDDLActionInstance>>>* currentValues) {
 	const int currentValueSize = currentValues->size();
 	if (OnNewLevel != nullptr)
 		OnNewLevel(_CurrentLevel, currentValueSize);

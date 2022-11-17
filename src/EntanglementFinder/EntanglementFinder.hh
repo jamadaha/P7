@@ -43,7 +43,7 @@ public:
 	/// <summary>
 	/// Find entanglement candidates from a vector of paths
 	/// </summary>
-	std::unordered_map<size_t,EntanglementOccurance> FindEntangledCandidates(std::vector<Path>* paths);
+	std::unordered_map<size_t,EntanglementOccurance> FindEntangledCandidates(const std::vector<Path>* paths);
 
 	std::function<const void(int level, int outOf)> OnNewLevel;
 	std::function<const void()> OnLevelEnd;
@@ -61,15 +61,15 @@ private:
 	/// <summary>
 	/// Validate the input data
 	/// </summary>
-	int GetInitialLevelIfValid(std::vector<Path>* paths);
+	int GetInitialLevelIfValid(const std::vector<Path>* paths);
 	/// <summary>
 	/// Takes a set of Paths and splits them up into sets of PDDLActionInstances based on the level.
 	/// </summary>
-	void GenerateActionSet(std::vector<std::pair<size_t, std::vector<PDDLActionInstance>>>* currentValues, std::vector<Path>* paths, const int level);
+	std::vector<std::pair<size_t, std::vector<PDDLActionInstance>>> GenerateActionSet(const std::vector<Path>* paths, const int level, const int totalSteps);
 	/// <summary>
 	/// Based on the values generated in the "GenerateActionSet" method
 	/// </summary>
-	void AddCandidatesIfThere(std::unordered_map<size_t, EntanglementOccurance>* candidates, std::vector<std::pair<size_t, std::vector<PDDLActionInstance>>>* currentValues);
+	void AddCandidatesIfThere(std::unordered_map<size_t, EntanglementOccurance>* candidates, const std::vector<std::pair<size_t, std::vector<PDDLActionInstance>>>* currentValues);
 	/// <summary>
 	/// Returns true if the time limit have been exceeded
 	/// </summary>

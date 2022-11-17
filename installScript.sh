@@ -14,5 +14,13 @@ sudo apt install cmake g++ git make python3 && git clone https://github.com/aiba
 sudo apt install g++ make flex bison && git clone https://github.com/KCL-Planning/VAL.git && cd VAL && git checkout a5565396007eee73ac36527fbf904142b3077c74 && make clean && sed -i 's/-Werror //g' Makefile && make && cd ..;
 # Install Lab
 sudo apt install python3-pip && pip install lab
+# Install R
+sudo apt install r-base r-base-dev
+## Enter R
+R
+## Install depends
+install.packages("ggplot2")
+## Exit R
+q()
 # Download data repo
 git clone https://github.com/jamadaha/P7_Data

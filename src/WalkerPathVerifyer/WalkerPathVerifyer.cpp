@@ -2,49 +2,33 @@
 
 using namespace std;
 
-vector<BadPath> WalkerPathVerifyer::VerifyPaths(vector<Path>* paths, PDDLInstance* instance) {
+vector<BadPath> WalkerPathVerifyer::VerifyPaths(vector<Path>* paths, PDDLInstance* instance, Config* config) {
 	vector<BadPath> badPaths;
 
 	for (auto path = paths->begin(); path != paths->end(); path++) {
-		vector<PDDLAction> newActions = instance->domain->actions;
-
-		if (path->states.at(0) != instance->problem->initState) {
-
-		}
-
 		vector<SASAction> actions;
 		for (auto step : path->steps) {
 			actions.push_back(GenerateSASActionFromActionInstance(step, instance));
 		}
+		SASPlan checkPlan(actions, actions.size(), 0);
 
-		if (path->states.at(path->states.size()) != instance->problem->goalState) {
-			vector<string> params;
-			vector<PDDLLiteral> preconditions;
-			vector<PDDLLiteral> effects;
-			int paramIndex = 0;
+		SASCodeGenerator sasGenerator;
+		sasGenerator.GenerateCode(checkPlan, "sas_verify.sas");
 
-			for (auto precon : path->states.at(path->states.size()).unaryFacts) {
-				vector<unsigned int> args;
-				for (auto param : precon.second) {
-					params.push_back(to_string(paramIndex) + "?");
-					args.push_back(paramIndex++);
-				}
+		PDDLInstance newInstance(
+			instance->domain,
+			new PDDLProblem(instance->problem->name, instance->domain, instance->problem->objects, instance->problem->objectMap, path->startState, path->endState));
 
-				preconditions.push_back(PDDLLiteral(precon.first, args, true));
-			}
+		PDDLDomainCodeGenerator domainGenerator(newInstance.domain);
+		PDDLProblemCodeGenerator problemGenerator(newInstance.domain, newInstance.problem);
+		PDDLCodeGenerator generator(domainGenerator, problemGenerator);
 
-			PDDLAction finalAction("macro-final", params, preconditions, effects);
-			newActions.push_back(finalAction);
-			vector<unsigned int> objects;
+		generator.GenerateCode(newInstance, "domain_verify.pddl", "problem_verify.pddl");
 
-			PDDLActionInstance finalActionInstance(&finalAction, objects);
-			actions.push_back(GenerateSASActionFromActionInstance(finalActionInstance, instance));
+		auto reformulatedSASValidatorResult = PlanValidator::ValidatePlan(*config, "domain_verify.pddl", "problem_verify.pddl", "sas_verify.sas");
+		if (reformulatedSASValidatorResult != PlanValidator::PlanMatch) {
+			//badPaths.push_back(BadPath(*path, "Reason"));
 		}
-
-		PDDLInstance newInstance(new PDDLDomain(instance->domain->name, instance->domain->requirements, instance->domain->predicates, instance->domain->predicateMap, newActions), instance->problem);
-
-		SASPlan checkPlan(actions, 1, 1);
-
 	}
 
 	return badPaths;

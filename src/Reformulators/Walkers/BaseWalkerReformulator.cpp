@@ -21,29 +21,29 @@ void BaseWalkerReformulator::FindPaths(PDDLInstance *instance, bool debugMode) {
 	auto ellapsed = Report->Stop(walkID);
 	if (debugMode)
 		PrintWalkerDebugData(ellapsed);
-	if (Configs->GetItem<bool>("validatePaths")) {
-		int verifyID = Report->Begin("Verifying Paths", walkID);
-		if (debugMode)
-			ConsoleHelper::PrintDebugInfo("[Walker] Verifying paths", debugIndent);
+	//if (Configs->GetItem<bool>("validatePaths")) {
+	//	int verifyID = Report->Begin("Verifying Paths", walkID);
+	//	if (debugMode)
+	//		ConsoleHelper::PrintDebugInfo("[Walker] Verifying paths", debugIndent);
 
-		WalkerPathVerifyer verifyer;
-		auto badPaths = verifyer.VerifyPaths(&paths, instance);
-		if (badPaths.size() == 0)
-			Report->Stop(ReportData("None", "-1", "true"));
-		else
-			Report->Stop(ReportData("None", "-1", "false"));
+	//	WalkerPathVerifyer verifyer;
+	//	auto badPaths = verifyer.VerifyPaths(&paths, instance, Configs);
+	//	if (badPaths.size() == 0)
+	//		Report->Stop(ReportData("None", "-1", "true"));
+	//	else
+	//		Report->Stop(ReportData("None", "-1", "false"));
 
-		int counter = 0;
-		for (auto path : badPaths) {
-			ConsoleHelper::PrintError("[Walker] Bad path: ..., Reason: " + path.Reason, debugIndent);
-			//encounteredErrors = true;
-			counter++;
-			if (counter > 10) {
-				ConsoleHelper::PrintError("[Walker] Many more than these", debugIndent);
-				break;
-			}
-		}
-	}
+	//	int counter = 0;
+	//	for (auto path : badPaths) {
+	//		ConsoleHelper::PrintError("[Walker] Bad path: ..., Reason: " + path.Reason, debugIndent);
+	//		//encounteredErrors = true;
+	//		counter++;
+	//		if (counter > 10) {
+	//			ConsoleHelper::PrintError("[Walker] Many more than these", debugIndent);
+	//			break;
+	//		}
+	//	}
+	//}
 }
 
 std::vector<EntanglementOccurance> BaseWalkerReformulator::FindEntanglements(PDDLInstance* instance, bool debugMode) {

@@ -61,8 +61,7 @@ namespace std {
     };
 }
 
-class PDDLState {
-public:
+struct PDDLState {
     // Key - Index of predicate | Value - Set of objects which the predicate is true for
     std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts;
     std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts;

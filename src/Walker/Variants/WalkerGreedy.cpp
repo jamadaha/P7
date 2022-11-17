@@ -3,22 +3,14 @@
 Path WalkerGreedy::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
     std::vector<PDDLActionInstance> steps; 
     steps.reserve(maxStepCount);
-    std::vector<PDDLState> states;
-    states.reserve(maxStepCount);
     std::unordered_set<PDDLState> visitedStates; 
     visitedStates.reserve(maxStepCount);
-
 
     PDDLState tempState = PDDLState(state->unaryFacts, state->binaryFacts, state->multiFacts);
     if (OnTempStateMade != nullptr)
         OnTempStateMade(this->instance, &tempState);
 
     for (int i = 0; i < maxStepCount; i++) {
-        if (SaveStates) {
-            PDDLState* state = new PDDLState(tempState.unaryFacts, tempState.binaryFacts, tempState.multiFacts);
-            states.push_back(*state);
-        }
-
         std::vector<PDDLActionInstance> possibleActions;
         possibleActions = actionGenerator.GenerateActions(&tempState);
 
@@ -38,7 +30,7 @@ Path WalkerGreedy::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
     }
 
     if (SaveStates)
-        return Path(steps, states);
+        return Path(steps, *state, tempState);
     else
         return Path(steps);
 }

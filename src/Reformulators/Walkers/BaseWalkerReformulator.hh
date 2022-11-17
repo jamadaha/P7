@@ -10,6 +10,7 @@
 #include "../../IntermediatePDDL/PDDLActionInstance.hh"
 #include "../../Walker/Path.hpp"
 #include "../../Walker/BaseWalker.hh"
+#include "../../WalkerPathVerifyer/WalkerPathVerifyer.hh"
 #include "../../EntanglementFinder/EntanglementFinder.hh"
 #include "../../EntanglementFinder/EntanglementOccurance.hh"
 #include "../../EntanglementFinder/EntanglementEvaluator.hh"

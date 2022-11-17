@@ -87,6 +87,7 @@ EntanglementFinder BaseWalkerReformulator::GetEntanglementFinder(bool debugMode)
 	//		bar->End();
 	//	};
 	//	ef.OnTimeLimitReached = [&]() {
+	//		bar->End();
 	//		ConsoleHelper::PrintDebugWarning("[Entanglement Finder] Time limit reached!", debugIndent);
 	//	};
 	//}

@@ -37,7 +37,11 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 	int level = GetInitialLevelIfValid(paths);
 
 	vector<pair<size_t, vector<PDDLActionInstance>>> currentValues;
-	
+	int totalSteps = 0;
+	for (auto path = paths->begin(); path != paths->end(); path++)
+		totalSteps += path->steps.size();
+	currentValues.reserve(totalSteps / Data.SearchFloor);
+
 	_TotalLevels = 0;
 	_TotalComparisons = 0;
 

@@ -26,7 +26,7 @@ vector<BadPath> WalkerPathVerifyer::VerifyPaths(vector<Path>* paths, PDDLInstanc
 
 		auto reformulatedSASValidatorResult = PlanValidator::ValidatePlan(*config, "domain_verify.pddl", "problem_verify.pddl", "sas_verify.sas");
 		if (reformulatedSASValidatorResult != PlanValidator::PlanMatch) {
-			//badPaths.push_back(BadPath(*path, "Reason"));
+			badPaths.push_back(BadPath(*path, "Reason"));
 		}
 	}
 

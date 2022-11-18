@@ -25,14 +25,13 @@ PDDLDomain GenerateDomain(std::vector<PDDLAction> actions = std::vector<PDDLActi
 
 PDDLProblem GenerateProblem(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts = std::unordered_map<unsigned int, std::unordered_set<unsigned int>> {}, 
 std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts = std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> {}, 
-std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts = std::unordered_map<unsigned int, std::unordered_set<MultiFact>> {}, 
 PDDLDomain *domain = nullptr, std::vector<std::string> objects = std::vector<std::string>()) {
     return PDDLProblem("Test", 
     domain, 
     objects, 
     std::unordered_map<std::string, unsigned int>{}, 
-    PDDLState(unaryFacts, binaryFacts, multiFacts), 
-    PDDLState(unaryFacts, binaryFacts, multiFacts));
+    PDDLState(unaryFacts, binaryFacts), 
+    PDDLState(unaryFacts, binaryFacts));
 }
 
 TEST_CASE(TAG + "GenerateActions Empty") {
@@ -56,8 +55,6 @@ TEST_CASE(TAG + "GenerateActions Unary - 1 Legal") {
     PDDLProblem problem = GenerateProblem(std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{
         { 1, { 0 } }
     }, std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>>{
-
-    }, std::unordered_map<unsigned int, std::unordered_set<MultiFact>>{
 
     }, &domain,
     std::vector<std::string> {
@@ -83,8 +80,6 @@ TEST_CASE(TAG + "GenerateActions Unary - 0 Legal") {
         { 1, { 0 } }
     }, std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>>{
 
-    }, std::unordered_map<unsigned int, std::unordered_set<MultiFact>>{
-
     }, &domain,
     std::vector<std::string> {
         "O1"
@@ -108,8 +103,6 @@ TEST_CASE(TAG + "GenerateActions Equal") {
     PDDLProblem problem = GenerateProblem(std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{
         
     }, std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>>{
-
-    }, std::unordered_map<unsigned int, std::unordered_set<MultiFact>>{
 
     }, &domain,
     std::vector<std::string> {
@@ -135,8 +128,6 @@ TEST_CASE(TAG + "GenerateActions Not Equal") {
         
     }, std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>>{
 
-    }, std::unordered_map<unsigned int, std::unordered_set<MultiFact>>{
-
     }, &domain,
     std::vector<std::string> {
         "O1", "O2", "O3"
@@ -161,8 +152,6 @@ TEST_CASE(TAG + "GenerateActions Multi - 1 Legal") {
         
     }, std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>>{ 
         { 2, { std::make_pair(0, 1) } }
-    }, std::unordered_map<unsigned int, std::unordered_set<MultiFact>>{
-
     }, &domain,
     std::vector<std::string> {
         "O1", "O2", "O3", "O4"
@@ -200,7 +189,7 @@ TEST_CASE(TAG + "GetCandidateObjects") {
 
     SECTION("No Literals") {
         PDDLState state{
-            {}, {}, {}
+            {}, {}
         };
         const PDDLAction *action = &domain.actions.at(0);
         std::unordered_set<const PDDLLiteral*> *literals = new std::unordered_set<const PDDLLiteral*>();
@@ -211,7 +200,7 @@ TEST_CASE(TAG + "GetCandidateObjects") {
 
     SECTION("Single Fact") {
         PDDLState state{
-            { { 0, { 0 } }, { 1, { 1 } }, { 2, { 0, 2 }} }, {}, {}
+            { { 0, { 0 } }, { 1, { 1 } }, { 2, { 0, 2 }} }, {}
         };
         const PDDLAction *action = &domain.actions.at(0);
 
@@ -230,7 +219,7 @@ TEST_CASE(TAG + "GetCandidateObjects") {
 
     SECTION("Multi Fact") {
         PDDLState state{
-            { { 0, { 0 } }, { 1, { 1 } }, { 2, { 0, 2 }} }, {}, {}
+            { { 0, { 0 } }, { 1, { 1 } }, { 2, { 0, 2 }} }, {}
         };
         const PDDLAction *action = &domain.actions.at(0);
 

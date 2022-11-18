@@ -18,6 +18,8 @@ class LabSuite():
     _reportfolder = ""
     _projectfile = ""
     _benchmarksfolder = ""
+    _totalRuns = 0
+    _currentRuns = 0
 
     def __init__(self, dir):
         self._pathHelper = PathHelper(dir)
@@ -47,8 +49,6 @@ class LabSuite():
             settingsFileName = settingsFile + ".ini"
             fileContent = ConfigParser.ParseConfig(self._pathHelper.CombinePath("LabSettings/" + settingsFileName))
             for i in range(1,labSettings.Rounds + 1):
-                print("Begining run " + str(i) + "/" + str(labSettings.Rounds) + " of settings file " + settingsFile)
-                
                 settingsFile_override = settingsFile + "-" + str(i);
 
                 experimentSettings = SettingsParser(self._pathHelper)
@@ -69,11 +69,19 @@ class LabSuite():
                         Reports.AddPlot(experiment, attribute)
                 #Reports.AddTaskwiseReport(experiment, experimentSettings.Reformulators)
 
-                experiment.run_steps()
-
-                shutil.move(experiment.eval_dir, self._pathHelper.CombinePath("LabReports/" + settingsFile_override))
-
+                experiment.add_step("movereport", self.MoveReport, experiment.eval_dir, self._pathHelper.CombinePath("LabReports/" + settingsFile_override))
+                
                 experiments.append(experiment)
+
+        for experiment in experiments:
+            self._totalRuns += len(experiment.runs)
+
+        for experiment in experiments:
+            experiment.run_steps()
+            self._currentRuns += len(experiment.runs)
+
+    def MoveReport(self, fromDir, toDir):
+        shutil.move(fromDir, toDir)
 
     def AddLoggingToBuid(self):
         fileName = self._reportfolder + "/run"
@@ -85,7 +93,6 @@ class LabSuite():
         for line in lines:
             if "SHUFFLED_TASK_IDS =" in line:
                 taskIDs = line
-                break;
         
         replacementFileName = self._reportfolder + "/RunReplacement.py"
         replacementLines = []
@@ -96,6 +103,10 @@ class LabSuite():
         for line in replacementLines:
             if "SHUFFLED_TASK_IDS =" in line:
                 newLines.append(taskIDs)
+            elif "counterMax = 0" in line:
+                newLines.append("counterMax = " + str(self._totalRuns) + "\n");
+            elif "counter = 0" in line:
+                newLines.append("counter = " + str(self._currentRuns) + "\n");
             else:
                 newLines.append(line)
 

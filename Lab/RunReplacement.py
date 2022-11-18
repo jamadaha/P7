@@ -59,8 +59,6 @@ def process_task(task_id):
 def main():
     pool = multiprocessing.Pool(processes=12)
     num_tasks = len(SHUFFLED_TASK_IDS)
-    global counterMax
-    counterMax = num_tasks
     for num in range(1,num_tasks + 1):
         result = pool.apply_async(process_task, (num,), callback=Update)
     pool.close()

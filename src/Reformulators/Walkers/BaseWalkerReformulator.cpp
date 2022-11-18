@@ -12,7 +12,15 @@ PDDLInstance BaseWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	// Macro Generation
 	PDDLInstance macroInstance = GenerateMacros(instance, &candidates, debugMode);
 
+	// Cleanup
+	Cleanup();
+
     return macroInstance;
+}
+
+void BaseWalkerReformulator::Cleanup() {
+	free(walkerBar);
+	free(entanglerBar);
 }
 
 void BaseWalkerReformulator::FindPaths(PDDLInstance *instance, bool debugMode) {
@@ -78,15 +86,14 @@ EntanglementFinder BaseWalkerReformulator::GetEntanglementFinder(bool debugMode)
 	auto ef = EntanglementFinder(runData);
 
 	if (Configs->GetItem<bool>("debugmode")) {
-		ProgressBarHelper* bar;
 		ef.OnNewLevel = [&](int level, int outOf) {
-			bar = new ProgressBarHelper(outOf, "Finding Entanglements (level " + std::to_string(level) + ")", debugIndent + 1);
+			entanglerBar = new ProgressBarHelper(outOf, "Finding Entanglements (level " + std::to_string(level) + ")", debugIndent + 1);
 		};
 		ef.OnLevelIteration = [&](int current, int outOf) {
-			bar->Update();
+			entanglerBar->Update();
 		};
 		ef.OnLevelEnd = [&]() {
-			bar->End();
+			entanglerBar->End();
 		};
 		ef.OnTimeLimitReached = [&]() {
 			ConsoleHelper::PrintDebugWarning("[Entanglement Finder] Time limit reached!", debugIndent);

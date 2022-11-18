@@ -23,7 +23,8 @@ Path WalkerGreedy::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
             break;
         else {
             visitedStates.emplace(tempState);
-            endState = tempState;
+            if (SaveStates)
+                endState = tempState;
             steps.push_back(*chosenAction);
 
             if (OnStateWalk != nullptr)

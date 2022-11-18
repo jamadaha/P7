@@ -8,11 +8,10 @@
 
 class ProgressBarHelper {
 public:
-	int DisplayWidth = 50;
-	int To = 1;
+	const int DisplayWidth = 50;
+	const int To = 1;
 
-	ProgressBarHelper(int to, std::string desc, int indent = 0) : To(to), Indent(indent) {
-		StepValue = ((double)DisplayWidth / ((double)To));
+	ProgressBarHelper(const int to, std::string desc, int indent = 0) : To(to), Indent(indent), StepValue((double)DisplayWidth / ((double)to)) {
 		if (desc != "")
 			ConsoleHelper::PrintDebugInfo(desc, indent);
 		ConsoleHelper::PrintDebugInfo("|", indent, false);
@@ -27,10 +26,10 @@ public:
 	void End();
 
 private:
-	int Indent = 0;
+	const int Indent = 0;
 	int Value = 0;
 
-	double StepValue = 0;
+	const double StepValue = 0;
 	int CurrentDisplayIndex = 0;
 };
 

@@ -7,7 +7,7 @@ Path WalkerGreedy::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
     visitedStates.reserve(maxStepCount);
 
     PDDLState endState;
-    PDDLState tempState = PDDLState(state->unaryFacts, state->binaryFacts, state->multiFacts);
+    PDDLState tempState = PDDLState(state->unaryFacts, state->binaryFacts);
     if (OnTempStateMade != nullptr)
         OnTempStateMade(this->instance, &tempState);
 

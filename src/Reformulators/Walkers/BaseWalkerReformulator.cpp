@@ -240,12 +240,12 @@ void BaseWalkerReformulator::PrintEntanglerSteps(std::vector<EntanglementOccuran
 		for (int j = 0; j < (*i).Chain.size(); j++) {
 			auto item = (*i).Chain.at(j);
 			std::string paramStr = "";
-			for (int l = 0; l < item.objects.size(); l++) {
-				paramStr += instance->problem->objects[item.objects[l]];
-				if (l != item.objects.size() - 1)
+			for (int l = 0; l < item->objects.size(); l++) {
+				paramStr += instance->problem->objects[item->objects[l]];
+				if (l != item->objects.size() - 1)
 					paramStr += ", ";
 			}
-			actionStr += item.action->name + "(" + paramStr + ")";
+			actionStr += item->action->name + "(" + paramStr + ")";
 			if (j != (*i).Chain.size() - 1)
 				actionStr += " -> ";
 		}

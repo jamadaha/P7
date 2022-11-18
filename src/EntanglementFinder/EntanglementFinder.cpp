@@ -40,6 +40,9 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 	for (auto path = paths->begin(); path != paths->end(); path++)
 		totalSteps += path->steps.size();
 
+	vector<pair<size_t, vector<PDDLActionInstance*>>> currentValues;
+	currentValues.reserve(totalSteps / Data.SearchFloor);
+
 	_TotalLevels = 0;
 	_TotalComparisons = 0;
 
@@ -47,7 +50,8 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 		_TotalLevels++;
 		_CurrentLevel = level;
 
-		vector<pair<size_t, vector<PDDLActionInstance>>> currentValues = GenerateActionSet(paths, level, totalSteps);
+		currentValues.clear();
+		GenerateActionSet(&currentValues, paths, level);
 
 		AddCandidatesIfThere(&candidates, &currentValues);
 
@@ -72,16 +76,14 @@ int EntanglementFinder::ReduceLevel(int level) {
 	return newLevel;
 }
 
-vector<pair<size_t, vector<PDDLActionInstance>>> EntanglementFinder::GenerateActionSet(const vector<Path>* paths, const int level, const int totalSteps) {
-	vector<pair<size_t, vector<PDDLActionInstance>>> newSet;
-	newSet.reserve(totalSteps / level);
+void EntanglementFinder::GenerateActionSet(vector<pair<size_t, vector<PDDLActionInstance*>>>* currentValues, const vector<Path>* paths, const int level) {
 	const int pathsSize = paths->size();
 	for (int i = 0; i < pathsSize; i++) {
 		const Path* path = &paths->at(i);
 		const int pathSize = path->steps.size();
 		for (int j = 0; j < pathSize; j += level) {
 			bool doAdd = true;
-			vector<PDDLActionInstance> currentSet;
+			vector<PDDLActionInstance*> currentSet;
 			currentSet.reserve(level);
 			for (int l = j; l < j + level; l++) {
 				if (l >= pathSize) {
@@ -89,25 +91,25 @@ vector<pair<size_t, vector<PDDLActionInstance>>> EntanglementFinder::GenerateAct
 						doAdd = false;
 					break;
 				}
-				currentSet.push_back(path->steps.at(l));
+				auto a = path->steps.at(l);
+				currentSet.push_back(&a);
 			}
 			if (doAdd) {
-				size_t key = hash<vector<PDDLActionInstance>>{}(currentSet);
-				newSet.push_back(make_pair(key, currentSet));
+				size_t key = hash<vector<PDDLActionInstance*>>{}(currentSet);
+				currentValues->push_back(make_pair(key, currentSet));
 			}
 		}
 	}
-	return newSet;
 }
 
-void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, EntanglementOccurance>* candidates, const vector<pair<size_t, vector<PDDLActionInstance>>>* currentValues) {
+void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, EntanglementOccurance>* candidates, const vector<pair<size_t, vector<PDDLActionInstance*>>>* currentValues) {
 	const int currentValueSize = currentValues->size();
 	if (OnNewLevel != nullptr)
 		OnNewLevel(_CurrentLevel, currentValueSize);
 
 	for (int i = 0; i < currentValueSize; i++) {
 		// Check if this value have already been found
-		pair<size_t,vector<PDDLActionInstance>> iValue = currentValues->at(i);
+		pair<size_t,vector<PDDLActionInstance*>> iValue = currentValues->at(i);
 		bool containsThisKey = candidates->contains(iValue.first);
 		if (containsThisKey)
 			continue;

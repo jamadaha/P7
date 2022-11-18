@@ -65,11 +65,11 @@ private:
 	/// <summary>
 	/// Takes a set of Paths and splits them up into sets of PDDLActionInstances based on the level.
 	/// </summary>
-	std::vector<std::pair<size_t, std::vector<PDDLActionInstance>>> GenerateActionSet(const std::vector<Path>* paths, const int level, const int totalSteps);
+	void GenerateActionSet(std::vector<std::pair<size_t, std::vector<PDDLActionInstance*>>>* currentValues, const std::vector<Path>* paths, const int level);
 	/// <summary>
 	/// Based on the values generated in the "GenerateActionSet" method
 	/// </summary>
-	void AddCandidatesIfThere(std::unordered_map<size_t, EntanglementOccurance>* candidates, const std::vector<std::pair<size_t, std::vector<PDDLActionInstance>>>* currentValues);
+	void AddCandidatesIfThere(std::unordered_map<size_t, EntanglementOccurance>* candidates, const std::vector<std::pair<size_t, std::vector<PDDLActionInstance*>>>* currentValues);
 	/// <summary>
 	/// Returns true if the time limit have been exceeded
 	/// </summary>

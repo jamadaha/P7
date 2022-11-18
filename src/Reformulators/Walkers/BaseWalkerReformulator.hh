@@ -8,8 +8,9 @@
 #include "../../Helpers/ProgressBarHelper.hh"
 #include "../../IntermediatePDDL/PDDLInstance.hh"
 #include "../../IntermediatePDDL/PDDLActionInstance.hh"
-#include "../../Walker/Path.hpp"
+#include "../../Walker/Path.hh"
 #include "../../Walker/BaseWalker.hh"
+#include "../../WalkerPathVerifyer/WalkerPathVerifyer.hh"
 #include "../../EntanglementFinder/EntanglementFinder.hh"
 #include "../../EntanglementFinder/EntanglementOccurance.hh"
 #include "../../EntanglementFinder/EntanglementEvaluator.hh"
@@ -32,6 +33,7 @@ private:
     std::vector<Path> paths;
     std::vector<Macro> macros;
     ProgressBarHelper* walkerBar;
+    ProgressBarHelper* entanglerBar;
 
     void FindPaths(PDDLInstance *instance, bool debugMode);
     std::vector<EntanglementOccurance> FindEntanglements(PDDLInstance* instance, bool debugMode);

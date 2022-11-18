@@ -23,6 +23,34 @@ void BaseWalkerReformulator::FindPaths(PDDLInstance *instance, bool debugMode) {
 	auto ellapsed = Report->Stop(walkID);
 	if (debugMode)
 		PrintWalkerDebugData(ellapsed);
+	if (Configs->GetItem<bool>("validatePaths")) {
+		int verifyID = Report->Begin("Verifying Paths", walkID);
+		if (debugMode) {
+			ConsoleHelper::PrintDebugInfo("[Walker] Verifying paths", debugIndent);
+			ConsoleHelper::PrintDebugWarning("[Walker] This may take a while", debugIndent);
+		}
+
+		WalkerPathVerifyer verifyer;
+		auto badPaths = verifyer.VerifyPaths(&paths, instance, Configs);
+		if (badPaths.size() == 0) {
+			if (debugMode)
+				ConsoleHelper::PrintDebugInfo("[Walker] " + std::to_string(paths.size()) + " paths verified!", debugIndent);
+			Report->Stop(ReportData("None", "-1", "true"));
+		}
+		else {
+			Report->Stop(ReportData("None", "-1", "false"));
+			int counter = 0;
+			for (auto path : badPaths) {
+				ConsoleHelper::PrintError("[Walker] Bad path: " + path.path.ToString() + ", Reason: " + path.Reason, debugIndent);
+				encounteredErrors = true;
+				counter++;
+				if (counter > 10) {
+					ConsoleHelper::PrintError("[Walker] Many more than these", debugIndent);
+					break;
+				}
+			}
+		}
+	}
 }
 
 std::vector<EntanglementOccurance> BaseWalkerReformulator::FindEntanglements(PDDLInstance* instance, bool debugMode) {
@@ -55,17 +83,21 @@ EntanglementFinder BaseWalkerReformulator::GetEntanglementFinder(bool debugMode)
 	auto ef = EntanglementFinder(runData);
 
 	if (Configs->GetItem<bool>("debugmode")) {
-		ProgressBarHelper* bar;
 		ef.OnNewLevel = [&](int level, int outOf) {
-			bar = new ProgressBarHelper(outOf, "Finding Entanglements (level " + std::to_string(level) + ")", debugIndent + 1);
+			entanglerBar = new ProgressBarHelper(outOf, "Finding Entanglements (level " + std::to_string(level) + ")", debugIndent + 1);
 		};
 		ef.OnLevelIteration = [&](int current, int outOf) {
-			bar->Update();
+			entanglerBar->Update();
 		};
 		ef.OnLevelEnd = [&]() {
-			bar->End();
+			entanglerBar->End();
+			delete entanglerBar;
 		};
 		ef.OnTimeLimitReached = [&]() {
+			if (entanglerBar != nullptr) {
+				entanglerBar->End();
+				delete entanglerBar;
+			}
 			ConsoleHelper::PrintDebugWarning("[Entanglement Finder] Time limit reached!", debugIndent);
 		};
 	}
@@ -177,6 +209,7 @@ void BaseWalkerReformulator::SetupWalkerDebugInfo(BaseWalker* walker) {
 	};
 	walker->OnWalkerEnd = [&](BaseWalker* sender, int timePassed) {
 		walkerBar->End();
+		delete walkerBar;
 		unsigned int totalIterations = sender->GetTotalIterations();
 		unsigned int totalActionCount = sender->GetTotalActionsGenerated();
 		ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + std::to_string(timePassed) + "ms", debugIndent);
@@ -210,12 +243,12 @@ void BaseWalkerReformulator::PrintEntanglerSteps(std::vector<EntanglementOccuran
 		for (int j = 0; j < (*i).Chain.size(); j++) {
 			auto item = (*i).Chain.at(j);
 			std::string paramStr = "";
-			for (int l = 0; l < item->objects.size(); l++) {
-				paramStr += instance->problem->objects[item->objects[l]];
-				if (l != item->objects.size() - 1)
+			for (int l = 0; l < item.objects.size(); l++) {
+				paramStr += instance->problem->objects[item.objects[l]];
+				if (l != item.objects.size() - 1)
 					paramStr += ", ";
 			}
-			actionStr += item->action->name + "(" + paramStr + ")";
+			actionStr += item.action->name + "(" + paramStr + ")";
 			if (j != (*i).Chain.size() - 1)
 				actionStr += " -> ";
 		}

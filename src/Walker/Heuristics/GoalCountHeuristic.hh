@@ -45,10 +45,6 @@ public:
 			for (auto fact : (*iter).second)
 				if (state->ContainsFact((*iter).first, fact))
 					value++;
-		for (auto iter = problem->goalState.multiFacts.begin(); iter != problem->goalState.multiFacts.end(); iter++)
-			for (auto fact : (*iter).second)
-				if (state->ContainsFact((*iter).first, &fact))
-					value++;
 		return value;
 	};
 private:

@@ -11,7 +11,7 @@
 #include "EntanglementOccurance.hh"
 #include "EntanglementEvaluatorModifiers.hh"
 
-#include "../Walker/Path.hpp"
+#include "../Walker/Path.hh"
 
 class EntanglementEvaluator {
 public:

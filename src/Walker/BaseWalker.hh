@@ -5,7 +5,7 @@
 #include <list>
 
 #include "../IntermediatePDDL/PDDLActionInstance.hh"
-#include "Path.hpp"
+#include "Path.hh"
 #include "Heuristics/BaseHeuristic.hh"
 #include "DepthFunctions/BaseDepthFunction.hh"
 #include "WidthFunctions/BaseWidthFunction.hh"
@@ -34,6 +34,7 @@ public:
     BaseHeuristic* heuristic;
     BaseDepthFunction* depthFunc;
     BaseWidthFunction* widthFunc;
+    bool SaveStates = false;
 
     BaseWalker(std::string walkerName, PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) :
         WalkerName(walkerName), 

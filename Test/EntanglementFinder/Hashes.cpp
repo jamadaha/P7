@@ -4,7 +4,7 @@
 #include <string>
 
 #include "../../src/EntanglementFinder/EntanglementFinder.hh"
-#include "../../src/Walker/Path.hpp"
+#include "../../src/Walker/Path.hh"
 
 int collisionDepth = 5000;
 int currentCase = 1;

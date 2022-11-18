@@ -6,7 +6,8 @@ Path WalkerProbe::Walk(BaseHeuristic* heuristic, const PDDLState* state) {
     vector<PDDLActionInstance> steps; steps.reserve(maxStepCount);
     unordered_set<PDDLState> visitedStates; visitedStates.reserve(maxStepCount);
 
-    PDDLState tempState = PDDLState(state->unaryFacts, state->binaryFacts, state->multiFacts);
+    PDDLState endState;
+    PDDLState tempState = PDDLState(state->unaryFacts, state->binaryFacts);
     if (OnTempStateMade != nullptr)
         OnTempStateMade(this->instance, &tempState);
 
@@ -22,6 +23,8 @@ Path WalkerProbe::Walk(BaseHeuristic* heuristic, const PDDLState* state) {
             break;
         else {
             visitedStates.emplace(tempState);
+            if (SaveStates)
+                endState = tempState;
             steps.push_back(*chosenAction);
 
             if (OnStateWalk != nullptr)
@@ -29,7 +32,10 @@ Path WalkerProbe::Walk(BaseHeuristic* heuristic, const PDDLState* state) {
         }
     }
 
-    return Path(steps);
+    if (SaveStates)
+        return Path(steps, *state, endState);
+    else
+        return Path(steps);
 }
 
 vector<Path> WalkerProbe::Walk() {
@@ -47,9 +53,8 @@ vector<Path> WalkerProbe::Walk() {
     while (widthFunc->Iterate(&current)) {
         auto unaryFacts = GetFactSubset<unordered_set<unsigned int>>(&initState.unaryFacts, &goalState.unaryFacts);
         auto binaryFacts = GetFactSubset<unordered_set<pair<unsigned int, unsigned int>>>(&initState.binaryFacts, &goalState.binaryFacts);
-        auto multiFacts = GetFactSubset<unordered_set<MultiFact>>(&initState.multiFacts, &goalState.multiFacts);
 
-        PDDLState probe = PDDLState(unaryFacts, binaryFacts, multiFacts);
+        PDDLState probe = PDDLState(unaryFacts, binaryFacts);
 
         Path path = Walk(heuristic, &probe);
         paths.push_back(path);

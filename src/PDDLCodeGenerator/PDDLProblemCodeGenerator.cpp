@@ -75,15 +75,5 @@ std::string PDDLProblemCodeGenerator::GetFacts(PDDLState literals) {
 		}
 	}
 
-	// Multi Facts
-	for (auto uItr = literals.multiFacts.begin(); uItr != literals.multiFacts.end(); uItr++) {
-		for (auto itr = (*uItr).second.begin(); itr != (*uItr).second.end(); itr++) {
-			std::string tempString = domain->predicates.at((*uItr).first).name;
-			for (int i = 0; i < (*itr).fact.size(); i++)
-				tempString += " " + problem->objects.at((*itr).fact.at(i));
-			retStr += AddParen(tempString);
-		}
-	}
-
 	return retStr;
 }

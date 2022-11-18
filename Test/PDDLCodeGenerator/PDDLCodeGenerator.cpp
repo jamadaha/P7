@@ -56,16 +56,10 @@ TEST_CASE(TAG + "PDDLProblemGenerator") {
     //REQUIRE(generatedProblem->_domain == problem->_domain);
     REQUIRE(generatedProblem.objects.size() == problem.objects.size());
     REQUIRE(generatedProblem.initState.unaryFacts.size() == problem.initState.unaryFacts.size());
-    REQUIRE(generatedProblem.initState.multiFacts.size() == problem.initState.multiFacts.size());
     REQUIRE(generatedProblem.goalState.unaryFacts.size() == problem.goalState.unaryFacts.size());
-    REQUIRE(generatedProblem.goalState.multiFacts.size() == problem.goalState.multiFacts.size());
     for (auto itr = generatedProblem.initState.unaryFacts.begin(); itr != generatedProblem.initState.unaryFacts.end(); itr++)
         REQUIRE((*itr).second.size() == problem.initState.unaryFacts.at((*itr).first).size());
-    for (auto itr = generatedProblem.initState.multiFacts.begin(); itr != generatedProblem.initState.multiFacts.end(); itr++)
-        REQUIRE((*itr).second.size() == problem.initState.multiFacts.at((*itr).first).size());
     for (auto itr = generatedProblem.goalState.unaryFacts.begin(); itr != generatedProblem.goalState.unaryFacts.end(); itr++)
         REQUIRE((*itr).second.size() == problem.goalState.unaryFacts.at((*itr).first).size());
-    for (auto itr = generatedProblem.goalState.multiFacts.begin(); itr != generatedProblem.goalState.multiFacts.end(); itr++)
-        REQUIRE((*itr).second.size() == problem.goalState.multiFacts.at((*itr).first).size());
 }
 

@@ -1,25 +1,25 @@
 ﻿#include "MacroGenerator.hh"
 
-Macro MacroGenerator::GenerateMacro(const std::vector<PDDLActionInstance*> *actions) {
+Macro MacroGenerator::GenerateMacro(const std::vector<PDDLActionInstance> *actions) {
     std::vector<GroundedAction> groundedActions = GroundActions(actions);
     GroundedAction combinedAction = CombineActions(&groundedActions);
     return Macro(combinedAction, CloneOriginalPath(actions));
 }
 
 
-std::vector<PDDLActionInstance> MacroGenerator::CloneOriginalPath(const std::vector<PDDLActionInstance*> *actions) {
+std::vector<PDDLActionInstance> MacroGenerator::CloneOriginalPath(const std::vector<PDDLActionInstance> *actions) {
     std::vector<PDDLActionInstance> newPath;
     for (int i = 0; i < actions->size(); i++)
-        newPath.push_back(PDDLActionInstance(actions->at(i)->action, actions->at(i)->objects));
+        newPath.push_back(PDDLActionInstance(actions->at(i).action, actions->at(i).objects));
     return newPath;
 }
 
 // Duplicate code inside, remove at some point
-std::vector<GroundedAction> MacroGenerator::GroundActions(const std::vector<PDDLActionInstance*> *actions) {
+std::vector<GroundedAction> MacroGenerator::GroundActions(const std::vector<PDDLActionInstance> *actions) {
     std::vector<GroundedAction> groundedActions; groundedActions.reserve(actions->size());
 
     for (int i = 0; i < actions->size(); i++) {
-        const PDDLActionInstance action = *actions->at(i);
+        const PDDLActionInstance action = actions->at(i);
         std::string name = action.action->name + std::to_string(groundedActions.size());
         // Get parameters
         std::unordered_set<unsigned int> parameters;

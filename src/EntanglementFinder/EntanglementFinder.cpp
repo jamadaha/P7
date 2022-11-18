@@ -2,7 +2,7 @@
 
 using namespace std;
 
-int EntanglementFinder::GetInitialLevelIfValid(const vector<Path>* paths) {
+int EntanglementFinder::GetInitialLevelIfValid(vector<Path>* paths) {
 	int level = 2;
 	if (Data.SearchCeiling != -1)
 		level = Data.SearchCeiling;
@@ -28,7 +28,7 @@ int EntanglementFinder::GetInitialLevelIfValid(const vector<Path>* paths) {
 	return level;
 }
 
-unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCandidates(const vector<Path>* paths) {
+unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCandidates(vector<Path>* paths) {
 	unordered_map<size_t, EntanglementOccurance> candidates;
 
 	if (paths->size() == 0)
@@ -76,7 +76,7 @@ int EntanglementFinder::ReduceLevel(int level) {
 	return newLevel;
 }
 
-void EntanglementFinder::GenerateActionSet(vector<pair<size_t, vector<PDDLActionInstance*>>>* currentValues, const vector<Path>* paths, const int level) {
+void EntanglementFinder::GenerateActionSet(vector<pair<size_t, vector<PDDLActionInstance*>>>* currentValues, vector<Path>* paths, const int level) {
 	const int pathsSize = paths->size();
 	for (int i = 0; i < pathsSize; i++) {
 		const Path* path = &paths->at(i);
@@ -91,8 +91,7 @@ void EntanglementFinder::GenerateActionSet(vector<pair<size_t, vector<PDDLAction
 						doAdd = false;
 					break;
 				}
-				auto a = path->steps.at(l);
-				currentSet.push_back(&a);
+				currentSet.push_back(&(path->steps.at(l)));
 			}
 			if (doAdd) {
 				size_t key = hash<vector<PDDLActionInstance*>>{}(currentSet);

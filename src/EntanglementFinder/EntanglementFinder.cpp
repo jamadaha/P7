@@ -79,7 +79,7 @@ int EntanglementFinder::ReduceLevel(int level) {
 void EntanglementFinder::GenerateActionSet(vector<pair<size_t, vector<PDDLActionInstance*>>>* currentValues, vector<Path>* paths, const int level) {
 	const int pathsSize = paths->size();
 	for (int i = 0; i < pathsSize; i++) {
-		const Path* path = &paths->at(i);
+		Path* path = &paths->at(i);
 		const int pathSize = path->steps.size();
 		for (int j = 0; j < pathSize; j += level) {
 			bool doAdd = true;

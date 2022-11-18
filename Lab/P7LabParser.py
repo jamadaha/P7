@@ -33,7 +33,8 @@ ATTRIBUTES_NAME_MAP = [
     ('p7_plan_length_difference_intvalues', 'plan_length_difference'),
     ('p7_macros_generated_intvalues', 'macros_generated'),
     ('p7_macros_used_intvalues', 'macros_used'),
-    ('p7_verifying_macros_boolvalues', 'macros_valid')
+    ('p7_verifying_macros_boolvalues', 'macros_valid'),
+    ('p7_verifying_paths_boolvalues', 'paths_valid')
 ]
 
 def get_times(content, props):
@@ -87,6 +88,9 @@ def check_errors(name, value, props):
     if name == "macros_valid":
         if value == False:
             props.add_unexplained_error("Invalid macros was generated!")
+    if name == "paths_valid":
+        if value == False:
+            props.add_unexplained_error("Invalid paths was generated!")
 
 parser = Parser()
 parser.add_function(get_times, file="run.log")

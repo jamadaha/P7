@@ -13,7 +13,6 @@ vector<BadPath> WalkerPathVerifyer::VerifyPaths(vector<Path>* paths, PDDLInstanc
 				vector<SASAction> actions;
 				for (auto step : path->steps) {
 					actions.push_back(GenerateSASActionFromActionInstance(step, instance));
-					break;
 				}
 				SASPlan checkPlan(actions, actions.size(), 0);
 

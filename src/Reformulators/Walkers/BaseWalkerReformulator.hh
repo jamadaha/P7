@@ -8,7 +8,7 @@
 #include "../../Helpers/ProgressBarHelper.hh"
 #include "../../IntermediatePDDL/PDDLInstance.hh"
 #include "../../IntermediatePDDL/PDDLActionInstance.hh"
-#include "../../Walker/Path.hpp"
+#include "../../Walker/Path.hh"
 #include "../../Walker/BaseWalker.hh"
 #include "../../WalkerPathVerifyer/WalkerPathVerifyer.hh"
 #include "../../EntanglementFinder/EntanglementFinder.hh"

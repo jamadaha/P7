@@ -5,7 +5,7 @@
 #include <list>
 
 #include "../IntermediatePDDL/PDDLActionInstance.hh"
-#include "Path.hpp"
+#include "Path.hh"
 #include "Heuristics/BaseHeuristic.hh"
 #include "DepthFunctions/BaseDepthFunction.hh"
 #include "WidthFunctions/BaseWidthFunction.hh"

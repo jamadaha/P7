@@ -9,7 +9,7 @@
 
 #include "../IntermediatePDDL/PDDLInstance.hh"
 #include "EntanglementOccurance.hh"
-#include "../Walker/Path.hpp"
+#include "../Walker/Path.hh"
 
 class EntanglementFinder {
 public:

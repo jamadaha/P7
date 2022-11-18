@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "../Walker/Path.hpp"
+#include "../Walker/Path.hh"
 #include "../SASCodeGenerator/SASCodeGenerator.hh"
 #include "../SASParser/SASParser.hh"
 #include "../IntermediatePDDL/PDDLInstance.hh"

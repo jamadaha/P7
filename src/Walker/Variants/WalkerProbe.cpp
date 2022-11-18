@@ -6,6 +6,7 @@ Path WalkerProbe::Walk(BaseHeuristic* heuristic, const PDDLState* state) {
     vector<PDDLActionInstance> steps; steps.reserve(maxStepCount);
     unordered_set<PDDLState> visitedStates; visitedStates.reserve(maxStepCount);
 
+    PDDLState endState;
     PDDLState tempState = PDDLState(state->unaryFacts, state->binaryFacts, state->multiFacts);
     if (OnTempStateMade != nullptr)
         OnTempStateMade(this->instance, &tempState);
@@ -22,6 +23,8 @@ Path WalkerProbe::Walk(BaseHeuristic* heuristic, const PDDLState* state) {
             break;
         else {
             visitedStates.emplace(tempState);
+            if (SaveStates)
+                endState = tempState;
             steps.push_back(*chosenAction);
 
             if (OnStateWalk != nullptr)
@@ -29,7 +32,10 @@ Path WalkerProbe::Walk(BaseHeuristic* heuristic, const PDDLState* state) {
         }
     }
 
-    return Path(steps);
+    if (SaveStates)
+        return Path(steps, *state, endState);
+    else
+        return Path(steps);
 }
 
 vector<Path> WalkerProbe::Walk() {

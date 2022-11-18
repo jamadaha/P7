@@ -5,5 +5,6 @@ std::vector<Path> ProbeWalkerReformulator::PerformWalk(PDDLInstance* instance, b
     auto walker = WalkerBuilder::BuildWalker("walkerProbe", TimeLimit * (1 - Configs->GetItem<double>("reformulationTimeFraction")), walkerHeuistic, instance);
     if (debugMode)
         SetupWalkerDebugInfo(walker);
+    walker->SaveStates = Configs->GetItem<bool>("validatePaths");
     return walker->Walk();
 }

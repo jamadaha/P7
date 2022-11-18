@@ -56,11 +56,9 @@ PDDLProblem PDDLConverter::Convert(PDDLDomain *domain, Problem *problem) {
     auto goalUnaryFacts = GetUnaryFacts(domain, &objectMap, problem->_goal);
     auto initBinaryFacts = GetBinaryFacts(domain, &objectMap, problem->_init);
     auto goalBinaryFacts = GetBinaryFacts(domain, &objectMap, problem->_goal);
-    auto initMultiFacts = GetMultiFacts(domain, &objectMap, problem->_init);
-    auto goalMultiFacts = GetMultiFacts(domain, &objectMap, problem->_goal);
     
-    auto initState = PDDLState(initUnaryFacts, initBinaryFacts, initMultiFacts);
-    auto goalState = PDDLState(goalUnaryFacts, goalBinaryFacts, goalMultiFacts);
+    auto initState = PDDLState(initUnaryFacts, initBinaryFacts);
+    auto goalState = PDDLState(goalUnaryFacts, goalBinaryFacts);
     
     return PDDLProblem(name, domain, objects, objectMap, initState, goalState);
 }
@@ -132,23 +130,3 @@ std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsi
     }
     return binaryFacts;
 }
-
-std::unordered_map<unsigned int, std::unordered_set<MultiFact>> PDDLConverter::GetMultiFacts(PDDLDomain *domain, std::unordered_map<std::string, unsigned int> *objectMap, LiteralList *literalList) {
-    std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts;
-    for (int i = 0; i < domain->predicates.size(); i++)
-        if (domain->predicates[i].argumentCount > 2)
-            multiFacts[i] = std::unordered_set<MultiFact>();
-
-    for (int i = 0; i < literalList->size(); i++) {
-        auto fact = (*literalList)[i];
-        if (fact->first->_args->size() < 3)
-            continue;
-        unsigned int predicateIndex = domain->predicateMap.at(StringHelper::ToUpper(fact->first->_name));
-        std::vector<unsigned int> objectIndexes;
-        for (int a = 0; a < fact->first->_args->size(); a++)
-            objectIndexes.push_back(objectMap->at((*fact->first->_args)[a]));
-        multiFacts.at(predicateIndex).emplace(MultiFact(objectIndexes));
-    }
-    return multiFacts;
-}
-   

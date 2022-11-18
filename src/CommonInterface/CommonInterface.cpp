@@ -83,10 +83,9 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 		ConsoleHelper::PrintInfo("Iteration " + to_string(counter) + "(reformulator: " + to_string(reformulatorTimeLimit) + "ms, downward: " + to_string(downwardTimeLimit) + "ms)");
 
 		// Run an iteration of our reformulation method
-		auto result = RunSingle(reformulator, instance, iterationID, reformulatorTimeLimit, downwardTimeLimit);
+		runRes = RunSingle(reformulator, instance, iterationID, reformulatorTimeLimit, downwardTimeLimit).Data;
 		Report->Stop(iterationID);
-		if (result.Data == ReformulatorRunResultResult::ReformulatorFailed || result.Data == ReformulatorRunResultResult::FoundPlan) {
-			runRes = result.Data;
+		if (runRes == ReformulatorRunResultResult::ReformulatorFailed || runRes == ReformulatorRunResultResult::FoundPlan) {
 			break;
 		}
 

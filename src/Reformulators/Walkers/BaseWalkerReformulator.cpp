@@ -12,15 +12,7 @@ PDDLInstance BaseWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
 	// Macro Generation
 	PDDLInstance macroInstance = GenerateMacros(instance, &candidates, debugMode);
 
-	// Cleanup
-	Cleanup();
-
     return macroInstance;
-}
-
-void BaseWalkerReformulator::Cleanup() {
-	free(walkerBar);
-	free(entanglerBar);
 }
 
 void BaseWalkerReformulator::FindPaths(PDDLInstance *instance, bool debugMode) {
@@ -94,8 +86,13 @@ EntanglementFinder BaseWalkerReformulator::GetEntanglementFinder(bool debugMode)
 		};
 		ef.OnLevelEnd = [&]() {
 			entanglerBar->End();
+			delete entanglerBar;
 		};
 		ef.OnTimeLimitReached = [&]() {
+			if (entanglerBar != nullptr) {
+				entanglerBar->End();
+				delete entanglerBar;
+			}
 			ConsoleHelper::PrintDebugWarning("[Entanglement Finder] Time limit reached!", debugIndent);
 		};
 	}
@@ -207,6 +204,7 @@ void BaseWalkerReformulator::SetupWalkerDebugInfo(BaseWalker* walker) {
 	};
 	walker->OnWalkerEnd = [&](BaseWalker* sender, int timePassed) {
 		walkerBar->End();
+		delete walkerBar;
 		unsigned int totalIterations = sender->GetTotalIterations();
 		unsigned int totalActionCount = sender->GetTotalActionsGenerated();
 		ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + std::to_string(timePassed) + "ms", debugIndent);

@@ -65,8 +65,7 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *ac
         candidatePermutations = PermuteAll(candidateObjects, candidatePairs);
         
     for (int i = 0; i < candidatePermutations.size(); i++)
-        if (IsLegal(&action->preconditions, state, &candidatePermutations.at(i)))
-            legalActions.push_back(PDDLActionInstance(action, candidatePermutations.at(i)));
+        legalActions.push_back(PDDLActionInstance(action, candidatePermutations.at(i)));
  
     return legalActions;
 }
@@ -141,14 +140,4 @@ void ActionGenerator::Permute(std::vector<std::unordered_set<unsigned int>> &can
         }
         permutation->pop_back();
     }
-}
-
-bool ActionGenerator::IsLegal(const vector<PDDLLiteral> *literals, const PDDLState *state, const vector<unsigned int> *objects) {
-    for (auto iter = literals->begin(); iter != literals->end(); iter++) {
-        if ((*iter).args.size() < 3)
-            continue;
-        if (!state->ContainsFact((*iter).predicateIndex, &(*iter).args, objects))
-            return false;
-    }
-    return true;
 }

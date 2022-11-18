@@ -12,68 +12,16 @@
 
 struct PDDLInstance;
 
-struct MultiFact {
-    std::vector<unsigned int> fact;
-    MultiFact(std::vector<unsigned int> fact) : fact(fact) {};
-    MultiFact(const std::vector<unsigned int> *indexes, const std::vector<unsigned int> *objects) {
-        fact.reserve(indexes->size());
-        for (int i = 0; i < indexes->size(); i++)
-            fact.push_back(objects->at(indexes->at(i)));
-    };
-    MultiFact(const MultiFact &mf) : fact(mf.fact) {};
-
-#pragma region Operators
-#pragma region Equality
-    friend bool operator== (const MultiFact &lhs, const MultiFact &rhs) {
-        return lhs.fact == rhs.fact;
-    }
-
-    friend bool operator== (const MultiFact &lhs, const std::vector<unsigned int> &rhs) {
-        return lhs.fact == rhs;
-    }
-
-    friend bool operator== (const std::vector<unsigned int> &lhs, const MultiFact &rhs) {
-        return lhs == rhs.fact;
-    }
-    friend bool operator== (const MultiFact &lhs, const std::pair<const std::vector<unsigned int>*, const std::vector<unsigned int>*> &rhs) {
-        if (rhs.first->size() != lhs.fact.size())
-                return false;
-        for (int i = 0; i < rhs.first->size(); i++)
-            if (rhs.second->at(rhs.first->at(i)) != lhs.fact.at(i))
-                return false;
-        return true;
-    }
-    friend bool operator== (const std::pair<const std::vector<unsigned int>*, const std::vector<unsigned int>*> &lhs, const MultiFact &rhs) {
-        return rhs == lhs;
-    }
-#pragma endregion Equality
-#pragma endregion Operators
-
-private:
-};
-
-namespace std {
-    template <>
-    struct hash<MultiFact> {
-        auto operator()(const MultiFact& s) const -> size_t {
-            return hash<vector<unsigned int>>{}(s.fact);
-        }
-    };
-}
-
 struct PDDLState {
     // Key - Index of predicate | Value - Set of objects which the predicate is true for
     std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts;
     std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts;
-    // Key - Index of predicate | Value - List of permutations of objcets which the predicate is true for
-    std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts;
 
     PDDLState() {};
     PDDLState(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts, 
-              std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts, 
-              std::unordered_map<unsigned int, std::unordered_set<MultiFact>> multiFacts) :
-        unaryFacts(unaryFacts), binaryFacts(binaryFacts), multiFacts(multiFacts) {};
-    PDDLState(const PDDLState &state) : unaryFacts(state.unaryFacts), binaryFacts(state.binaryFacts), multiFacts(state.multiFacts) {};
+              std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts) :
+        unaryFacts(unaryFacts), binaryFacts(binaryFacts) {};
+    PDDLState(const PDDLState &state) : unaryFacts(state.unaryFacts), binaryFacts(state.binaryFacts) {};
 
 #pragma region ContainsFact
 
@@ -89,14 +37,6 @@ struct PDDLState {
             return value.first == value.second;
         return binaryFacts.at(key).contains(value);
     }
-
-    bool ContainsFact(const unsigned int &key, const MultiFact *value) const {
-        return multiFacts.at(key).contains(*value);
-    };
-
-    bool ContainsFact(const unsigned int &key, const std::vector<unsigned int> *indexes, const std::vector<unsigned int> *objects) const {
-        return multiFacts.at(key).contains(MultiFact(indexes, objects));
-    }
 #pragma endregion ContainsFact
 
     void DoAction(const PDDLActionInstance *action);
@@ -106,7 +46,7 @@ struct PDDLState {
 
     // Very slow, please only use with caution
     friend bool operator== (const PDDLState &lhs, const PDDLState &rhs) {
-        return (lhs.unaryFacts == rhs.unaryFacts && lhs.binaryFacts == rhs.binaryFacts && lhs.multiFacts == rhs.multiFacts);
+        return (lhs.unaryFacts == rhs.unaryFacts && lhs.binaryFacts == rhs.binaryFacts);
     };
     
 };
@@ -117,8 +57,7 @@ namespace std {
         auto operator()(const PDDLState& s) const -> size_t {
             size_t h1 = s.unaryFacts.size();
             size_t h2 = s.binaryFacts.size();
-            size_t h3 = s.multiFacts.size();
-            return (h1 ^ (h2 << 1)) ^ (h3 << 1);
+            return (h1 ^ (h2 << 1));
         }
     };
 }

@@ -72,17 +72,11 @@ public:
 			for (auto factIter = (*iter).second.begin(); factIter != (*iter).second.end(); factIter++)
 				if (state->ContainsFact((*iter).first, (*factIter)))
 					value += 2000;
-		for (auto iter = problem->goalState.multiFacts.begin(); iter != problem->goalState.multiFacts.end(); iter++)
-			for (auto factIter = (*iter).second.begin(); factIter != (*iter).second.end(); factIter++)
-				if (state->ContainsFact((*iter).first, &(*factIter)))
-					value += 3000;
 		for (auto iter = goalPreconditions.begin(); iter != goalPreconditions.end(); iter++) {
 			if (domain->predicates.at((*iter)).arguments.size() == 1)
 				value += state->unaryFacts.at((*iter)).size();
-			else if (domain->predicates.at((*iter)).arguments.size() == 2)
-				value += 2 * state->binaryFacts.at((*iter)).size();
 			else
-				value += 3 * state->multiFacts.at((*iter)).size();
+				value += 2 * state->binaryFacts.at((*iter)).size();
 		}
 		
 		return value;
@@ -111,8 +105,7 @@ private:
 			const PDDLAction *action = &domain->actions.at(i);
 			for (int eff = 0; eff < action->effects.size(); eff++) {
 				const PDDLLiteral *effect = &action->effects.at(eff);
-				bool containsEffectFact = (problem->goalState.unaryFacts.contains(effect->predicateIndex) && problem->goalState.unaryFacts.at(effect->predicateIndex).size() > 0
-				|| problem->goalState.multiFacts.contains(effect->predicateIndex) && problem->goalState.multiFacts.at(effect->predicateIndex).size() > 0);
+				bool containsEffectFact = (problem->goalState.unaryFacts.contains(effect->predicateIndex) && problem->goalState.unaryFacts.at(effect->predicateIndex).size() > 0);
 				if (effect->value && containsEffectFact)
 					actions.emplace(action);
 			}

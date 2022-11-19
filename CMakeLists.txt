@@ -29,6 +29,7 @@ add_subdirectory(src/)
 
 file(COPY Lab DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY LabSettings DESTINATION ${CMAKE_BINARY_DIR})
+configure_file(${PROJECT_SOURCE_DIR}/LabSettings/experiment_1.ini ${CMAKE_BINARY_DIR}/LabSettings/experiment_1.ini COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/runP7.py ${CMAKE_BINARY_DIR}/runP7.py COPYONLY)
 
 configure_file(${PROJECT_SOURCE_DIR}/Lab/Reports.py ${CMAKE_BINARY_DIR}/Lab/Reports.py COPYONLY)

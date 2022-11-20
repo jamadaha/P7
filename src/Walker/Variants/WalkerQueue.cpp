@@ -1,11 +1,10 @@
 #include "WalkerQueue.hpp"
 
-std::unordered_set<Path> WalkerQueue::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
+Path WalkerQueue::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
     auto currentNode = searchQueue.begin();
     auto currentState = PDDLState((*currentNode).second.first);
     auto currentPath = Path((*currentNode).second.second);
 
-    auto paths = std::unordered_set<Path>();
 
     auto actions = actionGenerator.GenerateActions(&currentState);
     for (auto iter = actions.begin(); iter != actions.end(); iter++) {
@@ -13,13 +12,12 @@ std::unordered_set<Path> WalkerQueue::Walk(BaseHeuristic *heuristic, const PDDLS
         currentState.DoAction(&(*iter));
         auto eval = heuristic->Eval(&currentState);
         searchQueue.emplace(std::make_pair(eval, std::make_pair(currentState, currentPath)));
-        paths.emplace(currentPath);
         currentState.UndoAction(&(*iter));
         currentPath.steps.pop_back();
     }
 
     searchQueue.erase(currentNode);
-    return paths;
+    return currentPath;
 }
 
 std::vector<Path> WalkerQueue::Walk() {
@@ -32,9 +30,7 @@ std::vector<Path> WalkerQueue::Walk() {
 
     auto startTime = std::chrono::steady_clock::now();
     while (widthFunc->Iterate(&current)) {
-        auto tempPaths = Walk(heuristic, &this->instance->problem->initState);
-        for (auto iter = tempPaths.begin(); iter != tempPaths.end(); iter++)
-            paths.push_back(*iter);
+        paths.push_back(Walk(heuristic, &this->instance->problem->initState));
 
         if (OnWalkerStep != nullptr)
             OnWalkerStep(this, current);

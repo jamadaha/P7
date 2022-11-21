@@ -21,6 +21,7 @@ public:
     std::unordered_set<std::vector<unsigned int>> GetCandidates(const PDDLState* state, std::vector<unsigned int> parentValues, const int maxIndex);
     bool IsBinaryLegal(const PDDLState* state, std::vector<unsigned int>* set);
     std::unordered_set<std::vector<unsigned int>> GetInitialParameterValue(const PDDLState* state);
+    void SetupActionLiteralsCache(const PDDLAction* action);
 
 private:
     unsigned int totalActions = 0;

@@ -15,14 +15,7 @@ vector<PDDLActionInstance> ActionGenerator2::GenerateActions(const PDDLState* st
 vector<PDDLActionInstance> ActionGenerator2::GenerateActions(const PDDLAction* action, const PDDLState* state) {
     vector<PDDLActionInstance> legalActions;
 
-    UnaryActionLiterals.clear();
-    BinaryActionLiterals.clear();
-    for (auto predicate : action->preconditions) {
-        if (predicate.args.size() == 1)
-            UnaryActionLiterals.push_back(predicate);
-        else if (predicate.args.size() == 2)
-            BinaryActionLiterals.push_back(predicate);
-    }
+    SetupActionLiteralsCache(action);
 
     unordered_set<vector<unsigned int>> initialCandidates = GetInitialParameterValue(state);
 
@@ -39,6 +32,17 @@ vector<PDDLActionInstance> ActionGenerator2::GenerateActions(const PDDLAction* a
         legalActions.push_back(PDDLActionInstance(action, candidate));
 
     return legalActions;
+}
+
+void ActionGenerator2::SetupActionLiteralsCache(const PDDLAction* action) {
+    UnaryActionLiterals.clear();
+    BinaryActionLiterals.clear();
+    for (auto predicate : action->preconditions) {
+        if (predicate.args.size() == 1)
+            UnaryActionLiterals.push_back(predicate);
+        else if (predicate.args.size() == 2)
+            BinaryActionLiterals.push_back(predicate);
+    }
 }
 
 unordered_set<vector<unsigned int>> ActionGenerator2::GetInitialParameterValue(const PDDLState* state) {

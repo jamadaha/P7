@@ -18,11 +18,16 @@ public:
 
     std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state);
     std::vector<PDDLActionInstance> GenerateActions(const PDDLAction *action, const PDDLState *state);
-    std::unordered_set<std::vector<unsigned int>> GetCandidates(const PDDLAction* action, const PDDLState* state, std::vector<unsigned int> parentValues);
+    std::unordered_set<std::vector<unsigned int>> GetCandidates(const PDDLState* state, std::vector<unsigned int> parentValues, const int maxIndex);
+    bool IsBinaryLegal(const PDDLState* state, std::vector<unsigned int>* set);
+    std::unordered_set<std::vector<unsigned int>> GetInitialParameterValue(const PDDLState* state);
 
 private:
     unsigned int totalActions = 0;
     const std::vector<PDDLAction> *actions;
+
+    std::vector<PDDLLiteral> UnaryActionLiterals;
+    std::vector<PDDLLiteral> BinaryActionLiterals;
 };
 
 #endif

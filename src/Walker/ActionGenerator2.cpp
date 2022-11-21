@@ -15,66 +15,71 @@ vector<PDDLActionInstance> ActionGenerator2::GenerateActions(const PDDLState* st
 vector<PDDLActionInstance> ActionGenerator2::GenerateActions(const PDDLAction* action, const PDDLState* state) {
     vector<PDDLActionInstance> legalActions;
 
-    unordered_set<vector<unsigned int>> candidates;
-    if (action->preconditions.size() > 0) {
-        if (action->preconditions.at(0).args.size() == 1) {
-            if (state->unaryFacts.contains(action->preconditions.at(0).predicateIndex)) {
-                for (auto fact : state->unaryFacts.at(action->preconditions.at(0).predicateIndex))
-                    candidates.emplace(vector<unsigned int> { fact });
-            }
-        }
+    UnaryActionLiterals.clear();
+    BinaryActionLiterals.clear();
+    for (auto predicate : action->preconditions) {
+        if (predicate.args.size() == 1)
+            UnaryActionLiterals.push_back(predicate);
+        else if (predicate.args.size() == 2)
+            BinaryActionLiterals.push_back(predicate);
     }
 
-    unordered_set<vector<unsigned int>> returnCandidates;
-    for (auto candidate : candidates) {
-        unordered_set<vector<unsigned int>> newCandidates = GetCandidates(action, state, candidate);
+    unordered_set<vector<unsigned int>> initialCandidates = GetInitialParameterValue(state);
+
+    unordered_set<vector<unsigned int>> finalCandidates;
+    for (auto candidate : initialCandidates) {
+        unordered_set<vector<unsigned int>> newCandidates = GetCandidates(state, candidate, action->parameters.size());
         for (auto newCandidate : newCandidates)
             if (newCandidate.size() == action->parameters.size())
-                returnCandidates.emplace(newCandidate);
+                if (IsBinaryLegal(state, &newCandidate))
+                    finalCandidates.emplace(newCandidate);
     }
 
-    unordered_set<vector<unsigned int>> returnSet;
-    for (auto checkSet : returnCandidates) {
-        bool isOk = true;
-        for (auto precon : action->preconditions) {
-            if (precon.args.size() == 2) {
-                if (!state->binaryFacts.at(precon.predicateIndex).contains(make_pair(checkSet.at(precon.args.at(0)), checkSet.at(precon.args.at(1))))) {
-                    isOk = false;
-                    break;
-                }
-            }
-        }
-        if (isOk)
-            returnSet.emplace(checkSet);
-    }
-
-    for (auto candidate : returnSet)
+    for (auto candidate : finalCandidates)
         legalActions.push_back(PDDLActionInstance(action, candidate));
 
     return legalActions;
 }
 
-unordered_set<vector<unsigned int>> ActionGenerator2::GetCandidates(const PDDLAction* action, const PDDLState* state, vector<unsigned int> parentValues) {
-    if (parentValues.size() >= action->parameters.size())
-        return unordered_set<vector<unsigned int>>{parentValues};
+unordered_set<vector<unsigned int>> ActionGenerator2::GetInitialParameterValue(const PDDLState* state) {
+    unordered_set<vector<unsigned int>> initialCandidates;
+    for (auto precondition : UnaryActionLiterals) {
+        if (state->unaryFacts.contains(precondition.predicateIndex)) {
+            for (auto fact : state->unaryFacts.at(precondition.predicateIndex))
+                initialCandidates.emplace(vector<unsigned int> { fact });
+            break;
+        }
+    }
+    return initialCandidates;
+}
 
+unordered_set<vector<unsigned int>> ActionGenerator2::GetCandidates(const PDDLState* state, vector<unsigned int> parentValues, const int maxIndex) {
     unordered_set<vector<unsigned int>> newSet;
     int paramIndex = parentValues.size();
-    for (auto precon : action->preconditions) {
-        if (precon.args.size() == 1) {
-            if (precon.args.at(0) == paramIndex) {
-                if (state->unaryFacts.contains(precon.predicateIndex)) {
-                    for (auto fact : state->unaryFacts.at(precon.predicateIndex)) {
-                        bool hasAny = false;
-                        for (auto parent : parentValues)
-                            if (fact == parent)
-                                hasAny = true;
-                        if (!hasAny) {
-                            vector<unsigned int> newValues = parentValues;
-                            newValues.push_back(fact);
-                            unordered_set<vector<unsigned int>> returnSet = GetCandidates(action, state, newValues);
-                            for (auto returnValues : returnSet)
-                                newSet.emplace(returnValues);
+    for (auto precon = (&UnaryActionLiterals)->begin(); precon != (&UnaryActionLiterals)->end(); precon++) {
+        if (precon->args.at(0) == paramIndex) {
+            if (state->unaryFacts.contains(precon->predicateIndex)) {
+                for (auto fact : state->unaryFacts.at(precon->predicateIndex)) {
+                    bool hasAny = false;
+                    for (auto parent : parentValues) {
+                        if (fact == parent)
+                        {
+                            hasAny = true;
+                            break;
+                        }
+                    }
+                    if (!hasAny) {
+                        vector<unsigned int> newValues = parentValues;
+                        newValues.push_back(fact);
+                        if (IsBinaryLegal(state, &newValues)) {
+                            if (newValues.size() == maxIndex) {
+                                newSet.emplace(newValues);
+                            }
+                            else {
+                                unordered_set<vector<unsigned int>> returnSet = GetCandidates(state, newValues, maxIndex);
+                                for (auto returnValues : returnSet)
+                                    newSet.emplace(returnValues);
+                            }
                         }
                     }
                 }
@@ -83,4 +88,17 @@ unordered_set<vector<unsigned int>> ActionGenerator2::GetCandidates(const PDDLAc
     }
 
     return newSet;
+}
+
+bool ActionGenerator2::IsBinaryLegal(const PDDLState* state, vector<unsigned int>* set) {
+    for (auto precon = (&BinaryActionLiterals)->begin(); precon != (&BinaryActionLiterals)->end(); precon++) {
+        int arg1 = precon->args.at(0);
+        int arg2 = precon->args.at(1);
+        if (arg1 < set->size() && arg2 < set->size()) {
+            if (!state->binaryFacts.at(precon->predicateIndex).contains(make_pair(set->at(arg1), set->at(arg2)))) {
+                return false;
+            }
+        }
+    }
+    return true;
 }

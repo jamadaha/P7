@@ -4,28 +4,28 @@ library(data.table)
 
 imgWidth <-8
 imgHeight <- 8
-
 # Reads in with header names
 report <- read.csv('report.csv')
 
-# Removes rows for sameouput
-macroSubset <- subset(avgReport, algorithm != "sameoutput")
-avgMacroGeneratedReport <- as.data.table(report)
-avgMacroGeneratedReport[,list(macros_generated=mean(macros_generated)),c('domain', 'algorithm', 'problem')]
-avgMacroUseReport <- as.data.table(report)
-avgMacroUseReport[,list(macros_used=mean(macros_used)),c('domain', 'algorithm', 'problem')]
+# Macro Things
+  # Removes rows for sameouput
+  macroSubset <- subset(avgReport, algorithm != "sameoutput")
+  avgMacroGeneratedReport <- as.data.table(report)
+  avgMacroGeneratedReport[,list(macros_generated=mean(macros_generated)),c('domain', 'algorithm', 'problem')]
+  avgMacroUseReport <- as.data.table(report)
+  avgMacroUseReport[,list(macros_used=mean(macros_used)),c('domain', 'algorithm', 'problem')]
+  
+  macroGeneratedPlot <- ggplot(avgMacroGeneratedReport, aes(domain, macros_generated)) + geom_boxplot()
+  ggsave(plot=macroGeneratedPlot, filename="macroGeneratedPlot.pdf", width=imgWidth, height=imgHeight)
+  
+  macroUsePlot <- ggplot(avgMacroUseReport, aes(domain, macros_used)) + geom_boxplot()
+  ggsave(plot=macroUsePlot, filename="macroGeneratedPlot.pdf", width=imgWidth, height=imgHeight)
 
-macroGeneratedPlot <- ggplot(avgMacroGeneratedReport, aes(domain, macros_generated)) + geom_boxplot()
-ggsave(plot=macroGeneratedPlot, filename="macroGeneratedPlot.pdf", width=imgWidth, height=imgHeight)
-
-macroUsePlot <- ggplot(avgMacroUseReport, aes(domain, macros_used)) + geom_boxplot()
-ggsave(plot=macroUsePlot, filename="macroGeneratedPlot.pdf", width=imgWidth, height=imgHeight)
-
-# Converts it to a table?
-avgReport <- as.data.table(report)
-# Takes average of all
-avgReport[,list(mm=mean(reformulation_time)),c('domain', 'algorithm', 'problem')]
-
+# Evaluation Things
+  avgEvaluationsReport <- as.data.table(report)
+  avgEvaluationsReport[,list(evaluations=mean(evaluations)),c('domain', 'algorithm', 'problem')]
+  evaluationsPlot <- ggplot(avgEvaluationsReport, aes(algorithm, evaluations)) + geom_boxplot()
+  ggsave(plot=evaluationsPlot, filename="evaluationsPlot.pdf", width=imgWidth, height=imgHeight)
 
 
 scatterPlot <- ggplot(report, aes(domain, reformulation_time)) + geom_point(aes(color=algorithm))
@@ -36,3 +36,4 @@ ggsave(plot=scatterPlot, filename="scatterPlot.pdf", width=8, height=8)
 ggsave(plot=boxPlot1, filename="boxPlot1.pdf", width=8, height=8)
 ggsave(plot=boxPlot2, filename="boxPlot2.pdf", width=8, height=8)
 ggsave(plot=boxPlot3, filename="boxPlot3.pdf", width=8, height=8)
+

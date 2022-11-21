@@ -119,16 +119,19 @@ class LabSuite():
     def _SetupExperiment(self, experimentSettings, threads, settingsFile):
         experiment = Experiment(self._reportfolder, LocalEnvironment(threads))
         tasks = suites.build_suite(self._benchmarksfolder, get_suite(experimentSettings.Domains, ""))
+        index = 0
         for reformulator in experimentSettings.Reformulators:
             for task in tasks:
-                self._SetupTasks(experimentSettings.SettingsContent, task, reformulator, experiment, settingsFile)
+                self._SetupTasks(experimentSettings.SettingsContent, task, reformulator, experimentSettings.RunModes[index], experiment, settingsFile)
+            index += 1
         return experiment
 
-    def _SetupTasks(self, content, task, reformulator, experiment : Experiment, settingsFile):
+    def _SetupTasks(self, content, task, reformulator, runDirect, experiment : Experiment, settingsFile):
         content += "\nPATH:domain=" + task.domain_file + "\n"
         content += "PATH:problem=" + task.problem_file + "\n"
 
         content += "LIST<STRING>:reformulator=" + reformulator + "\n"
+        content += "LIST<BOOL>:runDirect=" + runDirect + "\n"
         
         run = experiment.add_run()
         run.add_new_file("config","TempSettings.ini",content)

@@ -31,27 +31,33 @@ vector<PDDLActionInstance> ActionGenerator2::GenerateActions(const PDDLAction* a
 void ActionGenerator2::SetupActionLiteralsCache(const PDDLAction* action) {
     UnaryActionLiterals.clear();
     BinaryActionLiterals.clear();
-    for (auto predicate : action->preconditions) {
-        if (predicate.args.size() == 1)
-            UnaryActionLiterals.push_back(predicate);
-        else if (predicate.args.size() == 2)
-            BinaryActionLiterals.push_back(predicate);
+    for (auto predicate = (&action->preconditions)->begin(); predicate != (&action->preconditions)->end(); predicate++) {
+        if (predicate->args.size() == 1)
+            UnaryActionLiterals.push_back(*predicate);
+        else if (predicate->args.size() == 2)
+            BinaryActionLiterals.push_back(*predicate);
     }
+    UnaryActionLiteralsPtr = &UnaryActionLiterals;
+    BinaryActionLiteralsPtr = &BinaryActionLiterals;
 }
 
 void ActionGenerator2::GetCandidates(set<array<unsigned int, MAXPARAMSIZE>>* candidates, const PDDLState* state, array<unsigned int, MAXPARAMSIZE> parentValues, const int currentIndex, const int maxIndex) {
-    unordered_set<unsigned int> objectCandidates;
-    for (auto precon = (&UnaryActionLiterals)->begin(); precon != (&UnaryActionLiterals)->end(); precon++) {
+    vector<unsigned int> objectCandidates;
+    objectCandidates.reserve(TEMPOBJSIZE);
+    for (auto precon = UnaryActionLiteralsPtr->begin(); precon != UnaryActionLiteralsPtr->end(); precon++) {
         if (precon->args.at(0) == currentIndex) {
             if (objectCandidates.size() == 0) {
                 for (auto fact : state->unaryFacts.at(precon->predicateIndex))
                     if (!Contains(parentValues, fact, currentIndex))
-                        objectCandidates.emplace(fact);
+                        objectCandidates.push_back(fact);
             }
             else {
-                for (auto candidate = objectCandidates.begin(); candidate != objectCandidates.end(); candidate++)
-                    if (!state->unaryFacts.at(precon->predicateIndex).contains(*candidate))
-                        objectCandidates.erase(*candidate);
+                for (int i = 0; i < objectCandidates.size(); i++) {
+                    if (!state->unaryFacts.at(precon->predicateIndex).contains(objectCandidates.at(i))) {
+                        objectCandidates.erase(objectCandidates.begin() + i);
+                        i--;
+                    }
+                }
             }
         }
     }
@@ -77,12 +83,14 @@ bool ActionGenerator2::Contains(const array<unsigned int, MAXPARAMSIZE> values, 
 }
 
 bool ActionGenerator2::IsBinaryLegal(const PDDLState* state, array<unsigned int, MAXPARAMSIZE>* set, const int currentMax) {
-    for (auto precon = (&BinaryActionLiterals)->begin(); precon != (&BinaryActionLiterals)->end(); precon++) {
+    for (auto precon = BinaryActionLiteralsPtr->begin(); precon != BinaryActionLiteralsPtr->end(); precon++) {
         int arg1 = precon->args.at(0);
         int arg2 = precon->args.at(1);
-        if (arg1 <= currentMax && arg2 <= currentMax) 
-            if (!state->binaryFacts.at(precon->predicateIndex).contains(make_pair(set->at(arg1), set->at(arg2)))) 
+        if (arg1 <= currentMax && arg2 <= currentMax) {
+            auto value = make_pair(set->at(arg1), set->at(arg2));
+            if (!state->ContainsFact(precon->predicateIndex, value))
                 return false;
+        }
     }
     return true;
 }

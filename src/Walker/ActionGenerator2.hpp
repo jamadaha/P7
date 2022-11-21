@@ -12,6 +12,7 @@
 #include "../Helpers/AlgorithmHelper.hh"
 
 #define MAXPARAMSIZE 12
+#define TEMPOBJSIZE 32
 
 class ActionGenerator2 {
 public:
@@ -32,7 +33,9 @@ private:
     const std::vector<PDDLAction> *actions;
 
     std::vector<PDDLLiteral> UnaryActionLiterals;
+    std::vector<PDDLLiteral>* UnaryActionLiteralsPtr;
     std::vector<PDDLLiteral> BinaryActionLiterals;
+    std::vector<PDDLLiteral>* BinaryActionLiteralsPtr;
 };
 
 #endif

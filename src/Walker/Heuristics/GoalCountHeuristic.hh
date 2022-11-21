@@ -23,9 +23,9 @@ public:
 				i = 0;
 			}
 
-			state->DoAction(&choices->at(i));
+			auto changes = state->DoAction(&choices->at(i));
 			int value = Eval(state);
-			state->UndoAction(&choices->at(i));
+			state->UndoAction(&changes);
 			if (value >= bestValue) {
 				bestIndex = i;
 				bestValue = value;

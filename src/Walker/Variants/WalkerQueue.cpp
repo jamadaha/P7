@@ -9,10 +9,10 @@ Path WalkerQueue::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
     auto actions = actionGenerator.GenerateActions(&currentState);
     for (auto iter = actions.begin(); iter != actions.end(); iter++) {
         currentPath.steps.push_back((*iter));
-        currentState.DoAction(&(*iter));
+        auto changes = currentState.DoAction(&(*iter));
         auto eval = heuristic->Eval(&currentState);
         searchQueue.emplace(std::make_pair(eval, std::make_pair(currentState, currentPath)));
-        currentState.UndoAction(&(*iter));
+        currentState.UndoAction(&changes);
         currentPath.steps.pop_back();
     }
 

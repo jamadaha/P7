@@ -1,5 +1,3 @@
-# Enters R terminal
-R
 # Used for fancy plots
 library(ggplot2)
 # Reads in with header names

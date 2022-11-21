@@ -3,7 +3,6 @@ import multiprocessing
 class LabSettingsParser():
     _labSettingsFileName = "settingsLab.ini"
     SettingsCollection = []
-    PlotsAttributes = []
     Threads = -1
     Rounds = 1
     BenchmarksFolder = ""
@@ -19,8 +18,6 @@ class LabSettingsParser():
         for line in linesLab:
             if "SettingsCollection" in line:
                 self.SettingsCollection = line.split("=")[1].strip("\n").split(",")
-            if "PlotsAttributes" in line:
-                self.PlotsAttributes = line.split("=")[1].strip("\n").split(",")
             elif "Threads" in line:
                 self.Threads = int(line.split("=")[1].strip("\n"))
             elif "Rounds" in line:

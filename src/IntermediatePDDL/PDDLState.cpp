@@ -45,6 +45,7 @@ void PDDLState::UndoAction(const PDDLActionInstance *action) {
 std::string PDDLState::ToString(const PDDLInstance* instance)
 {
     std::string temp = "State ";
+    temp += "\n";
     for (auto &unaryFact : unaryFacts)
     {
         if (unaryFact.second.size() > 0) {
@@ -58,6 +59,19 @@ std::string PDDLState::ToString(const PDDLInstance* instance)
         }
     }
 
-    temp += "\n";
+    for (auto &binaryFact : binaryFacts)
+    {
+        temp += "\n";
+        if (binaryFact.second.size() > 0) {
+            temp += "(";
+            temp += instance->domain->predicates[binaryFact.first].name;
+
+            for (auto objectindex : binaryFact.second) {
+                temp += " (" + instance->problem->objects[objectindex.first] + " " + instance->problem->objects[objectindex.second] + ")";
+            }
+            temp += ")";
+        }
+    }
+
     return temp;
 };

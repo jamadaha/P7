@@ -16,7 +16,9 @@ class BaseHeuristic {
 public:
 	const PDDLDomain *domain;
 	const PDDLProblem *problem;
-	BaseHeuristic(const PDDLDomain *domain, const PDDLProblem *problem) : domain(domain), problem(problem) {}
+	BaseHeuristic(const PDDLDomain *domain, const PDDLProblem *problem) : domain(domain), problem(problem) {
+		srand(time(NULL));
+	}
 
 	virtual PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const = 0; 
 

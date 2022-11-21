@@ -27,13 +27,27 @@ report <- read.csv('report.csv')
   evaluationsPlot <- ggplot(avgEvaluationsReport, aes(algorithm, evaluations)) + geom_boxplot()
   ggsave(plot=evaluationsPlot, filename="evaluationsPlot.pdf", width=imgWidth, height=imgHeight)
 
+# Expansion Things
+  avgExpansionsReport <- as.data.table(report)
+  avgExpansionsReport[,list(expansions=mean(expansions)),c('domain', 'algorithm', 'problem')]
+  expansionsPlot <- ggplot(avgExpansionsReport, aes(algorithm, expansions)) + geom_boxplot()
+  ggsave(plot=expansionsPlot, filename="expansionsPlot.pdf", width=imgWidth, height=imgHeight)
+  
+# Generated Things
+  avgGeneratedReport <- as.data.table(report)
+  avgGeneratedReport[,list(generated=mean(generated)),c('domain', 'algorithm', 'problem')]
+  generatedPlot <- ggplot(avgGeneratedReport, aes(algorithm, generated)) + geom_boxplot()
+  ggsave(plot=generatedPlot, filename="generatedPlot.pdf", width=imgWidth, height=imgHeight)
 
-scatterPlot <- ggplot(report, aes(domain, reformulation_time)) + geom_point(aes(color=algorithm))
-boxPlot1 <- ggplot(report, aes(domain, reformulation_time)) + geom_boxplot(aes(color=problem))
-boxPlot2 <- ggplot(report, aes(algorithm, planner_time)) + geom_boxplot()
-boxPlot3 <- ggplot(report, aes(algorithm, reformulation_time)) + geom_boxplot(aes(color=p7_settings_file))
-ggsave(plot=scatterPlot, filename="scatterPlot.pdf", width=8, height=8)
-ggsave(plot=boxPlot1, filename="boxPlot1.pdf", width=8, height=8)
-ggsave(plot=boxPlot2, filename="boxPlot2.pdf", width=8, height=8)
-ggsave(plot=boxPlot3, filename="boxPlot3.pdf", width=8, height=8)
+# SearchTime Things
+  avgPlannerTimeReport <- as.data.table(report)
+  avgPlannerTimeReport[,list(planner_time=mean(planner_time)),c('domain', 'algorithm', 'problem')]
+  plannerTimePlot <- ggplot(avgPlannerTimeReport, aes(algorithm, planner_time)) + geom_boxplot()
+  ggsave(plot=plannerTimePlot, filename="plannerTimePlot.pdf", width=imgWidth, height=imgHeight)
+  
+# SearchTime Things
+  avgSearchTimeReport <- as.data.table(report)
+  avgSearchTimeReport[,list(search_time=mean(search_time)),c('domain', 'algorithm', 'problem')]
+  searchTimePlot <- ggplot(avgSearchTimeReport, aes(algorithm, search_time)) + geom_boxplot()
+  ggsave(plot=searchTimePlot, filename="searchTimePlot.pdf", width=imgWidth, height=imgHeight)
 

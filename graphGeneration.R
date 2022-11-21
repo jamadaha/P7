@@ -1,7 +1,7 @@
 # Used for fancy plots
 library(ggplot2)
 # Reads in with header names
-report <- read.csv('LabReports/report.csv')
+report <- read.csv('report.csv')
 
 scatterPlot <- ggplot(report, aes(domain, reformulation_time)) + geom_point(aes(color=algorithm))
 boxPlot1 <- ggplot(report, aes(domain, reformulation_time)) + geom_boxplot(aes(color=problem))

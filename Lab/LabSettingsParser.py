@@ -6,6 +6,7 @@ class LabSettingsParser():
     Threads = -1
     Rounds = 1
     BenchmarksFolder = ""
+    ResultsFolder = ""
 
     def ParseSettingsFile(self):
         linesLab = []
@@ -24,6 +25,8 @@ class LabSettingsParser():
                 self.Rounds = int(line.split("=")[1].strip("\n"))
             elif "BenchmarksFolder" in line:
                 self.BenchmarksFolder = line.split("=")[1].strip("\n")
+            elif "ResultsFolder" in line:
+                self.ResultsFolder = line.split("=")[1].strip("\n")
 
         if self.Threads == -1:
             self.Threads = multiprocessing.cpu_count()

@@ -2,7 +2,11 @@ from lab.experiment import Experiment
 from lab.environments import LocalEnvironment
 from downward import suites
 import shutil
+import subprocess
 import os
+import datetime
+from distutils.dir_util import copy_tree
+
 from os import path
 from Lab.Reports import Reports
 from Lab.Benchmarks import get_suite
@@ -20,6 +24,7 @@ class LabSuite():
     _benchmarksfolder = ""
     _totalRuns = 0
     _currentRuns = 0
+    _labSettings : LabSettingsParser
 
     def __init__(self, dir):
         self._pathHelper = PathHelper(dir)
@@ -34,31 +39,31 @@ class LabSuite():
         self._reportfolder = self._pathHelper.CombinePath('LabReport')
         self._projectfile = self._pathHelper.CombinePath('src/P7')
 
-        labSettings = LabSettingsParser()
-        labSettings.ParseSettingsFile()
+        self._labSettings = LabSettingsParser()
+        self._labSettings.ParseSettingsFile()
 
-        self._benchmarksfolder = self._pathHelper.CombinePath(labSettings.BenchmarksFolder)
+        self._benchmarksfolder = self._pathHelper.CombinePath(self._labSettings.BenchmarksFolder)
 
         experiments = []
 
-        print("Found a total of " + str(len(labSettings.SettingsCollection)) + " settings files to run each " + str(labSettings.Rounds) + " times.")
-        print("Starting on " + str(labSettings.Threads) + " threads.")
+        print("Found a total of " + str(len(self._labSettings.SettingsCollection)) + " settings files to run each " + str(self._labSettings.Rounds) + " times.")
+        print("Starting on " + str(self._labSettings.Threads) + " threads.")
         print("")
 
-        for settingsFile in labSettings.SettingsCollection:
+        for settingsFile in self._labSettings.SettingsCollection:
             settingsFileName = settingsFile + ".ini"
             fileContent = ConfigParser.ParseConfig(self._pathHelper.CombinePath("LabSettings/" + settingsFileName))
-            for i in range(1,labSettings.Rounds + 1):
+            for i in range(1,self._labSettings.Rounds + 1):
                 settingsFile_override = settingsFile + "-" + str(i);
 
                 experimentSettings = SettingsParser(self._pathHelper)
                 experimentSettings.Parse(fileContent)
 
-                experiment = self._SetupExperiment(experimentSettings, labSettings.Threads, settingsFile)
+                experiment = self._SetupExperiment(experimentSettings, self._labSettings.Threads, settingsFile)
                 
                 self._SetupExperimentCleanupSteps(experiment, settingsFile_override)
                 experiment.add_step("build", experiment.build)
-                experiment.add_step("addextralogging", self.AddLoggingToBuid)
+                experiment.add_step("addextralogging", self._AddLoggingToBuid)
                 experiment.add_step("start", experiment.start_runs)
                 experiment.add_fetcher(name="fetch")
 
@@ -66,8 +71,8 @@ class LabSuite():
                 Reports.AddAbsoluteReport(experiment, ATTRIBUTES)
                 #Reports.AddTaskwiseReport(experiment, experimentSettings.Reformulators)
 
-                experiment.add_step("movereport", self.MoveReport, experiment.eval_dir, self._pathHelper.CombinePath("LabReports/" + settingsFile_override))
-                
+                experiment.add_step("movereport", self._MoveReport, experiment.eval_dir, self._pathHelper.CombinePath("LabReports/" + settingsFile_override))
+                               
                 experiments.append(experiment)
 
         for experiment in experiments:
@@ -77,10 +82,10 @@ class LabSuite():
             experiment.run_steps()
             self._currentRuns += len(experiment.runs)
 
-    def MoveReport(self, fromDir, toDir):
+    def _MoveReport(self, fromDir, toDir):
         shutil.move(fromDir, toDir)
 
-    def AddLoggingToBuid(self):
+    def _AddLoggingToBuid(self):
         fileName = self._reportfolder + "/run"
         lines = []
         with open(fileName, 'r') as file:
@@ -110,9 +115,6 @@ class LabSuite():
         os.remove(fileName)
         with open(fileName, 'w') as file:   
             file.writelines(newLines)
-
-    def CombineReports(self):
-        CSVGenerator.AddCSVReport(ATTRIBUTES)
 
     def _SetupExperiment(self, experimentSettings, threads, settingsFile):
         experiment = Experiment(self._reportfolder, LocalEnvironment(threads))
@@ -144,3 +146,23 @@ class LabSuite():
             experiment.add_step("rm-eval-dir", shutil.rmtree, experiment.eval_dir)
         if path.exists(self._pathHelper.CombinePath("LabReports/" + settingsFile)):
             experiment.add_step("rm-report-dir", shutil.rmtree, self._pathHelper.CombinePath("LabReports/" + settingsFile))
+
+    def CombineReports(self):
+        CSVGenerator.AddCSVReport(ATTRIBUTES)
+   
+    def MakeGraphs(self):
+        print("Generating graphs with R")
+        shutil.copy("graphGeneration.R", "LabReports/graphGeneration.R")
+        newPath = self._pathHelper.CombinePath("LabReports")
+        subprocess.call(["Rscript", "graphGeneration.R"], cwd=newPath)
+
+    def MoveResults(self):
+        print("Moving Data to results folder")
+        now = datetime.datetime.now()
+        folderName = now.strftime("%x").replace("/","-") + " - " + now.strftime("%X").replace(":","-")
+        os.makedirs(path.join(self._labSettings.ResultsFolder, folderName))
+
+        copy_tree("LabReports", path.join(self._labSettings.ResultsFolder, folderName, "LabReports"))
+        copy_tree("LabSettings", path.join(self._labSettings.ResultsFolder, folderName, "LabSettings"))
+        shutil.copy("settingsLab.ini", path.join(self._labSettings.ResultsFolder, folderName, "settingsLab.ini"))
+        shutil.copy("baseSettings.ini", path.join(self._labSettings.ResultsFolder, folderName, "baseSettings.ini"))

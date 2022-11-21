@@ -32,6 +32,7 @@ file(COPY LabSettings DESTINATION ${CMAKE_BINARY_DIR})
 configure_file(${PROJECT_SOURCE_DIR}/runP7.py ${CMAKE_BINARY_DIR}/runP7.py COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/graphGeneration.R ${CMAKE_BINARY_DIR}/graphGeneration.R COPYONLY)
 
+configure_file(${PROJECT_SOURCE_DIR}/Lab/__init__.py ${CMAKE_BINARY_DIR}/Lab/__init__.py COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/Lab/Reports.py ${CMAKE_BINARY_DIR}/Lab/Reports.py COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/Lab/AnytimeSearchParser.py ${CMAKE_BINARY_DIR}/Lab/AnytimeSearchParser.py COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/Lab/SingleSearchParser.py ${CMAKE_BINARY_DIR}/Lab/SingleSearchParser.py COPYONLY)

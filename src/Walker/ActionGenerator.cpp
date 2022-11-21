@@ -42,6 +42,8 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *ac
                 }
             }
         }
+        if (pairs.size() == 0)
+            return legalActions;
 
         if (!candidatePairs.contains(indexPair)) {
             candidatePairs[indexPair] = pairs;

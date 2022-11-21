@@ -19,7 +19,8 @@ vector<PDDLActionInstance> ActionGenerator2::GenerateActions(const PDDLAction* a
 
     array<unsigned int, MAXPARAMSIZE> parentValues;
     parentValues.fill(-1);
-    set<array<unsigned int, MAXPARAMSIZE>> initialCandidates = GetCandidates(state, parentValues, 0, action->parameters.size());
+    set<array<unsigned int, MAXPARAMSIZE>> initialCandidates;
+    GetCandidates(&initialCandidates, state, parentValues, 0, action->parameters.size());
 
     for (auto candidate : initialCandidates)
         legalActions.push_back(PDDLActionInstance(action, vector<unsigned int> (candidate.begin(), candidate.begin() + action->parameters.size())));
@@ -38,47 +39,34 @@ void ActionGenerator2::SetupActionLiteralsCache(const PDDLAction* action) {
     }
 }
 
-set<array<unsigned int, MAXPARAMSIZE>> ActionGenerator2::GetCandidates(const PDDLState* state, array<unsigned int, MAXPARAMSIZE> parentValues, const int currentIndex, const int maxIndex) {
-    set<array<unsigned int, MAXPARAMSIZE>> newSet;
-    vector<unsigned int> candidates;
+void ActionGenerator2::GetCandidates(set<array<unsigned int, MAXPARAMSIZE>>* candidates, const PDDLState* state, array<unsigned int, MAXPARAMSIZE> parentValues, const int currentIndex, const int maxIndex) {
+    unordered_set<unsigned int> objectCandidates;
     for (auto precon = (&UnaryActionLiterals)->begin(); precon != (&UnaryActionLiterals)->end(); precon++) {
         if (precon->args.at(0) == currentIndex) {
-            if (candidates.size() == 0) {
-                for (auto fact : state->unaryFacts.at(precon->predicateIndex)) {
-                    if (!Contains(parentValues, fact, currentIndex)) {
-                        candidates.push_back(fact);
-                    }
-                }
+            if (objectCandidates.size() == 0) {
+                for (auto fact : state->unaryFacts.at(precon->predicateIndex))
+                    if (!Contains(parentValues, fact, currentIndex))
+                        objectCandidates.emplace(fact);
             }
-            else
-            {
-                for (int i = 0; i < candidates.size(); i++) {
-                    if (!state->unaryFacts.at(precon->predicateIndex).contains(candidates.at(i))) {
-                        candidates.erase(candidates.begin() + i);
-                        i--;
-                    }
-                }
+            else {
+                for (auto candidate = objectCandidates.begin(); candidate != objectCandidates.end(); candidate++)
+                    if (!state->unaryFacts.at(precon->predicateIndex).contains(*candidate))
+                        objectCandidates.erase(*candidate);
             }
         }
     }
 
-    for (auto candidate : candidates) {
+    for (auto candidate : objectCandidates) {
         array<unsigned int, MAXPARAMSIZE> newArray = parentValues;
         newArray.at(currentIndex) = candidate;
 
         if (IsBinaryLegal(state, &newArray, currentIndex)) {
             if (currentIndex + 1 == maxIndex)
-                newSet.emplace(newArray);
-            else {
-                set<array<unsigned int, MAXPARAMSIZE>> returnSet = GetCandidates(state, newArray, currentIndex + 1, maxIndex);
-                for (auto returnValues : returnSet)
-                    newSet.emplace(returnValues);
-            }
+                candidates->emplace(newArray);
+            else
+                GetCandidates(candidates, state, newArray, currentIndex + 1, maxIndex);
         }
     }
-
-
-    return newSet;
 }
 
 bool ActionGenerator2::Contains(const array<unsigned int, MAXPARAMSIZE> values, const unsigned int value, const int limit) {
@@ -94,16 +82,6 @@ bool ActionGenerator2::IsBinaryLegal(const PDDLState* state, array<unsigned int,
         int arg2 = precon->args.at(1);
         if (arg1 <= currentMax && arg2 <= currentMax) 
             if (!state->binaryFacts.at(precon->predicateIndex).contains(make_pair(set->at(arg1), set->at(arg2)))) 
-                return false;
-    }
-    return true;
-}
-
-bool ActionGenerator2::IsUnaryLegal(const PDDLState* state, array<unsigned int, MAXPARAMSIZE>* set, const int currentMax) {
-    for (auto precon = (&UnaryActionLiterals)->begin(); precon != (&UnaryActionLiterals)->end(); precon++) {
-        int arg1 = precon->args.at(0);
-        if (arg1 <= currentMax)
-            if (!state->unaryFacts.at(precon->predicateIndex).contains(set->at(arg1)))
                 return false;
     }
     return true;

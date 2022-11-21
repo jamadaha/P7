@@ -9,7 +9,7 @@ report <- read.csv('report.csv')
 
 # Macro Things
   # Removes rows for sameouput
-  macroSubset <- subset(avgReport, algorithm != "sameoutput")
+  macroSubset <- subset(report, algorithm != "sameoutput")
   avgMacroGeneratedReport <- as.data.table(report)
   avgMacroGeneratedReport[,list(macros_generated=mean(macros_generated)),c('domain', 'algorithm', 'problem')]
   avgMacroUseReport <- as.data.table(report)

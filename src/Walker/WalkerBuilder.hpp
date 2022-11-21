@@ -18,7 +18,6 @@
 #include "Heuristics/GoalCountHeuristic.hh"
 #include "Heuristics/GoalPredicateCountHeuristic.hh"
 #include "Heuristics/RandomHeuristic.hh"
-#include "Heuristics/GreedyHeuristic.hh"
 
 #include "../IntermediatePDDL/PDDLInstance.hh"
 

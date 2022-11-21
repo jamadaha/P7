@@ -3,6 +3,7 @@ from Lab.PathHelper import PathHelper
 class SettingsParser():
     Domains = ""
     Reformulators = []
+    RunModes = []
     SettingsContent = ""
     _pathHelper : PathHelper
 
@@ -18,5 +19,7 @@ class SettingsParser():
                 self.SettingsContent += argument[0] + "=" + self._pathHelper.CombinePath(argument[1]) 
             elif "reformulator=" in line:
                 self.Reformulators = line.split("=")[1].strip("\n").split(",")
+            elif "runDirect=" in line:
+                self.RunModes = line.split("=")[1].strip("\n").split(",")
             elif "EXTERNAL" not in line:
                 self.SettingsContent += line

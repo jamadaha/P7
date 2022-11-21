@@ -41,7 +41,7 @@ void BaseWalkerReformulator::FindPaths(PDDLInstance *instance, bool debugMode) {
 			Report->Stop(ReportData("None", "-1", "false"));
 			int counter = 0;
 			for (auto path : badPaths) {
-				ConsoleHelper::PrintError("[Walker] Bad path: " + path.path.ToString() + ", Reason: " + path.Reason, debugIndent);
+				ConsoleHelper::PrintError("[Walker] Bad path: " + path.path.ToString(instance->problem) + ", Reason: " + path.Reason, debugIndent);
 				encounteredErrors = true;
 				counter++;
 				if (counter > 10) {

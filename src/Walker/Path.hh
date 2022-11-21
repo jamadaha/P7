@@ -6,6 +6,7 @@
 
 #include "../IntermediatePDDL/PDDLActionInstance.hh"
 #include "../IntermediatePDDL/PDDLState.hh"
+#include "../IntermediatePDDL/PDDLProblem.hh"
 
 class Path {
 public:
@@ -19,6 +20,7 @@ public:
     Path(const Path &path) : steps(path.steps), startState(path.startState), endState(path.endState), hasStates(path.hasStates) {}
 
     std::string ToString();
+    std::string ToString(const PDDLProblem *problem);
 
     friend bool operator==(const Path& lhs, const Path& rhs) {
         return lhs.steps == rhs.steps;

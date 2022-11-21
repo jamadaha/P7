@@ -124,11 +124,15 @@ void ActionGenerator::Permute(std::vector<std::unordered_set<unsigned int>> &can
         permutation->push_back(*iter);
 
         bool validPerm = true;
-        for (int i = 0; i < permutation->size() - 1; i++) {
-            auto pair = make_pair(i, permutation->size() - 1);
-            if (candidatePairs.contains(pair) && (!candidatePairs.at(pair).contains(make_pair(permutation->at(pair.first), permutation->at(pair.second))))) {
-                validPerm = false;
-                break;
+        for (int i = 0; i < permutation->size(); i++) {
+            for (int t = 0; t < permutation->size(); t++) {
+                if (i != permutation->size() - 1 && t != permutation->size() - 1)
+                    continue;
+                auto pair = make_pair(i, t);
+                if (candidatePairs.contains(pair) && (!candidatePairs.at(pair).contains(make_pair(permutation->at(pair.first), permutation->at(pair.second))))) {
+                    validPerm = false;
+                    break;
+                }
             }
         }
 

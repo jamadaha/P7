@@ -41,15 +41,14 @@ void ActionGenerator2::SetupActionLiteralsCache(const PDDLAction* action) {
     BinaryActionLiteralsPtr = &BinaryActionLiterals;
 }
 
-void ActionGenerator2::GetCandidates(set<array<unsigned int, MAXPARAMSIZE>>* candidates, const PDDLState* state, array<unsigned int, MAXPARAMSIZE> parentValues, const int currentIndex, const int maxIndex) {
+void ActionGenerator2::GetCandidates(set<array<unsigned int, MAXPARAMSIZE>>* candidates, const PDDLState* state, const array<unsigned int, MAXPARAMSIZE> parentValues, const int currentIndex, const int maxIndex) {
     vector<unsigned int> objectCandidates;
     objectCandidates.reserve(TEMPOBJSIZE);
     for (auto precon = UnaryActionLiteralsPtr->begin(); precon != UnaryActionLiteralsPtr->end(); precon++) {
         if (precon->args.at(0) == currentIndex) {
             if (objectCandidates.size() == 0) {
                 for (auto fact : state->unaryFacts.at(precon->predicateIndex))
-                    if (!Contains(parentValues, fact, currentIndex))
-                        objectCandidates.push_back(fact);
+                    objectCandidates.push_back(fact);
             }
             else {
                 for (int i = 0; i < objectCandidates.size(); i++) {
@@ -63,14 +62,16 @@ void ActionGenerator2::GetCandidates(set<array<unsigned int, MAXPARAMSIZE>>* can
     }
 
     for (auto candidate : objectCandidates) {
-        array<unsigned int, MAXPARAMSIZE> newArray = parentValues;
-        newArray.at(currentIndex) = candidate;
+        if (!Contains(parentValues, candidate, currentIndex)) {
+            array<unsigned int, MAXPARAMSIZE> newArray = parentValues;
+            newArray.at(currentIndex) = candidate;
 
-        if (IsBinaryLegal(state, &newArray, currentIndex)) {
-            if (currentIndex + 1 == maxIndex)
-                candidates->emplace(newArray);
-            else
-                GetCandidates(candidates, state, newArray, currentIndex + 1, maxIndex);
+            if (IsBinaryLegal(state, &newArray, currentIndex)) {
+                if (currentIndex + 1 == maxIndex)
+                    candidates->emplace(newArray);
+                else
+                    GetCandidates(candidates, state, newArray, currentIndex + 1, maxIndex);
+            }
         }
     }
 }
@@ -82,7 +83,7 @@ bool ActionGenerator2::Contains(const array<unsigned int, MAXPARAMSIZE> values, 
     return false;
 }
 
-bool ActionGenerator2::IsBinaryLegal(const PDDLState* state, array<unsigned int, MAXPARAMSIZE>* set, const int currentMax) {
+bool ActionGenerator2::IsBinaryLegal(const PDDLState* state, const array<unsigned int, MAXPARAMSIZE>* set, const int currentMax) {
     for (auto precon = BinaryActionLiteralsPtr->begin(); precon != BinaryActionLiteralsPtr->end(); precon++) {
         int arg1 = precon->args.at(0);
         int arg2 = precon->args.at(1);

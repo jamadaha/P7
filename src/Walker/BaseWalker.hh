@@ -63,6 +63,7 @@ protected:
     unsigned int _totalIterations = 0;
     PDDLInstance* instance;
     ActionGenerator2 actionGenerator;
+    //ActionGenerator actionGenerator;
 };
 
 #endif

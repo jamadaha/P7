@@ -24,9 +24,9 @@ public:
     std::vector<PDDLActionInstance> GenerateActions(const PDDLAction *action, const PDDLState *state);
     std::set<std::array<unsigned int, MAXPARAMSIZE>> GetCandidates(const PDDLState* state, std::array<unsigned int, MAXPARAMSIZE> parentValues, const int currentIndex, const int maxIndex);
     bool IsBinaryLegal(const PDDLState* state, std::array<unsigned int, MAXPARAMSIZE>* set, const int currentMax);
-    std::set<std::array<unsigned int, MAXPARAMSIZE>> GetInitialParameterValue(const PDDLState* state);
+    bool IsUnaryLegal(const PDDLState* state, std::array<unsigned int, MAXPARAMSIZE>* set, const int currentMax);
     void SetupActionLiteralsCache(const PDDLAction* action);
-    bool Contains(std::array<unsigned int, MAXPARAMSIZE> values, unsigned int value);
+    bool Contains(const std::array<unsigned int, MAXPARAMSIZE> values, const unsigned int value, const int limit);
 
 private:
     unsigned int totalActions = 0;

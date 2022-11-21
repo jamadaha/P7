@@ -17,19 +17,12 @@ vector<PDDLActionInstance> ActionGenerator2::GenerateActions(const PDDLAction* a
 
     SetupActionLiteralsCache(action);
 
-    set<array<unsigned int, MAXPARAMSIZE>> initialCandidates = GetInitialParameterValue(state);
+    array<unsigned int, MAXPARAMSIZE> parentValues;
+    parentValues.fill(-1);
+    set<array<unsigned int, MAXPARAMSIZE>> initialCandidates = GetCandidates(state, parentValues, 0, action->parameters.size());
 
-    set<array<unsigned int, MAXPARAMSIZE>> finalCandidates;
-    for (auto candidate : initialCandidates) {
-        set<array<unsigned int, MAXPARAMSIZE>> newCandidates = GetCandidates(state, candidate, 1, action->parameters.size());
-        for (auto newCandidate : newCandidates)
-            //if (newCandidate.size() == action->parameters.size())
-                if (IsBinaryLegal(state, &newCandidate, action->parameters.size()))
-                    finalCandidates.emplace(newCandidate);
-    }
-
-    for (auto candidate : finalCandidates)
-        legalActions.push_back(PDDLActionInstance(action, vector<unsigned int> (candidate.begin(), candidate.end())));
+    for (auto candidate : initialCandidates)
+        legalActions.push_back(PDDLActionInstance(action, vector<unsigned int> (candidate.begin(), candidate.begin() + action->parameters.size())));
 
     return legalActions;
 }
@@ -45,51 +38,53 @@ void ActionGenerator2::SetupActionLiteralsCache(const PDDLAction* action) {
     }
 }
 
-set<array<unsigned int, MAXPARAMSIZE>> ActionGenerator2::GetInitialParameterValue(const PDDLState* state) {
-    set<array<unsigned int, MAXPARAMSIZE>> initialCandidates;
-    for (auto precondition : UnaryActionLiterals) {
-        if (state->unaryFacts.contains(precondition.predicateIndex)) {
-            for (auto fact : state->unaryFacts.at(precondition.predicateIndex))
-                initialCandidates.emplace(array<unsigned int, MAXPARAMSIZE> { fact });
-            break;
-        }
-    }
-    return initialCandidates;
-}
-
 set<array<unsigned int, MAXPARAMSIZE>> ActionGenerator2::GetCandidates(const PDDLState* state, array<unsigned int, MAXPARAMSIZE> parentValues, const int currentIndex, const int maxIndex) {
     set<array<unsigned int, MAXPARAMSIZE>> newSet;
+    vector<unsigned int> candidates;
     for (auto precon = (&UnaryActionLiterals)->begin(); precon != (&UnaryActionLiterals)->end(); precon++) {
         if (precon->args.at(0) == currentIndex) {
-            if (state->unaryFacts.contains(precon->predicateIndex)) {
+            if (candidates.size() == 0) {
                 for (auto fact : state->unaryFacts.at(precon->predicateIndex)) {
-                    if (!Contains(parentValues, fact)) {
-                        array<unsigned int, MAXPARAMSIZE> newValues = parentValues;
-                        newValues.at(currentIndex) = fact;
-                        if (IsBinaryLegal(state, &newValues, currentIndex + 1)) {
-                            if (currentIndex + 1 >= maxIndex) {
-                                newSet.emplace(newValues);
-                            }
-                            else {
-                                set<array<unsigned int, MAXPARAMSIZE>> returnSet = GetCandidates(state, newValues, currentIndex + 1, maxIndex);
-                                for (auto returnValues : returnSet)
-                                    newSet.emplace(returnValues);
-                            }
-                        }
+                    if (!Contains(parentValues, fact, currentIndex)) {
+                        candidates.push_back(fact);
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < candidates.size(); i++) {
+                    if (!state->unaryFacts.at(precon->predicateIndex).contains(candidates.at(i))) {
+                        candidates.erase(candidates.begin() + i);
+                        i--;
                     }
                 }
             }
         }
     }
 
+    for (auto candidate : candidates) {
+        array<unsigned int, MAXPARAMSIZE> newArray = parentValues;
+        newArray.at(currentIndex) = candidate;
+
+        if (IsBinaryLegal(state, &newArray, currentIndex)) {
+            if (currentIndex + 1 == maxIndex)
+                newSet.emplace(newArray);
+            else {
+                set<array<unsigned int, MAXPARAMSIZE>> returnSet = GetCandidates(state, newArray, currentIndex + 1, maxIndex);
+                for (auto returnValues : returnSet)
+                    newSet.emplace(returnValues);
+            }
+        }
+    }
+
+
     return newSet;
 }
 
-bool ActionGenerator2::Contains(array<unsigned int, MAXPARAMSIZE> values, unsigned int value) {
-    for (auto parent : values) {
-        if (value == parent)
+bool ActionGenerator2::Contains(const array<unsigned int, MAXPARAMSIZE> values, const unsigned int value, const int limit) {
+    for (int i = 0; i < limit; i++)
+        if (values.at(i) == value)
             return true;
-    }
     return false;
 }
 
@@ -97,11 +92,19 @@ bool ActionGenerator2::IsBinaryLegal(const PDDLState* state, array<unsigned int,
     for (auto precon = (&BinaryActionLiterals)->begin(); precon != (&BinaryActionLiterals)->end(); precon++) {
         int arg1 = precon->args.at(0);
         int arg2 = precon->args.at(1);
-        if (arg1 < currentMax && arg2 < currentMax) {
-            if (!state->binaryFacts.at(precon->predicateIndex).contains(make_pair(set->at(arg1), set->at(arg2)))) {
+        if (arg1 <= currentMax && arg2 <= currentMax) 
+            if (!state->binaryFacts.at(precon->predicateIndex).contains(make_pair(set->at(arg1), set->at(arg2)))) 
                 return false;
-            }
-        }
+    }
+    return true;
+}
+
+bool ActionGenerator2::IsUnaryLegal(const PDDLState* state, array<unsigned int, MAXPARAMSIZE>* set, const int currentMax) {
+    for (auto precon = (&UnaryActionLiterals)->begin(); precon != (&UnaryActionLiterals)->end(); precon++) {
+        int arg1 = precon->args.at(0);
+        if (arg1 <= currentMax)
+            if (!state->unaryFacts.at(precon->predicateIndex).contains(set->at(arg1)))
+                return false;
     }
     return true;
 }

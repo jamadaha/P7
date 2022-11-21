@@ -173,7 +173,11 @@ SASPlan BaseWalkerReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* 
 		auto sasAction = reformulatedSAS->actions.at(i);
 		if (sasAction.name.starts_with("macro")) {
 			for (auto macro : macros) {
-				if (sasAction.name == macro.name) {
+				auto tempActionName = sasAction.name;
+				auto tempMacroName = macro.name;
+				std::transform(tempActionName.begin(), tempActionName.end(), tempActionName.begin(), ::toupper);
+				std::transform(tempMacroName.begin(), tempMacroName.end(), tempMacroName.begin(), ::toupper);
+				if (tempActionName == tempMacroName) {
 					macrosUsed++;
 					for (auto macroAction : macro.path) {
 						std::vector<std::string> args; args.reserve(macroAction.objects.size());
@@ -181,6 +185,7 @@ SASPlan BaseWalkerReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* 
 							args.push_back(instance->problem->objects.at(object));
 						actions.push_back(SASAction(macroAction.action->name, args));
 					}
+					break;
 				}
 			}
 		}

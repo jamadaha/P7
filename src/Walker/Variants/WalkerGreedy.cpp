@@ -11,7 +11,7 @@ Path WalkerGreedy::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
     if (OnTempStateMade != nullptr)
         OnTempStateMade(this->instance, &tempState);
 
-    for (int i = 0; i < maxStepCount; i++) {
+    for (int i = 0; i < 5; i++) {
         std::vector<PDDLActionInstance> possibleActions;
         possibleActions = actionGenerator.GenerateActions(&tempState);
 

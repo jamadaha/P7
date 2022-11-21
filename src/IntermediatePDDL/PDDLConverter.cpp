@@ -21,7 +21,7 @@ PDDLDomain PDDLConverter::Convert(Domain *domain) {
         predicates.push_back(predicate);
     };
 
-    AddPredicate(PDDLPredicate("=", std::vector<std::string>{}, 2));
+    AddPredicate(PDDLPredicate("=", 2));
 
     for (int i = 0; i < domain->_predicates->size(); i++) {
         auto predicate = (*domain->_predicates)[i];

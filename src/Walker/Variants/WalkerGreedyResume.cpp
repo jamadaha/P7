@@ -1,13 +1,13 @@
 #include "WalkerGreedyResume.hpp"
 
-Path WalkerGreedyResume::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
+Path WalkerGreedyResume::Walk(BaseHeuristic *heuristic, const PDDLState state) {
     std::vector<PDDLActionInstance> steps; 
     steps.reserve(maxStepCount);
     std::unordered_set<PDDLState> visitedStates; 
     visitedStates.reserve(maxStepCount);
 
+    PDDLState tempState = PDDLState(state.unaryFacts, state.binaryFacts);
     PDDLState endState;
-    PDDLState tempState = PDDLState(state->unaryFacts, state->binaryFacts);
     if (OnTempStateMade != nullptr)
         OnTempStateMade(this->instance, &tempState);
 
@@ -38,7 +38,7 @@ Path WalkerGreedyResume::Walk(BaseHeuristic *heuristic, const PDDLState *state) 
     }
 
     if (SaveStates)
-        return Path(steps, *state, endState);
+        return Path(steps, state, endState);
     else
         return Path(steps);
 }
@@ -52,7 +52,7 @@ std::vector<Path> WalkerGreedyResume::Walk() {
     bestValue = 0;
     auto startTime = std::chrono::steady_clock::now();
     while (widthFunc->Iterate(&current)) {
-        Path path = Walk(heuristic, &bestState);
+        Path path = Walk(heuristic, bestState);
         paths.push_back(path);
 
         if (OnWalkerStep != nullptr)

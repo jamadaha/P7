@@ -26,17 +26,25 @@ vector<PDDLActionInstance> ActionGenerator2::GenerateActions(const PDDLAction* a
     for (auto candidate : initialCandidates)
         legalActions.push_back(PDDLActionInstance(action, vector<unsigned int> (candidate.begin(), candidate.begin() + action->parameters.size())));
 
+    if (action->name == "sendtohome-b" && legalActions.size() > 0) {
+        int a = 0;
+    }
+
     return legalActions;
 }
 
 void ActionGenerator2::GetCandidates(set<array<unsigned int, MAXPARAMSIZE>>* candidates, const PDDLState* state, const array<unsigned int, MAXPARAMSIZE> parentValues, const int currentIndex, const int maxIndex) {
     vector<unsigned int> objectCandidates;
     objectCandidates.reserve(TEMPOBJSIZE);
+    bool wasAny = false;
     for (auto precon = UnaryActionLiteralsPtr->begin(); precon != UnaryActionLiteralsPtr->end(); precon++) {
         if (precon->args.at(0) == currentIndex) {
+            wasAny = true;
             if (objectCandidates.size() == 0) {
                 for (auto fact : state->unaryFacts.at(precon->predicateIndex))
                     objectCandidates.push_back(fact);
+                if (objectCandidates.size() == 0)
+                    break;
             }
             else {
                 for (int i = 0; i < objectCandidates.size(); i++) {
@@ -49,6 +57,11 @@ void ActionGenerator2::GetCandidates(set<array<unsigned int, MAXPARAMSIZE>>* can
                     break;
             }
         }
+    }
+
+    if (!wasAny) {
+        for (auto object : objects)
+            objectCandidates.push_back(object);
     }
 
     for (auto candidate : objectCandidates) {
@@ -70,7 +83,7 @@ bool ActionGenerator2::IsBinaryLegal(const PDDLState* state, const array<unsigne
         int arg2 = precon->args.at(1);
         if (arg1 <= currentMax && arg2 <= currentMax) {
             auto value = make_pair(set->at(arg1), set->at(arg2));
-            if (!state->ContainsFact(precon->predicateIndex, value))
+            if (state->ContainsFact(precon->predicateIndex, value) != precon->value)
                 return false;
         }
     }

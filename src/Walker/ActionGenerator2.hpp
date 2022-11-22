@@ -17,11 +17,15 @@
 class ActionGenerator2 {
 public:
     unsigned int GetTotalActionsGenerated() { return totalActions; };
-    ActionGenerator2(const std::vector<PDDLAction>* actions) : actions(actions) {};
+    ActionGenerator2(const std::vector<PDDLAction>* actions, const unsigned int objectCount) : actions(actions) {
+        for (int i = 0; i < objectCount; i++)
+            objects.emplace(i);
+    };
 
     std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state);
 private:
     unsigned int totalActions = 0;
+    std::unordered_set<unsigned int> objects;
     const std::vector<PDDLAction> *actions;
 
     std::vector<PDDLActionInstance> GenerateActions(const PDDLAction* action, const PDDLState* state);

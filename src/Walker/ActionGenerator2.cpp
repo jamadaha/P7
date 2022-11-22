@@ -15,7 +15,8 @@ vector<PDDLActionInstance> ActionGenerator2::GenerateActions(const PDDLState* st
 vector<PDDLActionInstance> ActionGenerator2::GenerateActions(const PDDLAction* action, const PDDLState* state) {
     vector<PDDLActionInstance> legalActions;
 
-    SetupActionLiteralsCache(action);
+    UnaryActionLiteralsPtr = &action->unaryPreconditions;
+    BinaryActionLiteralsPtr = &action->binaryPreconditions;
 
     array<unsigned int, MAXPARAMSIZE> parentValues;
     parentValues.fill(-1);
@@ -26,19 +27,6 @@ vector<PDDLActionInstance> ActionGenerator2::GenerateActions(const PDDLAction* a
         legalActions.push_back(PDDLActionInstance(action, vector<unsigned int> (candidate.begin(), candidate.begin() + action->parameters.size())));
 
     return legalActions;
-}
-
-void ActionGenerator2::SetupActionLiteralsCache(const PDDLAction* action) {
-    UnaryActionLiterals.clear();
-    BinaryActionLiterals.clear();
-    for (auto predicate = (&action->preconditions)->begin(); predicate != (&action->preconditions)->end(); predicate++) {
-        if (predicate->args.size() == 1)
-            UnaryActionLiterals.push_back(*predicate);
-        else if (predicate->args.size() == 2)
-            BinaryActionLiterals.push_back(*predicate);
-    }
-    UnaryActionLiteralsPtr = &UnaryActionLiterals;
-    BinaryActionLiteralsPtr = &BinaryActionLiterals;
 }
 
 void ActionGenerator2::GetCandidates(set<array<unsigned int, MAXPARAMSIZE>>* candidates, const PDDLState* state, const array<unsigned int, MAXPARAMSIZE> parentValues, const int currentIndex, const int maxIndex) {

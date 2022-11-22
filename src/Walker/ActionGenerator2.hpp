@@ -20,21 +20,16 @@ public:
     ActionGenerator2(const std::vector<PDDLAction>* actions) : actions(actions) {};
 
     std::vector<PDDLActionInstance> GenerateActions(const PDDLState *state);
-
-
-    std::vector<PDDLActionInstance> GenerateActions(const PDDLAction *action, const PDDLState *state);
-    void GetCandidates(std::set<std::array<unsigned int, MAXPARAMSIZE>>* candidates, const PDDLState* state, const std::array<unsigned int, MAXPARAMSIZE> parentValues, const int currentIndex, const int maxIndex);
-    bool IsBinaryLegal(const PDDLState* state, const std::array<unsigned int, MAXPARAMSIZE>* set, const int currentMax);
-    void SetupActionLiteralsCache(const PDDLAction* action);
-
 private:
     unsigned int totalActions = 0;
     const std::vector<PDDLAction> *actions;
 
-    std::vector<PDDLLiteral> UnaryActionLiterals;
-    std::vector<PDDLLiteral>* UnaryActionLiteralsPtr;
-    std::vector<PDDLLiteral> BinaryActionLiterals;
-    std::vector<PDDLLiteral>* BinaryActionLiteralsPtr;
+    std::vector<PDDLActionInstance> GenerateActions(const PDDLAction* action, const PDDLState* state);
+    void GetCandidates(std::set<std::array<unsigned int, MAXPARAMSIZE>>* candidates, const PDDLState* state, const std::array<unsigned int, MAXPARAMSIZE> parentValues, const int currentIndex, const int maxIndex);
+    bool IsBinaryLegal(const PDDLState* state, const std::array<unsigned int, MAXPARAMSIZE>* set, const int currentMax);
+
+    const std::vector<PDDLLiteral>* UnaryActionLiteralsPtr;
+    const std::vector<PDDLLiteral>* BinaryActionLiteralsPtr;
 };
 
 #endif

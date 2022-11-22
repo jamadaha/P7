@@ -1,6 +1,6 @@
 #include "WalkerQueue.hpp"
 
-Path WalkerQueue::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
+Path WalkerQueue::Walk(BaseHeuristic *heuristic, const PDDLState state) {
     auto currentNode = searchQueue.begin();
     auto currentState = PDDLState((*currentNode).second.first);
     auto currentPath = Path((*currentNode).second.second);
@@ -17,7 +17,10 @@ Path WalkerQueue::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
     }
 
     searchQueue.erase(currentNode);
-    return currentPath;
+    if (SaveStates)
+        return Path(currentPath.steps, state, currentState);
+    else
+        return currentPath;
 }
 
 std::vector<Path> WalkerQueue::Walk() {
@@ -30,7 +33,7 @@ std::vector<Path> WalkerQueue::Walk() {
 
     auto startTime = std::chrono::steady_clock::now();
     while (widthFunc->Iterate(&current)) {
-        paths.push_back(Walk(heuristic, &this->instance->problem->initState));
+        paths.push_back(Walk(heuristic, this->instance->problem->initState));
 
         if (OnWalkerStep != nullptr)
             OnWalkerStep(this, current);

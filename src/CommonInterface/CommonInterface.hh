@@ -20,6 +20,7 @@
 #include "../DownwardRunner/DownwardRunner.hh"
 #include "../PlanValidators/PlanValidator.hh"
 #include "../IntermediatePDDL/PDDLInstance.hh"
+#include "../IntermediatePDDL/PDDLMutex.hh"
 #include "../IntermediatePDDL/PDDLConverter.hh"
 #include "../Helpers/ConsoleHelper.hh"
 #include "../DownwardRunner/H2Runner.hh"

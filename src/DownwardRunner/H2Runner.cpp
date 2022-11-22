@@ -2,25 +2,25 @@
 
 using namespace std;
 
-MutexInformation H2Runner::RunH2(Config config) {
+PDDLMutex H2Runner::RunH2(Config config) {
     const string h2Path = config.GetItem<filesystem::path>("h2path").c_str();
 	string command = h2Path + " --no_bw_h2 < output.sas" + " > nul";
 	system(command.c_str());
     return ParseOutput();
 }
 
-MutexInformation H2Runner::ParseOutput() {
+PDDLMutex H2Runner::ParseOutput() {
     ifstream stream("output.sas");
     string content( (istreambuf_iterator<char>(stream) ),
                        (istreambuf_iterator<char>()    ) );
     stream.close();
 
-    std::vector<MutexVariable> variables = ParseVariables(content);
-    return MutexInformation(variables);
+    std::vector<PDDLMutexVariable> variables = ParseVariables(content);
+    return PDDLMutex(variables);
 }
 
-std::vector<MutexVariable> H2Runner::ParseVariables(std::string h2Output) {
-    std::vector<MutexVariable> variables;
+std::vector<PDDLMutexVariable> H2Runner::ParseVariables(std::string h2Output) {
+    std::vector<PDDLMutexVariable> variables;
     stringstream ss(h2Output);
     std::vector<std::string> variableInfo;
     string line;
@@ -38,11 +38,11 @@ std::vector<MutexVariable> H2Runner::ParseVariables(std::string h2Output) {
     return variables;
 }
 
-MutexVariable H2Runner::ParseVariable(std::vector<std::string> variableInfo) {
+PDDLMutexVariable H2Runner::ParseVariable(std::vector<std::string> variableInfo) {
     std::string variableName = variableInfo.at(1);
     int numOfAtoms = std::atoi(variableInfo.at(3).c_str());
     // Vector of predicate + object
-    std::vector<MutexVariable::Atom> atoms;
+    std::vector<PDDLMutexVariable::Atom> atoms;
     // 4 is the first atom
     for (int i = 4; i < variableInfo.size() - 1; i++) {
         auto atom = variableInfo.at(i);
@@ -69,9 +69,9 @@ MutexVariable H2Runner::ParseVariable(std::vector<std::string> variableInfo) {
                     } else
                         workingObject += atom.at(i);
                 }
-                atoms.push_back(MutexVariable::Atom(predicateIndex, predicate, objects, objectsS));
+                atoms.push_back(PDDLMutexVariable::Atom(predicateIndex, predicate, objects, objectsS));
                 break;
             }
     }
-    return MutexVariable(atoms);
+    return PDDLMutexVariable(atoms);
 }

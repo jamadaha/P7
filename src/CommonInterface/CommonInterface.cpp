@@ -65,14 +65,15 @@ InterfaceStep<PDDLInstance*> CommonInterface::ConvertPDDLFormat(PDDLDriver* driv
 }
 
 InterfaceStep<void> CommonInterface::GetMutexes(PDDLInstance *instance) {
-	ConsoleHelper::PrintDebugInfo("Getting mutexes...");
+	ConsoleHelper::PrintInfo("Getting mutexes...");
 	Report->Begin("Getting Mutexes");
 	auto domain = config.GetItem<filesystem::path>("domain");
 	auto problem = config.GetItem<filesystem::path>("problem");
 	DownwardRunner runner = DownwardRunner();
 	runner.RunTranslator(config, domain.c_str(), problem.c_str());
 	H2Runner h2Runner = H2Runner(instance);
-	h2Runner.RunH2(config);
+	static PDDLMutex mutexes = h2Runner.RunH2(config);
+	instance->mutexes = &mutexes;
 	Report->Stop();
 	return InterfaceStep<void>();
 }

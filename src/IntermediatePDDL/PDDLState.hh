@@ -12,6 +12,11 @@
 
 struct PDDLInstance;
 
+struct DoActionChanges {
+    std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, bool>>> unaryChanges;
+    std::unordered_map<unsigned int, std::unordered_set<std::pair<std::pair<unsigned int, unsigned int>, bool>>> binaryChanges;
+};
+
 struct PDDLState {
     // Key - Index of predicate | Value - Set of objects which the predicate is true for
     std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts;
@@ -39,8 +44,8 @@ struct PDDLState {
     }
 #pragma endregion ContainsFact
 
-    void DoAction(const PDDLActionInstance *action);
-    void UndoAction(const PDDLActionInstance *action);
+    DoActionChanges DoAction(const PDDLActionInstance *action);
+    void UndoAction(const DoActionChanges * changes);
 
     std::string ToString(const PDDLInstance* instance);
 

@@ -4,31 +4,6 @@
 #include <unordered_set>
 #include "BaseHeuristic.hh"
 
-//https://stackoverflow.com/questions/28367913/how-to-stdhash-an-unordered-stdpair
-namespace std {
-	template <class T>
-	inline void hash_combine(std::size_t& seed, const T& v)
-	{
-		std::hash<T> hasher;
-		seed ^= hasher(v) + 0x9e3779b9 + (seed<<6) + (seed>>2);
-	}
-
-	template<typename T1, typename T2>
-	struct hash<std::pair<T1, T2>> {
-		std::size_t operator()(std::pair<T1, T2> const &p) const {
-		std::size_t seed1(0);
-		std::hash_combine(seed1, p.first);
-		std::hash_combine(seed1, p.second);
-
-		std::size_t seed2(0);
-		std::hash_combine(seed2, p.second);
-		std::hash_combine(seed2, p.first);
-
-		return std::min(seed1, seed2);
-		}
-	};
-}
-
 class GoalPredicateCountHeuristic : public BaseHeuristic {
 public:
 	GoalPredicateCountHeuristic(const PDDLDomain *domain, const PDDLProblem *problem) : BaseHeuristic(domain, problem){
@@ -50,9 +25,9 @@ public:
 				i = 0;
 			}
 
-			state->DoAction(&choices->at(i));
+			auto changes = state->DoAction(&choices->at(i));
 			int value = Eval(state);
-			state->UndoAction(&choices->at(i));
+			state->UndoAction(&changes);
 			if (value >= bestValue) {
 				bestIndex = i;
 				bestValue = value;

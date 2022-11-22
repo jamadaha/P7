@@ -22,15 +22,5 @@ target_link_libraries(Walker
     PRIVATE
         IntermediatePDDL
         Config
-        Hashes)
-
-add_library(ActionGenerator "ActionGenerator.cpp")
-target_sources(ActionGenerator
-    PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/ActionGenerator.cpp
-    PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR}/ActionGenerator.hpp)
-target_include_directories(ActionGenerator
-    PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR})
-target_link_libraries(ActionGenerator AlgorithmHelper)
+        Hashes
+        ActionGenerator)

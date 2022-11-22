@@ -84,24 +84,19 @@ PDDLState PartialRegressor::GeneratePreconditionState(const PDDLLiteral *literal
             std::unordered_map<unsigned int, std::unordered_set<unsigned int>> { 
                 {literal->predicateIndex, std::unordered_set<unsigned int>{ literal->args.at(0) }} 
             },
-            std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> {},
-            std::unordered_map<unsigned int, std::unordered_set<MultiFact>> {}
+            std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> {}
         );
     else if (argumentCount == 2)
         return PDDLState(
             std::unordered_map<unsigned int, std::unordered_set<unsigned int>> {},
             std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> { 
                 {literal->predicateIndex, std::unordered_set<std::pair<unsigned int, unsigned int>>{ std::make_pair(literal->args.at(0), literal->args.at(1)) }} 
-            },
-            std::unordered_map<unsigned int, std::unordered_set<MultiFact>> {}
+            }
         );
     else 
         return PDDLState(
             std::unordered_map<unsigned int, std::unordered_set<unsigned int>> {},
-            std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> {},
-            std::unordered_map<unsigned int, std::unordered_set<MultiFact>> {
-                {literal->predicateIndex, std::unordered_set<MultiFact>{ MultiFact(literal->args) }}
-            }
+            std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> {}
         );
 }
 
@@ -120,7 +115,7 @@ void PartialRegressor::GetPredecessorState(PDDLState *state, const PDDLActionIns
         }
     }
     // Handle effects
-    state->UndoAction(action);
+    //state->UndoAction(action);
 }
 
 void PartialRegressor::SwitchToNonPartial(std::vector<PartialAction> *actions) {

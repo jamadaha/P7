@@ -21,6 +21,7 @@ EntanglementFinder BaseReformulator::GetEntanglementFinder(bool debugMode) {
 	runData.LevelReductionFactor = Configs->GetItem<int>("levelReductionFactor");
 	runData.SearchCeiling = Configs->GetItem<int>("searchCeiling");
 	runData.SearchFloor = Configs->GetItem<int>("searchFloor");
+	runData.TimeLimitMs = TimeLimit * Configs->GetItem<double>("reformulationTimeFraction");
 	if (Configs->GetItem<std::string>("levelReductionTypes") == "Division")
 		runData.LevelReductionType = EntanglementFinder::RunData::Division;
 	if (Configs->GetItem<std::string>("levelReductionTypes") == "Subtraction")
@@ -29,15 +30,22 @@ EntanglementFinder BaseReformulator::GetEntanglementFinder(bool debugMode) {
 	auto ef = EntanglementFinder(runData);
 
 	if (Configs->GetItem<bool>("debugmode")) {
-		ProgressBarHelper* bar;
 		ef.OnNewLevel = [&](int level, int outOf) {
-			bar = new ProgressBarHelper(outOf, "Finding Entanglements (level " + std::to_string(level) + ")", debugIndent + 1);
+			entanglerBar = new ProgressBarHelper(outOf, "Finding Entanglements (level " + std::to_string(level) + ")", debugIndent + 1);
 		};
 		ef.OnLevelIteration = [&](int current, int outOf) {
-			bar->Update();
+			entanglerBar->Update();
 		};
 		ef.OnLevelEnd = [&]() {
-			bar->End();
+			entanglerBar->End();
+			delete entanglerBar;
+		};
+		ef.OnTimeLimitReached = [&]() {
+			if (entanglerBar != nullptr) {
+				entanglerBar->End();
+				delete entanglerBar;
+			}
+			ConsoleHelper::PrintDebugWarning("[Entanglement Finder] Time limit reached!", debugIndent);
 		};
 	}
 
@@ -81,6 +89,7 @@ PDDLInstance BaseReformulator::GenerateMacroInstance(PDDLInstance* instance, std
 
 SASPlan BaseReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) {
     std::vector<SASAction> actions;
+	int macrosUsed = 0;
 	for (int i = 0; i < reformulatedSAS->actions.size(); i++) {
 		auto sasAction = reformulatedSAS->actions.at(i);
 		unsigned int actionIndex = -1;
@@ -88,7 +97,6 @@ SASPlan BaseReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* reform
 			if (instance->domain->actions.at(t).name == sasAction.name)
 				actionIndex = t;
 		if (actionIndex != -1) {
-			// Untested
 			std::vector<std::string> args;
 			for (int t = 0; t < sasAction.parameters.size(); t++)
 				args.push_back(sasAction.parameters.at(t));
@@ -104,10 +112,11 @@ SASPlan BaseReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* reform
 					}
 						
 			}
+			macrosUsed++;
 		}
 	}
 	// Do Something and give a "corrected" SAS plan back
-	SASPlan newPlan = SASPlan(actions, actions.size());
+	SASPlan newPlan = SASPlan(actions, actions.size(), macrosUsed);
 	return newPlan;
 }
 
@@ -121,12 +130,12 @@ void BaseReformulator::PrintEntanglerSteps(std::vector<EntanglementOccurance>* c
 		for (int j = 0; j < (*i).Chain.size(); j++) {
 			auto item = (*i).Chain.at(j);
 			std::string paramStr = "";
-			for (int l = 0; l < item->objects.size(); l++) {
-				paramStr += instance->problem->objects[item->objects[l]];
-				if (l != item->objects.size() - 1)
+			for (int l = 0; l < item.objects.size(); l++) {
+				paramStr += instance->problem->objects[item.objects[l]];
+				if (l != item.objects.size() - 1)
 					paramStr += ", ";
 			}
-			actionStr += item->action->name + "(" + paramStr + ")";
+			actionStr += item.action->name + "(" + paramStr + ")";
 			if (j != (*i).Chain.size() - 1)
 				actionStr += " -> ";
 		}

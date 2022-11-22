@@ -5,7 +5,7 @@
 
 #include "../IntermediatePDDL/PDDLState.hh"
 
-#include "../Walker/Path.hpp"
+#include "../Walker/Path.hh"
 
 #include "../Walker/DepthFunctions/BaseDepthFunction.hh"
 #include "../Walker/WidthFunctions/BaseWidthFunction.hh"

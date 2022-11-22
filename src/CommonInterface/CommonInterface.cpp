@@ -64,6 +64,19 @@ InterfaceStep<PDDLInstance*> CommonInterface::ConvertPDDLFormat(PDDLDriver* driv
 	return InterfaceStep<PDDLInstance*>(instance);
 }
 
+InterfaceStep<void> CommonInterface::GetMutexes(PDDLInstance *instance) {
+	ConsoleHelper::PrintDebugInfo("Getting mutexes...");
+	Report->Begin("Getting Mutexes");
+	auto domain = config.GetItem<filesystem::path>("domain");
+	auto problem = config.GetItem<filesystem::path>("problem");
+	DownwardRunner runner = DownwardRunner();
+	runner.RunTranslator(config, domain.c_str(), problem.c_str());
+	H2Runner h2Runner = H2Runner(instance);
+	h2Runner.RunH2(config);
+	Report->Stop();
+	return InterfaceStep<void>();
+}
+
 InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulator, PDDLInstance* instance) {
 	int timeLeft = config.GetItem<int>("totalTimeLimit") * 1000;
 	int currentIncrementTimeLimit = config.GetItem<int>("startIncrement") * 1000;
@@ -227,6 +240,10 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 
 	auto convertPDDLFormatStep = ConvertPDDLFormat(parsePDDLFilesStep.Data);
 	if (!convertPDDLFormatStep.RanWithoutErrors)
+		return CommonInterface::RunResult::ErrorsEncountered;
+
+	auto getMutexStep = GetMutexes(convertPDDLFormatStep.Data);
+	if (!getMutexStep.RanWithoutErrors)
 		return CommonInterface::RunResult::ErrorsEncountered;
 
 	if (!isDirect) {

@@ -1,6 +1,12 @@
 #include "DownwardRunner.hh"
 using namespace std;
 
+void DownwardRunner::RunTranslator(Config config, std::string domainPath, std::string problemPath) {
+	const string transPath = config.GetItem<filesystem::path>("translatorpath").c_str();
+	const string command = transPath + " " + domainPath + " " + problemPath + " > nul";
+	system(command.c_str());
+}
+
 void DownwardRunner::RunDownward(Config config, string reformulatedDomain, string reformulatedProblem, int timeLimit) {
 	string path = config.GetItem<filesystem::path>("downwardpath").c_str();
 	string postArguments = config.GetItem<string>("downwardPostArguments");

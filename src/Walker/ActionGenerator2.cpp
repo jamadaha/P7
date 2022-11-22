@@ -62,25 +62,16 @@ void ActionGenerator2::GetCandidates(set<array<unsigned int, MAXPARAMSIZE>>* can
     }
 
     for (auto candidate : objectCandidates) {
-        if (!Contains(parentValues, candidate, currentIndex)) {
-            array<unsigned int, MAXPARAMSIZE> newArray = parentValues;
-            newArray.at(currentIndex) = candidate;
+        array<unsigned int, MAXPARAMSIZE> newArray = parentValues;
+        newArray.at(currentIndex) = candidate;
 
-            if (IsBinaryLegal(state, &newArray, currentIndex)) {
-                if (currentIndex + 1 == maxIndex)
-                    candidates->emplace(newArray);
-                else
-                    GetCandidates(candidates, state, newArray, currentIndex + 1, maxIndex);
-            }
+        if (IsBinaryLegal(state, &newArray, currentIndex)) {
+            if (currentIndex + 1 == maxIndex)
+                candidates->emplace(newArray);
+            else
+                GetCandidates(candidates, state, newArray, currentIndex + 1, maxIndex);
         }
     }
-}
-
-bool ActionGenerator2::Contains(const array<unsigned int, MAXPARAMSIZE> values, const unsigned int value, const int limit) {
-    for (int i = 0; i < limit; i++)
-        if (values.at(i) == value)
-            return true;
-    return false;
 }
 
 bool ActionGenerator2::IsBinaryLegal(const PDDLState* state, const array<unsigned int, MAXPARAMSIZE>* set, const int currentMax) {

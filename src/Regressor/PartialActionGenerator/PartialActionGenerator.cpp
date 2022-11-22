@@ -16,9 +16,6 @@ std::vector<PartialAction> PartialActionGenerator::ExpandState(const PDDLState *
         for (auto objectIter = (*iter).second.begin(); objectIter != (*iter).second.end(); objectIter++)
             AlgorithmHelper::InsertAll<PartialAction>(partialActions, ExpandBinary(std::make_pair((*iter).first, (*objectIter))));    
 
-    // Who cares about multifacts
-    // To Be Done
-
     return partialActions;
 }
 

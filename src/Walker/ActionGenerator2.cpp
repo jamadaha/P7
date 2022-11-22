@@ -45,6 +45,8 @@ void ActionGenerator2::GetCandidates(set<array<unsigned int, MAXPARAMSIZE>>* can
                         i--;
                     }
                 }
+                if (objectCandidates.size() == 0)
+                    break;
             }
         }
     }

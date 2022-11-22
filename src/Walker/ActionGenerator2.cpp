@@ -20,31 +20,29 @@ vector<PDDLActionInstance> ActionGenerator2::GenerateActions(const PDDLAction* a
 
     array<unsigned int, MAXPARAMSIZE> parentValues;
     parentValues.fill(-1);
-    set<array<unsigned int, MAXPARAMSIZE>> initialCandidates;
-    GetCandidates(&initialCandidates, state, parentValues, 0, action->parameters.size());
 
-    for (auto candidate : initialCandidates)
+    set<array<unsigned int, MAXPARAMSIZE>> candidates;
+    GetCandidates(&candidates, state, parentValues, 0, action->parameters.size());
+
+    for (auto candidate : candidates)
         legalActions.push_back(PDDLActionInstance(action, vector<unsigned int> (candidate.begin(), candidate.begin() + action->parameters.size())));
-
-    if (action->name == "sendtohome-b" && legalActions.size() > 0) {
-        int a = 0;
-    }
 
     return legalActions;
 }
 
+// Recursively look through every parameter option, and check if they are valid
+// If they are valid, add them to the candidate set
 void ActionGenerator2::GetCandidates(set<array<unsigned int, MAXPARAMSIZE>>* candidates, const PDDLState* state, const array<unsigned int, MAXPARAMSIZE> parentValues, const int currentIndex, const int maxIndex) {
     vector<unsigned int> objectCandidates;
     objectCandidates.reserve(TEMPOBJSIZE);
     bool wasAny = false;
+    // Check all unary literals that match the parameter index
     for (auto precon = UnaryActionLiteralsPtr->begin(); precon != UnaryActionLiteralsPtr->end(); precon++) {
         if (precon->args.at(0) == currentIndex) {
             wasAny = true;
             if (objectCandidates.size() == 0) {
                 for (auto fact : state->unaryFacts.at(precon->predicateIndex))
                     objectCandidates.push_back(fact);
-                if (objectCandidates.size() == 0)
-                    break;
             }
             else {
                 for (int i = 0; i < objectCandidates.size(); i++) {
@@ -53,16 +51,17 @@ void ActionGenerator2::GetCandidates(set<array<unsigned int, MAXPARAMSIZE>>* can
                         i--;
                     }
                 }
-                if (objectCandidates.size() == 0)
-                    break;
             }
+            // If the candidates are now empty, the current object configuration is now invalid.
+            if (objectCandidates.size() == 0)
+                break;
         }
     }
 
-    if (!wasAny) {
+    // If there where no precondition for this parameter, assume that all objects are valid
+    if (!wasAny)
         for (auto object : objects)
             objectCandidates.push_back(object);
-    }
 
     for (auto candidate : objectCandidates) {
         array<unsigned int, MAXPARAMSIZE> newArray = parentValues;
@@ -77,15 +76,21 @@ void ActionGenerator2::GetCandidates(set<array<unsigned int, MAXPARAMSIZE>>* can
     }
 }
 
+// Check if all binary predicates are valid with the current parameters.
+// If a predicate refers to a parameter that is outside of currentMax, ignore it.
 bool ActionGenerator2::IsBinaryLegal(const PDDLState* state, const array<unsigned int, MAXPARAMSIZE>* set, const int currentMax) {
+    if (currentMax < 1)
+        return true;
+
     for (auto precon = BinaryActionLiteralsPtr->begin(); precon != BinaryActionLiteralsPtr->end(); precon++) {
         int arg1 = precon->args.at(0);
         int arg2 = precon->args.at(1);
-        if (arg1 <= currentMax && arg2 <= currentMax) {
+        if (arg1 <= currentMax && arg2 <= currentMax && (arg1 == currentMax || arg2 == currentMax)) {
             auto value = make_pair(set->at(arg1), set->at(arg2));
             if (state->ContainsFact(precon->predicateIndex, value) != precon->value)
                 return false;
         }
     }
+
     return true;
 }

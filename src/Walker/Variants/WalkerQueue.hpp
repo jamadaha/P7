@@ -24,7 +24,7 @@ private:
     const unsigned int maxStepCount = 100;
     static constexpr auto cmp = [](std::pair<int, std::pair<PDDLState, Path>> a, std::pair<int, std::pair<PDDLState, Path>> b) { return a.first > b.first; };
     std::multiset<std::pair<int, std::pair<PDDLState, Path>>, decltype(cmp)> searchQueue;
-    Path Walk(BaseHeuristic* heuristic, const PDDLState* state);
+    Path Walk(BaseHeuristic* heuristic, const PDDLState state);
 };
 
 #endif

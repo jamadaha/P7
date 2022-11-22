@@ -24,7 +24,7 @@ private:
     const unsigned int maxStepCount = 1000;
     int bestValue = 0;
     PDDLState bestState;
-    Path Walk(BaseHeuristic* heuristic, const PDDLState* state);
+    Path Walk(BaseHeuristic* heuristic, const PDDLState state);
 };
 
 #endif

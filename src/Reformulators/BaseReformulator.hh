@@ -21,6 +21,8 @@ public:
 	int TimeLimit = 1000;
 	int Iteration = 1;
 	int ReportID = -1;
+	int GetMacrosGenerated() { return macrosGenerated; };
+	bool DidEncounterErrors() { return encounteredErrors; };
 	BaseReformulator(Config* config, RunReport* report) : Configs(config), Report(report) {
 
 	}
@@ -33,6 +35,9 @@ protected:
 	const int debugIndent = 2;
 	std::vector<Path> paths;
     std::vector<Macro> macros;
+	ProgressBarHelper* entanglerBar;
+	int macrosGenerated = 0;
+	bool encounteredErrors = false;
 
 	std::vector<EntanglementOccurance> FindEntanglements(PDDLInstance* instance, bool debugMode);
     EntanglementFinder GetEntanglementFinder(bool debugMode);

@@ -5,6 +5,7 @@
 #include "Variants/WalkerGreedy.hpp"
 #include "Variants/WalkerGreedyResume.hpp"
 #include "Variants/WalkerQueue.hpp"
+#include "Variants/WalkerProbe.hpp"
 
 #include "DepthFunctions/BaseDepthFunction.hh"
 #include "DepthFunctions/ConstantDepthFunction.hh"
@@ -17,7 +18,6 @@
 #include "Heuristics/GoalCountHeuristic.hh"
 #include "Heuristics/GoalPredicateCountHeuristic.hh"
 #include "Heuristics/RandomHeuristic.hh"
-#include "Heuristics/GreedyHeuristic.hh"
 
 #include "../IntermediatePDDL/PDDLInstance.hh"
 

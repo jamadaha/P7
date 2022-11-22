@@ -3,12 +3,17 @@
 PDDLInstance BaseWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
     bool debugMode = Configs->GetItem<bool>("debugmode");
 
+	// Walking
     FindPaths(instance, debugMode);
-    std::vector<EntanglementOccurance> candidates = FindEntanglements(instance, debugMode);
-    GenerateMacros(instance, &candidates, debugMode);
-    PDDLInstance macroInstance = GenerateMacroInstance(instance, &macros, debugMode);
 
-    return macroInstance;
+	// Entanglement Finding
+    std::vector<EntanglementOccurance> candidates = FindEntanglements(instance, debugMode);
+
+	// Macro Generation
+	auto macros = GenerateMacros(instance, &candidates, debugMode);
+	//auto macroInstance = GenerateMacroInstance()
+
+    return *instance;
 }
 
 void BaseWalkerReformulator::FindPaths(PDDLInstance *instance, bool debugMode) {
@@ -19,6 +24,34 @@ void BaseWalkerReformulator::FindPaths(PDDLInstance *instance, bool debugMode) {
 	auto ellapsed = Report->Stop(walkID);
 	if (debugMode)
 		PrintWalkerDebugData(ellapsed);
+	if (Configs->GetItem<bool>("validatePaths")) {
+		int verifyID = Report->Begin("Verifying Paths", walkID);
+		if (debugMode) {
+			ConsoleHelper::PrintDebugInfo("[Walker] Verifying paths", debugIndent);
+			ConsoleHelper::PrintDebugWarning("[Walker] This may take a while", debugIndent);
+		}
+
+		WalkerPathVerifyer verifyer;
+		auto badPaths = verifyer.VerifyPaths(&paths, instance, Configs);
+		if (badPaths.size() == 0) {
+			if (debugMode)
+				ConsoleHelper::PrintDebugInfo("[Walker] " + std::to_string(paths.size()) + " paths verified!", debugIndent);
+			Report->Stop(ReportData("None", "-1", "true"));
+		}
+		else {
+			Report->Stop(ReportData("None", "-1", "false"));
+			int counter = 0;
+			for (auto path : badPaths) {
+				ConsoleHelper::PrintError("[Walker] Bad path: " + path.path.ToString(instance->problem) + ", Reason: " + path.Reason, debugIndent);
+				encounteredErrors = true;
+				counter++;
+				if (counter > 10) {
+					ConsoleHelper::PrintError("[Walker] Many more than these", debugIndent);
+					break;
+				}
+			}
+		}
+	}
 }
 
 #pragma region Debug Items
@@ -37,6 +70,7 @@ void BaseWalkerReformulator::SetupWalkerDebugInfo(BaseWalker* walker) {
 	};
 	walker->OnWalkerEnd = [&](BaseWalker* sender, int timePassed) {
 		walkerBar->End();
+		delete walkerBar;
 		unsigned int totalIterations = sender->GetTotalIterations();
 		unsigned int totalActionCount = sender->GetTotalActionsGenerated();
 		ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + std::to_string(timePassed) + "ms", debugIndent);

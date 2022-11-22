@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "../../src/EntanglementFinder/EntanglementFinder.hh"
-#include "../../src/Walker/Path.hpp"
+#include "../../src/Walker/Path.hh"
 
 using namespace std;
 

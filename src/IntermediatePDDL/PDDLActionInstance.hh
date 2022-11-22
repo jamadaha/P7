@@ -17,7 +17,7 @@ public:
     const PDDLAction *action = nullptr;
     const std::vector<unsigned int> objects;
     PDDLActionInstance() {};
-    PDDLActionInstance(const PDDLAction *action, const std::vector<unsigned int> objects) : action(action), objects(objects) {}; 
+    PDDLActionInstance(const PDDLAction* action, const std::vector<unsigned int> objects) : action(action), objects(objects) {};
     std::string ToString(const PDDLInstance* instance);
     std::string LiteralsToString(std::vector<PDDLLiteral> literals, const PDDLInstance* instance);
 
@@ -27,10 +27,6 @@ public:
         if (lhs.objects != rhs.objects)
             return false;
         return true;
-    }
-
-    PDDLActionInstance& operator=(const PDDLActionInstance& other) {
-        return *new(this) PDDLActionInstance(action, objects);
     }
 
 private:
@@ -53,6 +49,16 @@ namespace std {
             std::size_t seed = vec.size();
             for (int i = 0; i < vec.size(); i++)
                 seed ^= 0x8e3471b5 + vec.at(i)->GetHash() + (seed >> 3);
+            return seed;
+        }
+    };
+
+    template <>
+    struct hash<vector<PDDLActionInstance>> {
+        auto operator()(vector<PDDLActionInstance>& vec) -> size_t {
+            std::size_t seed = vec.size();
+            for (int i = 0; i < vec.size(); i++)
+                seed ^= 0x8e3471b5 + vec.at(i).GetHash() + (seed >> 3);
             return seed;
         }
     };

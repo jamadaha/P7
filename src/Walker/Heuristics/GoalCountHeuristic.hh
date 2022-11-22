@@ -23,9 +23,9 @@ public:
 				i = 0;
 			}
 
-			state->DoAction(&choices->at(i));
+			auto changes = state->DoAction(&choices->at(i));
 			int value = Eval(state);
-			state->UndoAction(&choices->at(i));
+			state->UndoAction(&changes);
 			if (value >= bestValue) {
 				bestIndex = i;
 				bestValue = value;
@@ -44,10 +44,6 @@ public:
 		for (auto iter = problem->goalState.binaryFacts.begin(); iter != problem->goalState.binaryFacts.end(); iter++)
 			for (auto fact : (*iter).second)
 				if (state->ContainsFact((*iter).first, fact))
-					value++;
-		for (auto iter = problem->goalState.multiFacts.begin(); iter != problem->goalState.multiFacts.end(); iter++)
-			for (auto fact : (*iter).second)
-				if (state->ContainsFact((*iter).first, &fact))
 					value++;
 		return value;
 	};

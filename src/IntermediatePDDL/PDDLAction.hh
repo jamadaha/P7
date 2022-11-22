@@ -15,6 +15,10 @@ public:
     const std::vector<std::string> parameters;
     const std::vector<PDDLLiteral> preconditions;
     const std::vector<PDDLLiteral> effects;
+
+    std::vector<PDDLLiteral> unaryPreconditions;
+    std::vector<PDDLLiteral> binaryPreconditions;
+
     // For each parameter, what unary preconditions mention it
     const std::vector<std::unordered_set<const PDDLLiteral*>> applicableUnaryLiterals;
     // For each parameter, what unary predicates are mentioned in applicable preconditions
@@ -34,7 +38,14 @@ public:
         applicableUnaryLiterals(GenerateApplicableLiterals(true)), 
         applicableUnaryPredicates(GenerateApplicablePredicates(true)),
         applicablePredicates(GenerateApplicablePredicates()),
-        applicableMultiLiterals(GenerateApplicableLiterals(false)) {};
+        applicableMultiLiterals(GenerateApplicableLiterals(false)) {
+            for (auto predicate = preconditions.begin(); predicate != preconditions.end(); predicate++) {
+                if (predicate->args.size() == 1)
+                    unaryPreconditions.push_back(*predicate);
+                else if (predicate->args.size() == 2)
+                    binaryPreconditions.push_back(*predicate);
+            }
+        };
 
     PDDLAction(const PDDLAction &a) : 
         name(a.name),
@@ -44,7 +55,14 @@ public:
         applicableUnaryLiterals(GenerateApplicableLiterals(true)),
         applicableUnaryPredicates(GenerateApplicablePredicates(true)),
         applicablePredicates(GenerateApplicablePredicates()),
-        applicableMultiLiterals(GenerateApplicableLiterals(false)) {}
+        applicableMultiLiterals(GenerateApplicableLiterals(false)) {
+            for (auto predicate = preconditions.begin(); predicate != preconditions.end(); predicate++) {
+                if (predicate->args.size() == 1)
+                    unaryPreconditions.push_back(*predicate);
+                else if (predicate->args.size() == 2)
+                    binaryPreconditions.push_back(*predicate);
+            }
+        }
 
     /// @return Returns true if name, parameters and preconditions are the same, ignores parameter names
     friend bool operator==(const PDDLAction& lhs, const PDDLAction& rhs) {

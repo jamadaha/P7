@@ -11,6 +11,7 @@
 #include "../Reformulators/Walkers/GreedyResumeWalkerReformulator.hh"
 #include "../Reformulators/Walkers/QueueWalkerReformulator.hh"
 #include "../Reformulators/Regressors/PartialRegressionReformulator.hh"
+#include "../Reformulators/Walkers/ProbeWalkerReformulator.hh"
 #include "../PDDLParser/pddldriver.hh"
 #include "../PDDLCodeGenerator/PDDLCodeGenerator.hh"
 #include "../SASCodeGenerator/SASCodeGenerator.hh"
@@ -45,13 +46,14 @@ public:
 	enum RunResult Run(int reformulatorIndex = 0);
 
 private:
+	enum ReformulatorRunResultResult { _None, ReformulatorFailed, FoundPlan, DidNotFindPlan };
 	InterfaceStep<BaseReformulator*> GetReformulator(int reformulatorIndex = 0);
 	InterfaceStep<void> CheckFilePaths();
 	InterfaceStep<PDDLDriver*> ParsePDDLFiles();
 	InterfaceStep<PDDLInstance*> ConvertPDDLFormat(PDDLDriver* driver);
 	InterfaceStep<void> RunIteratively(BaseReformulator* reformulator, PDDLInstance* instance);
 	InterfaceStep<void> RunDirect(BaseReformulator* reformulator, PDDLInstance* instance);
-	InterfaceStep<DownwardRunner::DownwardRunnerResult> RunSingle(BaseReformulator* reformulator, PDDLInstance* instance, int reportID, int reformulatorTimeLimit, int downwardTimeLimit);
+	InterfaceStep<ReformulatorRunResultResult> RunSingle(BaseReformulator* reformulator, PDDLInstance* instance, int reportID, int reformulatorTimeLimit, int downwardTimeLimit);
 	InterfaceStep<void> ValidatePlans(std::string domainFile, std::string problemFile, std::string sasFile, std::string reportName);
 	InterfaceStep<SASPlan> ParseSASPlan();
 	InterfaceStep<SASPlan> RebuildSASPlan(SASPlan* reformulatedSASPlan, BaseReformulator* reformulator, PDDLInstance* instance);

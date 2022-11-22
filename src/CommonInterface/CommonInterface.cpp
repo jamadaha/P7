@@ -6,21 +6,18 @@ InterfaceStep<BaseReformulator*> CommonInterface::GetReformulator(int reformulat
 	ConsoleHelper::PrintInfo("Finding reformulator algorithm...");
 	Report->Begin("Finding reformulator");
 	BaseReformulator* reformulator;
-	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "sameoutput") {
+	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "sameoutput")
 		reformulator = new SameOutputReformulator(&config, Report);
-	}
-	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "greedyWalker") {
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "greedyWalker")
 		reformulator = new GreedyWalkerReformulator(&config, Report);
-	}
-	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "greedyResumeWalker") {
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "greedyResumeWalker")
 		reformulator = new GreedyResumeWalkerReformulator(&config, Report);
-	}
-	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "queueWalker") {
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "queueWalker")
 		reformulator = new QueueWalkerReformulator(&config, Report);
-	}
-	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "partialRegressor") {
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "partialRegressor")
 		reformulator = new PartialRegressionReformulator(&config, Report);
-	}
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "probeWalker")
+		reformulator = new ProbeWalkerReformulator(&config, Report);
 	else {
 		ConsoleHelper::PrintError("Reformulator not found! Reformulator: " + config.GetItem<string>("reformulator"));
 		return InterfaceStep<BaseReformulator*>(reformulator, false);
@@ -73,7 +70,7 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 
 	int iterativeProcess = Report->Begin("Solving Problem");
 
-	DownwardRunner::DownwardRunnerResult runRes;
+	CommonInterface::ReformulatorRunResultResult runRes;
 	int counter = 1;
 	while (timeLeft > 0) {
 		int reformulatorTimeLimit = (currentIncrementTimeLimit * 2) * config.GetItem<double>("timelimitSplit");
@@ -83,11 +80,9 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 		ConsoleHelper::PrintInfo("Iteration " + to_string(counter) + "(reformulator: " + to_string(reformulatorTimeLimit) + "ms, downward: " + to_string(downwardTimeLimit) + "ms)");
 
 		// Run an iteration of our reformulation method
-		auto result = RunSingle(reformulator, instance, iterationID, reformulatorTimeLimit, downwardTimeLimit);
+		runRes = RunSingle(reformulator, instance, iterationID, reformulatorTimeLimit, downwardTimeLimit).Data;
 		Report->Stop(iterationID);
-		if (result.RanWithoutErrors) {
-			// If we found a solution, stop iterating
-			runRes = result.Data;
+		if (runRes == ReformulatorRunResultResult::ReformulatorFailed || runRes == ReformulatorRunResultResult::FoundPlan) {
 			break;
 		}
 
@@ -100,12 +95,19 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 			currentIncrementTimeLimit = timeLeft / 2;
 		counter++;
 	}
-	if (runRes != DownwardRunner::FoundPlan) {
-		Report->Stop(iterativeProcess, "false");
+
+	switch (runRes) {
+	case CommonInterface::ReformulatorRunResultResult::ReformulatorFailed:
+		Report->Stop(iterativeProcess, ReportData("None", "-1", "false"));
+		ConsoleHelper::PrintError("Something in the reformulator failed! Use debug mode to get more info");
+		return InterfaceStep<void>(false);
+	case CommonInterface::ReformulatorRunResultResult::DidNotFindPlan:
+		Report->Stop(iterativeProcess, ReportData("None", "-1", "false"));
 		ConsoleHelper::PrintError("Fast downward did not find a plan in time!");
 		return InterfaceStep<void>(false);
 	}
-	Report->Stop(iterativeProcess, "true");
+
+	Report->Stop(iterativeProcess, ReportData("None", "-1", "true"));
 	return InterfaceStep<void>();
 }
 
@@ -113,17 +115,23 @@ InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, P
 	int directProcess = Report->Begin("Solving Problem");
 	int timeLimit = config.GetItem<int>("totalTimeLimit") * 1000;
 
-	if (RunSingle(reformulator, instance, directProcess, timeLimit, timeLimit).RanWithoutErrors) {
-		Report->Stop(directProcess, "true");
-		return InterfaceStep<void>();
-	}
-	else {
-		Report->Stop(directProcess, "true");
+	auto runRes = RunSingle(reformulator, instance, directProcess, timeLimit, timeLimit).Data;
+	switch (runRes) {
+	case CommonInterface::ReformulatorRunResultResult::ReformulatorFailed:
+		Report->Stop(directProcess, ReportData("None", "-1", "false"));
+		ConsoleHelper::PrintError("Something in the reformulator failed! Use debug mode to get more info");
+		return InterfaceStep<void>(false);
+	case CommonInterface::ReformulatorRunResultResult::DidNotFindPlan:
+		Report->Stop(directProcess, ReportData("None", "-1", "false"));
+		ConsoleHelper::PrintError("Fast downward did not find a plan in time!");
 		return InterfaceStep<void>(false);
 	}
+
+	Report->Stop(directProcess, ReportData("None", "-1", "true"));
+	return InterfaceStep<void>();
 }
 
-InterfaceStep<DownwardRunner::DownwardRunnerResult> CommonInterface::RunSingle(BaseReformulator* reformulator, PDDLInstance* instance, int reportID, int reformulatorTimeLimit, int downwardTimeLimit) {
+InterfaceStep<CommonInterface::ReformulatorRunResultResult> CommonInterface::RunSingle(BaseReformulator* reformulator, PDDLInstance* instance, int reportID, int reformulatorTimeLimit, int downwardTimeLimit) {
 	ConsoleHelper::PrintInfo("Reformulating PDDL...", 1);
 	int reformulationID = Report->Begin("Reformulation of PDDL", reportID);
 	reformulator->ReportID = reformulationID;
@@ -131,6 +139,9 @@ InterfaceStep<DownwardRunner::DownwardRunnerResult> CommonInterface::RunSingle(B
 	PDDLInstance reformulatedInstance = reformulator->ReformulatePDDL(instance);
 	Report->Stop();
 	Report->Stop(reformulationID);
+	if (reformulator->DidEncounterErrors()) {
+		return InterfaceStep<CommonInterface::ReformulatorRunResultResult>(CommonInterface::ReformulatorRunResultResult::ReformulatorFailed, false);
+	}
 
 	// Generate new PDDL files
 	ConsoleHelper::PrintInfo("Generating PDDL files...", 1);
@@ -147,9 +158,9 @@ InterfaceStep<DownwardRunner::DownwardRunnerResult> CommonInterface::RunSingle(B
 	auto runRes = runner.ParseDownwardLog();
 	Report->Stop();
 	if (runRes != DownwardRunner::FoundPlan) {
-		return InterfaceStep<DownwardRunner::DownwardRunnerResult>(runRes, false);
+		return InterfaceStep<CommonInterface::ReformulatorRunResultResult>(CommonInterface::ReformulatorRunResultResult::DidNotFindPlan, false);
 	}
-	return InterfaceStep<DownwardRunner::DownwardRunnerResult>(runRes);
+	return InterfaceStep<CommonInterface::ReformulatorRunResultResult>(CommonInterface::ReformulatorRunResultResult::FoundPlan);
 }
 
 InterfaceStep<void> CommonInterface::ValidatePlans(string domainFile, string problemFile, string sasFile, string reportName) {
@@ -157,11 +168,11 @@ InterfaceStep<void> CommonInterface::ValidatePlans(string domainFile, string pro
 	int parent = Report->Begin(reportName);
 	auto reformulatedSASValidatorResult = PlanValidator::ValidatePlan(config, domainFile, problemFile, sasFile);
 	if (reformulatedSASValidatorResult != PlanValidator::PlanMatch) {
-		Report->Stop(parent, "false");
+		Report->Stop(parent, ReportData("None", "-1", "false"));
 		ConsoleHelper::PrintDebugError("Output plan is not valid for reformulated domain and problem!");
 		return InterfaceStep<void>(false);
 	}
-	Report->Stop(parent, "true");
+	Report->Stop(parent, ReportData("None", "-1", "true"));
 	return InterfaceStep<void>(true);
 }
 
@@ -171,7 +182,7 @@ InterfaceStep<SASPlan> CommonInterface::ParseSASPlan() {
 	SASParser sasParser;
 	filesystem::path sasPath = filesystem::path(CommonInterface::FastDownwardSASName);
 	SASPlan reformulatedSASPlan = sasParser.Parse(sasPath);
-	Report->Stop(to_string(reformulatedSASPlan.cost));
+	Report->Stop(ReportData("None", to_string(reformulatedSASPlan.cost)));
 	return InterfaceStep<SASPlan>(reformulatedSASPlan);
 }
 
@@ -179,7 +190,13 @@ InterfaceStep<SASPlan> CommonInterface::RebuildSASPlan(SASPlan* reformulatedSASP
 	ConsoleHelper::PrintInfo("Rebuilding the SAS plan...");
 	Report->Begin("Rebuild SAS plan");
 	SASPlan outputPlan = reformulator->RebuildSASPlan(instance, reformulatedSASPlan);
-	Report->Stop(to_string(outputPlan.cost));
+	Report->Stop(ReportData("None", to_string(outputPlan.cost)));
+	Report->Begin("Plan Length Difference");
+	Report->Stop(ReportData("None", to_string(outputPlan.cost - reformulatedSASPlan->cost)));
+	Report->Begin("Macros Generated");
+	Report->Stop(ReportData("None", to_string(reformulator->GetMacrosGenerated())));
+	Report->Begin("Macros Used");
+	Report->Stop(ReportData("None", to_string(outputPlan.macrosUsed)));
 	return InterfaceStep<SASPlan>(outputPlan);
 }
 

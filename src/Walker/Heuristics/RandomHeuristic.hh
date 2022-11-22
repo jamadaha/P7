@@ -5,9 +5,7 @@
 
 class RandomHeuristic : public BaseHeuristic {
 public:
-	RandomHeuristic() : BaseHeuristic(nullptr, nullptr){
-		srand(time(NULL));
-	};
+	RandomHeuristic() : BaseHeuristic(nullptr, nullptr){};
 
 	PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const override {
 		return &choices->at(rand() % choices->size());

@@ -5,11 +5,12 @@
 #include <list>
 
 #include "../IntermediatePDDL/PDDLActionInstance.hh"
-#include "Path.hpp"
+#include "Path.hh"
 #include "Heuristics/BaseHeuristic.hh"
 #include "DepthFunctions/BaseDepthFunction.hh"
 #include "WidthFunctions/BaseWidthFunction.hh"
 #include "ActionGenerator.hpp"
+#include "ActionGenerator2.hpp"
 
 #include "../Config/Config.hh"
 #include "../Helpers/Hashes.hh"
@@ -21,11 +22,13 @@ public:
     BaseHeuristic* heuristic;
     BaseDepthFunction* depthFunc;
     BaseWidthFunction* widthFunc;
+    bool SaveStates = false;
 
     BaseWalker(std::string walkerName, PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) :
         WalkerName(walkerName), 
         instance(instance), 
-        actionGenerator(ActionGenerator(&instance->domain->actions, instance->problem->objects.size())), 
+        actionGenerator(ActionGenerator2(&instance->domain->actions, instance->problem->objects.size())),
+        //actionGenerator(ActionGenerator(&instance->domain->actions, instance->problem->objects.size())),
         heuristic(heuristic), widthFunc(widthFunc) {}
     ~BaseWalker() {
         free(heuristic);
@@ -46,7 +49,8 @@ public:
 protected:
     unsigned int _totalIterations = 0;
     PDDLInstance* instance;
-    ActionGenerator actionGenerator;
+    ActionGenerator2 actionGenerator;
+    //ActionGenerator actionGenerator;
 };
 
 #endif

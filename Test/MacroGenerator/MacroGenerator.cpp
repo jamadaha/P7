@@ -7,7 +7,7 @@
 const std::string TAG = "Macro ";
 
 TEST_CASE(TAG + "two same simple actions") {
-    std::vector<PDDLActionInstance*> actions;
+    std::vector<PDDLActionInstance> actions;
     // set up simple action with 1 precondition and 1 effect
     PDDLAction _act = PDDLAction(
         "testaction",
@@ -17,8 +17,8 @@ TEST_CASE(TAG + "two same simple actions") {
     );
     PDDLActionInstance act1 = PDDLActionInstance(&_act, std::vector<unsigned int> {0, 1});
     PDDLActionInstance act2 = PDDLActionInstance(&_act, std::vector<unsigned int> {0, 1});
-    actions.push_back(&act1);
-    actions.push_back(&act2);
+    actions.push_back(act1);
+    actions.push_back(act2);
     // generate macro
     MacroGenerator macroGenerator = MacroGenerator();
     Macro m = macroGenerator.GenerateMacro(&actions);
@@ -35,7 +35,7 @@ TEST_CASE(TAG + "two same simple actions") {
 }
 
 TEST_CASE(TAG + "two different simple actions") {
-    std::vector<PDDLActionInstance*> actions;
+    std::vector<PDDLActionInstance> actions;
     PDDLAction _act1 = PDDLAction(
         "testaction1",
         std::vector<std::string> {"?x", "?y"},
@@ -50,8 +50,8 @@ TEST_CASE(TAG + "two different simple actions") {
     );
     PDDLActionInstance act1 = PDDLActionInstance(&_act1, std::vector<unsigned int> {0, 1});
     PDDLActionInstance act2 = PDDLActionInstance(&_act2, std::vector<unsigned int> {1, 3});
-    actions.push_back(&act1);
-    actions.push_back(&act2);
+    actions.push_back(act1);
+    actions.push_back(act2);
     // generate macro
     MacroGenerator macroGenerator = MacroGenerator();
     Macro m = macroGenerator.GenerateMacro(&actions);
@@ -70,7 +70,7 @@ TEST_CASE(TAG + "two different simple actions") {
 }
 
 TEST_CASE(TAG + "precon - positive eff") {
-    std::vector<PDDLActionInstance*> actions;
+    std::vector<PDDLActionInstance> actions;
     PDDLAction _act1 = PDDLAction(
         "testaction1",
         std::vector<std::string> {"?x", "?y"},
@@ -86,8 +86,8 @@ TEST_CASE(TAG + "precon - positive eff") {
     PDDLActionInstance act1 = PDDLActionInstance(&_act1, std::vector<unsigned int> {0, 1});
     PDDLActionInstance act2 = PDDLActionInstance(&_act2, std::vector<unsigned int> {1, 2});
 
-    actions.push_back(&act1);
-    actions.push_back(&act2);
+    actions.push_back(act1);
+    actions.push_back(act2);
 
     // generate macro
     MacroGenerator macroGenerator = MacroGenerator();
@@ -107,7 +107,7 @@ TEST_CASE(TAG + "precon - positive eff") {
 }
 
 TEST_CASE(TAG + "precon - positive eff (reverse order)") {
-    std::vector<PDDLActionInstance*> actions;
+    std::vector<PDDLActionInstance> actions;
     PDDLAction _act1 = PDDLAction(
         "testaction1",
         std::vector<std::string> {"?x", "?y"},
@@ -123,8 +123,8 @@ TEST_CASE(TAG + "precon - positive eff (reverse order)") {
     PDDLActionInstance act1 = PDDLActionInstance(&_act1, std::vector<unsigned int> {0, 1});
     PDDLActionInstance act2 = PDDLActionInstance(&_act2, std::vector<unsigned int> {1, 2});
 
-    actions.push_back(&act1);
-    actions.push_back(&act2);
+    actions.push_back(act1);
+    actions.push_back(act2);
 
     // generate macro
     MacroGenerator macroGenerator = MacroGenerator();
@@ -145,7 +145,7 @@ TEST_CASE(TAG + "precon - positive eff (reverse order)") {
 }
 
 TEST_CASE(TAG + "positive - negative eff") {
-    std::vector<PDDLActionInstance*> actions;
+    std::vector<PDDLActionInstance> actions;
     PDDLAction _act1 = PDDLAction(
         "testaction1",
         std::vector<std::string> {"?x", "?y"},
@@ -162,8 +162,8 @@ TEST_CASE(TAG + "positive - negative eff") {
     PDDLActionInstance act1 = PDDLActionInstance(&_act1, std::vector<unsigned int> {0, 1});
     PDDLActionInstance act2 = PDDLActionInstance(&_act2, std::vector<unsigned int> {1, 2});
     
-    actions.push_back(&act1);
-    actions.push_back(&act2);
+    actions.push_back(act1);
+    actions.push_back(act2);
 
     // generate macro
     MacroGenerator macroGenerator = MacroGenerator();
@@ -185,7 +185,7 @@ TEST_CASE(TAG + "positive - negative eff") {
 }
 
 TEST_CASE(TAG + "negative - positive eff") {
-    std::vector<PDDLActionInstance*> actions;
+    std::vector<PDDLActionInstance> actions;
     PDDLAction _act1 = PDDLAction(
         "testaction1",
         std::vector<std::string> {"?x", "?y"},
@@ -202,8 +202,8 @@ TEST_CASE(TAG + "negative - positive eff") {
     PDDLActionInstance act1 = PDDLActionInstance(&_act1, std::vector<unsigned int> {0, 1});
     PDDLActionInstance act2 = PDDLActionInstance(&_act2, std::vector<unsigned int> {1, 2});
     
-    actions.push_back(&act1);
-    actions.push_back(&act2);
+    actions.push_back(act1);
+    actions.push_back(act2);
 
     // generate macro
     MacroGenerator macroGenerator = MacroGenerator();
@@ -225,7 +225,7 @@ TEST_CASE(TAG + "negative - positive eff") {
 }
 
 TEST_CASE(TAG + "3 action blocks macro") {
-    std::vector<PDDLActionInstance*> actions;
+    std::vector<PDDLActionInstance> actions;
     // predicates:
     // (on ?x ?y)
     // (ontable ?x)
@@ -256,9 +256,9 @@ TEST_CASE(TAG + "3 action blocks macro") {
     PDDLActionInstance act2 = PDDLActionInstance(&_act2, std::vector<unsigned int> {0, 1});
     PDDLActionInstance act3 = PDDLActionInstance(&_act1, std::vector<unsigned int> {2});
 
-    actions.push_back(&act1);
-    actions.push_back(&act2);
-    actions.push_back(&act3);
+    actions.push_back(act1);
+    actions.push_back(act2);
+    actions.push_back(act3);
 
     // generate macro
     MacroGenerator macroGenerator = MacroGenerator();

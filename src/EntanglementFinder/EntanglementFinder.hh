@@ -9,7 +9,7 @@
 
 #include "../IntermediatePDDL/PDDLInstance.hh"
 #include "EntanglementOccurance.hh"
-#include "../Walker/Path.hpp"
+#include "../Walker/Path.hh"
 
 class EntanglementFinder {
 public:
@@ -28,6 +28,7 @@ public:
 		/// By how much the level should be reduced in each iteration.
 		/// </summary>
 		double LevelReductionFactor = 2;
+		int TimeLimitMs = 100;
 		LevelReductionTypes LevelReductionType = LevelReductionTypes::Division;
 	};
 
@@ -47,11 +48,15 @@ public:
 	std::function<const void(int level, int outOf)> OnNewLevel;
 	std::function<const void()> OnLevelEnd;
 	std::function<const void(int current, int outOf)> OnLevelIteration;
+	std::function<const void()> OnTimeLimitReached;
 
 private:
 	int _CurrentLevel;
 	int _TotalLevels;
 	unsigned int _TotalComparisons;
+	bool _HasTimeLimit = false;
+	bool _IsTimeLimitReached = false;
+	std::chrono::_V2::steady_clock::time_point _StartTime;
 
 	/// <summary>
 	/// Validate the input data
@@ -60,11 +65,15 @@ private:
 	/// <summary>
 	/// Takes a set of Paths and splits them up into sets of PDDLActionInstances based on the level.
 	/// </summary>
-	void GenerateActionSet(std::vector<std::pair<std::pair<size_t,int>, std::vector<PDDLActionInstance*>>>* currentValues, std::vector<Path>* paths, const int level);
+	void GenerateActionSet(std::vector<std::pair<size_t, std::vector<PDDLActionInstance*>>>* currentValues, std::vector<Path>* paths, const int level);
 	/// <summary>
 	/// Based on the values generated in the "GenerateActionSet" method
 	/// </summary>
-	void AddCandidatesIfThere(std::unordered_map<size_t, EntanglementOccurance>* candidates, std::vector<std::pair<std::pair<size_t, int>, std::vector<PDDLActionInstance*>>>* currentValues);
+	void AddCandidatesIfThere(std::unordered_map<size_t, EntanglementOccurance>* candidates, const std::vector<std::pair<size_t, std::vector<PDDLActionInstance*>>>* currentValues);
+	/// <summary>
+	/// Returns true if the time limit have been exceeded
+	/// </summary>
+	bool IsOverTimeLimit();
 	/// <summary>
 	/// Reduce the current level
 	/// </summary>

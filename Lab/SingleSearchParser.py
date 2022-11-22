@@ -6,6 +6,7 @@ Regular expressions and functions for parsing single-search runs of Fast Downwar
 
 import re
 import sys
+import os
 
 from lab import tools
 from lab.parser import Parser
@@ -115,12 +116,7 @@ def add_scores(content, props):
         props["score_" + attr] = tools.compute_log_score(
             success, props.get(attr), lower_bound=100, upper_bound=1e6
         )
-
-    for attr in ("p7_solving_problem_ms"):
-        props["score_" + attr] = tools.compute_log_score(
-            success, props.get(attr), lower_bound=0, upper_bound=1e6
-        )
-
+        
     try:
         max_time = props["limit_search_time"]
     except KeyError:
@@ -158,6 +154,8 @@ class SingleSearchParser(Parser):
         Parser.__init__(self)
 
         downward_log = "downwardLog"
+        if not os.path.exists(downward_log):
+            return;
 
         for name, pattern, typ in PATTERNS:
             self.add_pattern(name, pattern, type=typ,file=downward_log)

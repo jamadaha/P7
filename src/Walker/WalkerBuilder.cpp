@@ -17,8 +17,6 @@ BaseHeuristic* WalkerBuilder::GetHeuristic(std::string heuristicName, PDDLInstan
 		return new GoalCountHeuristic(instance->domain, instance->problem);
 	else if (heuristicName == "goalPredicateCount")
 		return new GoalPredicateCountHeuristic(instance->domain, instance->problem);
-	else if (heuristicName == "greedyHeuristic")
-		return new GreedyHeuristic(instance->domain, instance->problem);
 	else
 		throw std::invalid_argument("Invalid heuristic specified in config");
 }
@@ -30,6 +28,8 @@ BaseWalker* WalkerBuilder::GetWalker(std::string walkerName, BaseWidthFunction *
 		return new WalkerGreedyResume(instance, heuristic, widthFunction);
 	else if (walkerName == "walkerQueue")
 		return new WalkerQueue(instance, heuristic, widthFunction);
+	else if (walkerName == "walkerProbe")
+		return new WalkerProbe(instance, heuristic, widthFunction);
 	else
 		throw std::invalid_argument("Invalid walker specified in config");
 }

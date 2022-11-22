@@ -19,12 +19,14 @@ target_link_libraries(P7
         DownwardRunner
         FileHelper
         Walker
+        WalkerPathVerifyer
         EntanglementFinder
         ActionGenerator
         Hashes
         ProgressBarHelper
         MacroGenerator
         Regressor
-        PartialActionGenerator)
+        PartialActionGenerator
+        MacroVerifyer)
 
 add_executable(P7Lab "P7Lab.cpp")

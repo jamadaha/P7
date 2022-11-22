@@ -11,9 +11,18 @@
 struct MutexVariable {
     struct Atom {
         const unsigned int predicate;
+        // Used for debugging
+        const std::string predicateS;
         const std::vector<unsigned int> objects;
+        // Used for debugging
+        const std::vector<std::string> objectsS;
 
-        Atom(unsigned int predicate, std::vector<unsigned int> objects) : predicate(predicate), objects(objects) {};
+        Atom(
+            unsigned int predicate, 
+            std::string predicateS,
+            std::vector<unsigned int> objects,
+            std::vector<std::string> objectsS) 
+            : predicate(predicate), predicateS(predicateS), objects(objects), objectsS(objectsS) {};
     };
     
     // Each atom consists of a predicate, and a list of objects

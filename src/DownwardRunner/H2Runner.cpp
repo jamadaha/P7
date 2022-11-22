@@ -57,17 +57,19 @@ MutexVariable H2Runner::ParseVariable(std::vector<std::string> variableInfo) {
                 atom = atom.substr(i + 1);
                 unsigned int predicateIndex = instance->domain->predicateMap.at(StringHelper::ToUpper(predicate));
                 std::vector<unsigned int> objects;
+                std::vector<std::string> objectsS;
                 std::string workingObject = "";
                 for (int i = 0; i < atom.size(); i++) {
                     if (atom.at(i) == ' ')
                         continue;
                     if (atom.at(i) == ',' || atom.at(i) == ')') {
                         objects.push_back(instance->problem->objectMap.at(workingObject));
+                        objectsS.push_back(workingObject);
                         workingObject.clear();
                     } else
                         workingObject += atom.at(i);
                 }
-                atoms.push_back(MutexVariable::Atom(predicateIndex, objects));
+                atoms.push_back(MutexVariable::Atom(predicateIndex, predicate, objects, objectsS));
                 break;
             }
     }

@@ -173,10 +173,8 @@ SASPlan BaseWalkerReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* 
 		auto sasAction = reformulatedSAS->actions.at(i);
 		if (sasAction.name.starts_with("macro")) {
 			for (auto macro : macros) {
-				auto tempActionName = sasAction.name;
-				auto tempMacroName = macro.name;
-				std::transform(tempActionName.begin(), tempActionName.end(), tempActionName.begin(), ::toupper);
-				std::transform(tempMacroName.begin(), tempMacroName.end(), tempMacroName.begin(), ::toupper);
+				auto tempActionName = StringHelper::ToUpper(sasAction.name);
+				auto tempMacroName = StringHelper::ToUpper(macro.name);
 				if (tempActionName == tempMacroName) {
 					macrosUsed++;
 					for (auto macroAction : macro.path) {

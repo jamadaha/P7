@@ -8,10 +8,11 @@ vector<BadPath> WalkerPathVerifyer::VerifyPaths(vector<Path>* paths, PDDLInstanc
 	if (paths->size() > 0) {
 		PDDLDomainCodeGenerator domainGenerator(instance->domain);
 		domainGenerator.GenerateDomainFile("domain_verify.pddl");
-		for (auto path = paths->begin(); path != paths->end(); path++) {
-			if (path->hasStates) {
+		for (auto pathPtr = paths->begin(); pathPtr != paths->end(); pathPtr++) {
+			Path path = *pathPtr;
+			if (path.hasStates) {
 				vector<SASAction> actions;
-				for (auto step : path->steps) {
+				for (auto step : path.steps) {
 					actions.push_back(GenerateSASActionFromActionInstance(step, instance));
 				}
 				SASPlan checkPlan(actions, actions.size(), 0);
@@ -21,14 +22,14 @@ vector<BadPath> WalkerPathVerifyer::VerifyPaths(vector<Path>* paths, PDDLInstanc
 
 				PDDLInstance newInstance(
 					instance->domain,
-					new PDDLProblem(instance->problem->name, instance->domain, instance->problem->objects, instance->problem->objectMap, path->startState, path->endState));
+					new PDDLProblem(instance->problem->name, instance->domain, instance->problem->objects, instance->problem->objectMap, path.startState, path.endState));
 
 				PDDLProblemCodeGenerator problemGenerator(instance->domain, newInstance.problem);
 				problemGenerator.GenerateProblemFile("problem_verify.pddl");
 
 				auto reformulatedSASValidatorResult = PlanValidator::ValidatePlan(*config, "domain_verify.pddl", "problem_verify.pddl", "sas_verify.sas");
 				if (reformulatedSASValidatorResult != PlanValidator::PlanMatch) {
-					badPaths.push_back(BadPath(*path, "Plan did not match with VAL"));
+					badPaths.push_back(BadPath(path, "Plan did not match with VAL"));
 				}
 			}
 		}

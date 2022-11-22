@@ -33,6 +33,8 @@ std::vector<Path> WalkerQueue::Walk() {
 
     auto startTime = std::chrono::steady_clock::now();
     while (widthFunc->Iterate(&current)) {
+        if (searchQueue.size() == 0)
+            break;
         paths.push_back(Walk(heuristic, this->instance->problem->initState));
 
         if (OnWalkerStep != nullptr)

@@ -13,7 +13,7 @@ std::vector<std::unordered_set<unsigned int>> UnaryFactVerifier::GetLegalObjects
             return legalObjects;
         legalObjects.push_back(tempCandididateObjects);
     }
-    return legalObjects;
+    return std::vector<std::unordered_set<unsigned int>>();
 }
 
 std::unordered_set<unsigned int> UnaryFactVerifier::GetLegalObjectsForParameter(    const std::unordered_set<const PDDLLiteral*> *literals, 

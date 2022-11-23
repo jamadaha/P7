@@ -15,7 +15,7 @@ public:
             a.insert((*iter));
     }
     template<typename T>
-    static void InsertAll(std::vector<T> &a, const std::vector<T> b) {
+    static void InsertAll(std::vector<T> &a, const std::vector<T> &b) {
         for (auto iter = b.begin(); iter != b.end(); iter++)
             a.push_back((*iter));
     }

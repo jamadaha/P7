@@ -18,7 +18,7 @@ public:
     Regressor(const PDDLInstance *instance, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc) : 
     BaseRegressor(instance, depthFunc, widthFunc), 
     actionGenerator(PartialActionGenerator(&instance->domain->actions, instance->problem->objects.size())),
-    actionConverter(PartialActionConverter(&instance->domain->actions, instance->problem->objects.size())) {};
+    actionConverter(PartialActionConverter(instance)) {};
 protected:
     Path RegressFromState(const PDDLState *state) override;
     

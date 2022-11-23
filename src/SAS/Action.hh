@@ -5,11 +5,11 @@
 #include <vector>
 
 namespace SAS {
-    struct SASAction {
+    struct Action {
         std::string name;
         std::vector<std::string> parameters;
 
-        SASAction(std::string name, std::vector<std::string> parameters) : name(name), parameters(parameters) {}
+        Action(std::string name, std::vector<std::string> parameters) : name(name), parameters(parameters) {}
     };
 }
 

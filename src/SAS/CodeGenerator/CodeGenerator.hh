@@ -5,16 +5,16 @@
 #include <fstream>
 #include <streambuf>
 
-#include "../SASPlan.hh"
+#include "../Plan.hh"
 
 namespace SAS {
 	class CodeGenerator {
 	public:
-		void GenerateCode(SASPlan plan, std::string targetFile);
-		std::string GenerateCodeString(SASPlan plan, std::string targetFile);
+		void GenerateCode(Plan plan, std::string targetFile);
+		std::string GenerateCodeString(Plan plan, std::string targetFile);
 
 	private:
-		std::string GetAction(SASAction action);
+		std::string GetAction(Action action);
 		std::string GetParameters(std::vector<std::string> parameters);
 	};
 

@@ -3,8 +3,8 @@
 using namespace std;
 using namespace SAS;
 
-SASPlan Rebuilder::RebuildSASPlan(PDDLInstance* instance, SASPlan* reformulatedSAS, vector<Macro>* macros) {
-	vector<SASAction> actions;
+Plan Rebuilder::RebuildSASPlan(PDDLInstance* instance, Plan* reformulatedSAS, vector<Macro>* macros) {
+	vector<Action> actions;
 
 	totalMacrosUsed = 0;
 	uniqueMacrosUsed.clear();
@@ -22,7 +22,7 @@ SASPlan Rebuilder::RebuildSASPlan(PDDLInstance* instance, SASPlan* reformulatedS
 						vector<string> args; args.reserve(macroAction.objects.size());
 						for (auto object : macroAction.objects)
 							args.push_back(instance->problem->objects.at(object));
-						actions.push_back(SASAction(macroAction.action->name, args));
+						actions.push_back(Action(macroAction.action->name, args));
 					}
 					break;
 				}
@@ -32,6 +32,6 @@ SASPlan Rebuilder::RebuildSASPlan(PDDLInstance* instance, SASPlan* reformulatedS
 			actions.push_back(sasAction);
 		}
 	}
-	SASPlan newPlan = SASPlan(actions, actions.size(), totalMacrosUsed);
+	Plan newPlan = Plan(actions, actions.size(), totalMacrosUsed);
 	return newPlan;
 }

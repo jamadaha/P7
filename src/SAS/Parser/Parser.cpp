@@ -3,7 +3,7 @@
 using namespace std;
 using namespace SAS;
 
-SASPlan Parser::Parse(filesystem::path path) {
+Plan Parser::Parse(filesystem::path path) {
     ifstream stream(path);
     string content( (istreambuf_iterator<char>(stream) ),
                        (istreambuf_iterator<char>()    ) );
@@ -11,8 +11,8 @@ SASPlan Parser::Parse(filesystem::path path) {
     return Parse(content);
 }
 
-SASPlan Parser::Parse(string SAS) {
-    vector<SASAction> actions;
+Plan Parser::Parse(string SAS) {
+    vector<Action> actions;
     int cost;
     stringstream ss(SAS);
     string line;
@@ -23,11 +23,11 @@ SASPlan Parser::Parse(string SAS) {
         if (line[0] == ';') {
             cost = ParseCost(line);
         } else {
-            SASAction newAction = ParseAction(line);
+            Action newAction = ParseAction(line);
             actions.push_back(newAction);
         }
     }
-    return SASPlan(actions, cost, 0);
+    return Plan(actions, cost, 0);
 }
 
 vector<string> tokenize(string const &str, const char delim) {
@@ -41,13 +41,13 @@ vector<string> tokenize(string const &str, const char delim) {
     return tokens;
 }
 
-SASAction Parser::ParseAction(string line) {
+Action Parser::ParseAction(string line) {
     StringHelper::RemoveCharacter(&line, '\r');
     StringHelper::RemoveCharacter(&line, '\n');
     vector<string> tokens = tokenize(line, ' ');
     string actionName = tokens.front(); tokens.erase(tokens.begin());
     vector<string> parameters = tokens;
-    return SASAction(actionName, parameters);
+    return Action(actionName, parameters);
 }
 
 int Parser::ParseCost(string line) {

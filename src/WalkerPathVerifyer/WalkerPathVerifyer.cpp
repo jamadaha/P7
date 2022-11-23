@@ -11,13 +11,13 @@ vector<BadPath> WalkerPathVerifyer::VerifyPaths(vector<Path>* paths, PDDLInstanc
 		for (auto pathPtr = paths->begin(); pathPtr != paths->end(); pathPtr++) {
 			Path path = *pathPtr;
 			if (path.hasStates) {
-				vector<SASAction> actions;
+				vector<SAS::SASAction> actions;
 				for (auto step : path.steps) {
 					actions.push_back(GenerateSASActionFromActionInstance(step, instance));
 				}
-				SASPlan checkPlan(actions, actions.size(), 0);
+				SAS::SASPlan checkPlan(actions, actions.size(), 0);
 
-				SASCodeGenerator sasGenerator;
+				SAS::CodeGenerator sasGenerator;
 				sasGenerator.GenerateCode(checkPlan, "sas_verify.sas");
 
 				PDDLInstance newInstance(

@@ -10,17 +10,17 @@
 #include <iterator>
 #include <filesystem>
 
-#include "../SASPlan.hh"
+#include "../Plan.hh"
 #include "../Helpers/StringHelper.hh"
 
 namespace SAS {
     class Parser {
     public:
-        SASPlan Parse(std::filesystem::path path);
-        SASPlan Parse(std::string SAS);
+        Plan Parse(std::filesystem::path path);
+        Plan Parse(std::string SAS);
 
     private:
-        SASAction ParseAction(std::string line);
+        Action ParseAction(std::string line);
         int ParseCost(std::string line);
     };
 }

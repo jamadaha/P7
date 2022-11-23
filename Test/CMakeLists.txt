@@ -6,8 +6,7 @@ include(Catch)
 #set(CMAKE_CTEST_ARGUMENTS "--verbose")
 
 # Tests
-include(Test/SASParser/CMakeLists.txt)
-include(Test/SASCodeGenerator/CMakeLists.txt)
+include(Test/SAS/CMakeLists.txt)
 include(Test/PDDLCodeGenerator/CMakeLists.txt)
 include(Test/PDDLParser/CMakeLists.txt)
 include(Test/Walker/CMakeLists.txt)
@@ -22,8 +21,8 @@ add_executable(Test-All
 	"Test/PDDLCodeGenerator/PDDLCodeGenerator.cpp"
 	"Test/PDDLParser/PDDLParser.cpp"
 	"Test/IntermediatePDDL/IntermediatePDDL.cpp"
-	"Test/SASParser/SASParser.cpp"
-	"Test/SASCodeGenerator/SASCodeGenerator.cpp"
+	"Test/SAS/Parser/ParserTests.cpp"
+	"Test/SAS/CodeGenerator/CodeGeneratorTests.cpp"
 	"Test/Walker/ActionGenerator.cpp"
 	"Test/Walker/Walker.cpp"
 	"Test/PlanValidators/PlanValidator.cpp"
@@ -45,8 +44,7 @@ target_link_libraries(Test-All
         CommonInterface
         PlanValidator
         Reformulator
-        SASParser
-        SASCodeGenerator
+        SAS
         PDDLParser
         IntermediatePDDL
         PathChecker

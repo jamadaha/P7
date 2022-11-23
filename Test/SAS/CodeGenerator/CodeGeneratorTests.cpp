@@ -1,19 +1,21 @@
 #include <catch2/catch_test_macros.hpp>
 #include <iostream>
 
-#include "../../src/SASCodeGenerator/SASCodeGenerator.hh"
+#include "../../src/SAS/CodeGenerator/CodeGenerator.hh"
+#include "../../src/SAS/Parser/Parser.hh"
 
 using namespace std;
+using namespace SAS;
 
 const string tag = "SASCodeGenerator: ";
 
 bool checkTranslation(string test, string targetFile){
     //Generator and parser
-    SASCodeGenerator gen;
-    SASParser parser;
+    CodeGenerator gen;
+    Parser parser;
 
     //Get plan and generate file
-    SASPlan plan = parser.Parse(test);
+    Plan plan = parser.Parse(test);
     gen.GenerateCode(plan, targetFile);
     string fcontent = gen.GenerateCodeString(plan, targetFile);
     return test == fcontent;

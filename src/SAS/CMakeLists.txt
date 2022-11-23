@@ -5,8 +5,8 @@ target_sources(SAS
         ${CMAKE_CURRENT_LIST_DIR}/Parser/Parser.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Rebuilder/Rebuilder.cpp
     PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR}/SASAction.hh
-        ${CMAKE_CURRENT_LIST_DIR}/SASPlan.hh
+        ${CMAKE_CURRENT_LIST_DIR}/Action.hh
+        ${CMAKE_CURRENT_LIST_DIR}/Plan.hh
         ${CMAKE_CURRENT_LIST_DIR}/Parser/Parser.hh
         ${CMAKE_CURRENT_LIST_DIR}/Rebuilder/Rebuilder.hh
         ${CMAKE_CURRENT_LIST_DIR}/CodeGenerator/CodeGenerator.hh)

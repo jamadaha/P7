@@ -48,8 +48,8 @@ PDDLProblem PDDLConverter::Convert(PDDLDomain *domain, Problem *problem) {
     objects.reserve(problem->_objects->size());
     objectMap.reserve(problem->_objects->size());
     for (int i = 0; i < problem->_objects->size(); i++) {
-        objectMap.emplace((*problem->_objects)[i], i);
-        objects.push_back((*problem->_objects)[i]);
+        objectMap.emplace(StringHelper::ToUpper((*problem->_objects)[i]), i);
+        objects.push_back(StringHelper::ToUpper((*problem->_objects)[i]));
     }
     
     // Get Init and Goal state
@@ -110,7 +110,7 @@ std::unordered_map<unsigned int, std::unordered_set<unsigned int>> PDDLConverter
         if (fact->first->_args->size() != 1)
             continue;
         unsigned int predicateIndex = domain->predicateMap.at(StringHelper::ToUpper(fact->first->_name));
-        unsigned int objectIndex = objectMap->at((*fact->first->_args)[0]); 
+        unsigned int objectIndex = objectMap->at(StringHelper::ToUpper((*fact->first->_args)[0])); 
         unaryFacts.at(predicateIndex).emplace(objectIndex);
     }
     return unaryFacts;
@@ -127,7 +127,9 @@ std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsi
         if (fact->first->_args->size() != 2)
             continue;
         unsigned int predicateIndex = domain->predicateMap.at(StringHelper::ToUpper(fact->first->_name));
-        binaryFacts.at(predicateIndex).emplace(std::make_pair(objectMap->at((*fact->first->_args)[0]), objectMap->at((*fact->first->_args)[1])));
+        binaryFacts.at(predicateIndex).emplace(
+            std::make_pair( objectMap->at(StringHelper::ToUpper((*fact->first->_args)[0])), 
+                            objectMap->at(StringHelper::ToUpper((*fact->first->_args)[1]))));
     }
     return binaryFacts;
 }

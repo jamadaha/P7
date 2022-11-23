@@ -107,14 +107,14 @@ bool PartialActionConverter::IsLegal(const PDDLState *state) {
         bool foundTrue = false;
         for (auto const & atom : var.atoms) {
             if (atom.objects.size() == 1) {
-                if (state->ContainsFact(atom.predicate, atom.objects.at(0))) {
+                if (state->ContainsFact(atom.predicate, atom.objects.at(0)) == atom.value) {
                     if (!foundTrue)
                         foundTrue = true;
                     else
                         return false;
                 }
             } else {
-                if (state->ContainsFact(atom.predicate, std::make_pair(atom.objects.at(0), atom.objects.at(1))))
+                if (state->ContainsFact(atom.predicate, std::make_pair(atom.objects.at(0), atom.objects.at(1))) == atom.value)
                     if (!foundTrue)
                         foundTrue = true;
                     else
@@ -122,6 +122,8 @@ bool PartialActionConverter::IsLegal(const PDDLState *state) {
             }
 
         }
+        //if (var.minimumOneActive && !foundTrue)
+            //return false;
     }
     return true;
 }

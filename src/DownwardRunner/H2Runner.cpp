@@ -41,12 +41,26 @@ std::vector<PDDLMutexVariable> H2Runner::ParseVariables(std::string h2Output) {
 PDDLMutexVariable H2Runner::ParseVariable(std::vector<std::string> variableInfo) {
     std::string variableName = variableInfo.at(1);
     int numOfAtoms = std::atoi(variableInfo.at(3).c_str());
+    bool minimumOne = true;
     // Vector of predicate + object
     std::vector<PDDLMutexVariable::Atom> atoms;
     // 4 is the first atom
     for (int i = 4; i < variableInfo.size() - 1; i++) {
-        auto atom = variableInfo.at(i);
-        atom = atom.substr(5);
+        auto upInfo = StringHelper::ToUpper(variableInfo.at(i));
+        std::string atom;
+        bool atomValue;
+        if (upInfo.find("NEGATEDATOM") != -1) {
+            atom = upInfo.substr(12);
+            atomValue = false;
+        } else if (upInfo.find("ATOM") != -1) {
+            atom = upInfo.substr(5);
+            atomValue = true;
+        } else if (upInfo == "<NONE OF THOSE>") {
+            minimumOne = false;
+            continue;
+        } else
+            throw std::invalid_argument("Unknown atom type");
+
         std::string predicate = "";
         // Get predicate, and remove from atom
         // at-robby(rooma) => predicate = at-robby & atom = rooma)
@@ -55,7 +69,7 @@ PDDLMutexVariable H2Runner::ParseVariable(std::vector<std::string> variableInfo)
                 predicate += atom.at(i);
             else {
                 atom = atom.substr(i + 1);
-                unsigned int predicateIndex = instance->domain->predicateMap.at(StringHelper::ToUpper(predicate));
+                unsigned int predicateIndex = instance->domain->predicateMap.at(predicate);
                 std::vector<unsigned int> objects;
                 std::vector<std::string> objectsS;
                 std::string workingObject = "";
@@ -69,9 +83,9 @@ PDDLMutexVariable H2Runner::ParseVariable(std::vector<std::string> variableInfo)
                     } else
                         workingObject += atom.at(i);
                 }
-                atoms.push_back(PDDLMutexVariable::Atom(predicateIndex, predicate, objects, objectsS));
+                atoms.push_back(PDDLMutexVariable::Atom(predicateIndex, predicate, objects, objectsS, atomValue));
                 break;
             }
     }
-    return PDDLMutexVariable(atoms);
+    return PDDLMutexVariable(atoms, minimumOne);
 }

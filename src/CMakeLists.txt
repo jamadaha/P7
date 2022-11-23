@@ -26,6 +26,7 @@ target_link_libraries(P7
         ProgressBarHelper
         MacroGenerator
         MacroVerifyer
-        SASRebuilder)
+        SASRebuilder
+        SAS)
 
 add_executable(P7Lab "P7Lab.cpp")

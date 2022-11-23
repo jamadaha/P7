@@ -30,6 +30,8 @@ private:
                     std::vector<std::vector<unsigned int>> *permutations, 
                     std::vector<unsigned int> *permutation, 
                     const unsigned int paramCount);
+    void RemoveIllegal(const PDDLState *state, const PDDLAction *action, std::vector<std::vector<unsigned int>> *permutations);
+    bool IsLegal(const PDDLState *state);
 };
 
 #endif

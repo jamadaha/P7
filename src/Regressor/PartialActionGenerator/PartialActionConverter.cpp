@@ -14,6 +14,8 @@ std::vector<PDDLActionInstance> PartialActionConverter::ConvertAction(const PDDL
 
     auto permutations = PermuteAll(parameterCandidates, action->parameters.size());
 
+    RemoveIllegal(state, action->action, &permutations);
+
     std::vector<PDDLActionInstance> actions;
     for (int i = 0; i < permutations.size();  i++)
         actions.push_back(PDDLActionInstance(action->action, permutations.at(i)));
@@ -77,5 +79,49 @@ bool PartialActionConverter::Permute(const std::unordered_set<unsigned int> para
         permutation->pop_back();
     }
 
+    return true;
+}
+
+void PartialActionConverter::RemoveIllegal(const PDDLState *state, const PDDLAction *action, std::vector<std::vector<unsigned int>> *permutations) {
+    auto iter = permutations->begin();
+    while (iter != permutations->end()) {
+        PDDLState tempState = *state;
+        for (const auto & effect : action->effects) {
+            if (effect.value) {
+                if (effect.args.size() == 1) {
+                    tempState.unaryFacts.at(effect.predicateIndex).emplace((*iter).at(effect.args.at(0)));
+                } else {
+                    tempState.binaryFacts.at(effect.predicateIndex).emplace(std::make_pair((*iter).at(effect.args.at(0)), (*iter).at(effect.args.at(1))));    
+                }
+            }
+        }
+        if (!IsLegal(&tempState))
+            permutations->erase(iter);
+        else
+            iter++;
+    } 
+}
+
+bool PartialActionConverter::IsLegal(const PDDLState *state) {
+    for (auto const & var : instance->mutexes->variables) {
+        bool foundTrue = false;
+        for (auto const & atom : var.atoms) {
+            if (atom.objects.size() == 1) {
+                if (state->ContainsFact(atom.predicate, atom.objects.at(0))) {
+                    if (!foundTrue)
+                        foundTrue = true;
+                    else
+                        return false;
+                }
+            } else {
+                if (state->ContainsFact(atom.predicate, std::make_pair(atom.objects.at(0), atom.objects.at(1))))
+                    if (!foundTrue)
+                        foundTrue = true;
+                    else
+                        return false;
+            }
+
+        }
+    }
     return true;
 }

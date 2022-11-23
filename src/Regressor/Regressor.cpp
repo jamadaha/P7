@@ -19,8 +19,9 @@ Path Regressor::RegressFromState(const PDDLState *state) {
             steps.push_back(action);
         }
     }
-    
-    return Path(steps);
+
+    auto reversedSteps = AlgorithmHelper::Reverse(steps);
+    return Path(reversedSteps);
 }
 
 PDDLActionInstance Regressor::GetLegalPredecessor(const std::vector<PartialAction> *actions, PDDLState *state, bool *sucess) {
@@ -28,14 +29,15 @@ PDDLActionInstance Regressor::GetLegalPredecessor(const std::vector<PartialActio
     for (unsigned int i = 0; i < actions->size(); i++) {
         const unsigned int current = (init + i) % actions->size();
         const PartialAction *partialAction = &actions->at(current);
-        auto legalActions = actionConverter.ConvertAction(state, partialAction);
-        if (legalActions.size() != 0) {
-            auto chosenAction = legalActions.at(rand() % legalActions.size());
-            GetPredecessorState(state, &chosenAction);
+        auto candidateActions = actionConverter.ConvertAction(state, partialAction);
+        for (int t = 0; t < candidateActions.size(); t++) {
+            auto action = &candidateActions.at(t);
+            auto tempState = *state;
+            GetPredecessorState(&tempState, action);
             (*sucess) = true;
-            return chosenAction;
+            (*state) = tempState;
+            return *action;
         }
-        
     }
     (*sucess) = false;
     return PDDLActionInstance();

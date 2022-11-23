@@ -4,6 +4,11 @@ using namespace std;
 using namespace SAS;
 
 Plan Parser::Parse(filesystem::path path) {
+    if (!std::filesystem::exists(path)) {
+        string errStr = "File not found: " + string(path.c_str());
+        throw invalid_argument(errStr);
+    }
+
     ifstream stream(path);
     string content( (istreambuf_iterator<char>(stream) ),
                        (istreambuf_iterator<char>()    ) );
@@ -18,6 +23,8 @@ Plan Parser::Parse(string SAS) {
     string line;
     while (getline(ss, line)) {
         line = StringHelper::Trim(line);
+        if (line == "")
+            continue;
         StringHelper::RemoveCharacter(&line, ')');
         StringHelper::RemoveCharacter(&line, '(');
         if (line[0] == ';') {
@@ -30,7 +37,7 @@ Plan Parser::Parse(string SAS) {
     return Plan(actions, cost, 0);
 }
 
-vector<string> tokenize(string const &str, const char delim) {
+vector<string> Parser::Tokenize(string const &str, const char delim) {
     stringstream ss(str);
     vector<string> tokens;
  
@@ -44,9 +51,14 @@ vector<string> tokenize(string const &str, const char delim) {
 Action Parser::ParseAction(string line) {
     StringHelper::RemoveCharacter(&line, '\r');
     StringHelper::RemoveCharacter(&line, '\n');
-    vector<string> tokens = tokenize(line, ' ');
+    vector<string> tokens = Tokenize(line, ' ');
+    if (tokens.size() == 0)
+        throw invalid_argument("Error, invalid SAS line was given: " + line);
     string actionName = tokens.front(); tokens.erase(tokens.begin());
-    vector<string> parameters = tokens;
+    vector<string> parameters;
+    for (auto token : tokens)
+        if (token != "")
+            parameters.push_back(token);
     return Action(actionName, parameters);
 }
 

@@ -13,3 +13,6 @@ target_sources(SAS
 target_include_directories(SAS
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(SAS
+    PRIVATE
+        StringHelper)

@@ -1,5 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 #include <iostream>
+#include <filesystem>
 
 #include "../../src/SAS/CodeGenerator/CodeGenerator.hh"
 #include "../../src/SAS/Parser/Parser.hh"
@@ -9,54 +10,97 @@ using namespace SAS;
 
 const string tag = "SASCodeGenerator: ";
 
-bool checkTranslation(string test, string targetFile){
-    //Generator and parser
-    CodeGenerator gen;
+void CheckIfValid(Plan result, int expectedCost, vector<string> expectedActions, vector<vector<string>> expectedObjects) {
+    REQUIRE(expectedCost == result.cost);
+    for (int i = 0; i < expectedActions.size(); i++) {
+        REQUIRE(expectedActions.at(i) == result.actions.at(i).name);
+        for (int j = 0; j < expectedObjects.at(i).size(); j++)
+            REQUIRE(expectedObjects.at(i).at(j) == result.actions.at(i).parameters.at(j));
+    }
+}
+
+TEST_CASE(tag + "-CanParseFile-test1") {
+    string testFile = "sas-test1.sas";
+    vector<string> expectedActions{
+        "action1",
+        "action1"
+    };
+    vector<vector<string>> expectedObjects{
+        {"obj1", "obj2"},
+        {"obj1", "obj2"}
+    };
+    int expectedCost = 2;
+
     Parser parser;
+    Plan result = parser.Parse(std::filesystem::path("./TestFiles/" + testFile));
 
-    //Get plan and generate file
-    Plan plan = parser.Parse(test);
-    gen.GenerateCode(plan, targetFile);
-    string fcontent = gen.GenerateCodeString(plan, targetFile);
-    return test == fcontent;
+    CheckIfValid(result, expectedCost, expectedActions, expectedObjects);
 }
 
-TEST_CASE(tag + "Check generation"){
-    //Test setup
-    string test = "(task p1)\n; cost = 1 (general cost)\n";
-    string fname = "./Example";
-    //Assertion
-    REQUIRE(checkTranslation(test, fname));
+TEST_CASE(tag + "-CanParseFile-test2") {
+    string testFile = "sas-test2.sas";
+    vector<string> expectedActions{
+        "action1",
+        "action2"
+    };
+    vector<vector<string>> expectedObjects{
+        {"obj1", "obj2"},
+        {"obj2", "obj1"}
+    };
+    int expectedCost = 2;
+
+    Parser parser;
+    Plan result = parser.Parse(std::filesystem::path("./TestFiles/" + testFile));
+
+    CheckIfValid(result, expectedCost, expectedActions, expectedObjects);
 }
 
-TEST_CASE(tag + "Multiparameters"){
-    //Test setup
-    string test = "(task p1 p2 p3 p4 p5)\n; cost = 1 (general cost)\n";
-    string fname = "./Example";
-    //Assertion
-    REQUIRE(checkTranslation(test, fname));
+TEST_CASE(tag + "-CanParseFile-test3") {
+    string testFile = "sas-test3.sas";
+    vector<string> expectedActions{
+    };
+    vector<vector<string>> expectedObjects{
+    };
+    int expectedCost = 0;
+
+    Parser parser;
+    Plan result = parser.Parse(std::filesystem::path("./TestFiles/" + testFile));
+
+    CheckIfValid(result, expectedCost, expectedActions, expectedObjects);
 }
 
-TEST_CASE(tag + "Missing semicolon"){
-    //Test setup
-    string test = "(task p1)\n cost = 1 (general cost)\n";
-    string fname = "./Example";
-    //Assertion
-    REQUIRE(!checkTranslation(test, fname));
+TEST_CASE(tag + "-CanParseFile-test4") {
+    string testFile = "sas-test4.sas";
+    vector<string> expectedActions{
+        "action1",
+        "action2"
+    };
+    vector<vector<string>> expectedObjects{
+        {"obj1", "obj2"},
+        {"obj2", "obj1"}
+    };
+    int expectedCost = 2;
+
+    Parser parser;
+    Plan result = parser.Parse(std::filesystem::path("./TestFiles/" + testFile));
+
+    CheckIfValid(result, expectedCost, expectedActions, expectedObjects);
 }
 
-TEST_CASE(tag + "Illegal program 1"){
-    //Test setup
-    string test = ";cost = 1 (general cost)\n (task p1)";
-    string fname = "./Example";
-    //Assertion
-    REQUIRE(!checkTranslation(test, fname));
-}
+TEST_CASE(tag + "-CanParseFile-test5") {
+    string testFile = "sas-test5.sas";
+    vector<string> expectedActions{
+        "action1",
+        "action2"
+    };
+    vector<vector<string>> expectedObjects{
+        {"obj1", "obj2"},
+        {"obj2", "obj1"}
+    };
+    int expectedCost = 2;
 
-TEST_CASE(tag + "Illegal program 2"){
-    //Test setup
-    string test = "(task p1 p2 p3)\n";
-    string fname = "./Example";
-    //Assertion
-    REQUIRE(!checkTranslation(test, fname));
+    Parser parser;
+    Plan result = parser.Parse(std::filesystem::path("./TestFiles/" + testFile));
+
+    CheckIfValid(result, expectedCost, expectedActions, expectedObjects);
 }

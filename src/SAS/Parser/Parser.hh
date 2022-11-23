@@ -22,6 +22,7 @@ namespace SAS {
     private:
         Action ParseAction(std::string line);
         int ParseCost(std::string line);
+        std::vector<std::string> Tokenize(std::string const& str, const char delim);
     };
 }
 

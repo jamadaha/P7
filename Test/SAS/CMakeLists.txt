@@ -5,3 +5,5 @@ target_link_libraries(Tests-SAS
         SAS
         StringHelper)
 catch_discover_tests(Tests-SAS) 
+
+file(COPY Test/SAS/CodeGenerator/TestFiles DESTINATION ${CMAKE_BINARY_DIR})

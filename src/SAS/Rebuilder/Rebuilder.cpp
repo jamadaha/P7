@@ -3,7 +3,7 @@
 using namespace std;
 using namespace SAS;
 
-SASPlan SASRebuilder::RebuildSASPlan(PDDLInstance* instance, SASPlan* reformulatedSAS, vector<Macro>* macros) {
+SASPlan Rebuilder::RebuildSASPlan(PDDLInstance* instance, SASPlan* reformulatedSAS, vector<Macro>* macros) {
 	vector<SASAction> actions;
 
 	totalMacrosUsed = 0;

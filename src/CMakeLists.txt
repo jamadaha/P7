@@ -11,8 +11,6 @@ target_link_libraries(P7
         CommonInterface
         PlanValidator
         Reformulator
-        SASParser
-        SASCodeGenerator
         PDDLParser
         IntermediatePDDL
         PathChecker
@@ -26,7 +24,6 @@ target_link_libraries(P7
         ProgressBarHelper
         MacroGenerator
         MacroVerifyer
-        SASRebuilder
         SAS)
 
 add_executable(P7Lab "P7Lab.cpp")

@@ -7,9 +7,10 @@
 #include "../../IntermediatePDDL/PDDLInstance.hh"
 #include "../SASPlan.hh"
 #include "../MacroGenerator/Macro.hh"
+#include "../Helpers/StringHelper.hh"
 
 namespace SAS {
-	class SASRebuilder {
+	class Rebuilder {
 	public:
 		int TotalMacrosUsed() { return totalMacrosUsed; }
 		int UniqueMacrosUsed() { return uniqueMacrosUsed.size(); }

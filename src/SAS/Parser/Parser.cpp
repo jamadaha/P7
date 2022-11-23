@@ -3,7 +3,7 @@
 using namespace std;
 using namespace SAS;
 
-SASPlan SASParser::Parse(filesystem::path path) {
+SASPlan Parser::Parse(filesystem::path path) {
     ifstream stream(path);
     string content( (istreambuf_iterator<char>(stream) ),
                        (istreambuf_iterator<char>()    ) );
@@ -11,7 +11,7 @@ SASPlan SASParser::Parse(filesystem::path path) {
     return Parse(content);
 }
 
-SASPlan SASParser::Parse(string SAS) {
+SASPlan Parser::Parse(string SAS) {
     vector<SASAction> actions;
     int cost;
     stringstream ss(SAS);
@@ -41,7 +41,7 @@ vector<string> tokenize(string const &str, const char delim) {
     return tokens;
 }
 
-SASAction SASParser::ParseAction(string line) {
+SASAction Parser::ParseAction(string line) {
     StringHelper::RemoveCharacter(&line, '\r');
     StringHelper::RemoveCharacter(&line, '\n');
     vector<string> tokens = tokenize(line, ' ');
@@ -50,7 +50,7 @@ SASAction SASParser::ParseAction(string line) {
     return SASAction(actionName, parameters);
 }
 
-int SASParser::ParseCost(string line) {
+int Parser::ParseCost(string line) {
     int equalityIndex = line.find('=');
     if (equalityIndex == line.npos)
         return -1;

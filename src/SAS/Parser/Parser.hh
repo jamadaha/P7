@@ -14,7 +14,7 @@
 #include "../Helpers/StringHelper.hh"
 
 namespace SAS {
-    class SASParser {
+    class Parser {
     public:
         SASPlan Parse(std::filesystem::path path);
         SASPlan Parse(std::string SAS);

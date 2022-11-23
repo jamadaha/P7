@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "SASAction"
+#include "SASAction.hh"
 
 namespace SAS {
     struct SASPlan {

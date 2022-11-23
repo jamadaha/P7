@@ -18,13 +18,14 @@
 #include "../../MacroGenerator/MacroGenerator.hh"
 #include "../../MacroGenerator/InstanceGenerator.hh"
 #include "../../MacroVerifyer/MacroVerifyer.hh"
-#include "../../SASRebuilder/SASRebuilder.hh"
+#include "../SAS/SASPlan.hh"
+#include "../SAS/Rebuilder/Rebuilder.hh"
 
 class BaseWalkerReformulator : public BaseReformulator {
 public:
     BaseWalkerReformulator(Config *config, RunReport *report) : BaseReformulator(config, report) {};
 	PDDLInstance ReformulatePDDL(PDDLInstance *instance) override;
-    SASPlan RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) override;
+    SAS::SASPlan RebuildSASPlan(PDDLInstance *instance, SAS::SASPlan* reformulatedSAS) override;
 
 protected:
     virtual std::vector<Path> PerformWalk(PDDLInstance *instance, bool debugMode) = 0;

@@ -3,14 +3,14 @@
 using namespace std;
 using namespace SAS;
 
-void SASCodeGenerator::GenerateCode(SASPlan plan, string targetFile) {
+void CodeGenerator::GenerateCode(SASPlan plan, string targetFile) {
 	ofstream file;
 	file.open(targetFile);
 	file << GenerateCodeString(plan, targetFile);
 	file.close();
 }
 
-string SASCodeGenerator::GenerateCodeString(SASPlan plan, string targetFile) {
+string CodeGenerator::GenerateCodeString(SASPlan plan, string targetFile) {
 	string returnValue = "";
 	for (auto const& action : plan.actions)
 		returnValue += GetAction(action) + "\n";
@@ -18,13 +18,13 @@ string SASCodeGenerator::GenerateCodeString(SASPlan plan, string targetFile) {
 	return returnValue;
 }
 
-string SASCodeGenerator::GetAction(SASAction action) {
+string CodeGenerator::GetAction(SASAction action) {
 	string retStr = "";
 	retStr += "(" + action.name + GetParameters(action.parameters) + ")";
 	return retStr;
 }
 
-string SASCodeGenerator::GetParameters(vector<string> parameters) {
+string CodeGenerator::GetParameters(vector<string> parameters) {
 	string retStr = "";
 	for (string str : parameters)
 		retStr += " " + str;

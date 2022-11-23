@@ -2,7 +2,7 @@
 #define BaseReformulator_HH
 
 #include "../IntermediatePDDL/PDDLInstance.hh"
-#include "../SASParser/SASParser.hh"
+#include "../SAS/SASPlan.hh"
 #include "../Config/Config.hh"
 #include "../RunReport/RunReport.hh"
 
@@ -18,7 +18,7 @@ public:
 	}
 
 	virtual PDDLInstance ReformulatePDDL(PDDLInstance* instance) = 0;
-	virtual SASPlan RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) = 0;
+	virtual SAS::SASPlan RebuildSASPlan(PDDLInstance *instance, SAS::SASPlan* reformulatedSAS) = 0;
 protected:
 	Config* Configs;
 	RunReport* Report;

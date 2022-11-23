@@ -14,6 +14,7 @@ target_link_libraries(P7
         SASCodeGenerator
         PDDLParser
         IntermediatePDDL
+        PathChecker
         DownwardRunner
         FileHelper
         Walker

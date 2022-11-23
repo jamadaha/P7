@@ -2,32 +2,27 @@
 #define PREVIOUS_BASE_HEURISTIC
 
 #include "BaseHeuristic.hh"
+#include <unordered_set>
 
 class PreviousBaseHeuristic : public BaseHeuristic {
 public:
-	PreviousBaseHeuristic(const PDDLDomain* domain, const PDDLProblem* problem) : BaseHeuristic(domain, problem) {};
+	PreviousBaseHeuristic(const PDDLDomain* domain, const PDDLProblem* problem) : BaseHeuristic(domain, problem) {
+		baseHeuristic = new GoalPredicateCountHeuristic(domain, problem);
+	};
+	~PreviousBaseHeuristic() {
+		free(baseHeuristic);
+	}
 
 	PDDLActionInstance* NextChoice(PDDLState* state, std::vector<PDDLActionInstance>* choices) override {
-		PDDLActionInstance* validChoice;
-		for (int i = 0; i < choices->size(); i++) {
-			int index = rand() % choices->size();
-			PDDLActionInstance selectedChoice = choices->at(index);
-			bool contains = false;
-			for (auto choice : PreviousActions)
-			{
-				if (selectedChoice == choice) {
-					contains = true;
-					break;
-				}
-			}
-			if (!contains || i == choices->size() - 1) {
-				validChoice = &choices->at(index);
-				break;
-			}
+		std::vector<PDDLActionInstance> newChoices;
+		for (auto choice = choices->begin(); choice != choices->end(); choice++) {
+			if (PreviousActions.contains(*choice))
+				newChoices.push_back(*choice);
 		}
-		PreviousActions.clear();
-		PreviousActions = *choices;
-		return validChoice;
+		if (newChoices.size() != 0)
+			return baseHeuristic->NextChoice(state, &newChoices);
+		else
+			return baseHeuristic->NextChoice(state, choices);
 	}
 
 	int Eval(const PDDLState* state) const override {
@@ -35,7 +30,8 @@ public:
 	};
 
 private:
-	std::vector<PDDLActionInstance> PreviousActions;
+	BaseHeuristic* baseHeuristic;
+	std::unordered_set<PDDLActionInstance> PreviousActions;
 };
 
 

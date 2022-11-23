@@ -24,6 +24,7 @@ add_subdirectory(src/MacroGenerator)
 add_subdirectory(src/MacroVerifyer)
 add_subdirectory(src/Walker/)
 add_subdirectory(src/WalkerPathVerifyer/)
+add_subdirectory(src/SASRebuilder/)
 add_subdirectory(src/)
 
 

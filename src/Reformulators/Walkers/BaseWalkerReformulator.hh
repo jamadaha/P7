@@ -18,6 +18,7 @@
 #include "../../MacroGenerator/MacroGenerator.hh"
 #include "../../MacroGenerator/InstanceGenerator.hh"
 #include "../../MacroVerifyer/MacroVerifyer.hh"
+#include "../../SASRebuilder/SASRebuilder.hh"
 
 class BaseWalkerReformulator : public BaseReformulator {
 public:

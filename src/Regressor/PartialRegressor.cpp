@@ -100,41 +100,6 @@ PDDLState PartialRegressor::GeneratePreconditionState(const PDDLLiteral *literal
         );
 }
 
-void PartialRegressor::GetPredecessorState(PDDLState *state, const PDDLActionInstance *action) {
-    // Handle effects
-    // Assumes that positive effects were untrue before action
-    for (int i = 0; i < action->action->effects.size(); i++) {
-        auto effect = &action->action->effects.at(i);
-        if (effect->args.size() == 1) {
-            if (effect->value)
-                state->unaryFacts.at(effect->predicateIndex).erase(action->objects.at(effect->args.at(0)));
-            else
-                state->unaryFacts.at(effect->predicateIndex).emplace(action->objects.at(effect->args.at(0)));
-        } else {
-            if (effect->value)
-                state->binaryFacts.at(effect->predicateIndex).erase(std::make_pair(action->objects.at(effect->args.at(0)), action->objects.at(effect->args.at(1))));
-            else
-                state->binaryFacts.at(effect->predicateIndex).emplace(std::make_pair(action->objects.at(effect->args.at(0)), action->objects.at(effect->args.at(1))));
-        }
-    }
-
-    // Handle preconditions
-    for (int i = 0; i < action->action->preconditions.size(); i++) {
-        auto precondition = &action->action->preconditions.at(i);
-        if (precondition->args.size() == 1) {
-            if (precondition->value)
-                state->unaryFacts.at(precondition->predicateIndex).emplace(action->objects.at(precondition->args.at(0)));
-            else
-                state->unaryFacts.at(precondition->predicateIndex).erase(action->objects.at(precondition->args.at(0)));
-        } else {
-            if (precondition->value)
-                state->binaryFacts.at(precondition->predicateIndex).emplace(std::make_pair(action->objects.at(precondition->args.at(0)), action->objects.at(precondition->args.at(1))));
-            else
-                state->binaryFacts.at(precondition->predicateIndex).erase(std::make_pair(action->objects.at(precondition->args.at(0)), action->objects.at(precondition->args.at(1))));
-        }
-    }
-}
-
 void PartialRegressor::SwitchToNonPartial(std::vector<PartialAction> *actions) {
     for (int i = 0; i < actions->size(); i++)
         actionGenerator->FillPartialAction(instance, &actions->at(i));

@@ -21,6 +21,7 @@ protected:
     BaseWidthFunction *widthFunction;
 
     virtual Path RegressFromState(const PDDLState *state) = 0;
+    void GetPredecessorState(PDDLState *state, const PDDLActionInstance *action);
 };
 
 #endif

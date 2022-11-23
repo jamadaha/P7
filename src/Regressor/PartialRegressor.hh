@@ -24,7 +24,6 @@ private:
     // Foreach precondition, get which states can lead to it
     // For now it ignores partial parameters
     std::unordered_set<PDDLState> GetPredecessorStates(const PartialAction *action);
-    void GetPredecessorState(PDDLState *state, const PDDLActionInstance *action);
     PDDLState GeneratePreconditionState(const PDDLLiteral *literal);
     Path ConvertToPath(std::vector<PartialAction> actions);
     void SwitchToNonPartial(std::vector<PartialAction> *actions);

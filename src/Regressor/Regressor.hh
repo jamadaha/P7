@@ -26,10 +26,7 @@ private:
     
     PartialActionGenerator actionGenerator;
     PartialActionConverter actionConverter;
-    std::vector<RegressionStep> GetPredecessorStates(const PDDLState *state, const std::vector<PartialAction> *actions);
-    std::vector<RegressionStep> GetPredecessorStates(const PDDLState *state, const PartialAction *action);
-    PDDLState GetPredecessorState(const PDDLState *state, const PDDLActionInstance *action);
-    bool IsLegal(const PDDLState *state);
+    PDDLActionInstance GetLegalPredecessor(const std::vector<PartialAction> *actions, PDDLState *state, bool *sucess);
 };
 
 #endif

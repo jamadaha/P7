@@ -11,6 +11,7 @@
 #include "../../IntermediatePDDL/PDDLDomain.hh"
 #include "../../IntermediatePDDL/PDDLProblem.hh"
 #include "../../IntermediatePDDL/PDDLInstance.hh"
+#include "../../IntermediatePDDL/PDDLActionInstance.hh"
 
 class BaseHeuristic {
 public:
@@ -20,7 +21,7 @@ public:
 		srand(time(NULL));
 	}
 
-	virtual PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const = 0; 
+	virtual PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) = 0; 
 
 	virtual int Eval(const PDDLState *state) const = 0;
 };

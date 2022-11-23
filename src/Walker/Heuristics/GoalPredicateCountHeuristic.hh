@@ -10,7 +10,7 @@ public:
 		GenerateGoalPredicates();
 	};
 
-	PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const override {
+	PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) override {
 		int bestIndex = -1;
 		int bestValue = -1;
 		auto engine = std::default_random_engine{};

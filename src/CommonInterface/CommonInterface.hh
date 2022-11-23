@@ -11,6 +11,7 @@
 #include "../Reformulators/Walkers/GreedyResumeWalkerReformulator.hh"
 #include "../Reformulators/Walkers/QueueWalkerReformulator.hh"
 #include "../Reformulators/Regressors/PartialRegressionReformulator.hh"
+#include "../Reformulators/Regressors/RegressionReformulator.hh"
 #include "../Reformulators/Walkers/ProbeWalkerReformulator.hh"
 #include "../PDDLParser/pddldriver.hh"
 #include "../PDDLCodeGenerator/PDDLCodeGenerator.hh"

@@ -14,10 +14,12 @@ InterfaceStep<BaseReformulator*> CommonInterface::GetReformulator(int reformulat
 		reformulator = new GreedyResumeWalkerReformulator(&config, Report);
 	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "queueWalker")
 		reformulator = new QueueWalkerReformulator(&config, Report);
-	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "partialRegressor")
-		reformulator = new PartialRegressionReformulator(&config, Report);
 	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "probeWalker")
 		reformulator = new ProbeWalkerReformulator(&config, Report);
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "regressor")
+		reformulator = new RegressionReformulator(&config, Report);
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "partialRegressor")
+		reformulator = new PartialRegressionReformulator(&config, Report);
 	else {
 		ConsoleHelper::PrintError("Reformulator not found! Reformulator: " + config.GetItem<string>("reformulator"));
 		return InterfaceStep<BaseReformulator*>(reformulator, false);

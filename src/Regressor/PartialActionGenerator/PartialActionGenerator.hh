@@ -18,6 +18,7 @@ public:
     void FillPartialAction(const PDDLInstance *instance, PartialAction *partialAction);
     PDDLActionInstance ConvertPartialAction(const PDDLInstance *instance, const PartialAction *partialAction);
     
+    
 private:
     const std::vector<PDDLAction> *actions;
     const std::unordered_set<unsigned int> objects;
@@ -36,6 +37,7 @@ private:
     PartialAction CreateFromBinay(const PDDLAction *action, const std::pair<unsigned int, unsigned int> indexes, const std::pair<unsigned int, unsigned int> objects);
 
     unsigned int GetParameterCandidate(const PDDLInstance *instance, const PDDLAction *action, const unsigned int *paramIndex);
+    std::unordered_set<unsigned int> GetParameterCandidates(const PDDLInstance *instance, const PDDLAction *action, const unsigned int *paramIndex);
 };
 
 #endif

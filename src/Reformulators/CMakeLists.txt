@@ -7,6 +7,7 @@ target_sources(Reformulator
         ${CMAKE_CURRENT_LIST_DIR}/Walkers/GreedyResumeWalkerReformulator.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Walkers/QueueWalkerReformulator.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Regressors/BaseRegressorReformulator.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Regressors/RegressionReformulator.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Regressors/PartialRegressionReformulator.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Walkers/ProbeWalkerReformulator.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SameOutputReformulator.cpp
@@ -17,6 +18,7 @@ target_sources(Reformulator
         ${CMAKE_CURRENT_LIST_DIR}/Walkers/GreedyResumeWalkerReformulator.hh
         ${CMAKE_CURRENT_LIST_DIR}/Walkers/QueueWalkerReformulator.hh
         ${CMAKE_CURRENT_LIST_DIR}/Regressors/BaseRegressorReformulator.hh
+        ${CMAKE_CURRENT_LIST_DIR}/Regressors/RegressionReformulator.hh
         ${CMAKE_CURRENT_LIST_DIR}/Regressors/PartialRegressionReformulator.hh
         ${CMAKE_CURRENT_LIST_DIR}/Walkers/ProbeWalkerReformulator.hh
         ${CMAKE_CURRENT_LIST_DIR}/SameOutputReformulator.hh)

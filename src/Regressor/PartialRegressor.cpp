@@ -40,14 +40,14 @@ Path PartialRegressor::RegressFromState(const PDDLState *state) {
 
 PartialAction* PartialRegressor::GetPredecessorStates(std::vector<PartialAction> *actions, std::unordered_set<PDDLState> &states) {
     int iter = rand() % actions->size();
-        for (int i = 0; i < actions->size(); i++) {
-            int index = ((iter + i) % actions->size());
-            auto tempStates = GetPredecessorStates(&actions->at(index));
-            if (tempStates.size() > 0) {
-                AlgorithmHelper::InsertAll(states, tempStates);
-                return &actions->at(index);
-            }
+    for (int i = 0; i < actions->size(); i++) {
+        int index = ((iter + i) % actions->size());
+        auto tempStates = GetPredecessorStates(&actions->at(index));
+        if (tempStates.size() > 0) {
+            AlgorithmHelper::InsertAll(states, tempStates);
+            return &actions->at(index);
         }
+    }
     return nullptr;
 }
 

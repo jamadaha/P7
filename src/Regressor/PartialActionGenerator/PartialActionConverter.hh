@@ -25,8 +25,11 @@ private:
     std::unordered_set<unsigned int> objects;
 
     std::unordered_set<unsigned int> GetParameterCandidates(const PDDLState *state, const PartialAction *action, const unsigned int paramIndex);
-    std::vector<std::array<unsigned int, MAX_PARAMETER_COUNT>> PermuteAll(std::unordered_set<unsigned int> parameterObjects[]);
-    std::array<unsigned int, MAX_PARAMETER_COUNT> Permute(std::unordered_set<unsigned int> parameterObjects[], unsigned int permutation[], const unsigned int workingIndex);
+    std::vector<std::vector<unsigned int>> PermuteAll(const std::unordered_set<unsigned int> parameterObjects[], const unsigned int paramCount);
+    bool Permute(   const std::unordered_set<unsigned int> parameterObjects[],
+                    std::vector<std::vector<unsigned int>> *permutations, 
+                    std::vector<unsigned int> *permutation, 
+                    const unsigned int paramCount);
 };
 
 #endif

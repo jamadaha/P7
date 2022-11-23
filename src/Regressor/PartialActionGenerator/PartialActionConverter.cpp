@@ -4,7 +4,6 @@ std::vector<PDDLActionInstance> PartialActionConverter::ConvertAction(const PDDL
     if (action->parameters.size() > MAX_PARAMETER_COUNT)
         throw std::logic_error("Parameter count exceeded max");
 
-    std::vector<PDDLActionInstance> actions;
     std::unordered_set<unsigned int> parameterCandidates[MAX_PARAMETER_COUNT];
     for (int i = 0; i < action->parameters.size(); i++) {
         if (action->parameters.at(i) != nullptr)
@@ -13,6 +12,11 @@ std::vector<PDDLActionInstance> PartialActionConverter::ConvertAction(const PDDL
             parameterCandidates[i] = GetParameterCandidates(state, action, i);
     }
 
+    auto permutations = PermuteAll(parameterCandidates, action->parameters.size());
+
+    std::vector<PDDLActionInstance> actions;
+    for (int i = 0; i < permutations.size();  i++)
+        actions.push_back(PDDLActionInstance(action->action, permutations.at(i)));
 
     return actions;
 }
@@ -42,17 +46,36 @@ std::unordered_set<unsigned int> PartialActionConverter::GetParameterCandidates(
     return candidateObjects;
 }
 
- std::vector<std::array<unsigned int, PartialActionConverter::MAX_PARAMETER_COUNT>> PartialActionConverter::PermuteAll(std::unordered_set<unsigned int> parameterObjects[]) {
-    std::vector<std::array<unsigned int, MAX_PARAMETER_COUNT>> permutations;
+std::vector<std::vector<unsigned int>> PartialActionConverter::PermuteAll(const std::unordered_set<unsigned int> parameterObjects[], const unsigned int paramCount) {
+    std::vector<std::vector<unsigned int>> permutations;
+    
     for (auto iter = parameterObjects[0].begin(); iter != parameterObjects[0].end(); iter++) {
-        unsigned int rootArray[MAX_PARAMETER_COUNT] = { *iter };
-        std::array<unsigned int, MAX_PARAMETER_COUNT> result =  Permute(parameterObjects, rootArray, 1);
-        for (int i = 0; i < result.size(); i++)
-            permutations.push_back(result);
+        std::vector<unsigned int> permutation{ *iter };
+        if (!Permute(parameterObjects, &permutations, &permutation, paramCount))
+            return std::vector<std::vector<unsigned int>>();
+        
     }
     return permutations;
- }
+}
+bool PartialActionConverter::Permute(const std::unordered_set<unsigned int> parameterObjects[],
+             std::vector<std::vector<unsigned int>> *permutations, 
+             std::vector<unsigned int> *permutation, 
+             const unsigned int paramCount) 
+{
+    const unsigned int workingIndex = permutation->size();
+    if (workingIndex == paramCount) {
+        permutations->push_back(*permutation);
+        return true;
+    } else if (parameterObjects[workingIndex].size() == 0)
+        return false;
 
-std::array<unsigned int, PartialActionConverter::MAX_PARAMETER_COUNT> PartialActionConverter::Permute(std::unordered_set<unsigned int> parameterObjects[], unsigned int permutation[], const unsigned int workingIndex) {
-    printf("\n");
+    for (auto iter = parameterObjects[workingIndex].begin(); iter != parameterObjects[workingIndex].end(); iter++) {
+        permutation->push_back(*iter);
+
+        Permute(parameterObjects, permutations, permutation, paramCount);
+
+        permutation->pop_back();
+    }
+
+    return true;
 }

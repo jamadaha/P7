@@ -11,7 +11,7 @@ public:
 
 	}
 	PDDLInstance ReformulatePDDL(PDDLInstance* instance) override;
-	SAS::SASPlan RebuildSASPlan(PDDLInstance *instance, SAS::SASPlan* reformulatedSAS) override;
+	SAS::Plan RebuildSASPlan(PDDLInstance *instance, SAS::Plan* reformulatedSAS) override;
 };
 
 #endif

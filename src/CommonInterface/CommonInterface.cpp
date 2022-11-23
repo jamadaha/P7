@@ -179,20 +179,20 @@ InterfaceStep<void> CommonInterface::ValidatePlans(string domainFile, string pro
 	return InterfaceStep<void>(true);
 }
 
-InterfaceStep<SASPlan> CommonInterface::ParseSASPlan() {
+InterfaceStep<SAS::Plan> CommonInterface::ParseSASPlan() {
 	ConsoleHelper::PrintInfo("Parsing SAS Plan...");
 	Report->Begin("Parse SAS plan");
-	SASParser sasParser;
+	SAS::Parser sasParser;
 	filesystem::path sasPath = filesystem::path(CommonInterface::FastDownwardSASName);
-	SASPlan reformulatedSASPlan = sasParser.Parse(sasPath);
+	SAS::Plan reformulatedSASPlan = sasParser.Parse(sasPath);
 	Report->Stop(ReportData("None", to_string(reformulatedSASPlan.cost)));
-	return InterfaceStep<SASPlan>(reformulatedSASPlan);
+	return InterfaceStep<SAS::Plan>(reformulatedSASPlan);
 }
 
-InterfaceStep<SASPlan> CommonInterface::RebuildSASPlan(SASPlan* reformulatedSASPlan, BaseReformulator* reformulator, PDDLInstance* instance) {
+InterfaceStep<SAS::Plan> CommonInterface::RebuildSASPlan(SAS::Plan* reformulatedSASPlan, BaseReformulator* reformulator, PDDLInstance* instance) {
 	ConsoleHelper::PrintInfo("Rebuilding the SAS plan...");
 	Report->Begin("Rebuild SAS plan");
-	SASPlan outputPlan = reformulator->RebuildSASPlan(instance, reformulatedSASPlan);
+	SAS::Plan outputPlan = reformulator->RebuildSASPlan(instance, reformulatedSASPlan);
 	Report->Stop(ReportData("None", to_string(outputPlan.cost)));
 	Report->Begin("Plan Length Difference");
 	Report->Stop(ReportData("None", to_string(outputPlan.cost - reformulatedSASPlan->cost)));
@@ -200,13 +200,13 @@ InterfaceStep<SASPlan> CommonInterface::RebuildSASPlan(SASPlan* reformulatedSASP
 	Report->Stop(ReportData("None", to_string(reformulator->GetMacrosGenerated())));
 	Report->Begin("Macros Used");
 	Report->Stop(ReportData("None", to_string(outputPlan.macrosUsed)));
-	return InterfaceStep<SASPlan>(outputPlan);
+	return InterfaceStep<SAS::Plan>(outputPlan);
 }
 
-InterfaceStep<void> CommonInterface::GenerateNewSASPlan(SASPlan outputPlan) {
+InterfaceStep<void> CommonInterface::GenerateNewSASPlan(SAS::Plan outputPlan) {
 	ConsoleHelper::PrintInfo("Output new SAS Plan...");
 	Report->Begin("Output SAS plan");
-	SASCodeGenerator sasGenerator;
+	SAS::CodeGenerator sasGenerator;
 	sasGenerator.GenerateCode(outputPlan, CommonInterface::OutputSASName);
 	Report->Stop();
 	return InterfaceStep<void>();

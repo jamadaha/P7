@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "../Walker/Path.hh"
-#include "../SAS/SASAction.hh"
+#include "../SAS/Action.hh"
 #include "../SAS/CodeGenerator/CodeGenerator.hh"
 #include "../IntermediatePDDL/PDDLInstance.hh"
 #include "../PDDLCodeGenerator/PDDLCodeGenerator.hh"
@@ -23,7 +23,7 @@ class WalkerPathVerifyer {
 public:
 	std::vector<BadPath> VerifyPaths(std::vector<Path>* paths, PDDLInstance* instance, Config* config);
 private:
-	SAS::SASAction GenerateSASActionFromActionInstance(PDDLActionInstance action, PDDLInstance* instance);
+	SAS::Action GenerateSASActionFromActionInstance(PDDLActionInstance action, PDDLInstance* instance);
 };
 
 #endif

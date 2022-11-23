@@ -1,6 +1,7 @@
-#include "SASParser.hh"
+#include "Parser.hh"
 
 using namespace std;
+using namespace SAS;
 
 SASPlan SASParser::Parse(filesystem::path path) {
     ifstream stream(path);

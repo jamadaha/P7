@@ -1,6 +1,7 @@
-#include "SASCodeGenerator.hh"
+#include "CodeGenerator.hh"
 
 using namespace std;
+using namespace SAS;
 
 void SASCodeGenerator::GenerateCode(SASPlan plan, string targetFile) {
 	ofstream file;
@@ -8,7 +9,6 @@ void SASCodeGenerator::GenerateCode(SASPlan plan, string targetFile) {
 	file << GenerateCodeString(plan, targetFile);
 	file.close();
 }
-
 
 string SASCodeGenerator::GenerateCodeString(SASPlan plan, string targetFile) {
 	string returnValue = "";

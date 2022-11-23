@@ -1,9 +1,10 @@
-#include "SASRebuilder.hh"
+#include "Rebuilder.hh"
 
 using namespace std;
+using namespace SAS;
 
-SASPlan SASRebuilder::RebuildSASPlan(PDDLInstance* instance, SASPlan* reformulatedSAS, std::vector<Macro>* macros) {
-	std::vector<SASAction> actions;
+SASPlan SASRebuilder::RebuildSASPlan(PDDLInstance* instance, SASPlan* reformulatedSAS, vector<Macro>* macros) {
+	vector<SASAction> actions;
 
 	totalMacrosUsed = 0;
 	uniqueMacrosUsed.clear();
@@ -18,7 +19,7 @@ SASPlan SASRebuilder::RebuildSASPlan(PDDLInstance* instance, SASPlan* reformulat
 					totalMacrosUsed++;
 					uniqueMacrosUsed.emplace(tempActionName);
 					for (auto macroAction : macro->path) {
-						std::vector<std::string> args; args.reserve(macroAction.objects.size());
+						vector<string> args; args.reserve(macroAction.objects.size());
 						for (auto object : macroAction.objects)
 							args.push_back(instance->problem->objects.at(object));
 						actions.push_back(SASAction(macroAction.action->name, args));

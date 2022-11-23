@@ -8,6 +8,7 @@ Path WalkerProbe::Walk(BaseHeuristic* heuristic, const PDDLState* state) {
 
     PDDLState endState;
     PDDLState tempState = PDDLState(state->unaryFacts, state->binaryFacts);
+    visitedStates.emplace(tempState);
     if (OnTempStateMade != nullptr)
         OnTempStateMade(this->instance, &tempState);
 
@@ -57,7 +58,8 @@ vector<Path> WalkerProbe::Walk() {
         PDDLState probe = PDDLState(unaryFacts, binaryFacts);
 
         Path path = Walk(heuristic, &probe);
-        paths.push_back(path);
+        if (path.steps.size() > 1)
+            paths.push_back(path);
 
         if (OnWalkerStep != nullptr)
             OnWalkerStep(this, current);

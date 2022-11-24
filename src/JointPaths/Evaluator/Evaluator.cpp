@@ -1,8 +1,9 @@
-#include "EntanglementEvaluator.hh"
+#include "Evaluator.hh"
 
 using namespace std;
+using namespace JointPaths;
 
-vector<EntanglementOccurance> EntanglementEvaluator::EvaluateAndSanitizeCandidates(unordered_map<size_t, EntanglementOccurance> candidates) {
+vector<EntanglementOccurance> Evaluator::EvaluateAndSanitizeCandidates(unordered_map<size_t, EntanglementOccurance> candidates) {
 	// Setup default modifiers
 	SetModifiersIfNotSet();
 
@@ -28,25 +29,25 @@ vector<EntanglementOccurance> EntanglementEvaluator::EvaluateAndSanitizeCandidat
 	return sortedCandidates;
 }
 
-void EntanglementEvaluator::SetModifiersIfNotSet() {
+void Evaluator::SetModifiersIfNotSet() {
 	if (LengthModifier == nullptr)
 		LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::Default;
 	if (OccuranceModifier == nullptr)
 		OccuranceModifier = EntanglementEvaluatorModifiers::OccuranceModifiers::Default;
 }
 
-void EntanglementEvaluator::RemoveMinimumQuality(vector<EntanglementOccurance>* candidates) {
+void Evaluator::RemoveMinimumQuality(vector<EntanglementOccurance>* candidates) {
 	const auto removeIfLessThan = [&](EntanglementOccurance const& candidate) { return candidate.Quality < Data.MinimumQualityPercent; };
 	std::erase_if(*candidates, removeIfLessThan);
 }
 
-void EntanglementEvaluator::RemoveIfTooMany(vector<EntanglementOccurance>* candidates) {
+void Evaluator::RemoveIfTooMany(vector<EntanglementOccurance>* candidates) {
 	if (candidates->size() > Data.MaxCandidates) {
 		candidates->erase(candidates->begin() + Data.MaxCandidates, candidates->end());
 	}
 }
 
-void EntanglementEvaluator::SetQualityByLength(vector<EntanglementOccurance>* candidates) {
+void Evaluator::SetQualityByLength(vector<EntanglementOccurance>* candidates) {
 	double maxLength = 0;
 	for (auto candidate = candidates->begin(); candidate != candidates->end(); candidate++) {
 		if (candidate->Chain.size() > maxLength)
@@ -58,7 +59,7 @@ void EntanglementEvaluator::SetQualityByLength(vector<EntanglementOccurance>* ca
 	}
 }
 
-void EntanglementEvaluator::SetQualityByOccurance(vector<EntanglementOccurance>* candidates) {
+void Evaluator::SetQualityByOccurance(vector<EntanglementOccurance>* candidates) {
 	double maxOccurance = 0;
 	for (auto candidate = candidates->begin(); candidate != candidates->end(); candidate++) {
 		if (candidate->Occurance > maxOccurance)
@@ -70,7 +71,7 @@ void EntanglementEvaluator::SetQualityByOccurance(vector<EntanglementOccurance>*
 	}
 }
 
-vector<EntanglementOccurance> EntanglementEvaluator::ConvertToVector(unordered_map<size_t, EntanglementOccurance>* candidates) {
+vector<EntanglementOccurance> Evaluator::ConvertToVector(unordered_map<size_t, EntanglementOccurance>* candidates) {
 	vector<EntanglementOccurance> vetorCandidates;
 	vetorCandidates.reserve(candidates->size());
 	for (auto candidate = candidates->begin(); candidate != candidates->end(); candidate++) {
@@ -79,7 +80,7 @@ vector<EntanglementOccurance> EntanglementEvaluator::ConvertToVector(unordered_m
 	return vetorCandidates;
 }
 
-vector<EntanglementOccurance> EntanglementEvaluator::SortCandidates(vector<EntanglementOccurance>* candidates) {
+vector<EntanglementOccurance> Evaluator::SortCandidates(vector<EntanglementOccurance>* candidates) {
 	vector<EntanglementOccurance> sortedCandidates;
 	for (auto candidate = candidates->begin(); candidate != candidates->end(); candidate++) {
 		int index = 0;

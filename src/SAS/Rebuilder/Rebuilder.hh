@@ -15,8 +15,13 @@ namespace SAS {
 		int TotalMacrosUsed() { return totalMacrosUsed; }
 		int UniqueMacrosUsed() { return uniqueMacrosUsed.size(); }
 
-		Plan RebuildSASPlan(PDDLInstance* instance, Plan* reformulatedSAS, std::vector<Macro>* macros);
+		Rebuilder(PDDLInstance* instance, std::vector<Macro>* macros) : instance(instance), macros(macros) {};
+
+		Plan RebuildSASPlan(Plan* reformulatedSAS);
 	private:
+		void FindMatchingMacro(std::vector<Action>* actions, std::string fromActionName);
+		const std::vector<Macro>* macros;
+		const PDDLInstance* instance;
 		int totalMacrosUsed = 0;
 		std::unordered_set<std::string> uniqueMacrosUsed;
 	};

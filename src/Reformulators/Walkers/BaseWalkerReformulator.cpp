@@ -167,8 +167,8 @@ PDDLInstance BaseWalkerReformulator::GenerateMacros(PDDLInstance* instance, std:
 }
 
 SAS::Plan BaseWalkerReformulator::RebuildSASPlan(PDDLInstance *instance, SAS::Plan* reformulatedSAS) {
-	SAS::Rebuilder builder;
-	return builder.RebuildSASPlan(instance, reformulatedSAS, &macros);
+	SAS::Rebuilder builder = SAS::Rebuilder(instance, &macros);
+	return builder.RebuildSASPlan(reformulatedSAS);
 }
 
 #pragma region Debug Items

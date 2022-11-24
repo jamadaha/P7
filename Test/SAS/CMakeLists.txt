@@ -1,4 +1,4 @@
-add_executable(Tests-SAS "Test/SAS/CodeGenerator/CodeGeneratorTests.cpp" "Test/SAS/Parser/ParserTests.cpp")
+add_executable(Tests-SAS "Test/SAS/CodeGenerator/CodeGeneratorTests.cpp" "Test/SAS/Parser/ParserTests.cpp" "Test/SAS/Rebuilder/RebuilderTests.cpp")
 target_link_libraries(Tests-SAS 
     PRIVATE 
         Catch2::Catch2WithMain

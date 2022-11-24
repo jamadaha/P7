@@ -11,10 +11,10 @@
 #include "../../Walker/Path.hh"
 #include "../../Walker/BaseWalker.hh"
 #include "../../WalkerPathVerifyer/WalkerPathVerifyer.hh"
-#include "../../EntanglementFinder/EntanglementFinder.hh"
-#include "../../EntanglementFinder/EntanglementOccurance.hh"
-#include "../../EntanglementFinder/EntanglementEvaluator.hh"
-#include "../../EntanglementFinder/EntanglementEvaluatorModifiers.hh"
+#include "../../JointPaths/Evaluator/Evaluator.hh"
+#include "../../JointPaths/Evaluator/EvaluationModifiers.hh"
+#include "../../JointPaths/Finder/Finder.hh"
+#include "../../JointPaths/JointPath.hh"
 #include "../../MacroGenerator/MacroGenerator.hh"
 #include "../../MacroGenerator/InstanceGenerator.hh"
 #include "../../MacroVerifyer/MacroVerifyer.hh"
@@ -36,14 +36,14 @@ private:
     ProgressBarHelper* entanglerBar;
 
     void FindPaths(PDDLInstance *instance, bool debugMode);
-    std::vector<EntanglementOccurance> FindEntanglements(PDDLInstance* instance, bool debugMode);
-    EntanglementFinder GetEntanglementFinder(bool debugMode);
-    EntanglementEvaluator GetEntanglementEvaluator();
-    PDDLInstance GenerateMacros(PDDLInstance* instance, std::vector<EntanglementOccurance>* candidates, bool debugMode);
+    std::vector<JointPaths::JointPath> FindEntanglements(PDDLInstance* instance, bool debugMode);
+    JointPaths::Finder GetEntanglementFinder(bool debugMode);
+    JointPaths::Evaluator GetEntanglementEvaluator();
+    PDDLInstance GenerateMacros(PDDLInstance* instance, std::vector<JointPaths::JointPath>* candidates, bool debugMode);
 
-    void PrintEntanglerSteps(std::vector<EntanglementOccurance>* candidates, PDDLInstance* instance);
+    void PrintEntanglerSteps(std::vector<JointPaths::JointPath>* candidates, PDDLInstance* instance);
     void PrintWalkerDebugData(double ellapsed);
-    void PrintEntanglerDebugData(double ellapsed, std::vector<EntanglementOccurance> *candidates, EntanglementFinder *entanglementFinder, EntanglementEvaluator *entanglementEvaluator);
+    void PrintEntanglerDebugData(double ellapsed, std::vector<JointPaths::JointPath> *candidates, JointPaths::Finder *entanglementFinder, JointPaths::Evaluator *entanglementEvaluator);
 };
 
 #endif

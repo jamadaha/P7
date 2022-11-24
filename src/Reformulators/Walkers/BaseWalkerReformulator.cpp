@@ -7,7 +7,7 @@ PDDLInstance BaseWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
     FindPaths(instance, debugMode);
 
 	// Entanglement Finding
-    std::vector<EntanglementOccurance> candidates = FindEntanglements(instance, debugMode);
+    std::vector<JointPaths::JointPath> candidates = FindEntanglements(instance, debugMode);
 
 	// Macro Generation
 	PDDLInstance macroInstance = GenerateMacros(instance, &candidates, debugMode);
@@ -53,34 +53,34 @@ void BaseWalkerReformulator::FindPaths(PDDLInstance *instance, bool debugMode) {
 	}
 }
 
-std::vector<EntanglementOccurance> BaseWalkerReformulator::FindEntanglements(PDDLInstance* instance, bool debugMode) {
-    EntanglementFinder entanglementFinder = GetEntanglementFinder(debugMode);
-    EntanglementEvaluator entanglementEvaluator = GetEntanglementEvaluator();
+std::vector<JointPaths::JointPath> BaseWalkerReformulator::FindEntanglements(PDDLInstance* instance, bool debugMode) {
+    JointPaths::Finder finder = GetEntanglementFinder(debugMode);
+    JointPaths::Evaluator evaluator = GetEntanglementEvaluator();
     int entangleID = Report->Begin("Finding Entanglements", ReportID);
-    auto candidates = entanglementFinder.FindEntangledCandidates(&paths);
-    auto sanitizedCandidates = entanglementEvaluator.EvaluateAndSanitizeCandidates(candidates);
+    auto candidates = finder.FindEntangledCandidates(&paths);
+    auto sanitizedCandidates = evaluator.EvaluateAndSanitizeCandidates(candidates);
 	double ellapsed = Report->Stop();
 	if (debugMode)
-		PrintEntanglerDebugData(ellapsed, &sanitizedCandidates, &entanglementFinder, &entanglementEvaluator);
+		PrintEntanglerDebugData(ellapsed, &sanitizedCandidates, &finder, &evaluator);
 	if (Configs->GetItem<bool>("printentanglersteps"))
 		PrintEntanglerSteps(&sanitizedCandidates, instance);
     return sanitizedCandidates;
 }
 
-EntanglementFinder BaseWalkerReformulator::GetEntanglementFinder(bool debugMode) {
+JointPaths::Finder BaseWalkerReformulator::GetEntanglementFinder(bool debugMode) {
     // Find entanglement candidates.
-	auto runData = EntanglementFinder::RunData();
+	auto runData = JointPaths::Finder::RunData();
 
 	runData.LevelReductionFactor = Configs->GetItem<int>("levelReductionFactor");
 	runData.SearchCeiling = Configs->GetItem<int>("searchCeiling");
 	runData.SearchFloor = Configs->GetItem<int>("searchFloor");
 	runData.TimeLimitMs = TimeLimit * Configs->GetItem<double>("reformulationTimeFraction");
 	if (Configs->GetItem<std::string>("levelReductionTypes") == "Division")
-		runData.LevelReductionType = EntanglementFinder::RunData::Division;
+		runData.LevelReductionType = JointPaths::Finder::RunData::Division;
 	if (Configs->GetItem<std::string>("levelReductionTypes") == "Subtraction")
-		runData.LevelReductionType = EntanglementFinder::RunData::Subtraction;
+		runData.LevelReductionType = JointPaths::Finder::RunData::Subtraction;
 
-	auto ef = EntanglementFinder(runData);
+	auto ef = JointPaths::Finder(runData);
 
 	if (Configs->GetItem<bool>("debugmode")) {
 		ef.OnNewLevel = [&](int level, int outOf) {
@@ -105,26 +105,26 @@ EntanglementFinder BaseWalkerReformulator::GetEntanglementFinder(bool debugMode)
 	return ef;
 }
 
-EntanglementEvaluator BaseWalkerReformulator::GetEntanglementEvaluator() {
-    EntanglementEvaluator::RunData runData;
+JointPaths::Evaluator BaseWalkerReformulator::GetEntanglementEvaluator() {
+    JointPaths::Evaluator::RunData runData;
 	runData.MinimumQualityPercent = Configs->GetItem<double>("minimumQualityPercent");
 	runData.MaxCandidates = Configs->GetItem<int>("maxCandidates");
 
-	auto ee = EntanglementEvaluator(runData);
+	auto ee = JointPaths::Evaluator(runData);
 	if (Configs->GetItem<std::string>("entanglerLengthModifier") == "lengthBias")
-		ee.LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::LengthBias;
+		ee.LengthModifier = JointPaths::EvaluationModifiers::LengthModifiers::LengthBias;
 	else if (Configs->GetItem<std::string>("entanglerLengthModifier") == "none")
-		ee.LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::None;
+		ee.LengthModifier = JointPaths::EvaluationModifiers::LengthModifiers::None;
 
 	if (Configs->GetItem<std::string>("entanglerOccuranceModifier") == "none")
-		ee.OccuranceModifier = EntanglementEvaluatorModifiers::OccuranceModifiers::None;
+		ee.OccuranceModifier = JointPaths::EvaluationModifiers::OccuranceModifiers::None;
 	else if (Configs->GetItem<std::string>("entanglerOccuranceModifier") == "lowOccuranceBias")
-		ee.OccuranceModifier = EntanglementEvaluatorModifiers::OccuranceModifiers::LowOccuranceBias;
+		ee.OccuranceModifier = JointPaths::EvaluationModifiers::OccuranceModifiers::LowOccuranceBias;
 
 	return ee;
 }
 
-PDDLInstance BaseWalkerReformulator::GenerateMacros(PDDLInstance* instance, std::vector<EntanglementOccurance>* candidates, bool debugMode) {
+PDDLInstance BaseWalkerReformulator::GenerateMacros(PDDLInstance* instance, std::vector<JointPaths::JointPath>* candidates, bool debugMode) {
 	if (debugMode)
 		ConsoleHelper::PrintDebugInfo("[Macro Generator] Generating Macros...", debugIndent);
 
@@ -237,7 +237,7 @@ void BaseWalkerReformulator::SetupWalkerDebugInfo(BaseWalker* walker) {
     }
 }
 
-void BaseWalkerReformulator::PrintEntanglerSteps(std::vector<EntanglementOccurance>* candidates, PDDLInstance* instance) {
+void BaseWalkerReformulator::PrintEntanglerSteps(std::vector<JointPaths::JointPath>* candidates, PDDLInstance* instance) {
 	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Top 10 Entanglements:", debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglements] Quality  : Chain", debugIndent + 1);
 	int counter = 0;
@@ -266,16 +266,16 @@ void BaseWalkerReformulator::PrintWalkerDebugData(double ellapsed) {
 	ConsoleHelper::PrintDebugInfo("[Walker] Total walk time:         " + std::to_string(ellapsed) + "ms", debugIndent);
 }
 
-void BaseWalkerReformulator::PrintEntanglerDebugData(double ellapsed, std::vector<EntanglementOccurance> *candidates, EntanglementFinder *entanglementFinder, EntanglementEvaluator *entanglementEvaluator) {
+void BaseWalkerReformulator::PrintEntanglerDebugData(double ellapsed, std::vector<JointPaths::JointPath> *candidates, JointPaths::Finder* finder, JointPaths::Evaluator* evaluator) {
 	unsigned int totalActions = 0;
 	for (int i = 0; i < paths.size(); i++)
 		totalActions += paths.at(i).steps.size();
 
 	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total search time:         " + std::to_string(ellapsed) + "ms", debugIndent);
-	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + std::to_string(entanglementFinder->TotalLevels()), debugIndent);
-	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + std::to_string(entanglementEvaluator->RemovedCandidates() + candidates->size()), debugIndent);
+	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + std::to_string(finder->TotalLevels()), debugIndent);
+	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + std::to_string(evaluator->RemovedCandidates() + candidates->size()), debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + std::to_string(paths.size()) + " paths with " + std::to_string(totalActions) + " steps in total", debugIndent);
-	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + std::to_string(candidates->size()) + " (" + std::to_string(entanglementEvaluator->RemovedCandidates()) + " removed)", debugIndent);
+	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + std::to_string(candidates->size()) + " (" + std::to_string(evaluator->RemovedCandidates()) + " removed)", debugIndent);
 }
 
 #pragma endregion

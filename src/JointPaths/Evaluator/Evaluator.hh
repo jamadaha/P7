@@ -4,7 +4,7 @@
 #include <vector>
 #include <unordered_map>
 
-#include "JointPath.hh"
+#include "../JointPath.hh"
 #include "EvaluationModifiers.hh"
 
 namespace JointPaths {

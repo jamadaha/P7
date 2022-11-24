@@ -4,9 +4,10 @@
 #include <vector>
 #include <unordered_map>
 #include <chrono>
+#include <math.h>
 
 #include "../IntermediatePDDL/PDDLInstance.hh"
-#include "JointPath.hh"
+#include "../JointPath.hh"
 #include "../Walker/Path.hh"
 
 namespace JointPaths {

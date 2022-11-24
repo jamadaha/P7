@@ -37,6 +37,7 @@ private:
 	void SetModifiersIfNotSet();
 	std::vector<EntanglementOccurance> ConvertToVector(std::unordered_map<size_t, EntanglementOccurance>* candidates);
 	void RemoveMinimumQuality(std::vector<EntanglementOccurance>* candidates);
+	void RemoveIfTooMany(std::vector<EntanglementOccurance>* candidates);
 	void SetQualityByLength(std::vector<EntanglementOccurance>* candidates);
 	void SetQualityByOccurance(std::vector<EntanglementOccurance>* candidates);
 	std::vector<EntanglementOccurance> SortCandidates(std::vector<EntanglementOccurance>* candidates);

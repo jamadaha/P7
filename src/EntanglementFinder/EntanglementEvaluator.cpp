@@ -6,6 +6,7 @@ vector<EntanglementOccurance> EntanglementEvaluator::EvaluateAndSanitizeCandidat
 	// Setup default modifiers
 	SetModifiersIfNotSet();
 
+	// Convert to vector for easier access
 	vector<EntanglementOccurance> convertedCandidates = ConvertToVector(&candidates);
 	int preCount = convertedCandidates.size();
 
@@ -18,10 +19,12 @@ vector<EntanglementOccurance> EntanglementEvaluator::EvaluateAndSanitizeCandidat
 
 	_RemovedCandidates = preCount - convertedCandidates.size();
 
+	// Sort the candidates
 	vector<EntanglementOccurance> sortedCandidates = SortCandidates(&convertedCandidates);
-	if (sortedCandidates.size() > Data.MaxCandidates) {
-		sortedCandidates.erase(sortedCandidates.begin() + Data.MaxCandidates, sortedCandidates.end());
-	}
+
+	// Remove candidates if there are too many
+	RemoveIfTooMany(&sortedCandidates);
+
 	return sortedCandidates;
 }
 
@@ -35,6 +38,12 @@ void EntanglementEvaluator::SetModifiersIfNotSet() {
 void EntanglementEvaluator::RemoveMinimumQuality(vector<EntanglementOccurance>* candidates) {
 	const auto removeIfLessThan = [&](EntanglementOccurance const& candidate) { return candidate.Quality < Data.MinimumQualityPercent; };
 	std::erase_if(*candidates, removeIfLessThan);
+}
+
+void EntanglementEvaluator::RemoveIfTooMany(vector<EntanglementOccurance>* candidates) {
+	if (candidates->size() > Data.MaxCandidates) {
+		candidates->erase(candidates->begin() + Data.MaxCandidates, candidates->end());
+	}
 }
 
 void EntanglementEvaluator::SetQualityByLength(vector<EntanglementOccurance>* candidates) {

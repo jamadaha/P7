@@ -11,6 +11,7 @@ Path WalkerStepBack::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
     if (OnTempStateMade != nullptr)
         OnTempStateMade(this->instance, &tempState);
 
+    bool doBreak = false;
     for (int i = 0; i < maxStepCount; i++) {
         std::vector<PDDLActionInstance> possibleActions;
         possibleActions = actionGenerator.GenerateActions(&tempState);
@@ -27,12 +28,16 @@ Path WalkerStepBack::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
                     break;
                 }
             }
-            if (possibleActions.size() == 0)
+            if (possibleActions.size() == 0) {
+                doBreak = true;
                 break;
+            }
 
             chosenAction = heuristic->NextChoice(&tempState, &possibleActions);
             changes = tempState.DoAction(chosenAction);
         }
+        if (doBreak)
+            break;
 
         visitedStates.emplace(tempState);
         if (SaveStates)

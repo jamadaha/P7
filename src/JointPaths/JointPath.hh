@@ -17,6 +17,10 @@ namespace JointPaths {
             for (auto instance : chain)
                 Chain.push_back(*instance);
         };
+        JointPath(std::vector<PDDLActionInstance*> chain, size_t hash, int occurance, double quality) : JointPath(chain, hash) {
+            Occurance = occurance;
+            Quality = quality;
+        };
     private:
         size_t Hash = 0;
     };

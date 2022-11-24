@@ -37,8 +37,7 @@ void Evaluator::SetModifiersIfNotSet() {
 }
 
 void Evaluator::RemoveMinimumQuality(vector<JointPath>* candidates) {
-	const auto removeIfLessThan = [&](JointPath const& candidate) { return candidate.Quality < Data.MinimumQualityPercent; };
-	std::erase_if(*candidates, removeIfLessThan);
+	std::erase_if(*candidates, RemoveIfLessThanFunc);
 }
 
 void Evaluator::RemoveIfTooMany(vector<JointPath>* candidates) {
@@ -55,7 +54,7 @@ void Evaluator::SetQualityByLength(vector<JointPath>* candidates) {
 	}
 	for (auto candidate = candidates->begin(); candidate != candidates->end(); candidate++) {
 		double newQuality = candidate->Quality * LengthModifier(candidate->Chain.size(), maxLength);
-		candidate->Quality *= min((double)1, newQuality);
+		candidate->Quality = min((double)1, newQuality);
 	}
 }
 
@@ -67,7 +66,7 @@ void Evaluator::SetQualityByOccurance(vector<JointPath>* candidates) {
 	}
 	for (auto candidate = candidates->begin(); candidate != candidates->end(); candidate++) {
 		double newQuality = candidate->Quality * OccuranceModifier(candidate->Occurance, maxOccurance);
-		candidate->Quality *= min((double)1, newQuality);
+		candidate->Quality = min((double)1, newQuality);
 	}
 }
 

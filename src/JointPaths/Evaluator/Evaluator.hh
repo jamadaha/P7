@@ -28,6 +28,7 @@ namespace JointPaths {
 
 	private:
 		unsigned int _RemovedCandidates;
+		const std::function<bool((const JointPath& candidate))> RemoveIfLessThanFunc = [&](const JointPath& candidate) { return candidate.Quality < Data.MinimumQualityPercent; };
 
 		void SetModifiersIfNotSet();
 		std::vector<JointPath> ConvertToVector(std::unordered_map<size_t, JointPath>* candidates);

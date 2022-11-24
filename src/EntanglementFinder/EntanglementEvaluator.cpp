@@ -3,25 +3,26 @@
 using namespace std;
 
 vector<EntanglementOccurance> EntanglementEvaluator::EvaluateAndSanitizeCandidates(unordered_map<size_t, EntanglementOccurance> candidates) {
-	int preCount = candidates.size();
-
 	// Setup default modifiers
 	SetModifiersIfNotSet();
 
+	vector<EntanglementOccurance> convertedCandidates = ConvertToVector(&candidates);
+	int preCount = convertedCandidates.size();
+
 	// Modify remaining candidates Quality
-	SetQualityByLength(&candidates);
-	SetQualityByOccurance(&candidates);
+	SetQualityByLength(&convertedCandidates);
+	SetQualityByOccurance(&convertedCandidates);
 
 	// Sanitize candidates
-	RemoveMinimumQuality(&candidates);
+	RemoveMinimumQuality(&convertedCandidates);
 
-	_RemovedCandidates = preCount - candidates.size();
+	_RemovedCandidates = preCount - convertedCandidates.size();
 
-	vector<EntanglementOccurance> sanitizedCandidates = SortCandidates(&candidates);
-	if (sanitizedCandidates.size() > Data.MaxCandidates) {
-		sanitizedCandidates.erase(sanitizedCandidates.begin() + Data.MaxCandidates, sanitizedCandidates.end());
+	vector<EntanglementOccurance> sortedCandidates = SortCandidates(&convertedCandidates);
+	if (sortedCandidates.size() > Data.MaxCandidates) {
+		sortedCandidates.erase(sortedCandidates.begin() + Data.MaxCandidates, sortedCandidates.end());
 	}
-	return sanitizedCandidates;
+	return sortedCandidates;
 }
 
 void EntanglementEvaluator::SetModifiersIfNotSet() {
@@ -31,46 +32,54 @@ void EntanglementEvaluator::SetModifiersIfNotSet() {
 		OccuranceModifier = EntanglementEvaluatorModifiers::OccuranceModifiers::Default;
 }
 
-void EntanglementEvaluator::RemoveMinimumQuality(unordered_map<size_t, EntanglementOccurance>* candidates) {
-	const auto removeIfLessThan = [&](pair<size_t, EntanglementOccurance> const& x) { return x.second.Quality < Data.MinimumQualityPercent; };
+void EntanglementEvaluator::RemoveMinimumQuality(vector<EntanglementOccurance>* candidates) {
+	const auto removeIfLessThan = [&](EntanglementOccurance const& candidate) { return candidate.Quality < Data.MinimumQualityPercent; };
 	std::erase_if(*candidates, removeIfLessThan);
 }
 
-void EntanglementEvaluator::SetQualityByLength(unordered_map<size_t, EntanglementOccurance>* candidates) {
+void EntanglementEvaluator::SetQualityByLength(vector<EntanglementOccurance>* candidates) {
 	double maxLength = 0;
-	for (auto itt = candidates->begin(); itt != candidates->end(); itt++) {
-		if ((*itt).second.Chain.size() > maxLength)
-			maxLength = (*itt).second.Chain.size();
+	for (auto candidate = candidates->begin(); candidate != candidates->end(); candidate++) {
+		if (candidate->Chain.size() > maxLength)
+			maxLength = candidate->Chain.size();
 	}
-	for (auto itt = candidates->begin(); itt != candidates->end(); itt++) {
-		double newQuality = (*itt).second.Quality * LengthModifier((*itt).second.Chain.size(), maxLength);
-		(*itt).second.Quality *= min((double)1, newQuality);
+	for (auto candidate = candidates->begin(); candidate != candidates->end(); candidate++) {
+		double newQuality = candidate->Quality * LengthModifier(candidate->Chain.size(), maxLength);
+		candidate->Quality *= min((double)1, newQuality);
 	}
 }
 
-void EntanglementEvaluator::SetQualityByOccurance(unordered_map<size_t, EntanglementOccurance>* candidates) {
+void EntanglementEvaluator::SetQualityByOccurance(vector<EntanglementOccurance>* candidates) {
 	double maxOccurance = 0;
-	for (auto itt = candidates->begin(); itt != candidates->end(); itt++) {
-		if ((*itt).second.Occurance > maxOccurance)
-			maxOccurance = (*itt).second.Occurance;
+	for (auto candidate = candidates->begin(); candidate != candidates->end(); candidate++) {
+		if (candidate->Occurance > maxOccurance)
+			maxOccurance = candidate->Occurance;
 	}
-	for (auto itt = candidates->begin(); itt != candidates->end(); itt++) {
-		double newQuality = (*itt).second.Quality * OccuranceModifier((*itt).second.Occurance, maxOccurance);
-		(*itt).second.Quality *= min((double)1, newQuality);
+	for (auto candidate = candidates->begin(); candidate != candidates->end(); candidate++) {
+		double newQuality = candidate->Quality * OccuranceModifier(candidate->Occurance, maxOccurance);
+		candidate->Quality *= min((double)1, newQuality);
 	}
 }
 
-vector<EntanglementOccurance> EntanglementEvaluator::SortCandidates(unordered_map<size_t, EntanglementOccurance>* candidates) {
-	vector<EntanglementOccurance> sanitizedCandidates;
-	for (auto itt = candidates->begin(); itt != candidates->end(); itt++) {
+vector<EntanglementOccurance> EntanglementEvaluator::ConvertToVector(unordered_map<size_t, EntanglementOccurance>* candidates) {
+	vector<EntanglementOccurance> vetorCandidates;
+	vetorCandidates.reserve(candidates->size());
+	for (auto candidate = candidates->begin(); candidate != candidates->end(); candidate++) {
+		vetorCandidates.push_back(candidate->second);
+	}
+	return vetorCandidates;
+}
+
+vector<EntanglementOccurance> EntanglementEvaluator::SortCandidates(vector<EntanglementOccurance>* candidates) {
+	vector<EntanglementOccurance> sortedCandidates;
+	for (auto candidate = candidates->begin(); candidate != candidates->end(); candidate++) {
 		int index = 0;
-		for (int i = 0; i < sanitizedCandidates.size(); i++) {
-			if ((*itt).second.Quality > sanitizedCandidates.at(i).Quality)
+		for (int i = 0; i < sortedCandidates.size(); i++) {
+			if (candidate->Quality > sortedCandidates.at(i).Quality)
 				break;
 			index++;
 		}
-		auto realIndex = sanitizedCandidates.begin() + index;
-		sanitizedCandidates.insert(realIndex, (*itt).second);
+		sortedCandidates.insert(sortedCandidates.begin() + index, (*candidate));
 	}
-	return sanitizedCandidates;
+	return sortedCandidates;
 }

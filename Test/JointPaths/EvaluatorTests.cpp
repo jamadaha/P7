@@ -74,9 +74,9 @@ TEST_CASE(TAG + "Can_Remove_Too_Low_Quality_1") {
 	evaluator.OccuranceModifier = EvaluationModifiers::OccuranceModifiers::None;
 
 	unordered_map<size_t, JointPath> candidates{
-		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 0.1)},
-		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 0.5)},
-		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 1)}
+		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 0, 0.1)},
+		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 0, 0.5)},
+		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 0, 1)}
 	};
 
 	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
@@ -93,9 +93,9 @@ TEST_CASE(TAG + "Can_Remove_Too_Low_Quality_2") {
 	evaluator.OccuranceModifier = EvaluationModifiers::OccuranceModifiers::None;
 
 	unordered_map<size_t, JointPath> candidates{
-		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 0.1)},
-		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 0.5)},
-		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 1)}
+		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 0, 0.1)},
+		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 0, 0.5)},
+		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 0, 1)}
 	};
 
 	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
@@ -112,9 +112,9 @@ TEST_CASE(TAG + "Can_Remove_Too_Low_Quality_3") {
 	evaluator.OccuranceModifier = EvaluationModifiers::OccuranceModifiers::None;
 
 	unordered_map<size_t, JointPath> candidates{
-		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 0.1)},
-		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 0.5)},
-		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 1)}
+		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 0, 0.1)},
+		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 0, 0.5)},
+		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 0, 1)}
 	};
 
 	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
@@ -151,9 +151,9 @@ TEST_CASE(TAG + "Can_Sort_Candidates") {
 	evaluator.OccuranceModifier = EvaluationModifiers::OccuranceModifiers::None;
 
 	unordered_map<size_t, JointPath> candidates{
-		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 1)},
-		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 0.2)},
-		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 0.4)}
+		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 0, 1)},
+		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 0, 0.2)},
+		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 0, 0.4)}
 	};
 
 	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
@@ -163,4 +163,182 @@ TEST_CASE(TAG + "Can_Sort_Candidates") {
 		REQUIRE(result.at(i - 1).Quality > result.at(i).Quality);
 	}
 }
+
 #pragma endregion
+
+#pragma region Length Modifiers
+
+TEST_CASE(TAG + "Can_Set_Lenght_Modifier_None") {
+	Evaluator::RunData data;
+	data.MaxCandidates = 10000;
+	Evaluator evaluator(data);
+	evaluator.LengthModifier = EvaluationModifiers::LengthModifiers::None;
+	evaluator.OccuranceModifier = EvaluationModifiers::OccuranceModifiers::None;
+
+	// Remember, that the results is sorted!
+	vector<int> expectedQuality{
+		100,
+		100,
+		100,
+	};
+
+	unordered_map<size_t, JointPath> candidates{
+		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 2, 1)},
+		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 4, 1)},
+		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 6, 1)}
+	};
+
+	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
+
+	REQUIRE(result.size() == candidates.size());
+	for (int i = 0; i < result.size(); i++) {
+		REQUIRE((int)(result.at(i).Quality * 100) == expectedQuality.at(i));
+	}
+}
+
+TEST_CASE(TAG + "Can_Set_Lenght_Modifier_Default") {
+	Evaluator::RunData data;
+	data.MaxCandidates = 10000;
+	Evaluator evaluator(data);
+	evaluator.LengthModifier = EvaluationModifiers::LengthModifiers::Default;
+	evaluator.OccuranceModifier = EvaluationModifiers::OccuranceModifiers::None;
+
+	// Remember, that the results is sorted!
+	vector<int> expectedQuality{
+		100,
+		66,
+		33,
+	};
+
+	unordered_map<size_t, JointPath> candidates{
+		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 2, 1)},
+		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 4, 1)},
+		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 6, 1)}
+	};
+
+	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
+
+	REQUIRE(result.size() == candidates.size());
+	for (int i = 0; i < result.size(); i++) {
+		REQUIRE((int)(result.at(i).Quality * 100) == expectedQuality.at(i));
+	}
+}
+
+TEST_CASE(TAG + "Can_Set_Lenght_Modifier_LengthBias") {
+	Evaluator::RunData data;
+	data.MaxCandidates = 10000;
+	Evaluator evaluator(data);
+	evaluator.LengthModifier = EvaluationModifiers::LengthModifiers::LengthBias;
+	evaluator.OccuranceModifier = EvaluationModifiers::OccuranceModifiers::None;
+
+	// Remember, that the results is sorted!
+	vector<int> expectedQuality{
+		100,
+		50,
+		25,
+	};
+
+	unordered_map<size_t, JointPath> candidates{
+		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 2, 1)},
+		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 4, 1)},
+		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 6, 1)}
+	};
+
+	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
+
+	REQUIRE(result.size() == candidates.size());
+	for (int i = 0; i < result.size(); i++) {
+		REQUIRE((int)(result.at(i).Quality * 100) == expectedQuality.at(i));
+	}
+}
+
+#pragma endregion
+
+#pragma region Occurance Modifiers
+
+TEST_CASE(TAG + "Can_Set_Occurance_Modifier_None") {
+	Evaluator::RunData data;
+	data.MaxCandidates = 10000;
+	Evaluator evaluator(data);
+	evaluator.LengthModifier = EvaluationModifiers::LengthModifiers::None;
+	evaluator.OccuranceModifier = EvaluationModifiers::OccuranceModifiers::None;
+
+	// Remember, that the results is sorted!
+	vector<int> expectedQuality{
+		100,
+		100,
+		100,
+	};
+
+	unordered_map<size_t, JointPath> candidates{
+		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 2, 1)},
+		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 4, 1)},
+		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 6, 1)}
+	};
+
+	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
+
+	REQUIRE(result.size() == candidates.size());
+	for (int i = 0; i < result.size(); i++) {
+		REQUIRE((int)(result.at(i).Quality * 100) == expectedQuality.at(i));
+	}
+}
+
+TEST_CASE(TAG + "Can_Set_Occurance_Modifier_Default") {
+	Evaluator::RunData data;
+	data.MaxCandidates = 10000;
+	Evaluator evaluator(data);
+	evaluator.LengthModifier = EvaluationModifiers::LengthModifiers::None;
+	evaluator.OccuranceModifier = EvaluationModifiers::OccuranceModifiers::Default;
+
+	// Remember, that the results is sorted!
+	vector<int> expectedQuality{
+		100,
+		66,
+		33,
+	};
+
+	unordered_map<size_t, JointPath> candidates{
+		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 2, 1)},
+		{2, JointPath(vector<PDDLActionInstance*>(), 2, 4, 4, 1)},
+		{3, JointPath(vector<PDDLActionInstance*>(), 3, 6, 6, 1)}
+	};
+
+	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
+
+	REQUIRE(result.size() == candidates.size());
+	for (int i = 0; i < result.size(); i++) {
+		REQUIRE((int)(result.at(i).Quality * 100) == expectedQuality.at(i));
+	}
+}
+
+TEST_CASE(TAG + "Can_Set_Occurance_Modifier_LowOccuranceBias") {
+	Evaluator::RunData data;
+	data.MaxCandidates = 10000;
+	Evaluator evaluator(data);
+	evaluator.LengthModifier = EvaluationModifiers::LengthModifiers::None;
+	evaluator.OccuranceModifier = EvaluationModifiers::OccuranceModifiers::LowOccuranceBias;
+
+	// Remember, that the results is sorted!
+	vector<int> expectedQuality{
+		50,
+		25,
+		16,
+	};
+
+	unordered_map<size_t, JointPath> candidates{
+		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 2, 1)},
+		{2, JointPath(vector<PDDLActionInstance*>(), 2, 4, 4, 1)},
+		{3, JointPath(vector<PDDLActionInstance*>(), 3, 6, 6, 1)}
+	};
+
+	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
+
+	REQUIRE(result.size() == candidates.size());
+	for (int i = 0; i < result.size(); i++) {
+		REQUIRE((int)(result.at(i).Quality * 100) == expectedQuality.at(i));
+	}
+}
+
+#pragma endregion
+

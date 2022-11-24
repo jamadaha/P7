@@ -49,11 +49,11 @@ void Evaluator::RemoveIfTooMany(vector<JointPath>* candidates) {
 void Evaluator::SetQualityByLength(vector<JointPath>* candidates) {
 	double maxLength = 0;
 	for (auto candidate = candidates->begin(); candidate != candidates->end(); candidate++) {
-		if (candidate->Chain.size() > maxLength)
-			maxLength = candidate->Chain.size();
+		if (candidate->ChainSize > maxLength)
+			maxLength = candidate->ChainSize;
 	}
 	for (auto candidate = candidates->begin(); candidate != candidates->end(); candidate++) {
-		double newQuality = candidate->Quality * LengthModifier(candidate->Chain.size(), maxLength);
+		double newQuality = candidate->Quality * LengthModifier(candidate->ChainSize, maxLength);
 		candidate->Quality = min((double)1, newQuality);
 	}
 }

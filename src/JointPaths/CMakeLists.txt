@@ -1,13 +1,13 @@
-add_library(EntanglementFinder "EntanglementFinder.cpp" "EntanglementOccurance.cpp" "EntanglementEvaluator.cpp")
-target_sources(EntanglementFinder
+add_library(JointPaths "JointPath.cpp" "Evaluator/Evaluator.cpp" "Finder/Finder.cpp")
+target_sources(JointPaths
     PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/EntanglementFinder.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/EntanglementEvaluator.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Finder/Finder.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Evaluator/Evaluator.cpp
     PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR}/EntanglementFinder.hh
-        ${CMAKE_CURRENT_LIST_DIR}/EntanglementEvaluator.hh
-        ${CMAKE_CURRENT_LIST_DIR}/EntanglementEvaluatorModifiers.hh
-        ${CMAKE_CURRENT_LIST_DIR}/EntanglementOccurance.hh)
-target_include_directories(EntanglementFinder
+        ${CMAKE_CURRENT_LIST_DIR}/Finder/Finder.hh
+        ${CMAKE_CURRENT_LIST_DIR}/Evaluator/Evaluator.hh
+        ${CMAKE_CURRENT_LIST_DIR}/Evaluator/EvaluationModifiers.hh
+        ${CMAKE_CURRENT_LIST_DIR}/JointPath.hh)
+target_include_directories(JointPaths
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR})

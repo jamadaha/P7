@@ -1,9 +1,7 @@
 #ifndef JOINTPATHFINDER_HH
 #define JOINTPATHFINDER_HH
 
-#include <string>
 #include <vector>
-#include <math.h>
 #include <unordered_map>
 #include <chrono>
 

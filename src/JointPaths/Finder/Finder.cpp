@@ -29,8 +29,8 @@ int Finder::GetInitialLevelIfValid(vector<Path>* paths) {
 	return level;
 }
 
-unordered_map<size_t, EntanglementOccurance> Finder::FindEntangledCandidates(vector<Path>* paths) {
-	unordered_map<size_t, EntanglementOccurance> candidates;
+unordered_map<size_t, JointPath> Finder::FindEntangledCandidates(vector<Path>* paths) {
+	unordered_map<size_t, JointPath> candidates;
 
 	if (paths->size() == 0)
 		return candidates;
@@ -63,7 +63,7 @@ unordered_map<size_t, EntanglementOccurance> Finder::FindEntangledCandidates(vec
 	}
 
 	return candidates;
-	//return unordered_map<size_t, EntanglementOccurance>(candidates);
+	//return unordered_map<size_t, JointPath>(candidates);
 }
 
 int Finder::ReduceLevel(int level) {
@@ -102,7 +102,7 @@ void Finder::GenerateActionSet(vector<pair<size_t, vector<PDDLActionInstance*>>>
 	}
 }
 
-void Finder::AddCandidatesIfThere(unordered_map<size_t, EntanglementOccurance>* candidates, const vector<pair<size_t, vector<PDDLActionInstance*>>>* currentValues) {
+void Finder::AddCandidatesIfThere(unordered_map<size_t, JointPath>* candidates, const vector<pair<size_t, vector<PDDLActionInstance*>>>* currentValues) {
 	const int currentValueSize = currentValues->size();
 	if (OnNewLevel != nullptr)
 		OnNewLevel(_CurrentLevel, currentValueSize);
@@ -113,7 +113,7 @@ void Finder::AddCandidatesIfThere(unordered_map<size_t, EntanglementOccurance>* 
 		bool containsThisKey = candidates->contains(iValue.first);
 		if (containsThisKey)
 			continue;
-		EntanglementOccurance* currentOcc;
+		JointPath* currentOcc;
 		for (int j = i + 1; j < currentValueSize; j++) {
 			_TotalComparisons++;
 			if (iValue.first == currentValues->at(j).first) {
@@ -123,7 +123,7 @@ void Finder::AddCandidatesIfThere(unordered_map<size_t, EntanglementOccurance>* 
 				}
 				else {
 					// Add new candidate
-					EntanglementOccurance newOcc(iValue.second, iValue.first);
+					JointPath newOcc(iValue.second, iValue.first);
 					candidates->emplace(iValue.first, newOcc);
 					containsThisKey = true;
 					currentOcc = &candidates->at(iValue.first);

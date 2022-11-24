@@ -1,13 +1,10 @@
-#ifndef EntanglementEvaluator_HH
-#define EntanglementEvaluator_HH
+#ifndef JOINTPATH_EVALUATOR_HH
+#define JOINTPATH_EVALUATOR_HH
 
-#include <string>
 #include <vector>
-#include <math.h>
 #include <unordered_map>
-#include <chrono>
 
-#include "EntanglementOccurance.hh"
+#include "JointPath.hh"
 #include "EvaluationModifiers.hh"
 
 namespace JointPaths {
@@ -24,7 +21,7 @@ namespace JointPaths {
 
 		Evaluator(RunData data) : Data(data) {};
 
-		std::vector<EntanglementOccurance> EvaluateAndSanitizeCandidates(std::unordered_map<size_t, EntanglementOccurance> candidates);
+		std::vector<JointPath> EvaluateAndSanitizeCandidates(std::unordered_map<size_t, JointPath> candidates);
 
 		std::function<double(double length, double maxLength)> LengthModifier;
 		std::function<double(double occurance, double maxOccurance)> OccuranceModifier;
@@ -33,12 +30,12 @@ namespace JointPaths {
 		unsigned int _RemovedCandidates;
 
 		void SetModifiersIfNotSet();
-		std::vector<EntanglementOccurance> ConvertToVector(std::unordered_map<size_t, EntanglementOccurance>* candidates);
-		void RemoveMinimumQuality(std::vector<EntanglementOccurance>* candidates);
-		void RemoveIfTooMany(std::vector<EntanglementOccurance>* candidates);
-		void SetQualityByLength(std::vector<EntanglementOccurance>* candidates);
-		void SetQualityByOccurance(std::vector<EntanglementOccurance>* candidates);
-		std::vector<EntanglementOccurance> SortCandidates(std::vector<EntanglementOccurance>* candidates);
+		std::vector<JointPath> ConvertToVector(std::unordered_map<size_t, JointPath>* candidates);
+		void RemoveMinimumQuality(std::vector<JointPath>* candidates);
+		void RemoveIfTooMany(std::vector<JointPath>* candidates);
+		void SetQualityByLength(std::vector<JointPath>* candidates);
+		void SetQualityByOccurance(std::vector<JointPath>* candidates);
+		std::vector<JointPath> SortCandidates(std::vector<JointPath>* candidates);
 	};
 
 }

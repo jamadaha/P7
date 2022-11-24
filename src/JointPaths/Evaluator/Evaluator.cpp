@@ -3,12 +3,12 @@
 using namespace std;
 using namespace JointPaths;
 
-vector<EntanglementOccurance> Evaluator::EvaluateAndSanitizeCandidates(unordered_map<size_t, EntanglementOccurance> candidates) {
+vector<JointPath> Evaluator::EvaluateAndSanitizeCandidates(unordered_map<size_t, JointPath> candidates) {
 	// Setup default modifiers
 	SetModifiersIfNotSet();
 
 	// Convert to vector for easier access
-	vector<EntanglementOccurance> convertedCandidates = ConvertToVector(&candidates);
+	vector<JointPath> convertedCandidates = ConvertToVector(&candidates);
 	int preCount = convertedCandidates.size();
 
 	// Modify remaining candidates Quality
@@ -21,7 +21,7 @@ vector<EntanglementOccurance> Evaluator::EvaluateAndSanitizeCandidates(unordered
 	_RemovedCandidates = preCount - convertedCandidates.size();
 
 	// Sort the candidates
-	vector<EntanglementOccurance> sortedCandidates = SortCandidates(&convertedCandidates);
+	vector<JointPath> sortedCandidates = SortCandidates(&convertedCandidates);
 
 	// Remove candidates if there are too many
 	RemoveIfTooMany(&sortedCandidates);
@@ -31,23 +31,23 @@ vector<EntanglementOccurance> Evaluator::EvaluateAndSanitizeCandidates(unordered
 
 void Evaluator::SetModifiersIfNotSet() {
 	if (LengthModifier == nullptr)
-		LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::Default;
+		LengthModifier = EvaluationModifiers::LengthModifiers::Default;
 	if (OccuranceModifier == nullptr)
-		OccuranceModifier = EntanglementEvaluatorModifiers::OccuranceModifiers::Default;
+		OccuranceModifier = EvaluationModifiers::OccuranceModifiers::Default;
 }
 
-void Evaluator::RemoveMinimumQuality(vector<EntanglementOccurance>* candidates) {
-	const auto removeIfLessThan = [&](EntanglementOccurance const& candidate) { return candidate.Quality < Data.MinimumQualityPercent; };
+void Evaluator::RemoveMinimumQuality(vector<JointPath>* candidates) {
+	const auto removeIfLessThan = [&](JointPath const& candidate) { return candidate.Quality < Data.MinimumQualityPercent; };
 	std::erase_if(*candidates, removeIfLessThan);
 }
 
-void Evaluator::RemoveIfTooMany(vector<EntanglementOccurance>* candidates) {
+void Evaluator::RemoveIfTooMany(vector<JointPath>* candidates) {
 	if (candidates->size() > Data.MaxCandidates) {
 		candidates->erase(candidates->begin() + Data.MaxCandidates, candidates->end());
 	}
 }
 
-void Evaluator::SetQualityByLength(vector<EntanglementOccurance>* candidates) {
+void Evaluator::SetQualityByLength(vector<JointPath>* candidates) {
 	double maxLength = 0;
 	for (auto candidate = candidates->begin(); candidate != candidates->end(); candidate++) {
 		if (candidate->Chain.size() > maxLength)
@@ -59,7 +59,7 @@ void Evaluator::SetQualityByLength(vector<EntanglementOccurance>* candidates) {
 	}
 }
 
-void Evaluator::SetQualityByOccurance(vector<EntanglementOccurance>* candidates) {
+void Evaluator::SetQualityByOccurance(vector<JointPath>* candidates) {
 	double maxOccurance = 0;
 	for (auto candidate = candidates->begin(); candidate != candidates->end(); candidate++) {
 		if (candidate->Occurance > maxOccurance)
@@ -71,8 +71,8 @@ void Evaluator::SetQualityByOccurance(vector<EntanglementOccurance>* candidates)
 	}
 }
 
-vector<EntanglementOccurance> Evaluator::ConvertToVector(unordered_map<size_t, EntanglementOccurance>* candidates) {
-	vector<EntanglementOccurance> vetorCandidates;
+vector<JointPath> Evaluator::ConvertToVector(unordered_map<size_t, JointPath>* candidates) {
+	vector<JointPath> vetorCandidates;
 	vetorCandidates.reserve(candidates->size());
 	for (auto candidate = candidates->begin(); candidate != candidates->end(); candidate++) {
 		vetorCandidates.push_back(candidate->second);
@@ -80,8 +80,8 @@ vector<EntanglementOccurance> Evaluator::ConvertToVector(unordered_map<size_t, E
 	return vetorCandidates;
 }
 
-vector<EntanglementOccurance> Evaluator::SortCandidates(vector<EntanglementOccurance>* candidates) {
-	vector<EntanglementOccurance> sortedCandidates;
+vector<JointPath> Evaluator::SortCandidates(vector<JointPath>* candidates) {
+	vector<JointPath> sortedCandidates;
 	for (auto candidate = candidates->begin(); candidate != candidates->end(); candidate++) {
 		int index = 0;
 		for (int i = 0; i < sortedCandidates.size(); i++) {

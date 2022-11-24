@@ -1,19 +1,9 @@
-add_executable(Tests-EntanglementFinder Test/EntanglementFinder/EntanglementFinder.cpp)
-target_link_libraries(Tests-EntanglementFinder 
+add_executable(Tests-JointPaths "Test/JointPaths/FinderTests.cpp" "Test/JointPaths/EvaluatorTests.cpp" "Test/JointPaths/HashesTests.cpp")
+target_link_libraries(Tests-JointPaths 
     PRIVATE 
         Catch2::Catch2WithMain
-        EntanglementFinder
+        JointPaths
         IntermediatePDDL
         ProgressBarHelper)
 
-catch_discover_tests(Tests-EntanglementFinder)
-
-add_executable(Tests-EntanglementFinder-Hashes Test/EntanglementFinder/Hashes.cpp)
-target_link_libraries(Tests-EntanglementFinder-Hashes
-    PRIVATE 
-        Catch2::Catch2WithMain
-        EntanglementFinder
-        IntermediatePDDL
-        ProgressBarHelper)
-
-catch_discover_tests(Tests-EntanglementFinder-Hashes)
+catch_discover_tests(Tests-JointPaths)

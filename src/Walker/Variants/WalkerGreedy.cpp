@@ -1,6 +1,6 @@
 #include "WalkerGreedy.hpp"
 
-Path WalkerGreedy::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
+Path WalkerGreedy::Walk(BaseHeuristic *heuristic, const PDDLState *state, unsigned int* current) {
     std::vector<PDDLActionInstance> steps; 
     steps.reserve(maxStepCount);
     std::unordered_set<PDDLState> visitedStates; 
@@ -12,6 +12,9 @@ Path WalkerGreedy::Walk(BaseHeuristic *heuristic, const PDDLState *state) {
         OnTempStateMade(this->instance, &tempState);
 
     for (int i = 0; i < maxStepCount; i++) {
+        if (!widthFunc->Iterate(current))
+            break;
+
         std::vector<PDDLActionInstance> possibleActions;
         possibleActions = actionGenerator.GenerateActions(&tempState);
 
@@ -45,7 +48,7 @@ std::vector<Path> WalkerGreedy::Walk() {
         OnWalkerStart(this);
     auto startTime = std::chrono::steady_clock::now();
     while (widthFunc->Iterate(&current)) {
-        Path path = Walk(heuristic, &this->instance->problem->initState);
+        Path path = Walk(heuristic, &this->instance->problem->initState, &current);
         paths.push_back(path);
 
         if (OnWalkerStep != nullptr)

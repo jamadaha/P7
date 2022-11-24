@@ -22,7 +22,7 @@ public:
     std::vector<Path> Walk() override;
 private:
     const unsigned int maxStepCount = 1000;
-    Path Walk(BaseHeuristic* heuristic, const PDDLState* state);
+    Path Walk(BaseHeuristic* heuristic, const PDDLState* state, unsigned int* current);
 };
 
 #endif

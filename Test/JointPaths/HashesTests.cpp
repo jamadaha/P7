@@ -5,7 +5,8 @@
 
 #include "../../src/Walker/Path.hh"
 
-int collisionDepth = 5000;
+//int collisionDepth = 5000;
+int collisionDepth = 5;
 int currentCase = 1;
 int totalCases = 17;
 bool debugPrint = true;

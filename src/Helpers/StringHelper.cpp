@@ -6,7 +6,7 @@ void StringHelper::RemoveCharacter(string* buffer, char character) {
 	buffer->erase(remove(buffer->begin(), buffer->end(), character), buffer->end());
 }
 
-string StringHelper::RemoveCharacter(string buffer, char character) {
+string StringHelper::RemoveCharacter(const string buffer, const char character) {
     string newBuffer = buffer;
     StringHelper::RemoveCharacter(&newBuffer, character);
     return newBuffer;
@@ -31,7 +31,7 @@ void StringHelper::Trim(string* buffer) {
     *buffer = buffer->substr(from, length - from);
 }
 
-string StringHelper::Trim(string buffer) {
+string StringHelper::Trim(const string buffer) {
     string newBuffer = buffer;
     StringHelper::Trim(&newBuffer);
     return newBuffer;
@@ -55,7 +55,7 @@ std::string StringHelper::StringFormat(const std::string fmt_str, ...) {
     return std::string(formatted.get());
 }
 
-vector<string> StringHelper::Split(string input, char delimiter) {
+vector<string> StringHelper::Split(string input, const char delimiter) {
     vector<string> newList;
 
     size_t pos = 0;
@@ -73,4 +73,9 @@ vector<string> StringHelper::Split(string input, char delimiter) {
 string StringHelper::ToUpper(string value) {
     std::transform(value.begin(), value.end(), value.begin(), ::toupper);
     return value;
+}
+
+string Replace(string str, const char replace, const char with) {
+    std::replace(str.begin(), str.end(), replace, with);
+    return str;
 }

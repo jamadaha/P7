@@ -32,6 +32,8 @@ BaseWalker* WalkerBuilder::GetWalker(std::string walkerName, BaseWidthFunction *
 		return new WalkerQueue(instance, heuristic, widthFunction);
 	else if (walkerName == "walkerProbe")
 		return new WalkerProbe(instance, heuristic, widthFunction);
+	else if (walkerName == "walkerStepBack")
+		return new WalkerStepBack(instance, heuristic, widthFunction);
 	else
 		throw std::invalid_argument("Invalid walker specified in config");
 }

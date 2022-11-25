@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Path WalkerProbe::Walk(BaseHeuristic* heuristic, const PDDLState* state) {
+Path WalkerProbe::Walk(BaseHeuristic* heuristic, const PDDLState* state, unsigned int* current) {
     vector<PDDLActionInstance> steps; steps.reserve(maxStepCount);
     unordered_set<PDDLState> visitedStates; visitedStates.reserve(maxStepCount);
 
@@ -13,6 +13,9 @@ Path WalkerProbe::Walk(BaseHeuristic* heuristic, const PDDLState* state) {
         OnTempStateMade(this->instance, &tempState);
 
     for (int i = 0; i < maxStepCount; i++) {
+        if (!widthFunc->Iterate(current))
+            break;
+
         vector<PDDLActionInstance> possibleActions;
         possibleActions = actionGenerator.GenerateActions(&tempState);
 
@@ -57,7 +60,7 @@ vector<Path> WalkerProbe::Walk() {
 
         PDDLState probe = PDDLState(unaryFacts, binaryFacts);
 
-        Path path = Walk(heuristic, &probe);
+        Path path = Walk(heuristic, &probe, &current);
         if (path.steps.size() > 1)
             paths.push_back(path);
 

@@ -5,14 +5,11 @@ target_link_libraries(P7
         Config
         StringHelper
         ConsoleHelper
-        FileVerifier
         PathChecker
         PDDLCodeGenerator
         CommonInterface
         PlanValidator
         Reformulator
-        SASParser
-        SASCodeGenerator
         PDDLParser
         IntermediatePDDL
         PathChecker
@@ -20,11 +17,14 @@ target_link_libraries(P7
         FileHelper
         Walker
         WalkerPathVerifyer
-        EntanglementFinder
+        JointPaths
         ActionGenerator
         Hashes
         ProgressBarHelper
         MacroGenerator
-        MacroVerifyer)
+        Regressor
+        PartialActionGenerator
+        MacroVerifyer
+        SAS)
 
 add_executable(P7Lab "P7Lab.cpp")

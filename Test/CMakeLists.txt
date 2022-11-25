@@ -6,8 +6,7 @@ include(Catch)
 #set(CMAKE_CTEST_ARGUMENTS "--verbose")
 
 # Tests
-include(Test/SASParser/CMakeLists.txt)
-include(Test/SASCodeGenerator/CMakeLists.txt)
+include(Test/SAS/CMakeLists.txt)
 include(Test/PDDLCodeGenerator/CMakeLists.txt)
 include(Test/PDDLParser/CMakeLists.txt)
 include(Test/Walker/CMakeLists.txt)
@@ -15,21 +14,23 @@ include(Test/IntermediatePDDL/CMakeLists.txt)
 include(Test/PlanValidators/CMakeLists.txt)
 include(Test/Helpers/CMakeLists.txt)
 include(Test/DownwardRunner/CMakeLists.txt)
-include(Test/EntanglementFinder/CMakeLists.txt)
+include(Test/JointPaths/CMakeLists.txt)
 include(Test/MacroGenerator/CMakeLists.txt)
 
 add_executable(Test-All 
 	"Test/PDDLCodeGenerator/PDDLCodeGenerator.cpp"
 	"Test/PDDLParser/PDDLParser.cpp"
 	"Test/IntermediatePDDL/IntermediatePDDL.cpp"
-	"Test/SASParser/SASParser.cpp"
-	"Test/SASCodeGenerator/SASCodeGenerator.cpp"
+	"Test/SAS/Parser/ParserTests.cpp"
+	"Test/SAS/CodeGenerator/CodeGeneratorTests.cpp"
+	"Test/SAS/Rebuilder/RebuilderTests.cpp"
 	"Test/Walker/ActionGenerator.cpp"
 	"Test/Walker/Walker.cpp"
 	"Test/PlanValidators/PlanValidator.cpp"
 	"Test/Helpers/StringHelper.cpp"
-	"Test/EntanglementFinder/EntanglementFinder.cpp"
-	"Test/EntanglementFinder/Hashes.cpp"
+	"Test/JointPaths/FinderTests.cpp"
+	"Test/JointPaths/EvaluatorTests.cpp"
+	"Test/JointPaths/HashesTests.cpp"
 	"Test/DownwardRunner/DownwardRunner.cpp"
     "Test/MacroGenerator/MacroGenerator.cpp")
 target_link_libraries(Test-All 
@@ -39,20 +40,18 @@ target_link_libraries(Test-All
         Config
         StringHelper
         ConsoleHelper
-        FileVerifier
         PathChecker
         PDDLCodeGenerator
         CommonInterface
         PlanValidator
         Reformulator
-        SASParser
-        SASCodeGenerator
+        SAS
         PDDLParser
         IntermediatePDDL
         PathChecker
         DownwardRunner
         FileHelper
-        EntanglementFinder
+        JointPaths
         Walker
         ActionGenerator
         MacroGenerator)

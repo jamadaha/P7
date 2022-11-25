@@ -33,6 +33,7 @@ struct GroundedAction {
     const std::unordered_set<unsigned int> parameters;
     const std::unordered_map<GroundedLiteral, bool> preconditions;
     const std::unordered_map<GroundedLiteral, bool> effects;
+    GroundedAction(std::string name) : name(name) {};
     GroundedAction(std::string name, 
     std::unordered_set<unsigned int> parameters, 
     std::unordered_map<GroundedLiteral, bool> preconditions,

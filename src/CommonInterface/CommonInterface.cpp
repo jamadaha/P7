@@ -6,21 +6,22 @@ InterfaceStep<BaseReformulator*> CommonInterface::GetReformulator(int reformulat
 	ConsoleHelper::PrintInfo("Finding reformulator algorithm...");
 	Report->Begin("Finding reformulator");
 	BaseReformulator* reformulator;
-	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "sameoutput") {
+	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "sameoutput")
 		reformulator = new SameOutputReformulator(&config, Report);
-	}
-	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "greedyWalker") {
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "greedyWalker")
 		reformulator = new GreedyWalkerReformulator(&config, Report);
-	}
-	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "greedyResumeWalker") {
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "greedyResumeWalker")
 		reformulator = new GreedyResumeWalkerReformulator(&config, Report);
-	}
-	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "queueWalker") {
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "queueWalker")
 		reformulator = new QueueWalkerReformulator(&config, Report);
-	}
-	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "probeWalker") {
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "probeWalker")
 		reformulator = new ProbeWalkerReformulator(&config, Report);
-	}
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "regressor")
+		reformulator = new RegressionReformulator(&config, Report);
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "partialRegressor")
+		reformulator = new PartialRegressionReformulator(&config, Report);
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "stepBackWalker")
+		reformulator = new StepBackWalkerReformulator(&config, Report);
 	else {
 		ConsoleHelper::PrintError("Reformulator not found! Reformulator: " + config.GetItem<string>("reformulator"));
 		return InterfaceStep<BaseReformulator*>(reformulator, false);
@@ -157,7 +158,7 @@ InterfaceStep<CommonInterface::ReformulatorRunResultResult> CommonInterface::Run
 	ConsoleHelper::PrintInfo("Run new PDDL files with Fast Downward...", 1);
 	Report->Begin("Running FastDownward", reportID);
 	DownwardRunner runner = DownwardRunner();
-	runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, downwardTimeLimit);
+	runner.RunDownward(&config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, downwardTimeLimit);
 	auto runRes = runner.ParseDownwardLog();
 	Report->Stop();
 	if (runRes != DownwardRunner::FoundPlan) {
@@ -179,20 +180,20 @@ InterfaceStep<void> CommonInterface::ValidatePlans(string domainFile, string pro
 	return InterfaceStep<void>(true);
 }
 
-InterfaceStep<SASPlan> CommonInterface::ParseSASPlan() {
+InterfaceStep<SAS::Plan> CommonInterface::ParseSASPlan() {
 	ConsoleHelper::PrintInfo("Parsing SAS Plan...");
 	Report->Begin("Parse SAS plan");
-	SASParser sasParser;
+	SAS::Parser sasParser;
 	filesystem::path sasPath = filesystem::path(CommonInterface::FastDownwardSASName);
-	SASPlan reformulatedSASPlan = sasParser.Parse(sasPath);
+	SAS::Plan reformulatedSASPlan = sasParser.Parse(sasPath);
 	Report->Stop(ReportData("None", to_string(reformulatedSASPlan.cost)));
-	return InterfaceStep<SASPlan>(reformulatedSASPlan);
+	return InterfaceStep<SAS::Plan>(reformulatedSASPlan);
 }
 
-InterfaceStep<SASPlan> CommonInterface::RebuildSASPlan(SASPlan* reformulatedSASPlan, BaseReformulator* reformulator, PDDLInstance* instance) {
+InterfaceStep<SAS::Plan> CommonInterface::RebuildSASPlan(SAS::Plan* reformulatedSASPlan, BaseReformulator* reformulator, PDDLInstance* instance) {
 	ConsoleHelper::PrintInfo("Rebuilding the SAS plan...");
 	Report->Begin("Rebuild SAS plan");
-	SASPlan outputPlan = reformulator->RebuildSASPlan(instance, reformulatedSASPlan);
+	SAS::Plan outputPlan = reformulator->RebuildSASPlan(instance, reformulatedSASPlan);
 	Report->Stop(ReportData("None", to_string(outputPlan.cost)));
 	Report->Begin("Plan Length Difference");
 	Report->Stop(ReportData("None", to_string(outputPlan.cost - reformulatedSASPlan->cost)));
@@ -200,13 +201,13 @@ InterfaceStep<SASPlan> CommonInterface::RebuildSASPlan(SASPlan* reformulatedSASP
 	Report->Stop(ReportData("None", to_string(reformulator->GetMacrosGenerated())));
 	Report->Begin("Macros Used");
 	Report->Stop(ReportData("None", to_string(outputPlan.macrosUsed)));
-	return InterfaceStep<SASPlan>(outputPlan);
+	return InterfaceStep<SAS::Plan>(outputPlan);
 }
 
-InterfaceStep<void> CommonInterface::GenerateNewSASPlan(SASPlan outputPlan) {
+InterfaceStep<void> CommonInterface::GenerateNewSASPlan(SAS::Plan outputPlan) {
 	ConsoleHelper::PrintInfo("Output new SAS Plan...");
 	Report->Begin("Output SAS plan");
-	SASCodeGenerator sasGenerator;
+	SAS::CodeGenerator sasGenerator;
 	sasGenerator.GenerateCode(outputPlan, CommonInterface::OutputSASName);
 	Report->Stop();
 	return InterfaceStep<void>();

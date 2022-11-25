@@ -1,11 +1,16 @@
 add_library(Reformulator "BaseReformulator.hh")
 target_sources(Reformulator
     PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}/BaseReformulator.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Walkers/BaseWalkerReformulator.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Walkers/GreedyWalkerReformulator.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Walkers/GreedyResumeWalkerReformulator.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Walkers/QueueWalkerReformulator.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Regressors/BaseRegressorReformulator.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Regressors/RegressionReformulator.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Regressors/PartialRegressionReformulator.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Walkers/ProbeWalkerReformulator.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Walkers/StepBackWalkerReformulator.cpp
         ${CMAKE_CURRENT_LIST_DIR}/SameOutputReformulator.cpp
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}/BaseReformulator.hh
@@ -13,9 +18,13 @@ target_sources(Reformulator
         ${CMAKE_CURRENT_LIST_DIR}/Walkers/GreedyWalkerReformulator.hh
         ${CMAKE_CURRENT_LIST_DIR}/Walkers/GreedyResumeWalkerReformulator.hh
         ${CMAKE_CURRENT_LIST_DIR}/Walkers/QueueWalkerReformulator.hh
+        ${CMAKE_CURRENT_LIST_DIR}/Regressors/BaseRegressorReformulator.hh
+        ${CMAKE_CURRENT_LIST_DIR}/Regressors/RegressionReformulator.hh
+        ${CMAKE_CURRENT_LIST_DIR}/Regressors/PartialRegressionReformulator.hh
         ${CMAKE_CURRENT_LIST_DIR}/Walkers/ProbeWalkerReformulator.hh
+        ${CMAKE_CURRENT_LIST_DIR}/Walkers/StepBackWalkerReformulator.hh
         ${CMAKE_CURRENT_LIST_DIR}/SameOutputReformulator.hh)
 target_include_directories(Reformulator
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR})
-target_link_libraries(Reformulator MacroGenerator)
+target_link_libraries(Reformulator MacroGenerator Regressor SAS)

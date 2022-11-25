@@ -10,6 +10,8 @@
 #include "../Reformulators/Walkers/GreedyWalkerReformulator.hh"
 #include "../Reformulators/Walkers/GreedyResumeWalkerReformulator.hh"
 #include "../Reformulators/Walkers/QueueWalkerReformulator.hh"
+#include "../Reformulators/Regressors/PartialRegressionReformulator.hh"
+#include "../Reformulators/Regressors/RegressionReformulator.hh"
 #include "../Reformulators/Walkers/ProbeWalkerReformulator.hh"
 #include "../Reformulators/Walkers/StepBackWalkerReformulator.hh"
 #include "../PDDLParser/pddldriver.hh"
@@ -20,6 +22,7 @@
 #include "../DownwardRunner/DownwardRunner.hh"
 #include "../PlanValidators/PlanValidator.hh"
 #include "../IntermediatePDDL/PDDLInstance.hh"
+#include "../IntermediatePDDL/PDDLMutex.hh"
 #include "../IntermediatePDDL/PDDLConverter.hh"
 #include "../Helpers/ConsoleHelper.hh"
 

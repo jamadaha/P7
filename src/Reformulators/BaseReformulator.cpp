@@ -15,7 +15,7 @@ std::vector<EntanglementOccurance> BaseReformulator::FindEntanglements(PDDLInsta
 }
 
 EntanglementFinder BaseReformulator::GetEntanglementFinder(bool debugMode) {
-    // Find entanglement candidates.
+	// Find entanglement candidates.
 	auto runData = EntanglementFinder::RunData();
 
 	runData.LevelReductionFactor = Configs->GetItem<int>("levelReductionFactor");
@@ -71,48 +71,70 @@ EntanglementEvaluator BaseReformulator::GetEntanglementEvaluator() {
 	return ee;
 }
 
-std::vector<Macro> BaseReformulator::GenerateMacros(PDDLInstance* instance, std::vector<EntanglementOccurance>* candidates, bool debugMode) {
+PDDLInstance BaseReformulator::GenerateMacros(PDDLInstance* instance, std::vector<EntanglementOccurance>* candidates, bool debugMode) {
 	if (debugMode)
 		ConsoleHelper::PrintDebugInfo("[Macro Generator] Generating Macros...", debugIndent);
-    macros.clear();
-	MacroGenerator macroGenerator = MacroGenerator(instance->domain);
-    for (auto iter = candidates->begin(); iter != candidates->end(); iter++)
-        macros.push_back(macroGenerator.GenerateMacro(&(*iter).Chain));
-    return macros;
-}
 
-PDDLInstance BaseReformulator::GenerateMacroInstance(PDDLInstance* instance, std::vector<Macro> *macros, bool debugMode) {
-    if (debugMode)
+	int macroGenerateID = Report->Begin("Generating Macros", ReportID);
+	macros.clear();
+	MacroGenerator macroGenerator = MacroGenerator(instance->domain);
+	for (auto iter = candidates->begin(); iter != candidates->end(); iter++)
+		macros.push_back(macroGenerator.GenerateMacro(&(*iter).Chain));
+	macrosGenerated = macros.size();
+
+	if (Configs->GetItem<bool>("verifyMacros"))
+	{
+		Report->Begin("Verifying Macros", macroGenerateID);
+		if (debugMode)
+			ConsoleHelper::PrintDebugInfo("[Macro Generator] Verifying Macros...", debugIndent);
+		MacroVerifyer verifyer;
+		auto badMacros = verifyer.VerifyMacros(&macros, instance->domain);
+		if (badMacros.size() == 0)
+			Report->Stop(ReportData("None","-1", "true"));
+		else
+			Report->Stop(ReportData("None", "-1", "false"));
+
+		int counter = 0;
+		for (auto macro : badMacros) {
+			ConsoleHelper::PrintError("[Macro Generator] Bad macro: " + macro.macro.name + ", Reason: " + macro.Reason, debugIndent);
+			encounteredErrors = true;
+			counter++;
+			if (counter > 10) {
+				ConsoleHelper::PrintError("[Macro Generator] Many more than these", debugIndent);
+				break;
+			}
+		}
+	}
+
+	if (debugMode)
 		ConsoleHelper::PrintDebugInfo("[Macro Generator] Generating Macro Instance...", debugIndent);
-    return InstanceGenerator::GenerateInstance(instance->domain, instance->problem, macros);
+	auto result = InstanceGenerator::GenerateInstance(instance->domain, instance->problem, &macros);
+	Report->Stop(macroGenerateID);
+	return result;
 }
 
 SASPlan BaseReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) {
-    std::vector<SASAction> actions;
+	std::vector<SASAction> actions;
 	int macrosUsed = 0;
 	for (int i = 0; i < reformulatedSAS->actions.size(); i++) {
 		auto sasAction = reformulatedSAS->actions.at(i);
-		unsigned int actionIndex = -1;
-		for (int t = 0; t < instance->domain->actions.size(); t++)
-			if (instance->domain->actions.at(t).name == sasAction.name)
-				actionIndex = t;
-		if (actionIndex != -1) {
-			std::vector<std::string> args;
-			for (int t = 0; t < sasAction.parameters.size(); t++)
-				args.push_back(sasAction.parameters.at(t));
-			actions.push_back(SASAction(sasAction.name, args));
-		} else {
+		if (sasAction.name.starts_with("macro")) {
 			for (auto macro : macros) {
-				if (sasAction.name == macro.name)
+				auto tempActionName = StringHelper::ToUpper(sasAction.name);
+				auto tempMacroName = StringHelper::ToUpper(macro.name);
+				if (tempActionName == tempMacroName) {
+					macrosUsed++;
 					for (auto macroAction : macro.path) {
 						std::vector<std::string> args; args.reserve(macroAction.objects.size());
-						for (auto object : macroAction.objects) 
+						for (auto object : macroAction.objects)
 							args.push_back(instance->problem->objects.at(object));
 						actions.push_back(SASAction(macroAction.action->name, args));
 					}
-						
+					break;
+				}
 			}
-			macrosUsed++;
+		} else {
+			actions.push_back(sasAction);
 		}
 	}
 	// Do Something and give a "corrected" SAS plan back
@@ -155,6 +177,5 @@ void BaseReformulator::PrintEntanglerDebugData(double ellapsed, std::vector<Enta
 	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Levels:              " + std::to_string(entanglementFinder->TotalLevels()), debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Total Candidates:          " + std::to_string(entanglementEvaluator->RemovedCandidates() + candidates->size()), debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglement Finder] Path Data:                 " + std::to_string(paths.size()) + " paths with " + std::to_string(totalActions) + " steps in total", debugIndent);
-	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total evaluation time:  " + std::to_string(ellapsed) + "ms", debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Total Candidates:       " + std::to_string(candidates->size()) + " (" + std::to_string(entanglementEvaluator->RemovedCandidates()) + " removed)", debugIndent);
 }

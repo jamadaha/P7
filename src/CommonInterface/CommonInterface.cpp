@@ -6,21 +6,20 @@ InterfaceStep<BaseReformulator*> CommonInterface::GetReformulator(int reformulat
 	ConsoleHelper::PrintInfo("Finding reformulator algorithm...");
 	Report->Begin("Finding reformulator");
 	BaseReformulator* reformulator;
-	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "sameoutput") {
+	if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "sameoutput")
 		reformulator = new SameOutputReformulator(&config, Report);
-	}
-	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "greedyWalker") {
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "greedyWalker")
 		reformulator = new GreedyWalkerReformulator(&config, Report);
-	}
-	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "greedyResumeWalker") {
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "greedyResumeWalker")
 		reformulator = new GreedyResumeWalkerReformulator(&config, Report);
-	}
-	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "queueWalker") {
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "queueWalker")
 		reformulator = new QueueWalkerReformulator(&config, Report);
-	}
-	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "probeWalker") {
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "probeWalker")
 		reformulator = new ProbeWalkerReformulator(&config, Report);
-	}
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "regressor")
+		reformulator = new RegressionReformulator(&config, Report);
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "partialRegressor")
+		reformulator = new PartialRegressionReformulator(&config, Report);
 	else {
 		ConsoleHelper::PrintError("Reformulator not found! Reformulator: " + config.GetItem<string>("reformulator"));
 		return InterfaceStep<BaseReformulator*>(reformulator, false);
@@ -157,7 +156,7 @@ InterfaceStep<CommonInterface::ReformulatorRunResultResult> CommonInterface::Run
 	ConsoleHelper::PrintInfo("Run new PDDL files with Fast Downward...", 1);
 	Report->Begin("Running FastDownward", reportID);
 	DownwardRunner runner = DownwardRunner();
-	runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, downwardTimeLimit);
+	runner.RunDownward(&config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, downwardTimeLimit);
 	auto runRes = runner.ParseDownwardLog();
 	Report->Stop();
 	if (runRes != DownwardRunner::FoundPlan) {

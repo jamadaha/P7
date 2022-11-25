@@ -14,7 +14,7 @@ class SettingsParser():
         for line in fileContent:
             if "domain" in line:
                 self.Domains = line.split("=")[1].strip("\n").split(":")
-            elif "downwardpath" in line or "validatorpath" in line:
+            elif "downwardpath" in line or "validatorpath" in line or "translatorpath" in line or "h2path" in line:
                 argument = line.split("=")
                 self.SettingsContent += argument[0] + "=" + self._pathHelper.CombinePath(argument[1]) 
             elif "reformulator=" in line:

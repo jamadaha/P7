@@ -36,9 +36,8 @@ string PDDLDomainCodeGenerator::GetPredicates(vector<PDDLPredicate> predicates) 
 	string retStr = "";
 	retStr += GetTabs(1) + "(:predicates\n";
 	retStr += GetTabs(2);
-	for (auto i : predicates) {
-		retStr += GetPredicate(i) + " ";
-	}
+	for (int i = 1; i < predicates.size(); i++)
+		retStr += GetPredicate(predicates.at(i)) + " ";
 	retStr += "\n" + GetTabs(1) + ")";
 	return retStr;
 }

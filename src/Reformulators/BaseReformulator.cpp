@@ -144,35 +144,10 @@ PDDLInstance BaseReformulator::GenerateMacros(PDDLInstance* instance, std::vecto
 	return result;
 }
 
-SASPlan BaseReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* reformulatedSAS) {
-	std::vector<SASAction> actions;
-	int macrosUsed = 0;
-	for (int i = 0; i < reformulatedSAS->actions.size(); i++) {
-		auto sasAction = reformulatedSAS->actions.at(i);
-		if (sasAction.name.starts_with("macro")) {
-			for (auto macro : macros) {
-				auto tempActionName = StringHelper::ToUpper(sasAction.name);
-				auto tempMacroName = StringHelper::ToUpper(macro.name);
-				if (tempActionName == tempMacroName) {
-					macrosUsed++;
-					for (auto macroAction : macro.path) {
-						std::vector<std::string> args; args.reserve(macroAction.objects.size());
-						for (auto object : macroAction.objects)
-							args.push_back(instance->problem->objects.at(object));
-						actions.push_back(SASAction(macroAction.action->name, args));
-					}
-					break;
-				}
-			}
-		} else {
-			actions.push_back(sasAction);
-		}
-	}
-	// Do Something and give a "corrected" SAS plan back
-	SASPlan newPlan = SASPlan(actions, actions.size(), macrosUsed);
-	return newPlan;
+SAS::Plan BaseReformulator::RebuildSASPlan(PDDLInstance *instance, SAS::Plan* reformulatedSAS) {
+	SAS::Rebuilder builder = SAS::Rebuilder(instance, &macros);
+	return builder.RebuildSASPlan(reformulatedSAS);
 }
-
 
 void BaseReformulator::PrintEntanglerSteps(std::vector<JointPaths::JointPath>* candidates, PDDLInstance* instance) {
 	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Top 10 Entanglements:", debugIndent);

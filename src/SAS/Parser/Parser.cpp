@@ -1,8 +1,14 @@
-#include "SASParser.hh"
+#include "Parser.hh"
 
 using namespace std;
+using namespace SAS;
 
-SASPlan SASParser::Parse(filesystem::path path) {
+Plan Parser::Parse(filesystem::path path) {
+    if (!std::filesystem::exists(path)) {
+        string errStr = "File not found: " + string(path.c_str());
+        throw invalid_argument(errStr);
+    }
+
     ifstream stream(path);
     string content( (istreambuf_iterator<char>(stream) ),
                        (istreambuf_iterator<char>()    ) );
@@ -10,26 +16,28 @@ SASPlan SASParser::Parse(filesystem::path path) {
     return Parse(content);
 }
 
-SASPlan SASParser::Parse(string SAS) {
-    vector<SASAction> actions;
+Plan Parser::Parse(string SAS) {
+    vector<Action> actions;
     int cost;
     stringstream ss(SAS);
     string line;
     while (getline(ss, line)) {
         line = StringHelper::Trim(line);
+        if (line == "")
+            continue;
         StringHelper::RemoveCharacter(&line, ')');
         StringHelper::RemoveCharacter(&line, '(');
         if (line[0] == ';') {
             cost = ParseCost(line);
         } else {
-            SASAction newAction = ParseAction(line);
+            Action newAction = ParseAction(line);
             actions.push_back(newAction);
         }
     }
-    return SASPlan(actions, cost, 0);
+    return Plan(actions, cost, 0);
 }
 
-vector<string> tokenize(string const &str, const char delim) {
+vector<string> Parser::Tokenize(string const &str, const char delim) {
     stringstream ss(str);
     vector<string> tokens;
  
@@ -40,16 +48,21 @@ vector<string> tokenize(string const &str, const char delim) {
     return tokens;
 }
 
-SASAction SASParser::ParseAction(string line) {
+Action Parser::ParseAction(string line) {
     StringHelper::RemoveCharacter(&line, '\r');
     StringHelper::RemoveCharacter(&line, '\n');
-    vector<string> tokens = tokenize(line, ' ');
+    vector<string> tokens = Tokenize(line, ' ');
+    if (tokens.size() == 0)
+        throw invalid_argument("Error, invalid SAS line was given: " + line);
     string actionName = tokens.front(); tokens.erase(tokens.begin());
-    vector<string> parameters = tokens;
-    return SASAction(actionName, parameters);
+    vector<string> parameters;
+    for (auto token : tokens)
+        if (token != "")
+            parameters.push_back(token);
+    return Action(actionName, parameters);
 }
 
-int SASParser::ParseCost(string line) {
+int Parser::ParseCost(string line) {
     int equalityIndex = line.find('=');
     if (equalityIndex == line.npos)
         return -1;

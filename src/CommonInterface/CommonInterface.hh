@@ -15,8 +15,8 @@
 #include "../Reformulators/Walkers/ProbeWalkerReformulator.hh"
 #include "../PDDLParser/pddldriver.hh"
 #include "../PDDLCodeGenerator/PDDLCodeGenerator.hh"
-#include "../SASCodeGenerator/SASCodeGenerator.hh"
-#include "../SASParser/SASParser.hh"
+#include "../SAS/CodeGenerator/CodeGenerator.hh"
+#include "../SAS/Parser/Parser.hh"
 #include "../Config/Config.hh"
 #include "../DownwardRunner/DownwardRunner.hh"
 #include "../PlanValidators/PlanValidator.hh"
@@ -57,9 +57,9 @@ private:
 	InterfaceStep<void> RunDirect(BaseReformulator* reformulator, PDDLInstance* instance);
 	InterfaceStep<ReformulatorRunResultResult> RunSingle(BaseReformulator* reformulator, PDDLInstance* instance, int reportID, int reformulatorTimeLimit, int downwardTimeLimit);
 	InterfaceStep<void> ValidatePlans(std::string domainFile, std::string problemFile, std::string sasFile, std::string reportName);
-	InterfaceStep<SASPlan> ParseSASPlan();
-	InterfaceStep<SASPlan> RebuildSASPlan(SASPlan* reformulatedSASPlan, BaseReformulator* reformulator, PDDLInstance* instance);
-	InterfaceStep<void> GenerateNewSASPlan(SASPlan outputPlan);
+	InterfaceStep<SAS::Plan> ParseSASPlan();
+	InterfaceStep<SAS::Plan> RebuildSASPlan(SAS::Plan* reformulatedSASPlan, BaseReformulator* reformulator, PDDLInstance* instance);
+	InterfaceStep<void> GenerateNewSASPlan(SAS::Plan outputPlan);
 
 	RunReport* Report;
 	Config config;

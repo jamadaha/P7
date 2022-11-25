@@ -10,8 +10,6 @@ target_link_libraries(P7
         CommonInterface
         PlanValidator
         Reformulator
-        SASParser
-        SASCodeGenerator
         PDDLParser
         IntermediatePDDL
         PathChecker
@@ -26,6 +24,7 @@ target_link_libraries(P7
         MacroGenerator
         Regressor
         PartialActionGenerator
-        MacroVerifyer)
+        MacroVerifyer
+        SAS)
 
 add_executable(P7Lab "P7Lab.cpp")

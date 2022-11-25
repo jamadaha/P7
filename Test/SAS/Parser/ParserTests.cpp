@@ -1,14 +1,17 @@
 #include <catch2/catch_test_macros.hpp>
 #include <string>
 
-#include "../../src/SASParser/SASParser.hh"
+#include "../../src/SAS/Parser/Parser.hh"
 
-const std::string TAG = "SASParser ";
+using namespace std;
+using namespace SAS;
+
+const std::string TAG = "Parser ";
 
 TEST_CASE(TAG + "SingleAction") {
-    SASParser sasParser = SASParser();
+    Parser Parser;
     std::string testCase = "(test_action)\n; cost = 1 (general cost)";
-    SASPlan plan = sasParser.Parse(testCase);
+    Plan plan = Parser.Parse(testCase);
     REQUIRE(1 == plan.cost);
     REQUIRE(1 == plan.actions.size());
     REQUIRE("test_action" == plan.actions[0].name);
@@ -16,9 +19,9 @@ TEST_CASE(TAG + "SingleAction") {
 }
 
 TEST_CASE(TAG + "SingleAction_TrailingSpace") {
-    SASParser sasParser = SASParser();
+    Parser Parser;
     std::string testCase = "(test_action) \n; cost = 1 (general cost) ";
-    SASPlan plan = sasParser.Parse(testCase);
+    Plan plan = Parser.Parse(testCase);
     REQUIRE(1 == plan.cost);
     REQUIRE(1 == plan.actions.size());
     REQUIRE("test_action" == plan.actions[0].name);
@@ -26,9 +29,9 @@ TEST_CASE(TAG + "SingleAction_TrailingSpace") {
 }
 
 TEST_CASE(TAG + "SingleAction_PrecedingSpace") {
-    SASParser sasParser = SASParser();
+    Parser Parser;
     std::string testCase = " (test_action)\n ; cost = 1 (general cost)";
-    SASPlan plan = sasParser.Parse(testCase);
+    Plan plan = Parser.Parse(testCase);
     REQUIRE(1 == plan.cost);
     REQUIRE(1 == plan.actions.size());
     REQUIRE("test_action" == plan.actions[0].name);
@@ -36,9 +39,9 @@ TEST_CASE(TAG + "SingleAction_PrecedingSpace") {
 }
 
 TEST_CASE(TAG + "SingleAction_Parameters") {
-    SASParser sasParser = SASParser();
+    Parser Parser;
     std::string testCase = "(test_action a b)\n ; cost = 1 (general cost)";
-    SASPlan plan = sasParser.Parse(testCase);
+    Plan plan = Parser.Parse(testCase);
     REQUIRE(1 == plan.cost);
     REQUIRE(1 == plan.actions.size());
     REQUIRE("test_action" == plan.actions[0].name);
@@ -48,9 +51,9 @@ TEST_CASE(TAG + "SingleAction_Parameters") {
 }
 
 TEST_CASE(TAG + "MultiAction") {
-    SASParser sasParser = SASParser();
+    Parser Parser;
     std::string testCase = "(test_action1)\n(test_action2)\n ; cost = 1 (general cost)";
-    SASPlan plan = sasParser.Parse(testCase);
+    Plan plan = Parser.Parse(testCase);
     REQUIRE(1 == plan.cost);
     REQUIRE(2 == plan.actions.size());
     REQUIRE("test_action1" == plan.actions[0].name);
@@ -60,9 +63,9 @@ TEST_CASE(TAG + "MultiAction") {
 }
 
 TEST_CASE(TAG + "MultiAction_Parameters") {
-    SASParser sasParser = SASParser();
+    Parser Parser;
     std::string testCase = "(test_action1 a b)\n(test_action2 c d)\n ; cost = 1 (general cost)";
-    SASPlan plan = sasParser.Parse(testCase);
+    Plan plan = Parser.Parse(testCase);
     REQUIRE(1 == plan.cost);
     REQUIRE(2 == plan.actions.size());
     REQUIRE("test_action1" == plan.actions[0].name);

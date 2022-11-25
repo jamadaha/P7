@@ -1,6 +1,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include <string>
 
+#include <filesystem>
+
 #include "../../src/IntermediatePDDL/PDDLConverter.hh"
 #include "../../src/PDDLCodeGenerator/PDDLCodeGenerator.hh"
 #include "../../src/PDDLCodeGenerator/PDDLDomainCodeGenerator.hh"
@@ -9,6 +11,8 @@
 using namespace std;
 
 const string TAG = "PDDLCodeGenerator ";
+const string resultDomainFile = "./TestFiles/intermediate-domain.pddl";
+const string resultProblemFile = "./TestFiles/intermediate-problem.pddl";
 const string domainFile = "./TestFiles/gripper.pddl";
 const string problemFile = "./TestFiles/gripper-4.pddl";
 
@@ -20,12 +24,12 @@ TEST_CASE(TAG + "PDDLDomainGenerator") {
     PDDLDomainCodeGenerator PDDLDomainGen = PDDLDomainCodeGenerator(&domain);
     string domainString = PDDLDomainGen.GenerateDomainString();
 
-    ofstream newfile ("domain.pddl", ofstream::out | ofstream::trunc);
+    ofstream newfile (resultDomainFile, ofstream::out | ofstream::trunc);
     newfile << domainString;
     newfile.close();
 
     PDDLDriver driver2;
-    driver2.parse("domain.pddl");
+    driver2.parse(resultDomainFile);
     Domain* driverGeneratedDomain = driver2.domain;
     PDDLDomain generatedDomain = PDDLConverter::Convert(driverDomain);
     REQUIRE(generatedDomain.requirements.size() == domain.requirements.size());
@@ -44,12 +48,12 @@ TEST_CASE(TAG + "PDDLProblemGenerator") {
     PDDLProblemCodeGenerator PDDLProblemGen = PDDLProblemCodeGenerator(&domain, &problem);
     string problemString = PDDLProblemGen.GenerateProblemString();
 
-    ofstream newfile ("problem.pddl", ofstream::out | ofstream::trunc);
+    ofstream newfile (resultProblemFile, ofstream::out | ofstream::trunc);
     newfile << problemString;
     newfile.close();
 
     PDDLDriver driver2;
-    driver2.parse("problem.pddl");
+    driver2.parse(resultProblemFile);
     Problem* driverGeneratedProblem = driver2.problem;
     PDDLProblem generatedProblem = PDDLConverter::Convert(&domain, driverGeneratedProblem);
     REQUIRE(generatedProblem.name == problem.name);

@@ -3,10 +3,14 @@
 PDDLInstance BaseRegressorReformulator::ReformulatePDDL(PDDLInstance* instance) {
     bool debugMode = Configs->GetItem<bool>("debugmode");
 
+	// Walking
     FindPaths(instance, debugMode);
+
+	// Entanglement Finding
     std::vector<EntanglementOccurance> candidates = FindEntanglements(instance, debugMode);
-    GenerateMacros(instance, &candidates, debugMode);
-    PDDLInstance macroInstance = GenerateMacroInstance(instance, &macros, debugMode);
+
+	// Macro Generation
+	PDDLInstance macroInstance = GenerateMacros(instance, &candidates, debugMode);
 
     return macroInstance;
 }

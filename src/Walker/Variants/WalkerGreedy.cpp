@@ -12,6 +12,8 @@ Path WalkerGreedy::Walk(BaseHeuristic *heuristic, const PDDLState *state, unsign
     if (OnTempStateMade != nullptr)
         OnTempStateMade(this->instance, &tempState);
 
+    heuristic->Reset();
+
     for (int i = 0; i < maxStepCount; i++) {
         if (!widthFunc->Iterate(current))
             break;

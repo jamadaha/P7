@@ -48,7 +48,7 @@ public:
 		return value;
 	};
 private:
-
+	void Reset() override {}
 };
 
 #endif

@@ -51,6 +51,10 @@ private:
 	BaseHeuristic* baseHeuristic;
 	std::unordered_set<PDDLActionInstance> PreviousActions;
 	bool isFirstSet = false;
+
+	void Reset() override {
+		isFirstSet = false;
+	}
 };
 
 

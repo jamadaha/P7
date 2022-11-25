@@ -87,6 +87,8 @@ private:
 		}
 		return actions;
 	}
+
+	void Reset() override {};
 };
 
 

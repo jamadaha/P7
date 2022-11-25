@@ -5,6 +5,7 @@ Path WalkerQueue::Walk(BaseHeuristic *heuristic, const PDDLState state) {
     auto currentState = PDDLState((*currentNode).second.first);
     auto currentPath = Path((*currentNode).second.second);
 
+    heuristic->Reset();
 
     auto actions = actionGenerator.GenerateActions(&currentState);
     for (auto iter = actions.begin(); iter != actions.end(); iter++) {

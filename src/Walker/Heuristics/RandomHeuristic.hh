@@ -14,6 +14,8 @@ public:
 	int Eval(const PDDLState *state) const override {
 		return rand();
 	};
+private:
+	void Reset() override {}
 };
 
 #endif

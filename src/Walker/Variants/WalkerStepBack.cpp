@@ -11,6 +11,8 @@ Path WalkerStepBack::Walk(BaseHeuristic *heuristic, const PDDLState *state, unsi
     if (OnTempStateMade != nullptr)
         OnTempStateMade(this->instance, &tempState);
 
+    heuristic->Reset();
+
     bool doBreak = false;
     for (int i = 0; i < maxStepCount; i++) {
         if (!widthFunc->Iterate(current))

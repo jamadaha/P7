@@ -12,6 +12,7 @@ target_sources(IntermediatePDDL
         ${CMAKE_CURRENT_LIST_DIR}/PDDLDomain.hh
         ${CMAKE_CURRENT_LIST_DIR}/PDDLInstance.hh
         ${CMAKE_CURRENT_LIST_DIR}/PDDLLiteral.hh
+        ${CMAKE_CURRENT_LIST_DIR}/PDDLMutex.hh
         ${CMAKE_CURRENT_LIST_DIR}/PDDLPredicate.hh
         ${CMAKE_CURRENT_LIST_DIR}/PDDLProblem.hh
         ${CMAKE_CURRENT_LIST_DIR}/PDDLState.hh)

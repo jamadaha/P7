@@ -6,10 +6,10 @@
 #include "../Config/Config.hh"
 #include "../RunReport/RunReport.hh"
 
-#include "../EntanglementFinder/EntanglementFinder.hh"
-#include "../EntanglementFinder/EntanglementOccurance.hh"
-#include "../EntanglementFinder/EntanglementEvaluator.hh"
-#include "../EntanglementFinder/EntanglementEvaluatorModifiers.hh"
+#include "../JointPaths/Finder/Finder.hh"
+#include "../JointPaths/JointPath.hh"
+#include "../JointPaths/Evaluator/Evaluator.hh"
+#include "../JointPaths/Evaluator/EvaluationModifiers.hh"
 
 #include "../MacroGenerator/MacroGenerator.hh"
 #include "../MacroGenerator/InstanceGenerator.hh"
@@ -43,13 +43,13 @@ protected:
 	bool encounteredErrors = false;
 
 	void ValidatePaths(PDDLInstance *instance, int parentReportID, bool debugMode);
-	std::vector<EntanglementOccurance> FindEntanglements(PDDLInstance* instance, bool debugMode);
-    EntanglementFinder GetEntanglementFinder(bool debugMode);
-    EntanglementEvaluator GetEntanglementEvaluator();
-    PDDLInstance GenerateMacros(PDDLInstance* instance, std::vector<EntanglementOccurance>* candidates, bool debugMode);
+	std::vector<JointPaths::JointPath> FindEntanglements(PDDLInstance* instance, bool debugMode);
+    JointPaths::Finder GetEntanglementFinder(bool debugMode);
+    JointPaths::Evaluator GetEntanglementEvaluator();
+    PDDLInstance GenerateMacros(PDDLInstance* instance, std::vector<JointPaths::JointPath>* candidates, bool debugMode);
 	
-	void PrintEntanglerSteps(std::vector<EntanglementOccurance>* candidates, PDDLInstance* instance);
-    void PrintEntanglerDebugData(double ellapsed, std::vector<EntanglementOccurance> *candidates, EntanglementFinder *entanglementFinder, EntanglementEvaluator *entanglementEvaluator);
+	void PrintEntanglerSteps(std::vector<JointPaths::JointPath>* candidates, PDDLInstance* instance);
+    void PrintEntanglerDebugData(double ellapsed, std::vector<JointPaths::JointPath> *candidates, JointPaths::Finder *entanglementFinder, JointPaths::Evaluator *entanglementEvaluator);
 };
 
 #endif

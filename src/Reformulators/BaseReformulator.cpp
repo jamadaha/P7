@@ -31,47 +31,47 @@ void BaseReformulator::ValidatePaths(PDDLInstance *instance, int parentReportID,
 	}
 }
 
-std::vector<EntanglementOccurance> BaseReformulator::FindEntanglements(PDDLInstance* instance, bool debugMode) {
-    EntanglementFinder entanglementFinder = GetEntanglementFinder(debugMode);
-    EntanglementEvaluator entanglementEvaluator = GetEntanglementEvaluator();
+std::vector<JointPaths::JointPath> BaseReformulator::FindEntanglements(PDDLInstance* instance, bool debugMode) {
+    JointPaths::Finder finder = GetEntanglementFinder(debugMode);
+    JointPaths::Evaluator evaluator = GetEntanglementEvaluator();
     int entangleID = Report->Begin("Finding Entanglements", ReportID);
-    auto candidates = entanglementFinder.FindEntangledCandidates(&paths);
-    auto sanitizedCandidates = entanglementEvaluator.EvaluateAndSanitizeCandidates(candidates);
+    auto candidates = finder.FindEntangledCandidates(&paths);
+    auto sanitizedCandidates = evaluator.EvaluateAndSanitizeCandidates(candidates);
 	double ellapsed = Report->Stop();
 	if (debugMode)
-		PrintEntanglerDebugData(ellapsed, &sanitizedCandidates, &entanglementFinder, &entanglementEvaluator);
+		PrintEntanglerDebugData(ellapsed, &sanitizedCandidates, &finder, &evaluator);
 	if (Configs->GetItem<bool>("printentanglersteps"))
 		PrintEntanglerSteps(&sanitizedCandidates, instance);
     return sanitizedCandidates;
 }
 
-EntanglementFinder BaseReformulator::GetEntanglementFinder(bool debugMode) {
+JointPaths::Finder BaseReformulator::GetEntanglementFinder(bool debugMode) {
 	// Find entanglement candidates.
-	auto runData = EntanglementFinder::RunData();
+	auto runData = JointPaths::Finder::RunData();
 
 	runData.LevelReductionFactor = Configs->GetItem<int>("levelReductionFactor");
 	runData.SearchCeiling = Configs->GetItem<int>("searchCeiling");
 	runData.SearchFloor = Configs->GetItem<int>("searchFloor");
 	runData.TimeLimitMs = TimeLimit * Configs->GetItem<double>("reformulationTimeFraction");
 	if (Configs->GetItem<std::string>("levelReductionTypes") == "Division")
-		runData.LevelReductionType = EntanglementFinder::RunData::Division;
+		runData.LevelReductionType = JointPaths::Finder::RunData::Division;
 	if (Configs->GetItem<std::string>("levelReductionTypes") == "Subtraction")
-		runData.LevelReductionType = EntanglementFinder::RunData::Subtraction;
+		runData.LevelReductionType = JointPaths::Finder::RunData::Subtraction;
 
-	auto ef = EntanglementFinder(runData);
+	auto finder = JointPaths::Finder(runData);
 
 	if (Configs->GetItem<bool>("debugmode")) {
-		ef.OnNewLevel = [&](int level, int outOf) {
+		finder.OnNewLevel = [&](int level, int outOf) {
 			entanglerBar = new ProgressBarHelper(outOf, "Finding Entanglements (level " + std::to_string(level) + ")", debugIndent + 1);
 		};
-		ef.OnLevelIteration = [&](int current, int outOf) {
+		finder.OnLevelIteration = [&](int current, int outOf) {
 			entanglerBar->Update();
 		};
-		ef.OnLevelEnd = [&]() {
+		finder.OnLevelEnd = [&]() {
 			entanglerBar->End();
 			delete entanglerBar;
 		};
-		ef.OnTimeLimitReached = [&]() {
+		finder.OnTimeLimitReached = [&]() {
 			if (entanglerBar != nullptr) {
 				entanglerBar->End();
 				delete entanglerBar;
@@ -80,29 +80,29 @@ EntanglementFinder BaseReformulator::GetEntanglementFinder(bool debugMode) {
 		};
 	}
 
-	return ef;
+	return finder;
 }
 
-EntanglementEvaluator BaseReformulator::GetEntanglementEvaluator() {
-    EntanglementEvaluator::RunData runData;
+JointPaths::Evaluator BaseReformulator::GetEntanglementEvaluator() {
+	JointPaths::Evaluator::RunData runData;
 	runData.MinimumQualityPercent = Configs->GetItem<double>("minimumQualityPercent");
 	runData.MaxCandidates = Configs->GetItem<int>("maxCandidates");
 
-	auto ee = EntanglementEvaluator(runData);
+	auto ee = JointPaths::Evaluator(runData);
 	if (Configs->GetItem<std::string>("entanglerLengthModifier") == "lengthBias")
-		ee.LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::LengthBias;
+		ee.LengthModifier = JointPaths::EvaluationModifiers::LengthModifiers::LengthBias;
 	else if (Configs->GetItem<std::string>("entanglerLengthModifier") == "none")
-		ee.LengthModifier = EntanglementEvaluatorModifiers::LengthModifiers::None;
+		ee.LengthModifier = JointPaths::EvaluationModifiers::LengthModifiers::None;
 
 	if (Configs->GetItem<std::string>("entanglerOccuranceModifier") == "none")
-		ee.OccuranceModifier = EntanglementEvaluatorModifiers::OccuranceModifiers::None;
+		ee.OccuranceModifier = JointPaths::EvaluationModifiers::OccuranceModifiers::None;
 	else if (Configs->GetItem<std::string>("entanglerOccuranceModifier") == "lowOccuranceBias")
-		ee.OccuranceModifier = EntanglementEvaluatorModifiers::OccuranceModifiers::LowOccuranceBias;
+		ee.OccuranceModifier = JointPaths::EvaluationModifiers::OccuranceModifiers::LowOccuranceBias;
 
 	return ee;
 }
 
-PDDLInstance BaseReformulator::GenerateMacros(PDDLInstance* instance, std::vector<EntanglementOccurance>* candidates, bool debugMode) {
+PDDLInstance BaseReformulator::GenerateMacros(PDDLInstance* instance, std::vector<JointPaths::JointPath>* candidates, bool debugMode) {
 	if (debugMode)
 		ConsoleHelper::PrintDebugInfo("[Macro Generator] Generating Macros...", debugIndent);
 
@@ -174,7 +174,7 @@ SASPlan BaseReformulator::RebuildSASPlan(PDDLInstance *instance, SASPlan* reform
 }
 
 
-void BaseReformulator::PrintEntanglerSteps(std::vector<EntanglementOccurance>* candidates, PDDLInstance* instance) {
+void BaseReformulator::PrintEntanglerSteps(std::vector<JointPaths::JointPath>* candidates, PDDLInstance* instance) {
 	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Top 10 Entanglements:", debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglements] Quality  : Chain", debugIndent + 1);
 	int counter = 0;
@@ -199,7 +199,7 @@ void BaseReformulator::PrintEntanglerSteps(std::vector<EntanglementOccurance>* c
 	}
 }
 
-void BaseReformulator::PrintEntanglerDebugData(double ellapsed, std::vector<EntanglementOccurance> *candidates, EntanglementFinder *entanglementFinder, EntanglementEvaluator *entanglementEvaluator) {
+void BaseReformulator::PrintEntanglerDebugData(double ellapsed, std::vector<JointPaths::JointPath> *candidates, JointPaths::Finder *entanglementFinder, JointPaths::Evaluator *entanglementEvaluator) {
 	unsigned int totalActions = 0;
 	for (int i = 0; i < paths.size(); i++)
 		totalActions += paths.at(i).steps.size();

@@ -16,7 +16,8 @@ void DownwardRunner::RunDownward(Config* config, string reformulatedDomain, stri
 		timeLimit = std::numeric_limits<int>::max();
 	else
 		timeLimit /= 1000;
-	preArguments += " --search-time-limit " + to_string(timeLimit) + "s --translate-time-limit " + to_string(timeLimit) + "s ";
+	//preArguments += " --search-time-limit " + to_string(timeLimit) + "s --translate-time-limit " + to_string(timeLimit) + "s ";
+	preArguments += " --overall-time-limit " + to_string(timeLimit) + "s ";
 	
 	command = path + " " + preArguments + " " + reformulatedDomain + " " + reformulatedProblem + " " + postArguments + " > " + RunnerLogName;
 

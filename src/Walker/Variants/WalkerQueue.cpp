@@ -5,6 +5,7 @@ Path WalkerQueue::Walk(BaseHeuristic *heuristic, const PDDLState state) {
     auto currentState = PDDLState((*currentNode).second.first);
     auto currentPath = Path((*currentNode).second.second);
 
+    heuristic->Reset();
 
     auto actions = actionGenerator.GenerateActions(&currentState);
     for (auto iter = actions.begin(); iter != actions.end(); iter++) {
@@ -35,7 +36,9 @@ std::vector<Path> WalkerQueue::Walk() {
     while (widthFunc->Iterate(&current)) {
         if (searchQueue.size() == 0)
             break;
-        paths.push_back(Walk(heuristic, this->instance->problem->initState));
+        Path path = Walk(heuristic, this->instance->problem->initState);
+        if (path.steps.size() > 1)
+            paths.push_back(path);
 
         if (OnWalkerStep != nullptr)
             OnWalkerStep(this, current);

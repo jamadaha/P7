@@ -7,13 +7,15 @@ class RandomHeuristic : public BaseHeuristic {
 public:
 	RandomHeuristic() : BaseHeuristic(nullptr, nullptr){};
 
-	PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const override {
+	PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) override {
 		return &choices->at(rand() % choices->size());
 	}
 
 	int Eval(const PDDLState *state) const override {
 		return rand();
 	};
+private:
+	void Reset() override {}
 };
 
 #endif

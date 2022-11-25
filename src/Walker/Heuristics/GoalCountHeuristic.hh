@@ -7,7 +7,7 @@ class GoalCountHeuristic : public BaseHeuristic {
 public:
 	GoalCountHeuristic(const PDDLDomain *domain, const PDDLProblem *problem) : BaseHeuristic(domain, problem){};
 
-	PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) const override {
+	PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) override {
 		int bestIndex = -1;
 		int bestValue = -1;
 		const int currentValue = Eval(state);
@@ -48,7 +48,7 @@ public:
 		return value;
 	};
 private:
-
+	void Reset() override {}
 };
 
 #endif

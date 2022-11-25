@@ -10,11 +10,13 @@ Path Regressor::RegressFromState(const PDDLState *state) {
             break;
         
         bool foundLegalPredecessor;
+        auto priorState = tempState;
         auto action = GetLegalPredecessor(&partialActions, &tempState, &foundLegalPredecessor);
 
-        if (!foundLegalPredecessor || visitedStates.contains(tempState))
+        if (!foundLegalPredecessor || visitedStates.contains(tempState)) {
+            tempState = priorState;
             break;
-        else {
+        } else {
             visitedStates.emplace(tempState);
             steps.push_back(action);
         }

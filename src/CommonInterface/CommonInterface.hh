@@ -13,6 +13,7 @@
 #include "../Reformulators/Regressors/PartialRegressionReformulator.hh"
 #include "../Reformulators/Regressors/RegressionReformulator.hh"
 #include "../Reformulators/Walkers/ProbeWalkerReformulator.hh"
+#include "../Reformulators/Walkers/StepBackWalkerReformulator.hh"
 #include "../PDDLParser/pddldriver.hh"
 #include "../PDDLCodeGenerator/PDDLCodeGenerator.hh"
 #include "../SAS/CodeGenerator/CodeGenerator.hh"

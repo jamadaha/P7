@@ -1,5 +1,5 @@
-#ifndef WALKER_PROBE
-#define WALKER_PROBE
+#ifndef WALKER_STEP_BACK
+#define WALKER_STEP_BACK
 
 #include <vector>
 #include <list>
@@ -15,17 +15,14 @@
 
 #include "../BaseWalker.hh"
 
-class WalkerProbe : public BaseWalker {
+class WalkerStepBack : public BaseWalker {
 public:
-    WalkerProbe(PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc)
+    WalkerStepBack(PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc)
         : BaseWalker("Default", instance, heuristic, widthFunc) {}
     std::vector<Path> Walk() override;
 private:
     const unsigned int maxStepCount = 1000;
     Path Walk(BaseHeuristic* heuristic, const PDDLState* state, unsigned int* current);
-
-    template <typename T>
-    std::unordered_map<unsigned int, T> GetFactSubset(std::unordered_map<unsigned int, T>* initSource, std::unordered_map<unsigned int, T>* goalSource);
 };
 
 #endif

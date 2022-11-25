@@ -20,6 +20,8 @@ InterfaceStep<BaseReformulator*> CommonInterface::GetReformulator(int reformulat
 		reformulator = new RegressionReformulator(&config, Report);
 	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "partialRegressor")
 		reformulator = new PartialRegressionReformulator(&config, Report);
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "stepBackWalker")
+		reformulator = new StepBackWalkerReformulator(&config, Report);
 	else {
 		ConsoleHelper::PrintError("Reformulator not found! Reformulator: " + config.GetItem<string>("reformulator"));
 		return InterfaceStep<BaseReformulator*>(reformulator, false);

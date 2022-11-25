@@ -1,6 +1,6 @@
-#include "WalkerGreedy.hpp"
+#include "WalkerStepBack.hpp"
 
-Path WalkerGreedy::Walk(BaseHeuristic *heuristic, const PDDLState *state, unsigned int* current) {
+Path WalkerStepBack::Walk(BaseHeuristic *heuristic, const PDDLState *state, unsigned int* current) {
     std::vector<PDDLActionInstance> steps; 
     steps.reserve(maxStepCount);
     std::unordered_set<PDDLState> visitedStates; 
@@ -11,6 +11,7 @@ Path WalkerGreedy::Walk(BaseHeuristic *heuristic, const PDDLState *state, unsign
     if (OnTempStateMade != nullptr)
         OnTempStateMade(this->instance, &tempState);
 
+    bool doBreak = false;
     for (int i = 0; i < maxStepCount; i++) {
         if (!widthFunc->Iterate(current))
             break;
@@ -20,19 +21,34 @@ Path WalkerGreedy::Walk(BaseHeuristic *heuristic, const PDDLState *state, unsign
 
         if (possibleActions.size() == 0) break;
         PDDLActionInstance *chosenAction = heuristic->NextChoice(&tempState, &possibleActions);
-        tempState.DoAction(chosenAction);
+        DoActionChanges changes = tempState.DoAction(chosenAction);
 
-        if (visitedStates.contains(tempState))
-            break;
-        else {
-            visitedStates.emplace(tempState);
-            if (SaveStates)
-                endState = tempState;
-            steps.push_back(*chosenAction);
+        while (visitedStates.contains(tempState)) {
+            tempState.UndoAction(&changes);
+            for (int i = 0; i < possibleActions.size(); i++) {
+                if (possibleActions.at(i) == *chosenAction) {
+                    possibleActions.erase(possibleActions.begin() + i);
+                    break;
+                }
+            }
+            if (possibleActions.size() == 0) {
+                doBreak = true;
+                break;
+            }
 
-            if (OnStateWalk != nullptr)
-                OnStateWalk(this->instance, &tempState, chosenAction);
+            chosenAction = heuristic->NextChoice(&tempState, &possibleActions);
+            changes = tempState.DoAction(chosenAction);
         }
+        if (doBreak)
+            break;
+
+        visitedStates.emplace(tempState);
+        if (SaveStates)
+            endState = tempState;
+        steps.push_back(*chosenAction);
+
+        if (OnStateWalk != nullptr)
+            OnStateWalk(this->instance, &tempState, chosenAction);
     }
 
     if (SaveStates)
@@ -41,7 +57,7 @@ Path WalkerGreedy::Walk(BaseHeuristic *heuristic, const PDDLState *state, unsign
         return Path(steps);
 }
 
-std::vector<Path> WalkerGreedy::Walk() {
+std::vector<Path> WalkerStepBack::Walk() {
     std::vector<Path> paths;
     unsigned int current;
     if (OnWalkerStart != nullptr)

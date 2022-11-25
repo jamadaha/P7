@@ -15,7 +15,7 @@ public:
     size_t GetHash();
 
     const PDDLAction *action = nullptr;
-    const std::vector<unsigned int> objects;
+    std::vector<unsigned int> objects;
     PDDLActionInstance() {};
     PDDLActionInstance(const PDDLAction* action, const std::vector<unsigned int> objects) : action(action), objects(objects) {};
     std::string ToString(const PDDLInstance* instance);

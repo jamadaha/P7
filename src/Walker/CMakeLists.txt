@@ -5,6 +5,7 @@ target_sources(Walker
         ${CMAKE_CURRENT_LIST_DIR}/Variants/WalkerGreedyResume.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Variants/WalkerQueue.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Variants/WalkerProbe.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Variants/WalkerStepBack.cpp
         ${CMAKE_CURRENT_LIST_DIR}/WalkerBuilder.cpp
         ${CMAKE_CURRENT_LIST_DIR}/Path.cpp
     PUBLIC
@@ -12,6 +13,7 @@ target_sources(Walker
         ${CMAKE_CURRENT_LIST_DIR}/Variants/WalkerGreedyResume.hpp
         ${CMAKE_CURRENT_LIST_DIR}/Variants/WalkerQueue.hpp
         ${CMAKE_CURRENT_LIST_DIR}/Variants/WalkerProbe.hpp
+        ${CMAKE_CURRENT_LIST_DIR}/Variants/WalkerStepBack.hpp
         ${CMAKE_CURRENT_LIST_DIR}/BaseWalker.hh
         ${CMAKE_CURRENT_LIST_DIR}/Path.hh
         ${CMAKE_CURRENT_LIST_DIR}/WalkerBuilder.hpp)

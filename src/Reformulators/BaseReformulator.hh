@@ -17,6 +17,7 @@
 #include "../Helpers/ProgressBarHelper.hh"
 
 #include "../MacroVerifyer/MacroVerifyer.hh"
+#include "../WalkerPathVerifyer/WalkerPathVerifyer.hh"
 
 class BaseReformulator {
 public:
@@ -41,6 +42,7 @@ protected:
 	int macrosGenerated = 0;
 	bool encounteredErrors = false;
 
+	void ValidatePaths(PDDLInstance *instance, int parentReportID, bool debugMode);
 	std::vector<EntanglementOccurance> FindEntanglements(PDDLInstance* instance, bool debugMode);
     EntanglementFinder GetEntanglementFinder(bool debugMode);
     EntanglementEvaluator GetEntanglementEvaluator();

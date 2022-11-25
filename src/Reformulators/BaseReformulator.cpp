@@ -1,5 +1,36 @@
 #include "BaseReformulator.hh"
 
+void BaseReformulator::ValidatePaths(PDDLInstance *instance, int parentReportID, bool debugMode) {
+	if (Configs->GetItem<bool>("validatePaths")) {
+		int verifyID = Report->Begin("Verifying Paths", parentReportID);
+		if (debugMode) {
+			ConsoleHelper::PrintDebugInfo("[Walker] Verifying paths", debugIndent);
+			ConsoleHelper::PrintDebugWarning("[Walker] This may take a while", debugIndent);
+		}
+
+		WalkerPathVerifyer verifyer;
+		auto badPaths = verifyer.VerifyPaths(&paths, instance, Configs);
+		if (badPaths.size() == 0) {
+			if (debugMode)
+				ConsoleHelper::PrintDebugInfo("[Walker] " + std::to_string(paths.size()) + " paths verified!", debugIndent);
+			Report->Stop(ReportData("None", "-1", "true"));
+		}
+		else {
+			Report->Stop(ReportData("None", "-1", "false"));
+			int counter = 0;
+			for (auto path : badPaths) {
+				ConsoleHelper::PrintError("[Walker] Bad path: " + path.path.ToString(instance->problem) + ", Reason: " + path.Reason, debugIndent);
+				encounteredErrors = true;
+				counter++;
+				if (counter > 10) {
+					ConsoleHelper::PrintError("[Walker] Many more than these", debugIndent);
+					break;
+				}
+			}
+		}
+	}
+}
+
 std::vector<EntanglementOccurance> BaseReformulator::FindEntanglements(PDDLInstance* instance, bool debugMode) {
     EntanglementFinder entanglementFinder = GetEntanglementFinder(debugMode);
     EntanglementEvaluator entanglementEvaluator = GetEntanglementEvaluator();

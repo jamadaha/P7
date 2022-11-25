@@ -21,7 +21,7 @@ Path Regressor::RegressFromState(const PDDLState *state) {
     }
 
     auto reversedSteps = AlgorithmHelper::Reverse(steps);
-    return Path(reversedSteps);
+    return Path(reversedSteps, tempState, *state);
 }
 
 PDDLActionInstance Regressor::GetLegalPredecessor(const std::vector<PartialAction> *actions, PDDLState *state, bool *sucess) {

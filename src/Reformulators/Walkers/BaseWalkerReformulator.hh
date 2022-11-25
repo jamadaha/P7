@@ -9,7 +9,6 @@
 #include "../../IntermediatePDDL/PDDLActionInstance.hh"
 #include "../../Walker/Path.hh"
 #include "../../Walker/BaseWalker.hh"
-#include "../WalkerPathVerifyer/WalkerPathVerifyer.hh"
 
 class BaseWalkerReformulator : public BaseReformulator {
 public:

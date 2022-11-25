@@ -16,7 +16,13 @@ PDDLInstance BaseRegressorReformulator::ReformulatePDDL(PDDLInstance* instance) 
 }
 
 void BaseRegressorReformulator::FindPaths(PDDLInstance *instance, bool debugMode) {
+    int regressID = Report->Begin("Walking", ReportID);	
+
     auto tempPaths = PerformRegression(instance, debugMode);
     for (int i = 0; i < tempPaths.size(); i++)
-    this->paths.push_back(tempPaths.at(i));
+        this->paths.push_back(tempPaths.at(i));
+
+    auto ellapsed = Report->Stop(regressID);
+
+    ValidatePaths(instance, regressID, debugMode);
 }

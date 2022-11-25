@@ -39,7 +39,6 @@ target_link_libraries(Test-All
         Config
         StringHelper
         ConsoleHelper
-        FileVerifier
         PathChecker
         PDDLCodeGenerator
         CommonInterface

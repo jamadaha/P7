@@ -5,7 +5,6 @@ target_link_libraries(P7
         Config
         StringHelper
         ConsoleHelper
-        FileVerifier
         PathChecker
         PDDLCodeGenerator
         CommonInterface

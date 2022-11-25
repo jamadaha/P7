@@ -24,7 +24,6 @@ target_link_libraries(P7
         MacroGenerator
         Regressor
         PartialActionGenerator
-        MacroVerifyer)
         MacroVerifyer
         SAS)
 

@@ -14,7 +14,6 @@ class BaseWalkerReformulator : public BaseReformulator {
 public:
     BaseWalkerReformulator(Config *config, RunReport *report) : BaseReformulator(config, report) {};
 	PDDLInstance ReformulatePDDL(PDDLInstance *instance) override;
-    SAS::Plan RebuildSASPlan(PDDLInstance *instance, SAS::Plan* reformulatedSAS) override;
 
 protected:
     virtual std::vector<Path> PerformWalk(PDDLInstance *instance, bool debugMode) = 0;

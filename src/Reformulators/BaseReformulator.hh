@@ -3,6 +3,9 @@
 
 #include "../IntermediatePDDL/PDDLInstance.hh"
 #include "../SAS/Plan.hh"
+#include "../SAS/CodeGenerator/CodeGenerator.hh"
+#include "../SAS/Parser/Parser.hh"
+#include "../SAS/Rebuilder/Rebuilder.hh"
 #include "../Config/Config.hh"
 #include "../RunReport/RunReport.hh"
 
@@ -31,7 +34,7 @@ public:
 	}
 
 	virtual PDDLInstance ReformulatePDDL(PDDLInstance* instance) = 0;
-	virtual SAS::Plan RebuildSASPlan(PDDLInstance *instance, SAS::Plan* reformulatedSAS) = 0;
+	SAS::Plan RebuildSASPlan(PDDLInstance* instance, SAS::Plan* reformulatedSAS);
 protected:
 	Config* Configs;
 	RunReport* Report;

@@ -1,8 +1,9 @@
-#include "EntanglementFinder.hh"
+#include "Finder.hh"
 
 using namespace std;
+using namespace JointPaths;
 
-int EntanglementFinder::GetInitialLevelIfValid(vector<Path>* paths) {
+int Finder::GetInitialLevelIfValid(vector<Path>* paths) {
 	int level = 2;
 	if (Data.SearchCeiling != -1)
 		level = Data.SearchCeiling;
@@ -28,8 +29,8 @@ int EntanglementFinder::GetInitialLevelIfValid(vector<Path>* paths) {
 	return level;
 }
 
-unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCandidates(vector<Path>* paths) {
-	unordered_map<size_t, EntanglementOccurance> candidates;
+unordered_map<size_t, JointPath> Finder::FindEntangledCandidates(vector<Path>* paths) {
+	unordered_map<size_t, JointPath> candidates;
 
 	if (paths->size() == 0)
 		return candidates;
@@ -62,10 +63,10 @@ unordered_map<size_t, EntanglementOccurance> EntanglementFinder::FindEntangledCa
 	}
 
 	return candidates;
-	//return unordered_map<size_t, EntanglementOccurance>(candidates);
+	//return unordered_map<size_t, JointPath>(candidates);
 }
 
-int EntanglementFinder::ReduceLevel(int level) {
+int Finder::ReduceLevel(int level) {
 	int newLevel = level;
 	if (Data.LevelReductionType == RunData::LevelReductionTypes::Division)
 		newLevel = ceil((double)level / Data.LevelReductionFactor);
@@ -76,7 +77,7 @@ int EntanglementFinder::ReduceLevel(int level) {
 	return newLevel;
 }
 
-void EntanglementFinder::GenerateActionSet(vector<pair<size_t, vector<PDDLActionInstance*>>>* currentValues, vector<Path>* paths, const int level) {
+void Finder::GenerateActionSet(vector<pair<size_t, vector<PDDLActionInstance*>>>* currentValues, vector<Path>* paths, const int level) {
 	const int pathsSize = paths->size();
 	for (int i = 0; i < pathsSize; i++) {
 		Path* path = &paths->at(i);
@@ -101,7 +102,7 @@ void EntanglementFinder::GenerateActionSet(vector<pair<size_t, vector<PDDLAction
 	}
 }
 
-void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, EntanglementOccurance>* candidates, const vector<pair<size_t, vector<PDDLActionInstance*>>>* currentValues) {
+void Finder::AddCandidatesIfThere(unordered_map<size_t, JointPath>* candidates, const vector<pair<size_t, vector<PDDLActionInstance*>>>* currentValues) {
 	const int currentValueSize = currentValues->size();
 	if (OnNewLevel != nullptr)
 		OnNewLevel(_CurrentLevel, currentValueSize);
@@ -112,7 +113,7 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 		bool containsThisKey = candidates->contains(iValue.first);
 		if (containsThisKey)
 			continue;
-		EntanglementOccurance* currentOcc;
+		JointPath* currentOcc;
 		for (int j = i + 1; j < currentValueSize; j++) {
 			_TotalComparisons++;
 			if (iValue.first == currentValues->at(j).first) {
@@ -122,7 +123,7 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 				}
 				else {
 					// Add new candidate
-					EntanglementOccurance newOcc(iValue.second, iValue.first);
+					JointPath newOcc(iValue.second, iValue.first);
 					candidates->emplace(iValue.first, newOcc);
 					containsThisKey = true;
 					currentOcc = &candidates->at(iValue.first);
@@ -138,7 +139,7 @@ void EntanglementFinder::AddCandidatesIfThere(unordered_map<size_t, Entanglement
 		OnLevelEnd();
 }
 
-bool EntanglementFinder::IsOverTimeLimit() {
+bool Finder::IsOverTimeLimit() {
 	if (_HasTimeLimit) {
 		auto currentTime = chrono::steady_clock::now();
 		auto ellapsed = chrono::duration_cast<chrono::milliseconds>(currentTime - _StartTime).count();

@@ -19,7 +19,7 @@ target_link_libraries(P7
         FileHelper
         Walker
         WalkerPathVerifyer
-        EntanglementFinder
+        JointPaths
         ActionGenerator
         Hashes
         ProgressBarHelper

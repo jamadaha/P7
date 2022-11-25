@@ -7,7 +7,7 @@ PDDLInstance BaseWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
     FindPaths(instance, debugMode);
 
 	// Entanglement Finding
-    std::vector<EntanglementOccurance> candidates = FindEntanglements(instance, debugMode);
+    std::vector<JointPaths::JointPath> candidates = FindEntanglements(instance, debugMode);
 
 	// Macro Generation
 	PDDLInstance macroInstance = GenerateMacros(instance, &candidates, debugMode);

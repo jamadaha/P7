@@ -3,7 +3,9 @@
 PDDLInstance BaseRegressorReformulator::ReformulatePDDL(PDDLInstance* instance) {
     bool debugMode = Configs->GetItem<bool>("debugmode");
 
-	// Walking
+	if (!HaveRunPreprocessor)
+		GetMutexes(instance, debugMode);
+
     FindPaths(instance, debugMode);
 
 	// Entanglement Finding
@@ -25,4 +27,17 @@ void BaseRegressorReformulator::FindPaths(PDDLInstance *instance, bool debugMode
     auto ellapsed = Report->Stop(regressID);
 
     ValidatePaths(instance, regressID, debugMode);
+}
+
+void BaseRegressorReformulator::GetMutexes(PDDLInstance* instance, bool debugMode) {
+	if (debugMode)
+		ConsoleHelper::PrintDebugInfo("Getting mutexes...", debugIndent);
+	auto domain = Configs->GetItem<std::filesystem::path>("domain");
+	auto problem = Configs->GetItem<std::filesystem::path>("problem");
+	DownwardRunner runner = DownwardRunner();
+	runner.RunTranslator(Configs, domain.c_str(), problem.c_str());
+	H2Runner h2Runner = H2Runner(instance);
+	static PDDLMutex mutexes = h2Runner.RunH2(Configs);
+	instance->mutexes = &mutexes;
+	HaveRunPreprocessor = true;
 }

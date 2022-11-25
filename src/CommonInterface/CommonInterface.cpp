@@ -66,20 +66,6 @@ InterfaceStep<PDDLInstance*> CommonInterface::ConvertPDDLFormat(PDDLDriver* driv
 	return InterfaceStep<PDDLInstance*>(instance);
 }
 
-InterfaceStep<void> CommonInterface::GetMutexes(PDDLInstance *instance) {
-	ConsoleHelper::PrintInfo("Getting mutexes...");
-	Report->Begin("Getting Mutexes");
-	auto domain = config.GetItem<filesystem::path>("domain");
-	auto problem = config.GetItem<filesystem::path>("problem");
-	DownwardRunner runner = DownwardRunner();
-	runner.RunTranslator(config, domain.c_str(), problem.c_str());
-	H2Runner h2Runner = H2Runner(instance);
-	static PDDLMutex mutexes = h2Runner.RunH2(config);
-	instance->mutexes = &mutexes;
-	Report->Stop();
-	return InterfaceStep<void>();
-}
-
 InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulator, PDDLInstance* instance) {
 	int timeLeft = config.GetItem<int>("totalTimeLimit") * 1000;
 	int currentIncrementTimeLimit = config.GetItem<int>("startIncrement") * 1000;
@@ -170,7 +156,7 @@ InterfaceStep<CommonInterface::ReformulatorRunResultResult> CommonInterface::Run
 	ConsoleHelper::PrintInfo("Run new PDDL files with Fast Downward...", 1);
 	Report->Begin("Running FastDownward", reportID);
 	DownwardRunner runner = DownwardRunner();
-	runner.RunDownward(config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, downwardTimeLimit);
+	runner.RunDownward(&config, CommonInterface::TempDomainName, CommonInterface::TempProblemName, downwardTimeLimit);
 	auto runRes = runner.ParseDownwardLog();
 	Report->Stop();
 	if (runRes != DownwardRunner::FoundPlan) {
@@ -243,10 +229,6 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 
 	auto convertPDDLFormatStep = ConvertPDDLFormat(parsePDDLFilesStep.Data);
 	if (!convertPDDLFormatStep.RanWithoutErrors)
-		return CommonInterface::RunResult::ErrorsEncountered;
-
-	auto getMutexStep = GetMutexes(convertPDDLFormatStep.Data);
-	if (!getMutexStep.RanWithoutErrors)
 		return CommonInterface::RunResult::ErrorsEncountered;
 
 	if (!isDirect) {

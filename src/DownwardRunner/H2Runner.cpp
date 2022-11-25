@@ -2,8 +2,8 @@
 
 using namespace std;
 
-PDDLMutex H2Runner::RunH2(Config config) {
-    const string h2Path = config.GetItem<filesystem::path>("h2path").c_str();
+PDDLMutex H2Runner::RunH2(Config* config) {
+    const string h2Path = config->GetItem<filesystem::path>("h2path").c_str();
 	string command = h2Path + " --no_bw_h2 < output.sas" + " > nul";
 	system(command.c_str());
     return ParseOutput();

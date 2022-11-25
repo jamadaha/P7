@@ -24,7 +24,6 @@
 #include "../IntermediatePDDL/PDDLMutex.hh"
 #include "../IntermediatePDDL/PDDLConverter.hh"
 #include "../Helpers/ConsoleHelper.hh"
-#include "../DownwardRunner/H2Runner.hh"
 
 template <class T>
 struct InterfaceStep {
@@ -54,7 +53,6 @@ private:
 	InterfaceStep<void> CheckFilePaths();
 	InterfaceStep<PDDLDriver*> ParsePDDLFiles();
 	InterfaceStep<PDDLInstance*> ConvertPDDLFormat(PDDLDriver* driver);
-	InterfaceStep<void> GetMutexes(PDDLInstance *instance);
 	InterfaceStep<void> RunIteratively(BaseReformulator* reformulator, PDDLInstance* instance);
 	InterfaceStep<void> RunDirect(BaseReformulator* reformulator, PDDLInstance* instance);
 	InterfaceStep<ReformulatorRunResultResult> RunSingle(BaseReformulator* reformulator, PDDLInstance* instance, int reportID, int reformulatorTimeLimit, int downwardTimeLimit);

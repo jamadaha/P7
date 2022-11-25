@@ -12,7 +12,7 @@
 class H2Runner {
 public:
     H2Runner(PDDLInstance *instance) : instance(instance) {};
-    PDDLMutex RunH2(Config config);
+    PDDLMutex RunH2(Config* config);
 private:
     PDDLInstance *instance;
     PDDLMutex ParseOutput();

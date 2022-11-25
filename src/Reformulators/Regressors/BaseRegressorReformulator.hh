@@ -3,8 +3,11 @@
 
 #include <vector>
 #include <string>
+#include <filesystem>
 
 #include "../BaseReformulator.hh"
+#include "../DownwardRunner/H2Runner.hh"
+#include "../DownwardRunner/DownwardRunner.hh"
 
 class BaseRegressorReformulator : public BaseReformulator {
 public:
@@ -16,6 +19,8 @@ protected:
 
 private:
     void FindPaths(PDDLInstance *instance, bool debugMode);
+    void GetMutexes(PDDLInstance* instance, bool debugMode);
+    bool HaveRunPreprocessor = false;
 };
 
 #endif

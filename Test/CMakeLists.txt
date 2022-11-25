@@ -14,7 +14,7 @@ include(Test/IntermediatePDDL/CMakeLists.txt)
 include(Test/PlanValidators/CMakeLists.txt)
 include(Test/Helpers/CMakeLists.txt)
 include(Test/DownwardRunner/CMakeLists.txt)
-include(Test/EntanglementFinder/CMakeLists.txt)
+include(Test/JointPaths/CMakeLists.txt)
 include(Test/MacroGenerator/CMakeLists.txt)
 
 add_executable(Test-All 
@@ -28,8 +28,9 @@ add_executable(Test-All
 	"Test/Walker/Walker.cpp"
 	"Test/PlanValidators/PlanValidator.cpp"
 	"Test/Helpers/StringHelper.cpp"
-	"Test/EntanglementFinder/EntanglementFinder.cpp"
-	"Test/EntanglementFinder/Hashes.cpp"
+	"Test/JointPaths/FinderTests.cpp"
+	"Test/JointPaths/EvaluatorTests.cpp"
+	"Test/JointPaths/HashesTests.cpp"
 	"Test/DownwardRunner/DownwardRunner.cpp"
     "Test/MacroGenerator/MacroGenerator.cpp")
 target_link_libraries(Test-All 
@@ -39,7 +40,6 @@ target_link_libraries(Test-All
         Config
         StringHelper
         ConsoleHelper
-        FileVerifier
         PathChecker
         PDDLCodeGenerator
         CommonInterface
@@ -51,7 +51,7 @@ target_link_libraries(Test-All
         PathChecker
         DownwardRunner
         FileHelper
-        EntanglementFinder
+        JointPaths
         Walker
         ActionGenerator
         MacroGenerator)

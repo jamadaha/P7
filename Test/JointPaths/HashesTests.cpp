@@ -3,21 +3,21 @@
 #include <vector>
 #include <string>
 
-#include "../../src/EntanglementFinder/EntanglementFinder.hh"
 #include "../../src/Walker/Path.hh"
 
 int collisionDepth = 5000;
+//int collisionDepth = 5;
 int currentCase = 1;
 int totalCases = 17;
 bool debugPrint = true;
 void FinishedCase() {
     if (debugPrint)
-        std::cout << "EntanglementFinder-Hashes - Finished " + std::to_string(currentCase++) + " out of " + std::to_string(totalCases) << std::endl;
+        std::cout << "JointPaths-Hashes - Finished " + std::to_string(currentCase++) + " out of " + std::to_string(totalCases) << std::endl;
 }
 
 using namespace std;
 
-const std::string TAG = "EntanglementFinder-Hashes ";
+const std::string TAG = "JointPaths-Hashes ";
 
 #pragma region  PDDLActionInstance
 

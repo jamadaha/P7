@@ -6,6 +6,7 @@ cd P7Requirements;
 # Make sure all current packages are up to date
 sudo apt update;
 
+git clone https://gitlab.com/atorralba_planners/h2-preprocessor h2-preprocessor && cd h2-preprocessor && echo "Change ALLOW_64_BIT to true in h2-preprocessor Macros.cmake" && sleep 30 && mkdir -p builds/release32 && cd builds/release32 && cmake ../../ && cmake --build . && cd ../../../; 
 # Install Catch2
 git clone https://github.com/catchorg/Catch2.git Catch2 && cd Catch2 && cmake -Bbuild -H. -DBUILD_TESTING=OFF && sudo cmake --build build/ --target install && cd ..;
 # Install Fast Downward

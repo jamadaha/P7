@@ -10,7 +10,8 @@
 class DownwardRunner {
 public:
     enum DownwardRunnerResult { None, FoundPlan, DidNotFindPlan };
-    void RunDownward(Config config, std::string reformulatedDomain, std::string reformulatedProblem, int timeLimitMs);
+    void RunTranslator(Config* config, std::string domainPath, std::string problemPath);
+    void RunDownward(Config* config, std::string reformulatedDomain, std::string reformulatedProblem, int timeLimitMs);
     DownwardRunnerResult ParseDownwardLog();
 
     std::string RunnerLogName = "downwardLog";

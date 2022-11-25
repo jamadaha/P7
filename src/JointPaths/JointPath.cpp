@@ -1,8 +1,9 @@
-#include "EntanglementOccurance.hh"
+#include "JointPath.hh"
 
 using namespace std;
+using namespace JointPaths;
 
-size_t EntanglementOccurance::GetHash() {
+size_t JointPath::GetHash() {
     if (Hash != 0)
         return Hash;
     Hash = hash<vector<PDDLActionInstance>>{}((*this).Chain);

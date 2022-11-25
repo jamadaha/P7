@@ -26,7 +26,7 @@ public:
 		else {
 			std::vector<PDDLActionInstance> newChoices;
 			for (auto choice = choices->begin(); choice != choices->end(); choice++) {
-				if (PreviousActions.contains(*choice))
+				if (!PreviousActions.contains(*choice))
 					newChoices.push_back(*choice);
 			}
 			if (newChoices.size() != 0) {

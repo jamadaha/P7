@@ -4,17 +4,17 @@
 
 using namespace std;
 
-#include "../../src/MacroGenerator/InstanceGenerator.hh"
+#include "../../src/Macros/Instantiators/Instantiator.hh"
 
-const std::string TAG = "Macro ";
+const std::string TAG = "Macros::Macro ";
 
 TEST_CASE(TAG + "Can_Make_Unary_Literals_1") {
-    InstanceGenerator generator;
+    Macros::Instantiator generator;
 
     PDDLDomain domain;
     PDDLProblem problem({ "obj1","obj2","obj3","obj4" });
     PDDLInstance instance(&domain, &problem);
-    vector<Macro> macros{
+    vector<Macros::Macro> macros{
     };
 
     auto result = generator.GenerateInstance(&domain, &problem, &macros);
@@ -23,25 +23,25 @@ TEST_CASE(TAG + "Can_Make_Unary_Literals_1") {
 }
 
 TEST_CASE(TAG + "Can_Make_Unary_Literals_2") {
-    InstanceGenerator generator;
+    Macros::Instantiator generator;
 
     PDDLDomain domain;
     PDDLProblem problem({"obj1","obj2","obj3","obj4"});
     PDDLInstance instance(&domain, &problem);
-    vector<Macro> macros{
-        Macro(
-            GroundedAction(
+    vector<Macros::Macro> macros{
+        Macros::Macro(
+            Macros::GroundedAction(
                 "action", 
                 {1,2}, 
                 {
                     {
-                        GroundedLiteral(1, {1,2}), 
+                        Macros::GroundedLiteral(1, {1,2}), 
                         true
                     }
                 }, 
                 {
                     {
-                        GroundedLiteral(1, {1,2}), 
+                        Macros::GroundedLiteral(1, {1,2}), 
                         false
                     }
                 }), 
@@ -54,25 +54,25 @@ TEST_CASE(TAG + "Can_Make_Unary_Literals_2") {
 }
 
 TEST_CASE(TAG + "Can_Make_Macro_Action_1") {
-    InstanceGenerator generator;
+    Macros::Instantiator generator;
 
     PDDLDomain domain;
     PDDLProblem problem({ "obj1","obj2","obj3","obj4" });
     PDDLInstance instance(&domain, &problem);
-    vector<Macro> macros{
-        Macro(
-            GroundedAction(
+    vector<Macros::Macro> macros{
+        Macros::Macro(
+            Macros::GroundedAction(
                 "action",
                 {1,2},
                 {
                     {
-                        GroundedLiteral(1, {1,2}),
+                        Macros::GroundedLiteral(1, {1,2}),
                         true
                     }
                 },
                 {
                     {
-                        GroundedLiteral(1, {1,2}),
+                        Macros::GroundedLiteral(1, {1,2}),
                         false
                     }
                 }),
@@ -85,42 +85,42 @@ TEST_CASE(TAG + "Can_Make_Macro_Action_1") {
 }
 
 TEST_CASE(TAG + "Can_Make_Macro_Action_2") {
-    InstanceGenerator generator;
+    Macros::Instantiator generator;
 
     PDDLDomain domain;
     PDDLProblem problem({ "obj1","obj2","obj3","obj4" });
     PDDLInstance instance(&domain, &problem);
-    vector<Macro> macros{
-        Macro(
-            GroundedAction(
+    vector<Macros::Macro> macros{
+        Macros::Macro(
+            Macros::GroundedAction(
                 "action",
                 {1,2},
                 {
                     {
-                        GroundedLiteral(1, {1,2}),
+                        Macros::GroundedLiteral(1, {1,2}),
                         true
                     }
                 },
                 {
                     {
-                        GroundedLiteral(1, {1,2}),
+                        Macros::GroundedLiteral(1, {1,2}),
                         false
                     }
                 }),
             vector<PDDLActionInstance>()),
-        Macro(
-            GroundedAction(
+        Macros::Macro(
+            Macros::GroundedAction(
                 "action2",
                 {1,2},
                 {
                     {
-                        GroundedLiteral(1, {1,2}),
+                        Macros::GroundedLiteral(1, {1,2}),
                         true
                     }
                 },
                 {
                     {
-                        GroundedLiteral(1, {1,2}),
+                        Macros::GroundedLiteral(1, {1,2}),
                         false
                     }
                 }),
@@ -133,12 +133,12 @@ TEST_CASE(TAG + "Can_Make_Macro_Action_2") {
 }
 
 TEST_CASE(TAG + "Can_Set_Init_State_1") {
-    InstanceGenerator generator;
+    Macros::Instantiator generator;
 
     PDDLDomain domain;
     PDDLProblem problem({ "obj1","obj2","obj3","obj4" });
     PDDLInstance instance(&domain, &problem);
-    vector<Macro> macros{
+    vector<Macros::Macro> macros{
     };
 
     auto result = generator.GenerateInstance(&domain, &problem, &macros);
@@ -147,25 +147,25 @@ TEST_CASE(TAG + "Can_Set_Init_State_1") {
 }
 
 TEST_CASE(TAG + "Can_Set_Init_State_2") {
-    InstanceGenerator generator;
+    Macros::Instantiator generator;
 
     PDDLDomain domain;
     PDDLProblem problem({ "obj1","obj2","obj3","obj4" });
     PDDLInstance instance(&domain, &problem);
-    vector<Macro> macros{
-        Macro(
-            GroundedAction(
+    vector<Macros::Macro> macros{
+        Macros::Macro(
+            Macros::GroundedAction(
                 "action",
                 {1,2},
                 {
                     {
-                        GroundedLiteral(1, {1,2}),
+                        Macros::GroundedLiteral(1, {1,2}),
                         true
                     }
                 },
                 {
                     {
-                        GroundedLiteral(1, {1,2}),
+                        Macros::GroundedLiteral(1, {1,2}),
                         false
                     }
                 }),

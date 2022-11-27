@@ -1,4 +1,4 @@
-add_executable(Tests-MacroGenerator Test/MacroGenerator/MacroGenerator.cpp)
+add_executable(Tests-MacroGenerator "Test/MacroGenerator/MacroGenerator.cpp" "Test/MacroGenerator/InstanceGeneratorTests.cpp")
 target_link_libraries(Tests-MacroGenerator
     PRIVATE 
         Catch2::Catch2WithMain

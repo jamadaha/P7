@@ -1,4 +1,4 @@
-add_library(MacroGenerator "MacroGenerator.cpp")
+add_library(MacroGenerator "Generator/MacroGenerator.cpp")
 target_sources(MacroGenerator
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/MacroGenerator.cpp

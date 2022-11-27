@@ -19,8 +19,9 @@ private:
     const PDDLDomain *domain = nullptr;
     unsigned int macroCount = 0;
 
-    std::vector<PDDLActionInstance> CloneOriginalPath(std::vector<PDDLActionInstance> *actions);
     std::vector<GroundedAction> GroundActions(std::vector<PDDLActionInstance> *actions);
+    GroundedAction GroundAction(PDDLActionInstance* action);
+    std::vector<unsigned int> GetGroundedArguments(PDDLActionInstance* action, std::vector<unsigned int> args);
     GroundedAction CombineActions(const std::vector<GroundedAction> *actions);
     std::unordered_map<GroundedLiteral, bool> CombinePreconditions(
         std::unordered_map<GroundedLiteral, bool> priorPrecon, 

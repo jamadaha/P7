@@ -110,7 +110,7 @@ PDDLInstance BaseReformulator::GenerateMacros(PDDLInstance* instance, std::vecto
 	macros.clear();
 	MacroGenerator macroGenerator = MacroGenerator(instance->domain);
 	for (auto iter = candidates->begin(); iter != candidates->end(); iter++)
-		macros.push_back(macroGenerator.GenerateMacro(&(*iter).Chain));
+		macros.push_back(macroGenerator.GenerateMacro(&iter->Chain));
 	macrosGenerated = macros.size();
 
 	if (debugMode)

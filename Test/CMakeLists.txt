@@ -32,7 +32,9 @@ add_executable(Test-All
 	"Test/JointPaths/EvaluatorTests.cpp"
 	"Test/JointPaths/HashesTests.cpp"
 	"Test/DownwardRunner/DownwardRunner.cpp"
-    "Test/MacroGenerator/MacroGenerator.cpp")
+    "Test/MacroGenerator/MacroGenerator.cpp"
+    "Test/MacroGenerator/InstanceGeneratorTests.cpp"
+)
 target_link_libraries(Test-All 
 	PRIVATE 
 		Catch2::Catch2WithMain

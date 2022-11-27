@@ -12,6 +12,7 @@
 
 namespace PDDL {
     class Domain {
+    public:
         const std::string name;
         const std::vector<std::string> requirements;
         const std::vector<Predicate> predicates;

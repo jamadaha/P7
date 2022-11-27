@@ -10,7 +10,7 @@ public:
 	SameOutputReformulator(Config *config, RunReport* report) : BaseReformulator(config, report) {
 
 	}
-	PDDLInstance ReformulatePDDL(PDDLInstance* instance) override;
+	PDDL::Instance ReformulatePDDL(PDDL::Instance* instance) override;
 };
 
 #endif

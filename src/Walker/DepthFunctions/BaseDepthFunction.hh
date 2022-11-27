@@ -1,16 +1,16 @@
 #ifndef BaseDepthFunction_HH
 #define BaseDepthFunction_HH
 
-#include "../../IntermediatePDDL/PDDLInstance.hh"
+#include "../../PDDL/Instance.hh"
 
 class BaseDepthFunction {
 public:
-    BaseDepthFunction(PDDLInstance* instance, double modifier = 1) : instance(instance), Modifier(modifier) {
+    BaseDepthFunction(PDDL::Instance* instance, double modifier = 1) : instance(instance), Modifier(modifier) {
     }
     double Modifier;
     virtual int GetDepth() = 0;
 protected:
-    PDDLInstance* instance;
+    PDDL::Instance* instance;
 };
 
 #endif

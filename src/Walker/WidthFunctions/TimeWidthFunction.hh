@@ -1,7 +1,7 @@
 #ifndef TimeWidthFunction_HH
 #define TimeWidthFunction_HH
 
-#include "../../IntermediatePDDL/PDDLInstance.hh"
+#include "../../PDDL/Instance.hh"
 #include "BaseWidthFunction.hh"
 #include <chrono>
 

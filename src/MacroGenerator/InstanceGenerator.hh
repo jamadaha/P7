@@ -4,16 +4,16 @@
 #include <vector>
 #include <set>
 
-#include "../IntermediatePDDL/PDDLInstance.hh"
+#include "../PDDL/Instance.hh"
 #include "Macro.hh"
 
 class InstanceGenerator{
 public:
-    static PDDLInstance GenerateInstance(const PDDLDomain *domain, const PDDLProblem *problem, const std::vector<Macro> *macros);
+    static PDDL::Instance GenerateInstance(const PDDL::Domain *domain, const PDDL::Problem *problem, const std::vector<Macro> *macros);
 private:
-    static std::vector<PDDLLiteral> GenerateLiterals(const std::unordered_map<GroundedLiteral, bool> *macroPreconditions, 
+    static std::vector<PDDL::Literal> GenerateLiterals(const std::unordered_map<GroundedLiteral, bool> *macroPreconditions,
     std::unordered_map<unsigned int, unsigned int> *groundedToIndex);
-    static void AppendObjectPreconditions(std::vector<PDDLLiteral> *literals, 
+    static void AppendObjectPreconditions(std::vector<PDDL::Literal> *literals,
 const std::unordered_map<std::string, unsigned int> predicateMap, 
 const std::vector<std::string> parameters);
 

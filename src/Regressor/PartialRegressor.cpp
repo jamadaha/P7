@@ -2,17 +2,17 @@
 
 #include <queue>
 
-Path PartialRegressor::RegressFromState(const PDDLState *state) {
+Path PartialRegressor::RegressFromState(const PDDL::State *state) {
     std::vector<PartialAction> steps;
-    std::unordered_set<PDDLState> visitedStates{*state};
-    PDDLState tempState = PDDLState(*state);
+    std::unordered_set<PDDL::State> visitedStates{*state};
+    PDDL::State tempState = PDDL::State(*state);
     for (int i = 0; i < this->depthFunction->GetDepth(); i++) {
         std::vector<PartialAction> partialActions = actionGenerator->ExpandState(&tempState);
         if (partialActions.size() == 0)
             break;
         
         PartialAction *action = nullptr;
-        std::unordered_set<PDDLState> predecessorStates;
+        std::unordered_set<PDDL::State> predecessorStates;
         action = GetPredecessorStates(&partialActions, predecessorStates);
 
         if (action == nullptr) {
@@ -23,7 +23,7 @@ Path PartialRegressor::RegressFromState(const PDDLState *state) {
         if (predecessorStates.size() == 0)
             break;
 
-        PDDLActionInstance realAction = actionGenerator->ConvertPartialAction(instance, action);
+        PDDL::ActionInstance realAction = actionGenerator->ConvertPartialAction(instance, action);
 
         GetPredecessorState(&tempState, &realAction);
 
@@ -38,7 +38,7 @@ Path PartialRegressor::RegressFromState(const PDDLState *state) {
     return ConvertToPath(steps);
 }
 
-PartialAction* PartialRegressor::GetPredecessorStates(std::vector<PartialAction> *actions, std::unordered_set<PDDLState> &states) {
+PartialAction* PartialRegressor::GetPredecessorStates(std::vector<PartialAction> *actions, std::unordered_set<PDDL::State> &states) {
     int iter = rand() % actions->size();
     for (int i = 0; i < actions->size(); i++) {
         int index = ((iter + i) % actions->size());
@@ -51,11 +51,11 @@ PartialAction* PartialRegressor::GetPredecessorStates(std::vector<PartialAction>
     return nullptr;
 }
 
-std::unordered_set<PDDLState> PartialRegressor::GetPredecessorStates(const PartialAction *action) {
-    std::unordered_set<PDDLState> states;
+std::unordered_set<PDDL::State> PartialRegressor::GetPredecessorStates(const PartialAction *action) {
+    std::unordered_set<PDDL::State> states;
 
     for (int i = 0; i < action->action->preconditions.size(); i++) {
-        const PDDLLiteral *literal = &action->action->preconditions.at(i);
+        const PDDL::Literal *literal = &action->action->preconditions.at(i);
 
         // If the literal is static, ignore
         if (instance->domain->staticPredicates.contains(literal->predicateIndex))
@@ -77,24 +77,24 @@ std::unordered_set<PDDLState> PartialRegressor::GetPredecessorStates(const Parti
     return states;
 }
 
-PDDLState PartialRegressor::GeneratePreconditionState(const PDDLLiteral *literal) {
+PDDL::State PartialRegressor::GeneratePreconditionState(const PDDL::Literal *literal) {
     const int argumentCount = literal->args.size();
     if (argumentCount == 1)
-        return PDDLState(
+        return PDDL::State(
             std::unordered_map<unsigned int, std::unordered_set<unsigned int>> { 
                 {literal->predicateIndex, std::unordered_set<unsigned int>{ literal->args.at(0) }} 
             },
             std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> {}
         );
     else if (argumentCount == 2)
-        return PDDLState(
+        return PDDL::State(
             std::unordered_map<unsigned int, std::unordered_set<unsigned int>> {},
             std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> { 
                 {literal->predicateIndex, std::unordered_set<std::pair<unsigned int, unsigned int>>{ std::make_pair(literal->args.at(0), literal->args.at(1)) }} 
             }
         );
     else 
-        return PDDLState(
+        return PDDL::State(
             std::unordered_map<unsigned int, std::unordered_set<unsigned int>> {},
             std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> {}
         );
@@ -106,7 +106,7 @@ void PartialRegressor::SwitchToNonPartial(std::vector<PartialAction> *actions) {
 }
 
 Path PartialRegressor::ConvertToPath(std::vector<PartialAction> actions) {
-    std::vector<PDDLActionInstance> steps;
+    std::vector<PDDL::ActionInstance> steps;
     for (int i = 0; i < actions.size(); i++)
         steps.push_back(actionGenerator->ConvertPartialAction(instance, &actions.at(i)));
     return Path(steps);

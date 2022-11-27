@@ -1,6 +1,6 @@
 #include "BaseWalkerReformulator.hh"
 
-PDDLInstance BaseWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
+PDDL::Instance BaseWalkerReformulator::ReformulatePDDL(PDDL::Instance* instance) {
     bool debugMode = Configs->GetItem<bool>("debugmode");
 
 	// Walking
@@ -10,12 +10,12 @@ PDDLInstance BaseWalkerReformulator::ReformulatePDDL(PDDLInstance* instance) {
     std::vector<JointPaths::JointPath> candidates = FindEntanglements(instance, debugMode);
 
 	// Macro Generation
-	PDDLInstance macroInstance = GenerateMacros(instance, &candidates, debugMode);
+	PDDL::Instance macroInstance = GenerateMacros(instance, &candidates, debugMode);
 
     return macroInstance;
 }
 
-void BaseWalkerReformulator::FindPaths(PDDLInstance *instance, bool debugMode) {
+void BaseWalkerReformulator::FindPaths(PDDL::Instance *instance, bool debugMode) {
     int walkID = Report->Begin("Walking", ReportID);
 	auto tempPaths = PerformWalk(instance, debugMode);
 	for (auto iter = tempPaths.begin(); iter != tempPaths.end(); iter++)
@@ -52,12 +52,12 @@ void BaseWalkerReformulator::SetupWalkerDebugInfo(BaseWalker* walker) {
 		ConsoleHelper::PrintDebugInfo("[Walker] Total actions Generated: " + std::to_string(totalActionCount) + " [" + std::to_string(actionsPrSecond) + "/s]", debugIndent);
 	};
 	if (Configs->GetItem<bool>("printwalkersteps")) {
-		walker->OnTempStateMade = [&](PDDLInstance* instance, PDDLState* state) {
+		walker->OnTempStateMade = [&](PDDL::Instance* instance, PDDL::State* state) {
 			std::string command = "echo '" + state->ToString(instance) + "'" + " >> walkerLog";
 			system(command.c_str());
 
 		};
-		walker->OnStateWalk = [&](PDDLInstance* instance, PDDLState* state, PDDLActionInstance* chosenAction) {
+		walker->OnStateWalk = [&](PDDL::Instance* instance, PDDL::State* state, PDDL::ActionInstance* chosenAction) {
 			std::string stateinfo = state->ToString(instance);
 			std::string actioninfo = chosenAction->ToString(instance);
 			std::string content = "echo '" + actioninfo + "\n" + stateinfo + "'" + " >> walkerLog";

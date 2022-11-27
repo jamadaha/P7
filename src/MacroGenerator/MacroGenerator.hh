@@ -6,21 +6,21 @@
 
 #include "Macro.hh"
 #include "GroundedAction.hh"
-#include "../IntermediatePDDL/PDDLInstance.hh"
+#include "../PDDL/Instance.hh"
 
 class MacroGenerator {
 public:
     MacroGenerator(){};
-    MacroGenerator(PDDLDomain *domain) : domain(domain) {};
-    Macro GenerateMacro(std::vector<PDDLActionInstance> *actions);
+    MacroGenerator(PDDL::Domain *domain) : domain(domain) {};
+    Macro GenerateMacro(std::vector<PDDL::ActionInstance> *actions);
 
 
 private:
-    const PDDLDomain *domain = nullptr;
+    const PDDL::Domain *domain = nullptr;
     unsigned int macroCount = 0;
 
-    std::vector<PDDLActionInstance> CloneOriginalPath(std::vector<PDDLActionInstance> *actions);
-    std::vector<GroundedAction> GroundActions(std::vector<PDDLActionInstance> *actions);
+    std::vector<PDDL::ActionInstance> CloneOriginalPath(std::vector<PDDL::ActionInstance> *actions);
+    std::vector<GroundedAction> GroundActions(std::vector<PDDL::ActionInstance> *actions);
     GroundedAction CombineActions(const std::vector<GroundedAction> *actions);
     std::unordered_map<GroundedLiteral, bool> CombinePreconditions(
         std::unordered_map<GroundedLiteral, bool> priorPrecon, 

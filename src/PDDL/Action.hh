@@ -48,7 +48,7 @@ namespace PDDL {
             }
         };
 
-        Action(const PDDLAction& a) :
+        Action(const PDDL::Action& a) :
             name(a.name),
             parameters(a.parameters),
             preconditions(a.preconditions),

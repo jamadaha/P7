@@ -17,7 +17,7 @@ namespace PDDL {
         const State goalState;
         Problem() : name("Not Set") {};
         Problem(std::vector<std::string> objects) : name("Only Objects"), objects(objects) {};
-        Problem(std::string name, PDDLDomain* domain, std::vector<std::string> objects, std::unordered_map<std::string, unsigned int> objectMap, PDDLState initState, PDDLState goalState) :
+        Problem(std::string name, PDDL::Domain* domain, std::vector<std::string> objects, std::unordered_map<std::string, unsigned int> objectMap, PDDL::State initState, PDDL::State goalState) :
             name(name), domain(domain), objects(objects), objectMap(objectMap), initState(initState), goalState(goalState) {};
     };
 }

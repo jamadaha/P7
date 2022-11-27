@@ -7,8 +7,8 @@
 #include "../Walker/Path.hh"
 #include "../SAS/Action.hh"
 #include "../SAS/CodeGenerator/CodeGenerator.hh"
-#include "../IntermediatePDDL/PDDLInstance.hh"
-#include "../PDDLCodeGenerator/PDDLCodeGenerator.hh"
+#include "../PDDL/Instance.hh"
+#include "../PDDL/CodeGenerators/CodeGenerator.hh"
 #include "../PlanValidators/PlanValidator.hh"
 #include "../Config/Config.hh"
 
@@ -21,9 +21,9 @@ struct BadPath {
 
 class WalkerPathVerifyer {
 public:
-	std::vector<BadPath> VerifyPaths(std::vector<Path>* paths, PDDLInstance* instance, Config* config);
+	std::vector<BadPath> VerifyPaths(std::vector<Path>* paths, PDDL::Instance* instance, Config* config);
 private:
-	SAS::Action GenerateSASActionFromActionInstance(PDDLActionInstance action, PDDLInstance* instance);
+	SAS::Action GenerateSASActionFromActionInstance(PDDL::ActionInstance action, PDDL::Instance* instance);
 };
 
 #endif

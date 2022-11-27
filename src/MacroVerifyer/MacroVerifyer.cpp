@@ -2,12 +2,12 @@
 
 using namespace std;
 
-vector<BadMacro> MacroVerifyer::VerifyMacros(vector<Macro>* macros, PDDLDomain* domain) {
+vector<BadMacro> MacroVerifyer::VerifyMacros(vector<Macro>* macros, PDDL::Domain* domain) {
 	vector<BadMacro> badMacros;
 
 	for (int i = 0; i < macros->size(); i++) {
 		const auto macro = &macros->at(i);
-		vector<PDDLActionInstance> path = macro->path;
+		vector<PDDL::ActionInstance> path = macro->path;
 		// Check params
 		unordered_set<unsigned int> expectedParameters;
 		for (auto action : path)

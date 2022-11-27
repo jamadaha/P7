@@ -8,7 +8,7 @@ DoActionChanges State::DoAction(const ActionInstance *action) {
     DoActionChanges changes = DoActionChanges();
     int actionEffectLength = action->action->effects.size();
     for (int i = 0; i < actionEffectLength; i++) {
-        PDDLLiteral effect = action->action->effects.at(i);
+        PDDL::Literal effect = action->action->effects.at(i);
         if (effect.args.size() == 1) {
             auto object = action->objects.at(effect.args.at(0));
             // Handle unary effect

@@ -3,15 +3,15 @@
 
 #include <unordered_map>
 
-#include "../../IntermediatePDDL/PDDLAction.hh"
+#include "../../PDDL/Action.hh"
 
 class PartialAction {
 public:
-    const PDDLAction *action;
+    const PDDL::Action *action;
     // The action instance, a nullptr means the given parameter is partial
     // A partial parameter allows any object that fulfill the action preconditions
     std::vector<unsigned int*> parameters;
-    PartialAction(const PDDLAction *action, std::vector<unsigned int*> parameters) : action(action), parameters(parameters) {};
+    PartialAction(const PDDL::Action *action, std::vector<unsigned int*> parameters) : action(action), parameters(parameters) {};
     PartialAction(const PartialAction &partialAction) : action(partialAction.action), parameters(partialAction.parameters) {};
 
     bool friend operator==(const PartialAction &lhs, const PartialAction &rhs) {

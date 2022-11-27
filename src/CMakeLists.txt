@@ -6,12 +6,10 @@ target_link_libraries(P7
         StringHelper
         ConsoleHelper
         PathChecker
-        PDDLCodeGenerator
+        PDDL
         CommonInterface
         PlanValidator
         Reformulator
-        PDDLParser
-        IntermediatePDDL
         PathChecker
         DownwardRunner
         FileHelper

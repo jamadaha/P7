@@ -6,7 +6,7 @@
 #include <chrono>
 #include <math.h>
 
-#include "../IntermediatePDDL/PDDLInstance.hh"
+#include "../PDDL/Instance.hh"
 #include "../JointPath.hh"
 #include "../Walker/Path.hh"
 
@@ -66,11 +66,11 @@ namespace JointPaths {
 		/// <summary>
 		/// Takes a set of Paths and splits them up into sets of PDDLActionInstances based on the level.
 		/// </summary>
-		void GenerateActionSet(std::vector<std::pair<size_t, std::vector<PDDLActionInstance*>>>* currentValues, std::vector<Path>* paths, const int level);
+		void GenerateActionSet(std::vector<std::pair<size_t, std::vector<PDDL::ActionInstance*>>>* currentValues, std::vector<Path>* paths, const int level);
 		/// <summary>
 		/// Based on the values generated in the "GenerateActionSet" method
 		/// </summary>
-		void AddCandidatesIfThere(std::unordered_map<size_t, JointPath>* candidates, const std::vector<std::pair<size_t, std::vector<PDDLActionInstance*>>>* currentValues);
+		void AddCandidatesIfThere(std::unordered_map<size_t, JointPath>* candidates, const std::vector<std::pair<size_t, std::vector<PDDL::ActionInstance*>>>* currentValues);
 		/// <summary>
 		/// Returns true if the time limit have been exceeded
 		/// </summary>

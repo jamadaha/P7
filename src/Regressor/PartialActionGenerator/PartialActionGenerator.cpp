@@ -2,7 +2,7 @@
 
 #include "../../Helpers/AlgorithmHelper.hh"
 
-std::vector<PartialAction> PartialActionGenerator::ExpandState(const PDDLState *state) {
+std::vector<PartialAction> PartialActionGenerator::ExpandState(const PDDL::State *state) {
     std::vector<PartialAction> partialActions;
 
     // Generate actions for unary facts
@@ -23,10 +23,10 @@ std::vector<PartialAction> PartialActionGenerator::ExpandUnary(std::pair<unsigne
     std::vector<PartialAction> partialActions;
 
     for (int i = 0; i < actions->size(); i++) {
-        const PDDLAction *action = &actions->at(i);
+        const PDDL::Action *action = &actions->at(i);
 
         for (int t = 0; t < action->effects.size(); t++) {
-            const PDDLLiteral *effect = &action->effects.at(t);
+            const PDDL::Literal *effect = &action->effects.at(t);
 
             if (predicateObject.first == effect->predicateIndex && effect->value) {
                 partialActions.push_back(CreateFromUnary(action, effect->args.at(0), predicateObject.second));
@@ -42,10 +42,10 @@ std::vector<PartialAction> PartialActionGenerator::ExpandBinary(std::pair<unsign
     std::vector<PartialAction> partialActions;
 
     for (int i = 0; i < actions->size(); i++) {
-        const PDDLAction *action = &actions->at(i);
+        const PDDL::Action *action = &actions->at(i);
 
         for (int t = 0; t < action->effects.size(); t++) {
-            const PDDLLiteral *effect = &action->effects.at(t);
+            const PDDL::Literal *effect = &action->effects.at(t);
 
             if (predicateObjects.first == effect->predicateIndex && effect->value) {
                 partialActions.push_back(CreateFromBinay(action, std::make_pair(effect->args.at(0), effect->args.at(1)), predicateObjects.second));
@@ -57,7 +57,7 @@ std::vector<PartialAction> PartialActionGenerator::ExpandBinary(std::pair<unsign
     return partialActions;
 }
 
-PartialAction PartialActionGenerator::CreateFromUnary(const PDDLAction *action, const unsigned int index, const unsigned int object) {
+PartialAction PartialActionGenerator::CreateFromUnary(const PDDL::Action *action, const unsigned int index, const unsigned int object) {
     std::vector<unsigned int*> tempObjects;
 
     for (int i = 0; i < action->parameters.size(); i++) {
@@ -70,7 +70,7 @@ PartialAction PartialActionGenerator::CreateFromUnary(const PDDLAction *action, 
     return PartialAction(action, tempObjects);
 }
 
-PartialAction PartialActionGenerator::CreateFromBinay(const PDDLAction *action, const std::pair<unsigned int, unsigned int> indexes, const std::pair<unsigned int, unsigned int> objects) {
+PartialAction PartialActionGenerator::CreateFromBinay(const PDDL::Action *action, const std::pair<unsigned int, unsigned int> indexes, const std::pair<unsigned int, unsigned int> objects) {
     std::vector<unsigned int*> tempObjects;
 
     for (int i = 0; i < action->parameters.size(); i++) {
@@ -85,14 +85,14 @@ PartialAction PartialActionGenerator::CreateFromBinay(const PDDLAction *action, 
     return PartialAction(action, tempObjects);
 }
 
-void PartialActionGenerator::FillPartialAction(const PDDLInstance *instance, PartialAction *partialAction) {
+void PartialActionGenerator::FillPartialAction(const PDDL::Instance *instance, PartialAction *partialAction) {
     for (unsigned int i = 0; i < partialAction->parameters.size(); i++) {
         if (partialAction->parameters.at(i) == nullptr)
             partialAction->parameters.at(i) = new unsigned int(GetParameterCandidate(instance, partialAction->action, &i));
     }
 }
 
-PDDLActionInstance PartialActionGenerator::ConvertPartialAction(const PDDLInstance *instance, const PartialAction *partialAction) {
+PDDL::ActionInstance PartialActionGenerator::ConvertPartialAction(const PDDL::Instance *instance, const PartialAction *partialAction) {
     std::vector<unsigned int> objects;
     for (unsigned int i = 0; i < partialAction->parameters.size(); i++) {
         if (partialAction->parameters.at(i) != nullptr)
@@ -100,12 +100,12 @@ PDDLActionInstance PartialActionGenerator::ConvertPartialAction(const PDDLInstan
         else
             objects.push_back(GetParameterCandidate(instance, partialAction->action, &i));
     }
-    return PDDLActionInstance(partialAction->action, objects);
+    return PDDL::ActionInstance(partialAction->action, objects);
 }
 
 
-unsigned int PartialActionGenerator::GetParameterCandidate(const PDDLInstance *instance, const PDDLAction *action, const unsigned int *paramIndex) {
-    const PDDLLiteral *staticLiteral = nullptr;
+unsigned int PartialActionGenerator::GetParameterCandidate(const PDDL::Instance *instance, const PDDL::Action *action, const unsigned int *paramIndex) {
+    const PDDL::Literal *staticLiteral = nullptr;
     for (auto iter = action->applicableUnaryLiterals.at(*paramIndex).begin(); iter != action->applicableUnaryLiterals.at(*paramIndex).end(); iter++)
         if (instance->domain->staticPredicates.contains((*iter)->predicateIndex)) {
             staticLiteral = *iter;

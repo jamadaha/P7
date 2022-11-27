@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "../MacroGenerator/Macro.hh"
+#include "../PDDL/Domain.hh"
 
 struct BadMacro {
     std::string Reason = "";
@@ -13,7 +14,7 @@ struct BadMacro {
 
 class MacroVerifyer {
 public:
-    std::vector<BadMacro> VerifyMacros(std::vector<Macro>* macros, PDDLDomain* domain);
+    std::vector<BadMacro> VerifyMacros(std::vector<Macro>* macros, PDDL::Domain* domain);
 private:
     std::vector<unsigned int> EncodePredicate(unsigned int predicateIndex, std::vector<unsigned int> objectIndexes);
     std::vector<unsigned int> EncodePredicateActionRef(unsigned int predicateIndex, std::vector<unsigned int> paramIndexes, std::vector<unsigned int> objectIndexes);

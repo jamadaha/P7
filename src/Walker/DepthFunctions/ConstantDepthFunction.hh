@@ -1,12 +1,12 @@
 #ifndef ConstantDepthFunction_HH
 #define ConstantDepthFunction_HH
 
-#include "../../IntermediatePDDL/PDDLInstance.hh"
+#include "../../PDDL/Instance.hh"
 #include "BaseDepthFunction.hh"
 
 class ConstantDepthFunction : public BaseDepthFunction {
 public:
-    ConstantDepthFunction(int depth, PDDLInstance* instance, double modifier = 1) : ConstantDepth(depth), BaseDepthFunction(instance, modifier) {}
+    ConstantDepthFunction(int depth, PDDL::Instance* instance, double modifier = 1) : ConstantDepth(depth), BaseDepthFunction(instance, modifier) {}
     int GetDepth() override {
         return ConstantDepth * Modifier;
     }

@@ -24,10 +24,10 @@ namespace PDDL {
         std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts;
 
         State() {};
-        LState(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts,
+        State(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts,
             std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts) :
             unaryFacts(unaryFacts), binaryFacts(binaryFacts) {};
-        State(const PDDLState& state) : unaryFacts(state.unaryFacts), binaryFacts(state.binaryFacts) {};
+        State(const State& state) : unaryFacts(state.unaryFacts), binaryFacts(state.binaryFacts) {};
 
 #pragma region ContainsFact
 

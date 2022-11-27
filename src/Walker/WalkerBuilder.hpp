@@ -21,17 +21,17 @@
 #include "Heuristics/RandomHeuristic.hh"
 #include "Heuristics/PreviousBaseHeuristic.hh"
 
-#include "../IntermediatePDDL/PDDLInstance.hh"
+#include "../PDDL/Instance.hh"
 
 class WalkerBuilder {
 public:
-    static BaseWalker* BuildWalker(std::string walkerName, unsigned int width, std::string heuristicName, PDDLInstance *instance);
+    static BaseWalker* BuildWalker(std::string walkerName, unsigned int width, std::string heuristicName, PDDL::Instance *instance);
 private:
 
     static BaseDepthFunction* GetDepthFunction();
     static BaseWidthFunction* GetWidthFunction(unsigned int width);
-	static BaseHeuristic* GetHeuristic(std::string heuristicName, PDDLInstance *instance);
-	static BaseWalker* GetWalker(std::string walkerName, BaseWidthFunction *widthFunction, BaseHeuristic *heuristic, PDDLInstance *instance);
+	static BaseHeuristic* GetHeuristic(std::string heuristicName, PDDL::Instance *instance);
+	static BaseWalker* GetWalker(std::string walkerName, BaseWidthFunction *widthFunction, BaseHeuristic *heuristic, PDDL::Instance *instance);
 };
 
 #endif

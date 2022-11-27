@@ -58,17 +58,17 @@ InterfaceStep<PDDLDriver*> CommonInterface::ParsePDDLFiles() {
 	return InterfaceStep<PDDLDriver*>(originalDriver);
 }
 
-InterfaceStep<PDDLInstance*> CommonInterface::ConvertPDDLFormat(PDDLDriver* driver) {
+InterfaceStep<PDDL::Instance*> CommonInterface::ConvertPDDLFormat(PDDLDriver* driver) {
 	ConsoleHelper::PrintInfo("Converting PDDL format...");
 	Report->Begin("Converison of PDDL format");
-	static PDDLDomain domain = PDDLConverter::Convert(driver->domain);
-	static PDDLProblem problem = PDDLConverter::Convert(&domain, driver->problem);
-	PDDLInstance* instance = new PDDLInstance(&domain, &problem);
+	static PDDL::Domain domain = Converter::Convert(driver->domain);
+	static PDDL::Problem problem = Converter::Convert(&domain, driver->problem);
+	PDDL::Instance* instance = new PDDL::Instance(&domain, &problem);
 	Report->Stop();
-	return InterfaceStep<PDDLInstance*>(instance);
+	return InterfaceStep<PDDL::Instance*>(instance);
 }
 
-InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulator, PDDLInstance* instance) {
+InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulator, PDDL::Instance* instance) {
 	int timeLeft = config.GetItem<int>("totalTimeLimit") * 1000;
 	int currentIncrementTimeLimit = config.GetItem<int>("startIncrement") * 1000;
 
@@ -115,7 +115,7 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 	return InterfaceStep<void>();
 }
 
-InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, PDDLInstance* instance) {
+InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, PDDL::Instance* instance) {
 	int directProcess = Report->Begin("Solving Problem");
 	int timeLimit = config.GetItem<int>("totalTimeLimit") * 1000;
 
@@ -135,12 +135,12 @@ InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, P
 	return InterfaceStep<void>();
 }
 
-InterfaceStep<CommonInterface::ReformulatorRunResultResult> CommonInterface::RunSingle(BaseReformulator* reformulator, PDDLInstance* instance, int reportID, int reformulatorTimeLimit, int downwardTimeLimit) {
+InterfaceStep<CommonInterface::ReformulatorRunResultResult> CommonInterface::RunSingle(BaseReformulator* reformulator, PDDL::Instance* instance, int reportID, int reformulatorTimeLimit, int downwardTimeLimit) {
 	ConsoleHelper::PrintInfo("Reformulating PDDL...", 1);
 	int reformulationID = Report->Begin("Reformulation of PDDL", reportID);
 	reformulator->ReportID = reformulationID;
 	reformulator->TimeLimit = reformulatorTimeLimit;
-	PDDLInstance reformulatedInstance = reformulator->ReformulatePDDL(instance);
+	PDDL::Instance reformulatedInstance = reformulator->ReformulatePDDL(instance);
 	Report->Stop();
 	Report->Stop(reformulationID);
 	if (reformulator->DidEncounterErrors()) {
@@ -150,7 +150,7 @@ InterfaceStep<CommonInterface::ReformulatorRunResultResult> CommonInterface::Run
 	// Generate new PDDL files
 	ConsoleHelper::PrintInfo("Generating PDDL files...", 1);
 	Report->Begin("Generating PDDL", reportID);
-	PDDLCodeGenerator pddlGenerator = PDDLCodeGenerator(PDDLDomainCodeGenerator(reformulatedInstance.domain), PDDLProblemCodeGenerator(reformulatedInstance.domain, reformulatedInstance.problem));
+	PDDL::CodeGenerator pddlGenerator = PDDL::CodeGenerator(PDDL::DomainCodeGenerator(reformulatedInstance.domain), PDDL::ProblemCodeGenerator(reformulatedInstance.domain, reformulatedInstance.problem));
 	pddlGenerator.GenerateCode(reformulatedInstance, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
 	Report->Stop();
 
@@ -190,7 +190,7 @@ InterfaceStep<SAS::Plan> CommonInterface::ParseSASPlan() {
 	return InterfaceStep<SAS::Plan>(reformulatedSASPlan);
 }
 
-InterfaceStep<SAS::Plan> CommonInterface::RebuildSASPlan(SAS::Plan* reformulatedSASPlan, BaseReformulator* reformulator, PDDLInstance* instance) {
+InterfaceStep<SAS::Plan> CommonInterface::RebuildSASPlan(SAS::Plan* reformulatedSASPlan, BaseReformulator* reformulator, PDDL::Instance* instance) {
 	ConsoleHelper::PrintInfo("Rebuilding the SAS plan...");
 	Report->Begin("Rebuild SAS plan");
 	SAS::Plan outputPlan = reformulator->RebuildSASPlan(instance, reformulatedSASPlan);

@@ -6,7 +6,7 @@
 
 class PreviousBaseHeuristic : public BaseHeuristic {
 public:
-	PreviousBaseHeuristic(const PDDLDomain* domain, const PDDLProblem* problem) : BaseHeuristic(domain, problem) {
+	PreviousBaseHeuristic(const PDDL::Domain* domain, const PDDL::Problem* problem) : BaseHeuristic(domain, problem) {
 		baseHeuristic = new GoalPredicateCountHeuristic(domain, problem);
 		isFirstSet = false;
 	};
@@ -14,7 +14,7 @@ public:
 		free(baseHeuristic);
 	}
 
-	PDDLActionInstance* NextChoice(PDDLState* state, std::vector<PDDLActionInstance>* choices) override {
+	PDDL::ActionInstance* NextChoice(PDDL::State* state, std::vector<PDDL::ActionInstance>* choices) override {
 		if (!isFirstSet) {
 			isFirstSet = true;
 			PreviousActions.clear();
@@ -24,7 +24,7 @@ public:
 			return baseHeuristic->NextChoice(state, choices);
 		}
 		else {
-			std::vector<PDDLActionInstance> newChoices;
+			std::vector<PDDL::ActionInstance> newChoices;
 			for (auto choice = choices->begin(); choice != choices->end(); choice++) {
 				if (!PreviousActions.contains(*choice))
 					newChoices.push_back(*choice);
@@ -43,13 +43,13 @@ public:
 		}
 	}
 
-	int Eval(const PDDLState* state) const override {
+	int Eval(const PDDL::State* state) const override {
 		return 0;
 	};
 
 private:
 	BaseHeuristic* baseHeuristic;
-	std::unordered_set<PDDLActionInstance> PreviousActions;
+	std::unordered_set<PDDL::ActionInstance> PreviousActions;
 	bool isFirstSet = false;
 
 	void Reset() override {

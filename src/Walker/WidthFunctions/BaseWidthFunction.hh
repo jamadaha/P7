@@ -1,7 +1,7 @@
 #ifndef BaseWidthFunction_HH
 #define BaseWidthFunction_HH
 
-#include "../../IntermediatePDDL/PDDLInstance.hh"
+#include "../../PDDL/Instance.hh"
 
 class BaseWidthFunction {
 public:

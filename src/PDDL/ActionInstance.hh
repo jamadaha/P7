@@ -40,7 +40,7 @@ namespace std {
     template <>
     struct hash<PDDL::ActionInstance> {
         auto operator()(const PDDL::ActionInstance& s) const -> size_t {
-            std::size_t h1 = std::hash<const PDDLAction*>{}(s.action);
+            std::size_t h1 = std::hash<const PDDL::Action*>{}(s.action);
             std::size_t h2 = hash<vector<unsigned int>>{}(s.objects);
             return h1 ^ (h2 << 1);
         }

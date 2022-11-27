@@ -23,7 +23,7 @@ private:
     static void GenerateMacroActions(
         const std::vector<Macro>* macros,
         const PDDLProblem* problem,
-        std::unordered_map<std::string, unsigned int>* predicateMap,
+        const std::unordered_map<std::string, unsigned int>* predicateMap,
         std::vector<PDDLAction>* actions);
     static void AppendObjectPreconditions(
         std::vector<PDDLLiteral> *literals, 

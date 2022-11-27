@@ -12,7 +12,7 @@ public:
     const GroundedAction groundedAction;
     const std::vector<PDDLActionInstance> path;
     Macro(GroundedAction groundedAction, std::vector<PDDLActionInstance> path) : 
-        groundedAction(groundedAction), path(path), name("macro-" + groundedAction.name) {};
+        groundedAction(groundedAction), path(path), name("MACRO-" + groundedAction.name) {};
 private:
     
 };

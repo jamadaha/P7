@@ -30,7 +30,7 @@ void InstanceGenerator::GenerateUnaryFacts(
         unordered_map<string, unsigned int>* predicateMap,
         unordered_map<unsigned int, unordered_set<unsigned int>>* unaryFacts,
         vector<PDDLPredicate>* predicates)
-    {
+{
     for (int i = 0; i < macros->size(); i++) {
         const Macro* macro = &macros->at(i);
         for (auto iter = macro->groundedAction.parameters.begin(); iter != macro->groundedAction.parameters.end(); iter++) {
@@ -50,16 +50,19 @@ void InstanceGenerator::GenerateUnaryFacts(
 void InstanceGenerator::GenerateMacroActions(
     const vector<Macro>* macros,
     const PDDLProblem* problem,
-    unordered_map<string, unsigned int>* predicateMap,
-    vector<PDDLAction>* actions) {
+    const unordered_map<string, unsigned int>* predicateMap,
+    vector<PDDLAction>* actions) 
+{
     for (int i = 0; i < macros->size(); i++) {
         const Macro* macro = &macros->at(i);
         const unordered_set<unsigned int>* macroParameters = &macro->groundedAction.parameters;
-        unordered_map<unsigned int, unsigned int> groundedToIndex; groundedToIndex.reserve(macroParameters->size());
+        unordered_map<unsigned int, unsigned int> groundedToIndex; 
+        groundedToIndex.reserve(macroParameters->size());
         for (auto iter = macroParameters->begin(); iter != macroParameters->end(); iter++)
             groundedToIndex.emplace((*iter), groundedToIndex.size());
 
-        vector<string> parameters; parameters.reserve(macroParameters->size());
+        vector<string> parameters; 
+        parameters.reserve(macroParameters->size());
         for (auto iter = macroParameters->begin(); iter != macroParameters->end(); iter++) {
             string parameter = "?" + problem->objects.at(*iter);
             parameters.push_back(parameter);

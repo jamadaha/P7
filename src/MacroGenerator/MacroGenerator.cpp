@@ -58,59 +58,54 @@ GroundedAction MacroGenerator::CombineActions(const vector<GroundedAction> *acti
     // Combine through vector with accumalitive combination
     for (int i = 0; i < actions->size(); i++) {
         name += "-" + actions->at(i).name;
-        preconditions = CombinePreconditions(preconditions, actions->at(i).preconditions, effects);
-        effects = CombineEffects(effects, actions->at(i).effects);
+        CombinePreconditions(&preconditions, actions->at(i).preconditions, &effects);
+        CombineEffects(&effects, actions->at(i).effects);
     }
     
-    return GroundedAction(name, GenerateParameters(preconditions, effects), preconditions, effects);
+    return GroundedAction(name, GenerateParameters(&preconditions, &effects), preconditions, effects);
 }
 
 // Pre_1 union (Pre_2 - Eff_1)
-unordered_map<GroundedLiteral, bool> MacroGenerator::CombinePreconditions( 
-        unordered_map<GroundedLiteral, bool> priorPrecon, 
+void MacroGenerator::CombinePreconditions( 
+        unordered_map<GroundedLiteral, bool>* priorPrecon, 
         unordered_map<GroundedLiteral, bool> latterPrecon,
-        unordered_map<GroundedLiteral, bool> priorEffs) 
+        unordered_map<GroundedLiteral, bool>* priorEffs) 
 {
-    unordered_map<GroundedLiteral, bool> preconditions = priorPrecon;
-
     for (auto iter : latterPrecon) {
         // If part of effect do not add to preconditions
         // Assumes that the precondition and effect cannot have different values
-        if (priorEffs.contains(iter.first)) continue;
-        if (preconditions.contains(iter.first)) continue; // maybe
+        if (priorEffs->contains(iter.first)) continue;
+        if (priorPrecon->contains(iter.first)) continue; // maybe
         if (iter.first.predicate == 0) continue;
         if (domain != nullptr && domain->staticPredicates.contains(iter.first.predicate)) continue;
-        preconditions.emplace(iter.first, iter.second);
+        priorPrecon->emplace(iter.first, iter.second);
     }
-
-    return preconditions;
 }
 
 // Eff_2 union Eff_1
-unordered_map<GroundedLiteral, bool> MacroGenerator::CombineEffects(
-        unordered_map<GroundedLiteral, bool> priorEffects, 
+void MacroGenerator::CombineEffects(
+        unordered_map<GroundedLiteral, bool>* priorEffects, 
         unordered_map<GroundedLiteral, bool> latterEffects) 
 {
-    unordered_map<GroundedLiteral, bool> effects = priorEffects;
-
     for (auto iter : latterEffects) {
-        effects[iter.first] = iter.second;
+        if (priorEffects->contains(iter.first))
+            priorEffects->at(iter.first) = iter.second;
+        else
+            priorEffects->emplace(iter.first, iter.second);
     }
-
-    return effects;
 }
 
 unordered_set<unsigned int> MacroGenerator::GenerateParameters(
-        unordered_map<GroundedLiteral, bool> preconditions, 
-        unordered_map<GroundedLiteral, bool> effects) 
+        unordered_map<GroundedLiteral, bool>* preconditions, 
+        unordered_map<GroundedLiteral, bool>* effects) 
 {
     unordered_set<unsigned int> parameters;
 
-    for (auto map : preconditions)
-        for (auto iter : map.first.objects)
+    for (auto map = preconditions->begin(); map != preconditions->end(); map++)
+        for (auto iter : map->first.objects)
             parameters.emplace(iter);
-    for (auto map : effects)
-        for (auto iter : map.first.objects)
+    for (auto map = effects->begin(); map != effects->end(); map++)
+        for (auto iter : map->first.objects)
             parameters.emplace(iter);
 
     return parameters;

@@ -7,6 +7,7 @@ target_sources(MacroGenerator
         ${CMAKE_CURRENT_LIST_DIR}/Macro.hh
         ${CMAKE_CURRENT_LIST_DIR}/MacroGenerator.hh
         ${CMAKE_CURRENT_LIST_DIR}/GroundedAction.hh
+        ${CMAKE_CURRENT_LIST_DIR}/GroundedLiteral.hh
         ${CMAKE_CURRENT_LIST_DIR}/InstanceGenerator.hh)
 target_include_directories(MacroGenerator
     PUBLIC

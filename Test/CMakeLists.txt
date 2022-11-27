@@ -7,10 +7,8 @@ include(Catch)
 
 # Tests
 include(Test/SAS/CMakeLists.txt)
-include(Test/PDDLCodeGenerator/CMakeLists.txt)
-include(Test/PDDLParser/CMakeLists.txt)
+include(Test/PDDL/CMakeLists.txt)
 include(Test/Walker/CMakeLists.txt)
-include(Test/IntermediatePDDL/CMakeLists.txt)
 include(Test/PlanValidators/CMakeLists.txt)
 include(Test/Helpers/CMakeLists.txt)
 include(Test/DownwardRunner/CMakeLists.txt)
@@ -18,9 +16,8 @@ include(Test/JointPaths/CMakeLists.txt)
 include(Test/MacroGenerator/CMakeLists.txt)
 
 add_executable(Test-All 
-	"Test/PDDLCodeGenerator/PDDLCodeGenerator.cpp"
-	"Test/PDDLParser/PDDLParser.cpp"
-	"Test/IntermediatePDDL/IntermediatePDDL.cpp"
+	"Test/PDDL/CodeGenerators/CodeGeneratorTests.cpp"
+	"Test/PDDL/Parsers/ConverterTests.cpp"
 	"Test/SAS/Parser/ParserTests.cpp"
 	"Test/SAS/CodeGenerator/CodeGeneratorTests.cpp"
 	"Test/SAS/Rebuilder/RebuilderTests.cpp"
@@ -41,13 +38,11 @@ target_link_libraries(Test-All
         StringHelper
         ConsoleHelper
         PathChecker
-        PDDLCodeGenerator
+        PDDL
         CommonInterface
         PlanValidator
         Reformulator
         SAS
-        PDDLParser
-        IntermediatePDDL
         PathChecker
         DownwardRunner
         FileHelper

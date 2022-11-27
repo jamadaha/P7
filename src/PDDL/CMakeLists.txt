@@ -1,21 +1,31 @@
-add_library(PDDL "PDDLConverter.cpp" "PDDLAction.cpp" "PDDLActionInstance.cpp" "PDDLDomain.hh" "PDDLInstance.hh" "PDDLLiteral.hh" "PDDLPredicate.hh" "PDDLProblem.hh" "PDDLState.cpp")
+add_library(PDDL "Parsers/Converter.cpp" "Action.cpp" "ActionInstance.cpp" "Domain.hh" "Instance.hh" "Literal.hh" "Predicate.hh" "Problem.hh" "State.cpp" "CodeGenerators/BaseCodeGenerator.cpp" "CodeGenerators/CodeGenerator.cpp" "CodeGenerators/DomainCodeGenerator.cpp" "CodeGenerators/ProblemCodeGenerator.cpp")
 target_sources(PDDL
     PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/PDDLConverter.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/PDDLAction.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/PDDLActionInstance.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/PDDLState.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Parsers/Converter.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Action.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/ActionInstance.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/State.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/CodeGenerators/BaseCodeGenerator.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/CodeGenerators/CodeGenerator.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/CodeGenerators/DomainCodeGenerator.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/CodeGenerators/ProblemCodeGenerator.cpp
     PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR}/PDDLConverter.hh
-        ${CMAKE_CURRENT_LIST_DIR}/PDDLAction.hh
-        ${CMAKE_CURRENT_LIST_DIR}/PDDLActionInstance.hh
-        ${CMAKE_CURRENT_LIST_DIR}/PDDLDomain.hh
-        ${CMAKE_CURRENT_LIST_DIR}/PDDLInstance.hh
-        ${CMAKE_CURRENT_LIST_DIR}/PDDLLiteral.hh
-        ${CMAKE_CURRENT_LIST_DIR}/PDDLMutex.hh
-        ${CMAKE_CURRENT_LIST_DIR}/PDDLPredicate.hh
-        ${CMAKE_CURRENT_LIST_DIR}/PDDLProblem.hh
-        ${CMAKE_CURRENT_LIST_DIR}/PDDLState.hh)
+        ${CMAKE_CURRENT_LIST_DIR}/Parsers/Converter.hh
+        ${CMAKE_CURRENT_LIST_DIR}/Action.hh
+        ${CMAKE_CURRENT_LIST_DIR}/ActionInstance.hh
+        ${CMAKE_CURRENT_LIST_DIR}/Domain.hh
+        ${CMAKE_CURRENT_LIST_DIR}/Instance.hh
+        ${CMAKE_CURRENT_LIST_DIR}/Literal.hh
+        ${CMAKE_CURRENT_LIST_DIR}/Mutex.hh
+        ${CMAKE_CURRENT_LIST_DIR}/Predicate.hh
+        ${CMAKE_CURRENT_LIST_DIR}/Problem.hh
+        ${CMAKE_CURRENT_LIST_DIR}/State.hh
+        ${CMAKE_CURRENT_LIST_DIR}/CodeGenerators/BaseCodeGenerator.hh
+        ${CMAKE_CURRENT_LIST_DIR}/CodeGenerators/CodeGenerator.hh
+        ${CMAKE_CURRENT_LIST_DIR}/CodeGenerators/DomainCodeGenerator.hh
+        ${CMAKE_CURRENT_LIST_DIR}/CodeGenerators/ProblemCodeGenerator.hh
+)
+)
 target_include_directories(PDDL
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR})

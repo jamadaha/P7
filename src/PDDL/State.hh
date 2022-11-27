@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <string>
 
-#include "PDDLActionInstance.hh"
+#include "ActionInstance.hh"
 #include "../Helpers/Hashes.hh"
 
 namespace PDDL {
@@ -45,13 +45,13 @@ namespace PDDL {
         }
 #pragma endregion ContainsFact
 
-        DoActionChanges DoAction(const PDDLActionInstance* action);
+        DoActionChanges DoAction(const ActionInstance* action);
         void UndoAction(const DoActionChanges* changes);
 
-        std::string ToString(const PDDLInstance* instance);
+        std::string ToString(const Instance* instance);
 
         // Very slow, please only use with caution
-        friend bool operator== (const PDDLState& lhs, const PDDLState& rhs) {
+        friend bool operator== (const State& lhs, const State& rhs) {
             return (lhs.unaryFacts == rhs.unaryFacts && lhs.binaryFacts == rhs.binaryFacts);
         };
 

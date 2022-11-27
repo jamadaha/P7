@@ -14,19 +14,19 @@ namespace PDDL {
     class Domain {
         const std::string name;
         const std::vector<std::string> requirements;
-        const std::vector<PDDLPredicate> predicates;
+        const std::vector<Predicate> predicates;
         // Goes from predicate name to index in "predicates"
         // e.g. "ROOM" => 0, "IsBall" => 1,...
         const std::unordered_map<std::string, unsigned int> predicateMap;
-        const std::vector<PDDLAction> actions;
+        const std::vector<Action> actions;
         // Set of predicates which are in no effects
         const std::unordered_set<unsigned int> staticPredicates;
         // Set of predicates which are in atleast one effect
         const std::unordered_set<unsigned int> nonStaticPredicates;
         Domain() : name("Not Set") {};
-        Domain(std::vector<PDDLAction> actions) : name("Only actions"), actions(actions) {};
-        Domain(std::string name, std::vector<std::string> requirements, std::vector<PDDLPredicate> predicates,
-            std::unordered_map<std::string, unsigned int> predicateMap, std::vector<PDDLAction> actions) :
+        Domain(std::vector<Action> actions) : name("Only actions"), actions(actions) {};
+        Domain(std::string name, std::vector<std::string> requirements, std::vector<Predicate> predicates,
+            std::unordered_map<std::string, unsigned int> predicateMap, std::vector<Action> actions) :
             name(name), requirements(requirements), predicates(predicates),
             predicateMap(predicateMap), actions(actions), staticPredicates(GetStaticPredicates()), nonStaticPredicates(GetNonStaticPredicates()) {};
 

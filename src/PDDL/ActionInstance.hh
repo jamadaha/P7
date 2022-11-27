@@ -5,7 +5,7 @@
 #include <unordered_set>
 #include <string>
 
-#include "PDDLAction.hh"
+#include "Action.hh"
 #include "../Helpers/Hashes.hh"
 
 namespace PDDL {
@@ -15,13 +15,13 @@ namespace PDDL {
     public:
         size_t GetHash();
 
-        const PDDLAction* action = nullptr;
+        const Action* action = nullptr;
         std::vector<unsigned int> objects;
         ActionInstance() {};
-        ActionInstance(const PDDLAction* action, const std::vector<unsigned int> objects) : action(action), objects(objects) {};
+        ActionInstance(const Action* action, const std::vector<unsigned int> objects) : action(action), objects(objects) {};
         ActionInstance(const ActionInstance& instance) : action(instance.action), objects(instance.objects) {};
-        std::string ToString(const PDDLInstance* instance);
-        std::string LiteralsToString(std::vector<PDDLLiteral> literals, const PDDLInstance* instance);
+        std::string ToString(const Instance* instance);
+        std::string LiteralsToString(std::vector<Literal> literals, const Instance* instance);
 
         friend bool operator==(const ActionInstance& lhs, const ActionInstance& rhs) {
             if (lhs.action != rhs.action)

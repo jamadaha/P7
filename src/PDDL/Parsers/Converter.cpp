@@ -1,6 +1,6 @@
-#include "PDDLConverter.hh"
+#include "Converter.hh"
 
-PDDLDomain PDDLConverter::Convert(Domain *domain) {
+PDDL::Domain Converter::Convert(Domain *domain) {
     std::string name = domain->_name.c_str();
 
     // Get Requirements
@@ -10,36 +10,36 @@ PDDLDomain PDDLConverter::Convert(Domain *domain) {
         requirements.push_back((*domain->_requirements)[i]);
 
     // Get Predicates
-    std::vector<PDDLPredicate> predicates;
+    std::vector<PDDL::Predicate> predicates;
     std::unordered_map<std::string, unsigned int> predicateMap;
     predicates.reserve(domain->_predicates->size());
     predicateMap.reserve(domain->_predicates->size());
     
     // Don't question it
-    auto AddPredicate = [&](PDDLPredicate predicate) {
+    auto AddPredicate = [&](PDDL::Predicate predicate) {
         predicateMap.emplace(predicate.name, predicates.size());
         predicates.push_back(predicate);
     };
 
-    AddPredicate(PDDLPredicate("=", 2));
+    AddPredicate(PDDL::Predicate("=", 2));
 
     for (int i = 0; i < domain->_predicates->size(); i++) {
         auto predicate = (*domain->_predicates)[i];
-        AddPredicate(PDDLPredicate(StringHelper::ToUpper(predicate->_name), (*predicate->_args), predicate->_args->size()));
+        AddPredicate(PDDL::Predicate(StringHelper::ToUpper(predicate->_name), (*predicate->_args), predicate->_args->size()));
     }    
 
     // Get Actions
-    std::vector<PDDLAction> actions;
+    std::vector<PDDL::Action> actions;
     actions.reserve(domain->_actions->size());
     for (int i = 0; i < domain->_actions->size(); i++) {
         auto action = (*domain->_actions)[i];
         actions.push_back(GenerateAction(action->_name, action->_params, action->_precond, action->_effects, predicateMap));
     }
 
-    return PDDLDomain(name, requirements, predicates, predicateMap, actions);
+    return PDDL::Domain(name, requirements, predicates, predicateMap, actions);
 }
 
-PDDLProblem PDDLConverter::Convert(PDDLDomain *domain, Problem *problem) {
+PDDL::Problem Converter::Convert(PDDL::Domain *domain, Problem *problem) {
     std::string name = problem->_name;
 
     // Get Objects
@@ -58,14 +58,18 @@ PDDLProblem PDDLConverter::Convert(PDDLDomain *domain, Problem *problem) {
     auto initBinaryFacts = GetBinaryFacts(domain, &objectMap, problem->_init);
     auto goalBinaryFacts = GetBinaryFacts(domain, &objectMap, problem->_goal);
     
-    auto initState = PDDLState(initUnaryFacts, initBinaryFacts);
-    auto goalState = PDDLState(goalUnaryFacts, goalBinaryFacts);
+    auto initState = PDDL::State(initUnaryFacts, initBinaryFacts);
+    auto goalState = PDDL::State(goalUnaryFacts, goalBinaryFacts);
     
-    return PDDLProblem(name, domain, objects, objectMap, initState, goalState);
+    return PDDL::Problem(name, domain, objects, objectMap, initState, goalState);
 }
 
-std::vector<PDDLLiteral> PDDLConverter::GetLiteralList(std::unordered_map<std::string, unsigned int> predicateMap, std::unordered_map<std::string, unsigned int> parameterIndex, const std::vector<std::pair<Predicate*,bool>*>* input) {
-    std::vector<PDDLLiteral> literals;
+std::vector<PDDL::Literal> Converter::GetLiteralList(
+        std::unordered_map<std::string, unsigned int> predicateMap, 
+        std::unordered_map<std::string, unsigned int> parameterIndex, 
+        const std::vector<std::pair<Predicate*,bool>*>* input) 
+{
+    std::vector<PDDL::Literal> literals;
     literals.reserve(input->size());
     for (int i = 0; i < input->size(); i++) {
         std::vector<unsigned int> args;
@@ -74,12 +78,18 @@ std::vector<PDDLLiteral> PDDLConverter::GetLiteralList(std::unordered_map<std::s
         for (int a = 0; a < precondition->first->_args->size(); a++)
             args.push_back(parameterIndex[(*precondition->first->_args)[a]]);
 
-        literals.push_back(PDDLLiteral(predicateMap[StringHelper::ToUpper(precondition->first->_name)], args, precondition->second));
+        literals.push_back(PDDL::Literal(predicateMap[StringHelper::ToUpper(precondition->first->_name)], args, precondition->second));
     }
     return literals;
 }
 
-PDDLAction PDDLConverter::GenerateAction(std::string name, const StringList *parameters, const PreconditionList *preconditions, const EffectList *effects, std::unordered_map<std::string, unsigned int> predicateMap) {
+PDDL::Action Converter::GenerateAction(
+        std::string name, 
+        const StringList *parameters, 
+        const PreconditionList *preconditions, 
+        const EffectList *effects, 
+        std::unordered_map<std::string, unsigned int> predicateMap) 
+{
     std::vector<std::string> tempParameters;
     tempParameters.reserve(parameters->size());
     
@@ -93,13 +103,17 @@ PDDLAction PDDLConverter::GenerateAction(std::string name, const StringList *par
         tempParameters.push_back((*parameters)[i]);
     }
     
-    std::vector<PDDLLiteral> tempPreconditions = GetLiteralList(predicateMap, parameterIndex, preconditions);
-    std::vector<PDDLLiteral> tempEffects = GetLiteralList(predicateMap, parameterIndex, effects);
+    std::vector<PDDL::Literal> tempPreconditions = GetLiteralList(predicateMap, parameterIndex, preconditions);
+    std::vector<PDDL::Literal> tempEffects = GetLiteralList(predicateMap, parameterIndex, effects);
 
-    return PDDLAction(name, tempParameters, tempPreconditions, tempEffects);
+    return PDDL::Action(name, tempParameters, tempPreconditions, tempEffects);
 }
 
-std::unordered_map<unsigned int, std::unordered_set<unsigned int>> PDDLConverter::GetUnaryFacts(PDDLDomain *domain, std::unordered_map<std::string, unsigned int> *objectMap, LiteralList *literalList) {
+std::unordered_map<unsigned int, std::unordered_set<unsigned int>> Converter::GetUnaryFacts(
+        PDDL::Domain *domain, 
+        std::unordered_map<std::string, unsigned int> *objectMap, 
+        LiteralList *literalList) 
+{
     std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts;
     for (int i = 0; i < domain->predicates.size(); i++)
         if (domain->predicates[i].argumentCount == 1)
@@ -116,7 +130,11 @@ std::unordered_map<unsigned int, std::unordered_set<unsigned int>> PDDLConverter
     return unaryFacts;
 };
 
-std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> PDDLConverter::GetBinaryFacts(PDDLDomain *domain, std::unordered_map<std::string, unsigned int> *objectMap, LiteralList *literalList) {
+std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> Converter::GetBinaryFacts(
+        PDDL::Domain *domain, 
+        std::unordered_map<std::string, unsigned int> *objectMap, 
+        LiteralList *literalList) 
+{
     std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts;
     for (int i = 0; i < domain->predicates.size(); i++)
         if (domain->predicates[i].argumentCount > 1)

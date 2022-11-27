@@ -4,7 +4,7 @@
 using namespace std;
 using namespace PDDL;
 
-string ActionInstance::ToString(const PDDLInstance* instance)
+string ActionInstance::ToString(const Instance* instance)
 {
     //Print action
     string temp = action->name + "(";
@@ -24,13 +24,13 @@ string ActionInstance::ToString(const PDDLInstance* instance)
     return temp;
 }
 
-string ActionInstance::LiteralsToString(vector<PDDLLiteral> literals, const PDDLInstance* instance)
+string ActionInstance::LiteralsToString(vector<Literal> literals, const Instance* instance)
 {
     string temp;
     for (int i = 0; i < literals.size(); i++)
     {
         temp += "(";
-        PDDLLiteral literal = literals[i];
+        Literal literal = literals[i];
 
         if (!literal.value) {
             temp += "not ";
@@ -60,6 +60,6 @@ string ActionInstance::LiteralsToString(vector<PDDLLiteral> literals, const PDDL
 size_t ActionInstance::GetHash() {
     if (Hash != 0)
         return Hash;
-    Hash = hash<PDDLActionInstance>{}(*this);
+    Hash = hash<ActionInstance>{}(*this);
     return Hash;
 }

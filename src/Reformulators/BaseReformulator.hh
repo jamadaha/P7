@@ -19,7 +19,6 @@
 
 #include "../Helpers/ProgressBarHelper.hh"
 
-#include "../MacroVerifyer/MacroVerifyer.hh"
 #include "../WalkerPathVerifyer/WalkerPathVerifyer.hh"
 
 class BaseReformulator {

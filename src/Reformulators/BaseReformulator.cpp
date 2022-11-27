@@ -113,30 +113,6 @@ PDDLInstance BaseReformulator::GenerateMacros(PDDLInstance* instance, std::vecto
 		macros.push_back(macroGenerator.GenerateMacro(&(*iter).Chain));
 	macrosGenerated = macros.size();
 
-	if (Configs->GetItem<bool>("verifyMacros"))
-	{
-		Report->Begin("Verifying Macros", macroGenerateID);
-		if (debugMode)
-			ConsoleHelper::PrintDebugInfo("[Macro Generator] Verifying Macros...", debugIndent);
-		MacroVerifyer verifyer;
-		auto badMacros = verifyer.VerifyMacros(&macros, instance->domain);
-		if (badMacros.size() == 0)
-			Report->Stop(ReportData("None","-1", "true"));
-		else
-			Report->Stop(ReportData("None", "-1", "false"));
-
-		int counter = 0;
-		for (auto macro : badMacros) {
-			ConsoleHelper::PrintError("[Macro Generator] Bad macro: " + macro.macro.name + ", Reason: " + macro.Reason, debugIndent);
-			encounteredErrors = true;
-			counter++;
-			if (counter > 10) {
-				ConsoleHelper::PrintError("[Macro Generator] Many more than these", debugIndent);
-				break;
-			}
-		}
-	}
-
 	if (debugMode)
 		ConsoleHelper::PrintDebugInfo("[Macro Generator] Generating Macro Instance...", debugIndent);
 	auto result = InstanceGenerator::GenerateInstance(instance->domain, instance->problem, &macros);

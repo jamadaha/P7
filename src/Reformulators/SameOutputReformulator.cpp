@@ -3,10 +3,10 @@
 using namespace std;
 using namespace SAS;
 
-PDDLInstance SameOutputReformulator::ReformulatePDDL(PDDLInstance* instance) {
+PDDL::Instance SameOutputReformulator::ReformulatePDDL(PDDL::Instance* instance) {
 	ConsoleHelper::PrintWarning("Note, this reformulator is only for testing! Simply gives the same result back.", 2);
 
-	PDDLInstance newInstance(instance->domain, instance->problem);
+	PDDL::Instance newInstance(instance->domain, instance->problem);
 
 	return newInstance;
 }

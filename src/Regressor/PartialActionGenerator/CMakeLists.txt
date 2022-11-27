@@ -12,5 +12,5 @@ target_include_directories(PartialActionGenerator
         ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(PartialActionGenerator
     PRIVATE
-        IntermediatePDDL
+        PDDL
         AlgorithmHelper)

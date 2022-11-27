@@ -72,7 +72,7 @@ private:
 		}
 	}
 
-	// Retries those PDDLAction whose effect relates to the goal state
+	// Retries those PDDL::Action whose effect relates to the goal state
 	// TODO: Handle cases where goal state requires something to be false
 	std::unordered_set<const PDDL::Action*> GetRelevantActions() {
 		std::unordered_set<const PDDL::Action*> actions;

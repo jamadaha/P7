@@ -24,7 +24,7 @@
 #include "../PDDL/Mutex.hh"
 #include "../PDDL/Parsers/Converter.hh"
 #include "../Helpers/ConsoleHelper.hh"
-#include "../PDDL/Parsers/ExternalParser/pddldriver.hh"
+#include "../PDDL/Parsers/ExternalParser.hh"
 
 template <class T>
 struct InterfaceStep {
@@ -52,8 +52,7 @@ private:
 	enum ReformulatorRunResultResult { _None, ReformulatorFailed, FoundPlan, DidNotFindPlan };
 	InterfaceStep<BaseReformulator*> GetReformulator(int reformulatorIndex = 0);
 	InterfaceStep<void> CheckFilePaths();
-	InterfaceStep<PDDLDriver*> ParsePDDLFiles();
-	InterfaceStep<PDDL::Instance*> ConvertPDDLFormat(PDDLDriver* driver);
+	InterfaceStep<PDDL::Instance*> ParsePDDLFiles();
 	InterfaceStep<void> RunIteratively(BaseReformulator* reformulator, PDDL::Instance* instance);
 	InterfaceStep<void> RunDirect(BaseReformulator* reformulator, PDDL::Instance* instance);
 	InterfaceStep<ReformulatorRunResultResult> RunSingle(BaseReformulator* reformulator, PDDL::Instance* instance, int reportID, int reformulatorTimeLimit, int downwardTimeLimit);

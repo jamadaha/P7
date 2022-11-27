@@ -12,4 +12,4 @@ target_include_directories(CommonInterface
 target_link_libraries(CommonInterface
     PRIVATE
         ConsoleHelper
-        PDDLCodeGenerator)
+        PDDL)

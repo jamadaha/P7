@@ -20,7 +20,7 @@ TEST_CASE(TAG + "PDDLDomainGenerator") {
     PDDLDriver driver;
     driver.parse(domainFile);
     Domain* driverDomain = driver.domain;
-    PDDLDomain domain = PDDLConverter::Convert(driverDomain);
+    PDDL::Domain domain = PDDLConverter::Convert(driverDomain);
     PDDLDomainCodeGenerator PDDLDomainGen = PDDLDomainCodeGenerator(&domain);
     string domainString = PDDLDomainGen.GenerateDomainString();
 
@@ -31,7 +31,7 @@ TEST_CASE(TAG + "PDDLDomainGenerator") {
     PDDLDriver driver2;
     driver2.parse(resultDomainFile);
     Domain* driverGeneratedDomain = driver2.domain;
-    PDDLDomain generatedDomain = PDDLConverter::Convert(driverDomain);
+    PDDL::Domain generatedDomain = PDDLConverter::Convert(driverDomain);
     REQUIRE(generatedDomain.requirements.size() == domain.requirements.size());
     REQUIRE(generatedDomain.predicates.size() == domain.predicates.size());
     REQUIRE(generatedDomain.actions.size() == domain.actions.size());
@@ -42,9 +42,9 @@ TEST_CASE(TAG + "PDDLProblemGenerator") {
     driver.parse(domainFile);
     driver.parse(problemFile);
     Domain* driverDomain = driver.domain;
-    PDDLDomain domain = PDDLConverter::Convert(driverDomain);
+    PDDL::Domain domain = PDDLConverter::Convert(driverDomain);
     Problem* driverProblem = driver.problem;
-    PDDLProblem problem = PDDLConverter::Convert(&domain, driverProblem);
+    PDDL::Problem problem = PDDLConverter::Convert(&domain, driverProblem);
     PDDLProblemCodeGenerator PDDLProblemGen = PDDLProblemCodeGenerator(&domain, &problem);
     string problemString = PDDLProblemGen.GenerateProblemString();
 
@@ -55,7 +55,7 @@ TEST_CASE(TAG + "PDDLProblemGenerator") {
     PDDLDriver driver2;
     driver2.parse(resultProblemFile);
     Problem* driverGeneratedProblem = driver2.problem;
-    PDDLProblem generatedProblem = PDDLConverter::Convert(&domain, driverGeneratedProblem);
+    PDDL::Problem generatedProblem = PDDLConverter::Convert(&domain, driverGeneratedProblem);
     REQUIRE(generatedProblem.name == problem.name);
     //REQUIRE(generatedProblem->_domain == problem->_domain);
     REQUIRE(generatedProblem.objects.size() == problem.objects.size());

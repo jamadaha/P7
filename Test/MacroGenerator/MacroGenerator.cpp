@@ -7,16 +7,16 @@
 const std::string TAG = "Macro ";
 
 TEST_CASE(TAG + "two same simple actions") {
-    std::vector<PDDLActionInstance> actions;
+    std::vector<PDDL::ActionInstance> actions;
     // set up simple action with 1 precondition and 1 effect
-    PDDLAction _act = PDDLAction(
+    PDDL::Action _act = PDDL::Action(
         "testaction",
         std::vector<std::string> {"?x", "?y"},
-        std::vector<PDDLLiteral> {PDDLLiteral(1, std::vector<unsigned int> {0}, true)},
-        std::vector<PDDLLiteral> {PDDLLiteral(2, std::vector<unsigned int> {1}, true)}
+        std::vector<PDDL::Literal> {PDDL::Literal(1, std::vector<unsigned int> {0}, true)},
+        std::vector<PDDL::Literal> {PDDL::Literal(2, std::vector<unsigned int> {1}, true)}
     );
-    PDDLActionInstance act1 = PDDLActionInstance(&_act, std::vector<unsigned int> {0, 1});
-    PDDLActionInstance act2 = PDDLActionInstance(&_act, std::vector<unsigned int> {0, 1});
+    PDDL::ActionInstance act1 = PDDL::ActionInstance(&_act, std::vector<unsigned int> {0, 1});
+    PDDL::ActionInstance act2 = PDDL::ActionInstance(&_act, std::vector<unsigned int> {0, 1});
     actions.push_back(act1);
     actions.push_back(act2);
     // generate macro
@@ -35,21 +35,21 @@ TEST_CASE(TAG + "two same simple actions") {
 }
 
 TEST_CASE(TAG + "two different simple actions") {
-    std::vector<PDDLActionInstance> actions;
-    PDDLAction _act1 = PDDLAction(
+    std::vector<PDDL::ActionInstance> actions;
+    PDDL::Action _act1 = PDDL::Action(
         "testaction1",
         std::vector<std::string> {"?x", "?y"},
-        std::vector<PDDLLiteral> {PDDLLiteral(1, std::vector<unsigned int> {0}, true)},
-        std::vector<PDDLLiteral> {PDDLLiteral(2, std::vector<unsigned int> {1}, true)}
+        std::vector<PDDL::Literal> {PDDL::Literal(1, std::vector<unsigned int> {0}, true)},
+        std::vector<PDDL::Literal> {PDDL::Literal(2, std::vector<unsigned int> {1}, true)}
     );
-    PDDLAction _act2 = PDDLAction(
+    PDDL::Action _act2 = PDDL::Action(
         "testaction2",
         std::vector<std::string> {"?x", "?y"},
-        std::vector<PDDLLiteral> {PDDLLiteral(3, std::vector<unsigned int> {0}, false)},
-        std::vector<PDDLLiteral> {PDDLLiteral(4, std::vector<unsigned int> {1}, true)}
+        std::vector<PDDL::Literal> {PDDL::Literal(3, std::vector<unsigned int> {0}, false)},
+        std::vector<PDDL::Literal> {PDDL::Literal(4, std::vector<unsigned int> {1}, true)}
     );
-    PDDLActionInstance act1 = PDDLActionInstance(&_act1, std::vector<unsigned int> {0, 1});
-    PDDLActionInstance act2 = PDDLActionInstance(&_act2, std::vector<unsigned int> {1, 3});
+    PDDL::ActionInstance act1 = PDDL::ActionInstance(&_act1, std::vector<unsigned int> {0, 1});
+    PDDL::ActionInstance act2 = PDDL::ActionInstance(&_act2, std::vector<unsigned int> {1, 3});
     actions.push_back(act1);
     actions.push_back(act2);
     // generate macro
@@ -70,21 +70,21 @@ TEST_CASE(TAG + "two different simple actions") {
 }
 
 TEST_CASE(TAG + "precon - positive eff") {
-    std::vector<PDDLActionInstance> actions;
-    PDDLAction _act1 = PDDLAction(
+    std::vector<PDDL::ActionInstance> actions;
+    PDDL::Action _act1 = PDDL::Action(
         "testaction1",
         std::vector<std::string> {"?x", "?y"},
-        std::vector<PDDLLiteral> {PDDLLiteral(1, std::vector<unsigned int> {0}, true)},
-        std::vector<PDDLLiteral> {PDDLLiteral(2, std::vector<unsigned int> {1}, true)}
+        std::vector<PDDL::Literal> {PDDL::Literal(1, std::vector<unsigned int> {0}, true)},
+        std::vector<PDDL::Literal> {PDDL::Literal(2, std::vector<unsigned int> {1}, true)}
     );
-    PDDLAction _act2 = PDDLAction(
+    PDDL::Action _act2 = PDDL::Action(
         "testaction2",
         std::vector<std::string> {"?x", "?y"},
-        std::vector<PDDLLiteral> {PDDLLiteral(2, std::vector<unsigned int> {0}, true)},
-        std::vector<PDDLLiteral> {PDDLLiteral(4, std::vector<unsigned int> {1}, true)}
+        std::vector<PDDL::Literal> {PDDL::Literal(2, std::vector<unsigned int> {0}, true)},
+        std::vector<PDDL::Literal> {PDDL::Literal(4, std::vector<unsigned int> {1}, true)}
     );
-    PDDLActionInstance act1 = PDDLActionInstance(&_act1, std::vector<unsigned int> {0, 1});
-    PDDLActionInstance act2 = PDDLActionInstance(&_act2, std::vector<unsigned int> {1, 2});
+    PDDL::ActionInstance act1 = PDDL::ActionInstance(&_act1, std::vector<unsigned int> {0, 1});
+    PDDL::ActionInstance act2 = PDDL::ActionInstance(&_act2, std::vector<unsigned int> {1, 2});
 
     actions.push_back(act1);
     actions.push_back(act2);
@@ -95,7 +95,7 @@ TEST_CASE(TAG + "precon - positive eff") {
     // expected stuff
     std::unordered_map<GroundedLiteral, bool> expectedPrecons ({
         {GroundedLiteral(1, std::vector<unsigned int> {0}), true}
-        // pddlliteral with predicate 2 should be absent
+        // PDDL::Literal with predicate 2 should be absent
     });
     std::unordered_map<GroundedLiteral, bool> expectedEffects ({
         {GroundedLiteral(2, std::vector<unsigned int> {1}), true},
@@ -107,21 +107,21 @@ TEST_CASE(TAG + "precon - positive eff") {
 }
 
 TEST_CASE(TAG + "precon - positive eff (reverse order)") {
-    std::vector<PDDLActionInstance> actions;
-    PDDLAction _act1 = PDDLAction(
+    std::vector<PDDL::ActionInstance> actions;
+    PDDL::Action _act1 = PDDL::Action(
         "testaction1",
         std::vector<std::string> {"?x", "?y"},
-        std::vector<PDDLLiteral> {PDDLLiteral(2, std::vector<unsigned int> {1}, true)},
-        std::vector<PDDLLiteral> {PDDLLiteral(1, std::vector<unsigned int> {0}, true)}
+        std::vector<PDDL::Literal> {PDDL::Literal(2, std::vector<unsigned int> {1}, true)},
+        std::vector<PDDL::Literal> {PDDL::Literal(1, std::vector<unsigned int> {0}, true)}
     );
-    PDDLAction _act2 = PDDLAction(
+    PDDL::Action _act2 = PDDL::Action(
         "testaction2",
         std::vector<std::string> {"?x", "?y"},
-        std::vector<PDDLLiteral> {PDDLLiteral(3, std::vector<unsigned int> {1}, true)},
-        std::vector<PDDLLiteral> {PDDLLiteral(2, std::vector<unsigned int> {0}, true)}
+        std::vector<PDDL::Literal> {PDDL::Literal(3, std::vector<unsigned int> {1}, true)},
+        std::vector<PDDL::Literal> {PDDL::Literal(2, std::vector<unsigned int> {0}, true)}
     );
-    PDDLActionInstance act1 = PDDLActionInstance(&_act1, std::vector<unsigned int> {0, 1});
-    PDDLActionInstance act2 = PDDLActionInstance(&_act2, std::vector<unsigned int> {1, 2});
+    PDDL::ActionInstance act1 = PDDL::ActionInstance(&_act1, std::vector<unsigned int> {0, 1});
+    PDDL::ActionInstance act2 = PDDL::ActionInstance(&_act2, std::vector<unsigned int> {1, 2});
 
     actions.push_back(act1);
     actions.push_back(act2);
@@ -145,22 +145,22 @@ TEST_CASE(TAG + "precon - positive eff (reverse order)") {
 }
 
 TEST_CASE(TAG + "positive - negative eff") {
-    std::vector<PDDLActionInstance> actions;
-    PDDLAction _act1 = PDDLAction(
+    std::vector<PDDL::ActionInstance> actions;
+    PDDL::Action _act1 = PDDL::Action(
         "testaction1",
         std::vector<std::string> {"?x", "?y"},
-        std::vector<PDDLLiteral> {PDDLLiteral(1, std::vector<unsigned int> {0}, true)},
-        std::vector<PDDLLiteral> {PDDLLiteral(2, std::vector<unsigned int> {1}, true), PDDLLiteral(3, std::vector<unsigned int> {1}, true)}
+        std::vector<PDDL::Literal> {PDDL::Literal(1, std::vector<unsigned int> {0}, true)},
+        std::vector<PDDL::Literal> {PDDL::Literal(2, std::vector<unsigned int> {1}, true), PDDL::Literal(3, std::vector<unsigned int> {1}, true)}
     );
-    PDDLAction _act2 = PDDLAction(
+    PDDL::Action _act2 = PDDL::Action(
         "testaction2",
         std::vector<std::string> {"?x", "?y"},
-        std::vector<PDDLLiteral> {PDDLLiteral(1, std::vector<unsigned int> {1}, true)},
+        std::vector<PDDL::Literal> {PDDL::Literal(1, std::vector<unsigned int> {1}, true)},
         // the first effect here removes the 2nd effect from action above, the 2nd is same as first above, 3rd is added on top
-        std::vector<PDDLLiteral> {PDDLLiteral(3, std::vector<unsigned int> {0}, false), PDDLLiteral(2, std::vector<unsigned int> {0}, true), PDDLLiteral(4, std::vector<unsigned int> {1}, true)}
+        std::vector<PDDL::Literal> {PDDL::Literal(3, std::vector<unsigned int> {0}, false), PDDL::Literal(2, std::vector<unsigned int> {0}, true), PDDL::Literal(4, std::vector<unsigned int> {1}, true)}
     );
-    PDDLActionInstance act1 = PDDLActionInstance(&_act1, std::vector<unsigned int> {0, 1});
-    PDDLActionInstance act2 = PDDLActionInstance(&_act2, std::vector<unsigned int> {1, 2});
+    PDDL::ActionInstance act1 = PDDL::ActionInstance(&_act1, std::vector<unsigned int> {0, 1});
+    PDDL::ActionInstance act2 = PDDL::ActionInstance(&_act2, std::vector<unsigned int> {1, 2});
     
     actions.push_back(act1);
     actions.push_back(act2);
@@ -185,22 +185,22 @@ TEST_CASE(TAG + "positive - negative eff") {
 }
 
 TEST_CASE(TAG + "negative - positive eff") {
-    std::vector<PDDLActionInstance> actions;
-    PDDLAction _act1 = PDDLAction(
+    std::vector<PDDL::ActionInstance> actions;
+    PDDL::Action _act1 = PDDL::Action(
         "testaction1",
         std::vector<std::string> {"?x", "?y"},
-        std::vector<PDDLLiteral> {PDDLLiteral(1, std::vector<unsigned int> {0}, true)},
-        std::vector<PDDLLiteral> {PDDLLiteral(2, std::vector<unsigned int> {1}, false), PDDLLiteral(3, std::vector<unsigned int> {1}, false)}
+        std::vector<PDDL::Literal> {PDDL::Literal(1, std::vector<unsigned int> {0}, true)},
+        std::vector<PDDL::Literal> {PDDL::Literal(2, std::vector<unsigned int> {1}, false), PDDL::Literal(3, std::vector<unsigned int> {1}, false)}
     );
-    PDDLAction _act2 = PDDLAction(
+    PDDL::Action _act2 = PDDL::Action(
         "testaction2",
         std::vector<std::string> {"?x", "?y"},
-        std::vector<PDDLLiteral> {PDDLLiteral(1, std::vector<unsigned int> {1}, true)},
+        std::vector<PDDL::Literal> {PDDL::Literal(1, std::vector<unsigned int> {1}, true)},
         // the first effect here removes the 2nd effect from action above, the 2nd is same as first above, 3rd is added on top
-        std::vector<PDDLLiteral> {PDDLLiteral(3, std::vector<unsigned int> {0}, true), PDDLLiteral(2, std::vector<unsigned int> {0}, false), PDDLLiteral(4, std::vector<unsigned int> {1}, false)}
+        std::vector<PDDL::Literal> {PDDL::Literal(3, std::vector<unsigned int> {0}, true), PDDL::Literal(2, std::vector<unsigned int> {0}, false), PDDL::Literal(4, std::vector<unsigned int> {1}, false)}
     );
-    PDDLActionInstance act1 = PDDLActionInstance(&_act1, std::vector<unsigned int> {0, 1});
-    PDDLActionInstance act2 = PDDLActionInstance(&_act2, std::vector<unsigned int> {1, 2});
+    PDDL::ActionInstance act1 = PDDL::ActionInstance(&_act1, std::vector<unsigned int> {0, 1});
+    PDDL::ActionInstance act2 = PDDL::ActionInstance(&_act2, std::vector<unsigned int> {1, 2});
     
     actions.push_back(act1);
     actions.push_back(act2);
@@ -225,7 +225,7 @@ TEST_CASE(TAG + "negative - positive eff") {
 }
 
 TEST_CASE(TAG + "3 action blocks macro") {
-    std::vector<PDDLActionInstance> actions;
+    std::vector<PDDL::ActionInstance> actions;
     // predicates:
     // (on ?x ?y)
     // (ontable ?x)
@@ -235,26 +235,26 @@ TEST_CASE(TAG + "3 action blocks macro") {
 
     // example macro, not necessarily a good one
     // actions: pickup 0, stack 0 on 1, pickup 2
-    PDDLAction _act1 = PDDLAction(
+    PDDL::Action _act1 = PDDL::Action(
         "pickup",
         std::vector<std::string> {"?x"},
         // (clear ?x) (ontable ?x) (handempty)
-        std::vector<PDDLLiteral> {PDDLLiteral(3, std::vector<unsigned int> {0}, true), PDDLLiteral(2, std::vector<unsigned int> {0}, true), PDDLLiteral(4, std::vector<unsigned int> {}, true)},
+        std::vector<PDDL::Literal> {PDDL::Literal(3, std::vector<unsigned int> {0}, true), PDDL::Literal(2, std::vector<unsigned int> {0}, true), PDDL::Literal(4, std::vector<unsigned int> {}, true)},
         // (not (ontable ?x)) (not (clear ?x)) (not (handempty)) (holding ?x)))
-        std::vector<PDDLLiteral> {PDDLLiteral(2, std::vector<unsigned int> {0}, false), PDDLLiteral(3, std::vector<unsigned int> {0}, false), PDDLLiteral(4, std::vector<unsigned int> {}, false), PDDLLiteral(5, std::vector<unsigned int> {0}, true)}
+        std::vector<PDDL::Literal> {PDDL::Literal(2, std::vector<unsigned int> {0}, false), PDDL::Literal(3, std::vector<unsigned int> {0}, false), PDDL::Literal(4, std::vector<unsigned int> {}, false), PDDL::Literal(5, std::vector<unsigned int> {0}, true)}
     );
-    PDDLAction _act2 = PDDLAction(
+    PDDL::Action _act2 = PDDL::Action(
         "stack",
         std::vector<std::string> {"?x", "?y"},
         // (holding ?x) (clear ?y)
-        std::vector<PDDLLiteral> {PDDLLiteral(5, std::vector<unsigned int> {0}, true), PDDLLiteral(3, std::vector<unsigned int> {1}, true)},
+        std::vector<PDDL::Literal> {PDDL::Literal(5, std::vector<unsigned int> {0}, true), PDDL::Literal(3, std::vector<unsigned int> {1}, true)},
         // (not (holding ?x)) (not (clear ?y)) (clear ?x) (handempty) (on ?x ?y)))
-        std::vector<PDDLLiteral> {PDDLLiteral(5, std::vector<unsigned int> {0}, false), PDDLLiteral(3, std::vector<unsigned int> {1}, false), PDDLLiteral(3, std::vector<unsigned int> {0}, true), PDDLLiteral(4, std::vector<unsigned int> {}, true), PDDLLiteral(1, std::vector<unsigned int> {0, 1}, true)}
+        std::vector<PDDL::Literal> {PDDL::Literal(5, std::vector<unsigned int> {0}, false), PDDL::Literal(3, std::vector<unsigned int> {1}, false), PDDL::Literal(3, std::vector<unsigned int> {0}, true), PDDL::Literal(4, std::vector<unsigned int> {}, true), PDDL::Literal(1, std::vector<unsigned int> {0, 1}, true)}
     );
 
-    PDDLActionInstance act1 = PDDLActionInstance(&_act1, std::vector<unsigned int> {0});
-    PDDLActionInstance act2 = PDDLActionInstance(&_act2, std::vector<unsigned int> {0, 1});
-    PDDLActionInstance act3 = PDDLActionInstance(&_act1, std::vector<unsigned int> {2});
+    PDDL::ActionInstance act1 = PDDL::ActionInstance(&_act1, std::vector<unsigned int> {0});
+    PDDL::ActionInstance act2 = PDDL::ActionInstance(&_act2, std::vector<unsigned int> {0, 1});
+    PDDL::ActionInstance act3 = PDDL::ActionInstance(&_act1, std::vector<unsigned int> {2});
 
     actions.push_back(act1);
     actions.push_back(act2);

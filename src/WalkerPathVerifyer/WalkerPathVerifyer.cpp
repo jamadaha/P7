@@ -2,11 +2,11 @@
 
 using namespace std;
 
-vector<BadPath> WalkerPathVerifyer::VerifyPaths(vector<Path>* paths, PDDLInstance* instance, Config* config) {
+vector<BadPath> WalkerPathVerifyer::VerifyPaths(vector<Path>* paths, PDDL::Instance* instance, Config* config) {
 	vector<BadPath> badPaths;
 
 	if (paths->size() > 0) {
-		PDDLDomainCodeGenerator domainGenerator(instance->domain);
+		PDDL::DomainCodeGenerator domainGenerator(instance->domain);
 		domainGenerator.GenerateDomainFile("domain_verify.pddl");
 		for (auto pathPtr = paths->begin(); pathPtr != paths->end(); pathPtr++) {
 			Path path = *pathPtr;
@@ -20,11 +20,11 @@ vector<BadPath> WalkerPathVerifyer::VerifyPaths(vector<Path>* paths, PDDLInstanc
 				SAS::CodeGenerator sasGenerator;
 				sasGenerator.GenerateCode(checkPlan, "sas_verify.sas");
 
-				PDDLInstance newInstance(
+				PDDL::Instance newInstance(
 					instance->domain,
-					new PDDLProblem(instance->problem->name, instance->domain, instance->problem->objects, instance->problem->objectMap, path.startState, path.endState));
+					new PDDL::Problem(instance->problem->name, instance->domain, instance->problem->objects, instance->problem->objectMap, path.startState, path.endState));
 
-				PDDLProblemCodeGenerator problemGenerator(instance->domain, newInstance.problem);
+				PDDL::ProblemCodeGenerator problemGenerator(instance->domain, newInstance.problem);
 				problemGenerator.GenerateProblemFile("problem_verify.pddl");
 
 				auto reformulatedSASValidatorResult = PlanValidator::ValidatePlan(*config, "domain_verify.pddl", "problem_verify.pddl", "sas_verify.sas");
@@ -38,7 +38,7 @@ vector<BadPath> WalkerPathVerifyer::VerifyPaths(vector<Path>* paths, PDDLInstanc
 	return badPaths;
 }
 
-SAS::Action WalkerPathVerifyer::GenerateSASActionFromActionInstance(PDDLActionInstance action, PDDLInstance *instance) {
+SAS::Action WalkerPathVerifyer::GenerateSASActionFromActionInstance(PDDL::ActionInstance action, PDDL::Instance *instance) {
 	vector<string> params;
 	for (auto param : action.objects)
 		params.push_back(instance->problem->objects.at(param));

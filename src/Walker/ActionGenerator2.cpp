@@ -2,18 +2,18 @@
 
 using namespace std;
 
-vector<PDDLActionInstance> ActionGenerator2::GenerateActions(const PDDLState* state) {
-    vector<PDDLActionInstance> legalActions;
+vector<PDDL::ActionInstance> ActionGenerator2::GenerateActions(const PDDL::State* state) {
+    vector<PDDL::ActionInstance> legalActions;
     for (auto iter = actions->begin(); iter != actions->end(); iter++) {
-        vector<PDDLActionInstance> tempActions = GenerateActions(&(*iter), state);
+        vector<PDDL::ActionInstance> tempActions = GenerateActions(&(*iter), state);
         copy(tempActions.begin(), tempActions.end(), back_inserter(legalActions));
     }
     totalActions += legalActions.size();
     return legalActions;
 }
 
-vector<PDDLActionInstance> ActionGenerator2::GenerateActions(const PDDLAction* action, const PDDLState* state) {
-    vector<PDDLActionInstance> legalActions;
+vector<PDDL::ActionInstance> ActionGenerator2::GenerateActions(const PDDL::Action* action, const PDDL::State* state) {
+    vector<PDDL::ActionInstance> legalActions;
 
     UnaryActionLiteralsPtr = &action->unaryPreconditions;
     BinaryActionLiteralsPtr = &action->binaryPreconditions;
@@ -25,14 +25,14 @@ vector<PDDLActionInstance> ActionGenerator2::GenerateActions(const PDDLAction* a
     GetCandidates(&candidates, state, parentValues, 0, action->parameters.size());
 
     for (auto candidate : candidates)
-        legalActions.push_back(PDDLActionInstance(action, vector<unsigned int> (candidate.begin(), candidate.begin() + action->parameters.size())));
+        legalActions.push_back(PDDL::ActionInstance(action, vector<unsigned int> (candidate.begin(), candidate.begin() + action->parameters.size())));
 
     return legalActions;
 }
 
 // Recursively look through every parameter option, and check if they are valid
 // If they are valid, add them to the candidate set
-void ActionGenerator2::GetCandidates(set<array<unsigned int, MAXPARAMSIZE>>* candidates, const PDDLState* state, const array<unsigned int, MAXPARAMSIZE> parentValues, const int currentIndex, const int maxIndex) {
+void ActionGenerator2::GetCandidates(set<array<unsigned int, MAXPARAMSIZE>>* candidates, const PDDL::State* state, const array<unsigned int, MAXPARAMSIZE> parentValues, const int currentIndex, const int maxIndex) {
     vector<unsigned int> objectCandidates;
     objectCandidates.reserve(TEMPOBJSIZE);
     bool wasAny = false;
@@ -78,7 +78,7 @@ void ActionGenerator2::GetCandidates(set<array<unsigned int, MAXPARAMSIZE>>* can
 
 // Check if all binary predicates are valid with the current parameters.
 // If a predicate refers to a parameter that is outside of currentMax, ignore it.
-bool ActionGenerator2::IsBinaryLegal(const PDDLState* state, const array<unsigned int, MAXPARAMSIZE>* set, const int currentMax) {
+bool ActionGenerator2::IsBinaryLegal(const PDDL::State* state, const array<unsigned int, MAXPARAMSIZE>* set, const int currentMax) {
     if (currentMax < 1)
         return true;
 

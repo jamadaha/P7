@@ -2,12 +2,12 @@
 
 using namespace std;
 
-Path WalkerProbe::Walk(BaseHeuristic* heuristic, const PDDLState* state, unsigned int* current) {
-    vector<PDDLActionInstance> steps; steps.reserve(maxStepCount);
-    unordered_set<PDDLState> visitedStates; visitedStates.reserve(maxStepCount);
+Path WalkerProbe::Walk(BaseHeuristic* heuristic, const PDDL::State* state, unsigned int* current) {
+    vector<PDDL::ActionInstance> steps; steps.reserve(maxStepCount);
+    unordered_set<PDDL::State> visitedStates; visitedStates.reserve(maxStepCount);
 
-    PDDLState endState;
-    PDDLState tempState = PDDLState(state->unaryFacts, state->binaryFacts);
+    PDDL::State endState;
+    PDDL::State tempState = PDDL::State(state->unaryFacts, state->binaryFacts);
     visitedStates.emplace(tempState);
     if (OnTempStateMade != nullptr)
         OnTempStateMade(this->instance, &tempState);
@@ -18,11 +18,11 @@ Path WalkerProbe::Walk(BaseHeuristic* heuristic, const PDDLState* state, unsigne
         if (!widthFunc->Iterate(current))
             break;
 
-        vector<PDDLActionInstance> possibleActions;
+        vector<PDDL::ActionInstance> possibleActions;
         possibleActions = actionGenerator.GenerateActions(&tempState);
 
         if (possibleActions.size() == 0) break;
-        PDDLActionInstance* chosenAction = heuristic->NextChoice(&tempState, &possibleActions);
+        PDDL::ActionInstance* chosenAction = heuristic->NextChoice(&tempState, &possibleActions);
         tempState.DoAction(chosenAction);
 
         if (visitedStates.contains(tempState))
@@ -60,7 +60,7 @@ vector<Path> WalkerProbe::Walk() {
         auto unaryFacts = GetFactSubset<unordered_set<unsigned int>>(&initState.unaryFacts, &goalState.unaryFacts);
         auto binaryFacts = GetFactSubset<unordered_set<pair<unsigned int, unsigned int>>>(&initState.binaryFacts, &goalState.binaryFacts);
 
-        PDDLState probe = PDDLState(unaryFacts, binaryFacts);
+        PDDL::State probe = PDDL::State(unaryFacts, binaryFacts);
 
         Path path = Walk(heuristic, &probe, &current);
         if (path.steps.size() > 1)

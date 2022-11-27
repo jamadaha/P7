@@ -41,7 +41,7 @@ unordered_map<size_t, JointPath> Finder::FindEntangledCandidates(vector<Path>* p
 	for (auto path = paths->begin(); path != paths->end(); path++)
 		totalSteps += path->steps.size();
 
-	vector<pair<size_t, vector<PDDLActionInstance*>>> currentValues;
+	vector<pair<size_t, vector<PDDL::ActionInstance*>>> currentValues;
 	currentValues.reserve(totalSteps / Data.SearchFloor);
 
 	_TotalLevels = 0;
@@ -77,14 +77,14 @@ int Finder::ReduceLevel(int level) {
 	return newLevel;
 }
 
-void Finder::GenerateActionSet(vector<pair<size_t, vector<PDDLActionInstance*>>>* currentValues, vector<Path>* paths, const int level) {
+void Finder::GenerateActionSet(vector<pair<size_t, vector<PDDL::ActionInstance*>>>* currentValues, vector<Path>* paths, const int level) {
 	const int pathsSize = paths->size();
 	for (int i = 0; i < pathsSize; i++) {
 		Path* path = &paths->at(i);
 		const int pathSize = path->steps.size();
 		for (int j = 0; j < pathSize; j += level) {
 			bool doAdd = true;
-			vector<PDDLActionInstance*> currentSet;
+			vector<PDDL::ActionInstance*> currentSet;
 			currentSet.reserve(level);
 			for (int l = j; l < j + level; l++) {
 				if (l >= pathSize) {
@@ -95,21 +95,21 @@ void Finder::GenerateActionSet(vector<pair<size_t, vector<PDDLActionInstance*>>>
 				currentSet.push_back(&(path->steps.at(l)));
 			}
 			if (doAdd) {
-				size_t key = hash<vector<PDDLActionInstance*>>{}(currentSet);
+				size_t key = hash<vector<PDDL::ActionInstance*>>{}(currentSet);
 				currentValues->push_back(make_pair(key, currentSet));
 			}
 		}
 	}
 }
 
-void Finder::AddCandidatesIfThere(unordered_map<size_t, JointPath>* candidates, const vector<pair<size_t, vector<PDDLActionInstance*>>>* currentValues) {
+void Finder::AddCandidatesIfThere(unordered_map<size_t, JointPath>* candidates, const vector<pair<size_t, vector<PDDL::ActionInstance*>>>* currentValues) {
 	const int currentValueSize = currentValues->size();
 	if (OnNewLevel != nullptr)
 		OnNewLevel(_CurrentLevel, currentValueSize);
 
 	for (int i = 0; i < currentValueSize; i++) {
 		// Check if this value have already been found
-		pair<size_t,vector<PDDLActionInstance*>> iValue = currentValues->at(i);
+		pair<size_t,vector<PDDL::ActionInstance*>> iValue = currentValues->at(i);
 		bool containsThisKey = candidates->contains(iValue.first);
 		if (containsThisKey)
 			continue;

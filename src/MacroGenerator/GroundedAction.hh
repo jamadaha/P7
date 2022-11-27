@@ -9,7 +9,7 @@
 
 #include "../Helpers/Hashes.hh"
 
-// Similar to PDDLLiteral, except that it doesn't use indexes, nor does it store the value
+// Similar to PDDL::Literal, except that it doesn't use indexes, nor does it store the value
 struct GroundedLiteral {
     const unsigned int predicate;
     const std::vector<unsigned int> objects;

@@ -2,7 +2,7 @@
 #include <string>
 #include <unordered_set>
 
-#include "../../src/IntermediatePDDL/PDDLDomain.hh"
+#include "../../src/IntermediatePDDL/PDDL::Domain.hh"
 #include "../../src/PDDLParser/pddldriver.hh"
 #include "../../src/IntermediatePDDL/PDDLConverter.hh"
 
@@ -27,26 +27,26 @@ bool cmp(vector<string> as, vector<string> bs){
     return acc;
 }
 
-TEST_CASE(TAG + "PDDLDomain domain name") {
+TEST_CASE(TAG + "PDDL::Domain domain name") {
     PDDLDriver driver;
     driver.parse(domainFile);
-    PDDLDomain domain = PDDLConverter::Convert(driver.domain);
+    PDDL::Domain domain = PDDLConverter::Convert(driver.domain);
 
     REQUIRE(domain.name == exDomainName);
 }
 
-TEST_CASE(TAG + "PDDLDomain requirements") {
+TEST_CASE(TAG + "PDDL::Domain requirements") {
     PDDLDriver driver;
     driver.parse(domainFile);
-    PDDLDomain domain = PDDLConverter::Convert(driver.domain);
+    PDDL::Domain domain = PDDLConverter::Convert(driver.domain);
 
     REQUIRE(cmp(domain.requirements, exDomainReq));
 }
 
-TEST_CASE(TAG + "PDDLDomain preconditions"){
+TEST_CASE(TAG + "PDDL::Domain preconditions"){
     PDDLDriver driver;
     driver.parse(domainFile);
-    PDDLDomain domain = PDDLConverter::Convert(driver.domain);
+    PDDL::Domain domain = PDDLConverter::Convert(driver.domain);
 
     auto preds = domain.predicates;
     vector<string> predStrings;
@@ -57,10 +57,10 @@ TEST_CASE(TAG + "PDDLDomain preconditions"){
     REQUIRE(cmp(predStrings, exConditions));
 }
 
-TEST_CASE(TAG + "PDDLDomain action names"){
+TEST_CASE(TAG + "PDDL::Domain action names"){
     PDDLDriver driver;
     driver.parse(domainFile);
-    PDDLDomain domain = PDDLConverter::Convert(driver.domain);
+    PDDL::Domain domain = PDDLConverter::Convert(driver.domain);
 
     auto acts = domain.actions;
     vector<string> actStrings;
@@ -71,10 +71,10 @@ TEST_CASE(TAG + "PDDLDomain action names"){
     REQUIRE(cmp(actStrings, exActions));
 }
 
-TEST_CASE(TAG + "PDDLDomain arguments"){
+TEST_CASE(TAG + "PDDL::Domain arguments"){
     PDDLDriver driver;
     driver.parse(domainFile);
-    PDDLDomain domain = PDDLConverter::Convert(driver.domain);
+    PDDL::Domain domain = PDDLConverter::Convert(driver.domain);
 
     auto acts = domain.actions;
     unordered_set<string> args;

@@ -2,18 +2,18 @@
 
 using namespace std;
 
-vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLState *state) {
-    vector<PDDLActionInstance> legalActions;
+vector<PDDL::ActionInstance> ActionGenerator::GenerateActions(const PDDL::State *state) {
+    vector<PDDL::ActionInstance> legalActions;
     for (auto iter = actions->begin(); iter != actions->end(); iter++) {
-        vector<PDDLActionInstance> tempActions = GenerateActions(&(*iter), state);
+        vector<PDDL::ActionInstance> tempActions = GenerateActions(&(*iter), state);
         copy(tempActions.begin(), tempActions.end(), back_inserter(legalActions));
     }
     totalActions += legalActions.size();
     return legalActions;
 }
 
-vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *action, const PDDLState *state) const {
-    vector<PDDLActionInstance> legalActions;
+vector<PDDL::ActionInstance> ActionGenerator::GenerateActions(const PDDL::Action *action, const PDDL::State *state) const {
+    vector<PDDL::ActionInstance> legalActions;
 
     // Object which fulfill the unary literals of the action preconditions
     vector<unordered_set<unsigned int>> candidateObjects;
@@ -65,12 +65,12 @@ vector<PDDLActionInstance> ActionGenerator::GenerateActions(const PDDLAction *ac
         candidatePermutations = PermuteAll(candidateObjects, candidatePairs);
         
     for (int i = 0; i < candidatePermutations.size(); i++)
-        legalActions.push_back(PDDLActionInstance(action, candidatePermutations.at(i)));
+        legalActions.push_back(PDDL::ActionInstance(action, candidatePermutations.at(i)));
  
     return legalActions;
 }
 
-bool ActionGenerator::GetCandidateObjects(vector<unordered_set<unsigned int>> &candidateObjects, const PDDLAction *action, const PDDLState *state) const {
+bool ActionGenerator::GetCandidateObjects(vector<unordered_set<unsigned int>> &candidateObjects, const PDDL::Action *action, const PDDL::State *state) const {
     const int parameterLength = action->parameters.size();
     for (int i = 0; i < parameterLength; i++) {
         std::unordered_set<unsigned int> tempCandididateObjects = GetCandidateObjects(&action->applicableUnaryLiterals.at(i), state);
@@ -82,7 +82,7 @@ bool ActionGenerator::GetCandidateObjects(vector<unordered_set<unsigned int>> &c
     return true;
 }
 
-unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) const {
+unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered_set<const PDDL::Literal*> *literals, const PDDL::State *state) const {
     unordered_set<unsigned int> candidateObjects;
 
     for (auto iter = literals->begin(); iter != literals->end(); iter++)
@@ -99,7 +99,7 @@ unordered_set<unsigned int> ActionGenerator::GetCandidateObjects(const unordered
     return candidateObjects;
 }
 
-void ActionGenerator::RemoveIllegal(std::unordered_set<unsigned int> &set, const std::unordered_set<const PDDLLiteral*> *literals, const PDDLState *state) {
+void ActionGenerator::RemoveIllegal(std::unordered_set<unsigned int> &set, const std::unordered_set<const PDDL::Literal*> *literals, const PDDL::State *state) {
     for (auto literal = literals->begin(); literal != literals->end(); literal++)
         if ((*literal)->value)
             AlgorithmHelper::Intersect(set, state->unaryFacts.at((*literal)->predicateIndex));

@@ -4,7 +4,6 @@
 
 #include "../../../src/PDDL/Domain.hh"
 #include "../../../src/PDDL/Parsers/ExternalParser.hh"
-#include "../../../src/PDDL/Parsers/Converter.hh"
 
 using namespace std;
 

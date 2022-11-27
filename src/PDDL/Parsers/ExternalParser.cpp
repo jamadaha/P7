@@ -159,7 +159,7 @@ PDDL::Problem Convert(PDDL::Domain* domain, Problem* problem) {
 
 #pragma endregion
 
-PDDL::Instance* ExternalParser::Parse(const std::string& domainFile, const std::string& problemFile) {
+PDDL::Instance ExternalParser::Parse(const std::string& domainFile, const std::string& problemFile) {
     PDDLDriver driver;
     if (driver.parse(domainFile))
         throw std::invalid_argument("Invalid domain file!");
@@ -169,5 +169,5 @@ PDDL::Instance* ExternalParser::Parse(const std::string& domainFile, const std::
     static PDDL::Domain domain = Convert(driver.domain);
     static PDDL::Problem problem = Convert(&domain, driver.problem);
 
-    return new PDDL::Instance(&domain, &problem);
+    return PDDL::Instance(&domain, &problem);
 }

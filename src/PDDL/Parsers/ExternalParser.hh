@@ -8,7 +8,7 @@
 
 class ExternalParser {
 public:
-    PDDL::Instance* Parse(const std::string& domain, const std::string& problem);
+    PDDL::Instance Parse(const std::string& domain, const std::string& problem);
 };
 
 #endif

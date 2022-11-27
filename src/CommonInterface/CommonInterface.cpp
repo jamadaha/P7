@@ -42,13 +42,13 @@ InterfaceStep<void> CommonInterface::CheckFilePaths() {
 	return InterfaceStep<void>();
 }
 
-InterfaceStep<PDDL::Instance*> CommonInterface::ParsePDDLFiles() {
+InterfaceStep<PDDL::Instance> CommonInterface::ParsePDDLFiles() {
 	ConsoleHelper::PrintInfo("Parsing PDDL files...");
 	Report->Begin("Parsing PDDL Files");
 	ExternalParser parser;
 	auto result = parser.Parse(config.GetItem<filesystem::path>("domain"), config.GetItem<filesystem::path>("problem"));
 	Report->Stop();
-	return InterfaceStep<PDDL::Instance*>(result);
+	return InterfaceStep<PDDL::Instance>(result);
 }
 
 InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulator, PDDL::Instance* instance) {
@@ -213,12 +213,12 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 		return CommonInterface::RunResult::ErrorsEncountered;
 
 	if (!isDirect) {
-		auto runIterativelyStep = RunIteratively(getReformulatorStep.Data, parsePDDLFilesStep.Data);
+		auto runIterativelyStep = RunIteratively(getReformulatorStep.Data, &parsePDDLFilesStep.Data);
 		if (!runIterativelyStep.RanWithoutErrors)
 			return CommonInterface::RunResult::ErrorsEncountered;
 	}
 	else {
-		auto runNonIterativelyStep = RunDirect(getReformulatorStep.Data, parsePDDLFilesStep.Data);
+		auto runNonIterativelyStep = RunDirect(getReformulatorStep.Data, &parsePDDLFilesStep.Data);
 		if (!runNonIterativelyStep.RanWithoutErrors)
 			return CommonInterface::RunResult::ErrorsEncountered;
 	}
@@ -233,7 +233,7 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 	if (!parseSASPlanStep.RanWithoutErrors)
 		return CommonInterface::RunResult::ErrorsEncountered;
 
-	auto rebuildSASPlanStep = RebuildSASPlan(&parseSASPlanStep.Data, getReformulatorStep.Data, parsePDDLFilesStep.Data);
+	auto rebuildSASPlanStep = RebuildSASPlan(&parseSASPlanStep.Data, getReformulatorStep.Data, &parsePDDLFilesStep.Data);
 	if (!rebuildSASPlanStep.RanWithoutErrors)
 		return CommonInterface::RunResult::ErrorsEncountered;
 

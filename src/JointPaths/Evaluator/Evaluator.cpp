@@ -18,13 +18,13 @@ vector<JointPath> Evaluator::EvaluateAndSanitizeCandidates(unordered_map<size_t,
 	// Sanitize candidates
 	RemoveMinimumQuality(&convertedCandidates);
 
-	_RemovedCandidates = preCount - convertedCandidates.size();
-
 	// Sort the candidates
 	vector<JointPath> sortedCandidates = SortCandidates(&convertedCandidates);
 
 	// Remove candidates if there are too many
 	RemoveIfTooMany(&sortedCandidates);
+
+	_RemovedCandidates = preCount - sortedCandidates.size();
 
 	return sortedCandidates;
 }

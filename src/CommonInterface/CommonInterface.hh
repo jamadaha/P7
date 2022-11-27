@@ -22,7 +22,6 @@
 #include "../PlanValidators/PlanValidator.hh"
 #include "../PDDL/Instance.hh"
 #include "../PDDL/Mutex.hh"
-#include "../PDDL/Parsers/Converter.hh"
 #include "../Helpers/ConsoleHelper.hh"
 #include "../PDDL/Parsers/ExternalParser.hh"
 

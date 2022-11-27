@@ -4,8 +4,7 @@
 #include <string>
 
 #include "../PDDL/Instance.hh"
-#include "../PDDL/Parsers/ExternalParser/pddldriver.hh"
-#include "Converter.hh"
+#include "../Helpers/StringHelper.hh"
 
 class ExternalParser {
 public:

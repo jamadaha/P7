@@ -4,7 +4,7 @@ target_link_libraries(Tests-SAS
         Catch2::Catch2WithMain
         SAS
         StringHelper
-        IntermediatePDDL)
+        PDDL)
 catch_discover_tests(Tests-SAS) 
 
 file(COPY Test/SAS/CodeGenerator/TestFiles DESTINATION ${CMAKE_BINARY_DIR})

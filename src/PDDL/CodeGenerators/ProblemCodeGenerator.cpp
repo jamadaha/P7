@@ -1,15 +1,16 @@
-#include "PDDLProblemCodeGenerator.hh"
+#include "ProblemCodeGenerator.hh"
 
 using namespace std;
+using namespace PDDL;
  
-void PDDLProblemCodeGenerator::GenerateProblemFile(string problemFile) {
+void ProblemCodeGenerator::GenerateProblemFile(string problemFile) {
 	ofstream file;
 	file.open(problemFile);
 	file << GenerateProblemString();
 	file.close();
 }
 
-string PDDLProblemCodeGenerator::GenerateProblemString() {
+string ProblemCodeGenerator::GenerateProblemString() {
 	string out = "(define (problem " + problem->name + ")\n";
 	out += GetTabs(1) + "(:domain " + problem->domain->name + ")\n";
 	out += "\n";
@@ -23,7 +24,7 @@ string PDDLProblemCodeGenerator::GenerateProblemString() {
 	return out;
 }
 
-string PDDLProblemCodeGenerator::GetObjects(vector<string> objects) {
+string ProblemCodeGenerator::GetObjects(vector<string> objects) {
 	string retStr = GetTabs(1) + "(:objects\n";
 	retStr += GetTabs(2) + GetStringList(objects);
 	retStr += "\n";
@@ -31,7 +32,7 @@ string PDDLProblemCodeGenerator::GetObjects(vector<string> objects) {
 	return retStr;
 }
 
-string PDDLProblemCodeGenerator::GetInits(PDDLState literals) {
+string ProblemCodeGenerator::GetInits(State literals) {
 	string retStr = GetTabs(1) + "(:init\n";
 	retStr += GetTabs(2);
 	retStr += GetFacts(literals);
@@ -40,7 +41,7 @@ string PDDLProblemCodeGenerator::GetInits(PDDLState literals) {
 	return retStr;
 }
 
-string PDDLProblemCodeGenerator::GetGoals(PDDLState literals) {
+string ProblemCodeGenerator::GetGoals(State literals) {
 	string retStr = GetTabs(1) + "(:goal\n";
 	retStr += GetTabs(2) + "(and \n";
 	retStr += GetTabs(3);
@@ -51,7 +52,7 @@ string PDDLProblemCodeGenerator::GetGoals(PDDLState literals) {
 	return retStr;
 }
 
-std::string PDDLProblemCodeGenerator::GetFacts(PDDLState literals) {
+std::string ProblemCodeGenerator::GetFacts(State literals) {
 	string retStr = "";
 	auto AddParen = [](std::string x) {
 		return "(" + x + ") ";

@@ -3,20 +3,22 @@
 
 #include <fstream>
 
-#include "BasePDDLCodeGenerator.hh"
+#include "BaseCodeGenerator.hh"
 
-class PDDLProblemCodeGenerator : public BasePDDLCodeGenerator {
-public:
-	PDDLProblemCodeGenerator(const PDDLDomain *domain, const PDDLProblem *problem) : BasePDDLCodeGenerator(domain), problem(problem) {};
-	void GenerateProblemFile(std::string problemFile);
-	std::string GenerateProblemString();
+namespace PDDL {
+	class ProblemCodeGenerator : public BaseCodeGenerator {
+	public:
+		ProblemCodeGenerator(const Domain* domain, const Problem* problem) : BaseCodeGenerator(domain), problem(problem) {};
+		void GenerateProblemFile(std::string problemFile);
+		std::string GenerateProblemString();
 
-private:
-	const PDDLProblem *problem;
-	std::string GetObjects(std::vector<std::string> objects);
-	std::string GetInits(PDDLState literals);
-	std::string GetGoals(PDDLState literals);
-	std::string GetFacts(PDDLState literals);
-};
+	private:
+		const Problem* problem;
+		std::string GetObjects(std::vector<std::string> objects);
+		std::string GetInits(State literals);
+		std::string GetGoals(State literals);
+		std::string GetFacts(State literals);
+	};
+}
 
 #endif

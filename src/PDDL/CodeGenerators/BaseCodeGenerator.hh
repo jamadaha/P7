@@ -4,17 +4,19 @@
 #include <fstream>
 #include <string>
 
-#include "../IntermediatePDDL/PDDLInstance.hh"
+#include "../Instance.hh"
 
-class BasePDDLCodeGenerator {
-public:
-	BasePDDLCodeGenerator(const PDDLDomain *domain) : domain(domain) {};
-	std::string GetPredicate(PDDLPredicate predicate);
-	std::string GetStringList(std::vector<std::string> list);
-	std::string GetTabs(int count);
-	std::string GetLiteral(PDDLAction action, PDDLLiteral predicate);
-protected:
-	const PDDLDomain *domain;
-};
+namespace PDDL {
+	class BaseCodeGenerator {
+	public:
+		BaseCodeGenerator(const Domain* domain) : domain(domain) {};
+		std::string GetPredicate(Predicate predicate);
+		std::string GetStringList(std::vector<std::string> list);
+		std::string GetTabs(int count);
+		std::string GetLiteral(Action action, Literal predicate);
+	protected:
+		const Domain* domain;
+	};
+}
 
 #endif

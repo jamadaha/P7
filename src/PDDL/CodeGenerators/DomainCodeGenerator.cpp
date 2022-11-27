@@ -1,15 +1,16 @@
-#include "PDDLDomainCodeGenerator.hh"
+#include "DomainCodeGenerator.hh"
 
 using namespace std;
+using namespace PDDL;
 
-void PDDLDomainCodeGenerator::GenerateDomainFile(string domainFile) {
+void DomainCodeGenerator::GenerateDomainFile(string domainFile) {
 	ofstream file;
 	file.open(domainFile);
 	file << GenerateDomainString();
 	file.close();
 }
 
-string PDDLDomainCodeGenerator::GenerateDomainString() {
+string DomainCodeGenerator::GenerateDomainString() {
 	string out = "(define (domain " + domain->name + ")\n";
 	out += GetRequirements(domain->requirements) + "\n";
 	out += "\n";
@@ -21,7 +22,7 @@ string PDDLDomainCodeGenerator::GenerateDomainString() {
 	return out;
 }
 
-string PDDLDomainCodeGenerator::GetRequirements(vector<std::string> requirements) {
+string DomainCodeGenerator::GetRequirements(vector<std::string> requirements) {
 	string retStr = "";
 	retStr += GetTabs(1) + "(:requirements\n";
 	retStr += GetTabs(2);
@@ -32,7 +33,7 @@ string PDDLDomainCodeGenerator::GetRequirements(vector<std::string> requirements
 	return retStr;
 }
 
-string PDDLDomainCodeGenerator::GetPredicates(vector<PDDLPredicate> predicates) {
+string DomainCodeGenerator::GetPredicates(vector<Predicate> predicates) {
 	string retStr = "";
 	retStr += GetTabs(1) + "(:predicates\n";
 	retStr += GetTabs(2);
@@ -42,7 +43,7 @@ string PDDLDomainCodeGenerator::GetPredicates(vector<PDDLPredicate> predicates) 
 	return retStr;
 }
 
-string PDDLDomainCodeGenerator::GetActions(vector<PDDLAction> actions) {
+string DomainCodeGenerator::GetActions(vector<Action> actions) {
 	string retStr = "";
 	for (auto i : actions) {
 		retStr += GetAction(i) + "\n";
@@ -50,7 +51,7 @@ string PDDLDomainCodeGenerator::GetActions(vector<PDDLAction> actions) {
 	return retStr;
 }
 
-string PDDLDomainCodeGenerator::GetAction(PDDLAction action) {
+string DomainCodeGenerator::GetAction(Action action) {
 	string retStr = GetTabs(1) + "(:action " + action.name + "\n";
 	retStr += GetTabs(2) + ":parameters (\n";
 	retStr += GetTabs(3);

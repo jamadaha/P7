@@ -1,15 +1,16 @@
-#include "BasePDDLCodeGenerator.hh"
+#include "BaseCodeGenerator.hh"
 
 using namespace std;
+using namespace PDDL;
 
-string BasePDDLCodeGenerator::GetPredicate(PDDLPredicate predicate) {
+string BaseCodeGenerator::GetPredicate(Predicate predicate) {
 	// This is to handle predicate =, which is internally a predicate, but not in PDDL
 	if (predicate.arguments.size() == 0)
 		return "";
 	return "(" + predicate.name + GetStringList(predicate.arguments) + ")";
 }
 
-string BasePDDLCodeGenerator::GetStringList(vector<string> list) {
+string BaseCodeGenerator::GetStringList(vector<string> list) {
 	string retStr = "";
 	for (auto i : list) {
 		retStr += " " + i;
@@ -17,7 +18,7 @@ string BasePDDLCodeGenerator::GetStringList(vector<string> list) {
 	return retStr;
 }
 
-string BasePDDLCodeGenerator::GetLiteral(PDDLAction action, PDDLLiteral predicate) {
+string BaseCodeGenerator::GetLiteral(Action action, Literal predicate) {
 	std::string returnString = "(";
 	if (!predicate.value)
 		returnString += "not (";
@@ -32,7 +33,7 @@ string BasePDDLCodeGenerator::GetLiteral(PDDLAction action, PDDLLiteral predicat
 	return returnString + ")";
 }
 
-string BasePDDLCodeGenerator::GetTabs(int count) {
+string BaseCodeGenerator::GetTabs(int count) {
 	string retStr = "";
 	for (int i = 0; i < count; i++) {
 		retStr += "\t";

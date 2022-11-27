@@ -3,20 +3,22 @@
 
 #include <fstream>
 
-#include "../IntermediatePDDL/PDDLDomain.hh"
-#include "BasePDDLCodeGenerator.hh"
+#include "../Domain.hh"
+#include "BaseCodeGenerator.hh"
 
-class PDDLDomainCodeGenerator : public BasePDDLCodeGenerator {
-public:
-	PDDLDomainCodeGenerator(const PDDLDomain *domain) : BasePDDLCodeGenerator(domain) {};
-	void GenerateDomainFile(std::string domainFile);
-	std::string GenerateDomainString();
+namespace PDDL {
+	class DomainCodeGenerator : public BaseCodeGenerator {
+	public:
+		DomainCodeGenerator(const Domain* domain) : BaseCodeGenerator(domain) {};
+		void GenerateDomainFile(std::string domainFile);
+		std::string GenerateDomainString();
 
-private:
-	std::string GetRequirements(std::vector<std::string> requirements);
-	std::string GetPredicates(std::vector<PDDLPredicate> predicates);
-	std::string GetActions(std::vector<PDDLAction> actions);
-	std::string GetAction(PDDLAction action);
-};
+	private:
+		std::string GetRequirements(std::vector<std::string> requirements);
+		std::string GetPredicates(std::vector<Predicate> predicates);
+		std::string GetActions(std::vector<Action> actions);
+		std::string GetAction(Action action);
+	};
+}
 
 #endif

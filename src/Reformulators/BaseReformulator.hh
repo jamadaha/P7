@@ -14,8 +14,8 @@
 #include "../JointPaths/Evaluator/Evaluator.hh"
 #include "../JointPaths/Evaluator/EvaluationModifiers.hh"
 
-#include "../MacroGenerator/MacroGenerator.hh"
-#include "../MacroGenerator/InstanceGenerator.hh"
+#include "../Macros/Generators/Generator.hh"
+#include "../Macros/Instantiators/Instantiator.hh"
 
 #include "../Helpers/ProgressBarHelper.hh"
 
@@ -39,7 +39,7 @@ protected:
 	RunReport* Report;
 	const int debugIndent = 2;
 	std::vector<Path> paths;
-    std::vector<Macro> macros;
+    std::vector<Macros::Macro> macros;
 	ProgressBarHelper* entanglerBar;
 	int macrosGenerated = 0;
 	bool encounteredErrors = false;

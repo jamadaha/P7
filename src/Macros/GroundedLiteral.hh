@@ -9,7 +9,7 @@
 
 #include "../Helpers/Hashes.hh"
 
-namespace Macro {
+namespace Macros {
     // Similar to PDDLLiteral, except that it doesn't use indexes, nor does it store the value
     struct GroundedLiteral {
         const unsigned int predicate;
@@ -20,14 +20,14 @@ namespace Macro {
             return (lhs.predicate == rhs.predicate && lhs.objects == rhs.objects);
         }
     };
-
-    template<> struct std::hash<GroundedLiteral> {
-        std::size_t operator()(GroundedLiteral const& s) const noexcept {
-            std::size_t h1 = std::hash<unsigned int>{}(s.predicate);
-            std::size_t h2 = std::hash<std::vector<unsigned int>>{}(s.objects);
-            return h1 ^ (h2 << 1); // or use boost::hash_combine (see Discussion) https://en.cppreference.com/w/Talk:cpp/utility/hash
-        }
-    };
 }
+
+template<> struct std::hash<Macros::GroundedLiteral> {
+    std::size_t operator()(Macros::GroundedLiteral const& s) const noexcept {
+        std::size_t h1 = std::hash<unsigned int>{}(s.predicate);
+        std::size_t h2 = std::hash<std::vector<unsigned int>>{}(s.objects);
+        return h1 ^ (h2 << 1); // or use boost::hash_combine (see Discussion) https://en.cppreference.com/w/Talk:cpp/utility/hash
+    }
+};
 
 #endif

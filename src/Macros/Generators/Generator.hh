@@ -4,8 +4,8 @@
 #include <vector>
 #include <unordered_map>
 
-#include "Macro.hh"
-#include "GroundedAction.hh"
+#include "../Macro.hh"
+#include "../GroundedAction.hh"
 #include "../IntermediatePDDL/PDDLInstance.hh"
 
 namespace Macros {

@@ -10,7 +10,7 @@
 #include "../Helpers/Hashes.hh"
 #include "GroundedLiteral.hh"
 
-namespace Macro {
+namespace Macros {
     struct GroundedAction {
         const std::string name;
         const std::unordered_set<unsigned int> parameters;

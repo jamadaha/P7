@@ -108,14 +108,14 @@ PDDLInstance BaseReformulator::GenerateMacros(PDDLInstance* instance, std::vecto
 
 	int macroGenerateID = Report->Begin("Generating Macros", ReportID);
 	macros.clear();
-	MacroGenerator macroGenerator = MacroGenerator(instance->domain);
+	Macros::Generator macroGenerator = Macros::Generator(instance->domain);
 	for (auto iter = candidates->begin(); iter != candidates->end(); iter++)
 		macros.push_back(macroGenerator.GenerateMacro(&iter->Chain));
 	macrosGenerated = macros.size();
 
 	if (debugMode)
 		ConsoleHelper::PrintDebugInfo("[Macro Generator] Generating Macro Instance...", debugIndent);
-	auto result = InstanceGenerator::GenerateInstance(instance->domain, instance->problem, &macros);
+	auto result = Macros::Instantiator::GenerateInstance(instance->domain, instance->problem, &macros);
 	Report->Stop(macroGenerateID);
 	return result;
 }

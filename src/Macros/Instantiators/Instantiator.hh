@@ -5,7 +5,7 @@
 #include <set>
 
 #include "../IntermediatePDDL/PDDLInstance.hh"
-#include "Macro.hh"
+#include "../Macro.hh"
 
 namespace Macros {
     class Instantiator {

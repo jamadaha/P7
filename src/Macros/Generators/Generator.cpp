@@ -1,14 +1,15 @@
-﻿#include "MacroGenerator.hh"
+﻿#include "Generator.hh"
 
 using namespace std;
+using namespace Macros;
 
-Macro MacroGenerator::GenerateMacro(vector<PDDLActionInstance> *actions) {
+Macro Generator::GenerateMacro(vector<PDDLActionInstance> *actions) {
     vector<GroundedAction> groundedActions = GroundActions(actions);
     GroundedAction combinedAction = CombineActions(&groundedActions);
     return Macro(combinedAction, *actions);
 }
 
-vector<GroundedAction> MacroGenerator::GroundActions(vector<PDDLActionInstance> *actions) {
+vector<GroundedAction> Generator::GroundActions(vector<PDDLActionInstance> *actions) {
     vector<GroundedAction> groundedActions; 
     groundedActions.reserve(actions->size());
 
@@ -18,7 +19,7 @@ vector<GroundedAction> MacroGenerator::GroundActions(vector<PDDLActionInstance> 
     return groundedActions;
 }
 
-GroundedAction MacroGenerator::GroundAction(PDDLActionInstance* action) {
+GroundedAction Generator::GroundAction(PDDLActionInstance* action) {
     // Get parameters
     unordered_set<unsigned int> parameters;
     for (int t = 0; t < action->objects.size(); t++)
@@ -41,7 +42,7 @@ GroundedAction MacroGenerator::GroundAction(PDDLActionInstance* action) {
     return GroundedAction(action->action->name, parameters, groundedPreconditions, groundedEffects);
 }
 
-vector<unsigned int> MacroGenerator::GetGroundedArguments(PDDLActionInstance* action, vector<unsigned int> args) {
+vector<unsigned int> Generator::GetGroundedArguments(PDDLActionInstance* action, vector<unsigned int> args) {
     vector<unsigned int> returnArgs;
     args.reserve(2);
     for (int q = 0; q < args.size(); q++)
@@ -49,7 +50,7 @@ vector<unsigned int> MacroGenerator::GetGroundedArguments(PDDLActionInstance* ac
     return returnArgs;
 }
 
-GroundedAction MacroGenerator::CombineActions(const vector<GroundedAction> *actions) {
+GroundedAction Generator::CombineActions(const vector<GroundedAction> *actions) {
     // Initialize to first element in actions
     string name = to_string(macroCount++);
     unordered_map<GroundedLiteral, bool> preconditions;
@@ -66,7 +67,7 @@ GroundedAction MacroGenerator::CombineActions(const vector<GroundedAction> *acti
 }
 
 // Pre_1 union (Pre_2 - Eff_1)
-void MacroGenerator::CombinePreconditions( 
+void Generator::CombinePreconditions(
         unordered_map<GroundedLiteral, bool>* priorPrecon, 
         unordered_map<GroundedLiteral, bool> latterPrecon,
         unordered_map<GroundedLiteral, bool>* priorEffs) 
@@ -83,7 +84,7 @@ void MacroGenerator::CombinePreconditions(
 }
 
 // Eff_2 union Eff_1
-void MacroGenerator::CombineEffects(
+void Generator::CombineEffects(
         unordered_map<GroundedLiteral, bool>* priorEffects, 
         unordered_map<GroundedLiteral, bool> latterEffects) 
 {
@@ -95,7 +96,7 @@ void MacroGenerator::CombineEffects(
     }
 }
 
-unordered_set<unsigned int> MacroGenerator::GenerateParameters(
+unordered_set<unsigned int> Generator::GenerateParameters(
         unordered_map<GroundedLiteral, bool>* preconditions, 
         unordered_map<GroundedLiteral, bool>* effects) 
 {

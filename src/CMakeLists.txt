@@ -21,7 +21,7 @@ target_link_libraries(P7
         ActionGenerator
         Hashes
         ProgressBarHelper
-        MacroGenerator
+        Macros
         Regressor
         PartialActionGenerator
         SAS)

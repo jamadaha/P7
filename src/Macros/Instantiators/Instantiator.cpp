@@ -1,8 +1,9 @@
-#include "InstanceGenerator.hh"
+#include "Instantiator.hh"
 
 using namespace std;
+using namespace Macros;
 
-PDDLInstance InstanceGenerator::GenerateInstance(const PDDLDomain *domain, const PDDLProblem *problem, const vector<Macro> *macros) {
+PDDLInstance Instantiator::GenerateInstance(const PDDLDomain *domain, const PDDLProblem *problem, const vector<Macro> *macros) {
     vector<PDDLAction> actions = domain->actions;
     vector<PDDLPredicate> predicates = domain->predicates;
     unordered_map<string, unsigned int> predicateMap = domain->predicateMap;
@@ -24,7 +25,7 @@ PDDLInstance InstanceGenerator::GenerateInstance(const PDDLDomain *domain, const
     return PDDLInstance(newDomain, newProblem);
 }
 
-void InstanceGenerator::GenerateUnaryFacts(
+void Instantiator::GenerateUnaryFacts(
         const vector<Macro>* macros,
         const PDDLProblem* problem,
         unordered_map<string, unsigned int>* predicateMap,
@@ -47,7 +48,7 @@ void InstanceGenerator::GenerateUnaryFacts(
     }
 }
 
-void InstanceGenerator::GenerateMacroActions(
+void Instantiator::GenerateMacroActions(
     const vector<Macro>* macros,
     const PDDLProblem* problem,
     const unordered_map<string, unsigned int>* predicateMap,
@@ -75,7 +76,7 @@ void InstanceGenerator::GenerateMacroActions(
     }
 }
 
-vector<PDDLLiteral> InstanceGenerator::GenerateLiterals(
+vector<PDDLLiteral> Instantiator::GenerateLiterals(
         const unordered_map<GroundedLiteral, bool> *groundedLiterals, 
         unordered_map<unsigned int, unsigned int> *groundedToIndex) 
 {
@@ -91,7 +92,7 @@ vector<PDDLLiteral> InstanceGenerator::GenerateLiterals(
     return literals;
 }
 
-void InstanceGenerator::AppendObjectPreconditions(
+void Instantiator::AppendObjectPreconditions(
         vector<PDDLLiteral> *literals, 
         const unordered_map<string, unsigned int>* predicateMap,
         const vector<string>* parameters) 

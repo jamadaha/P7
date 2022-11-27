@@ -1,5 +1,5 @@
-add_library(IntermediatePDDL "PDDLConverter.cpp" "PDDLAction.cpp" "PDDLActionInstance.cpp" "PDDLDomain.hh" "PDDLInstance.hh" "PDDLLiteral.hh" "PDDLPredicate.hh" "PDDLProblem.hh" "PDDLState.cpp")
-target_sources(IntermediatePDDL
+add_library(PDDL "PDDLConverter.cpp" "PDDLAction.cpp" "PDDLActionInstance.cpp" "PDDLDomain.hh" "PDDLInstance.hh" "PDDLLiteral.hh" "PDDLPredicate.hh" "PDDLProblem.hh" "PDDLState.cpp")
+target_sources(PDDL
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/PDDLConverter.cpp
         ${CMAKE_CURRENT_LIST_DIR}/PDDLAction.cpp
@@ -16,6 +16,6 @@ target_sources(IntermediatePDDL
         ${CMAKE_CURRENT_LIST_DIR}/PDDLPredicate.hh
         ${CMAKE_CURRENT_LIST_DIR}/PDDLProblem.hh
         ${CMAKE_CURRENT_LIST_DIR}/PDDLState.hh)
-target_include_directories(IntermediatePDDL
+target_include_directories(PDDL
     PUBLIC
         ${CMAKE_CURRENT_LIST_DIR})

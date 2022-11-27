@@ -10,56 +10,58 @@
 #include "PDDLActionInstance.hh"
 #include "../Helpers/Hashes.hh"
 
-struct PDDLInstance;
+namespace PDDL {
+    struct Instance;
 
-struct DoActionChanges {
-    std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, bool>>> unaryChanges;
-    std::unordered_map<unsigned int, std::unordered_set<std::pair<std::pair<unsigned int, unsigned int>, bool>>> binaryChanges;
-};
+    struct DoActionChanges {
+        std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, bool>>> unaryChanges;
+        std::unordered_map<unsigned int, std::unordered_set<std::pair<std::pair<unsigned int, unsigned int>, bool>>> binaryChanges;
+    };
 
-struct PDDLState {
-    // Key - Index of predicate | Value - Set of objects which the predicate is true for
-    std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts;
-    std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts;
+    struct State {
+        // Key - Index of predicate | Value - Set of objects which the predicate is true for
+        std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts;
+        std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts;
 
-    PDDLState() {};
-    PDDLState(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts, 
-              std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts) :
-        unaryFacts(unaryFacts), binaryFacts(binaryFacts) {};
-    PDDLState(const PDDLState &state) : unaryFacts(state.unaryFacts), binaryFacts(state.binaryFacts) {};
+        State() {};
+        LState(std::unordered_map<unsigned int, std::unordered_set<unsigned int>> unaryFacts,
+            std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, unsigned int>>> binaryFacts) :
+            unaryFacts(unaryFacts), binaryFacts(binaryFacts) {};
+        State(const PDDLState& state) : unaryFacts(state.unaryFacts), binaryFacts(state.binaryFacts) {};
 
 #pragma region ContainsFact
 
-    bool ContainsFact(const unsigned int &key, const unsigned int *value) const {
-        return unaryFacts.at(key).contains(*value);
-    };
-    bool ContainsFact(const unsigned int &key, const unsigned int &value) const {
-        return unaryFacts.at(key).contains(value);
-    };
+        bool ContainsFact(const unsigned int& key, const unsigned int* value) const {
+            return unaryFacts.at(key).contains(*value);
+        };
+        bool ContainsFact(const unsigned int& key, const unsigned int& value) const {
+            return unaryFacts.at(key).contains(value);
+        };
 
-    bool ContainsFact(const unsigned int &key, const std::pair<unsigned int, unsigned int> &value) const {
-        if (key == 0)
-            return value.first == value.second;
-        return binaryFacts.at(key).contains(value);
-    }
+        bool ContainsFact(const unsigned int& key, const std::pair<unsigned int, unsigned int>& value) const {
+            if (key == 0)
+                return value.first == value.second;
+            return binaryFacts.at(key).contains(value);
+        }
 #pragma endregion ContainsFact
 
-    DoActionChanges DoAction(const PDDLActionInstance *action);
-    void UndoAction(const DoActionChanges * changes);
+        DoActionChanges DoAction(const PDDLActionInstance* action);
+        void UndoAction(const DoActionChanges* changes);
 
-    std::string ToString(const PDDLInstance* instance);
+        std::string ToString(const PDDLInstance* instance);
 
-    // Very slow, please only use with caution
-    friend bool operator== (const PDDLState &lhs, const PDDLState &rhs) {
-        return (lhs.unaryFacts == rhs.unaryFacts && lhs.binaryFacts == rhs.binaryFacts);
+        // Very slow, please only use with caution
+        friend bool operator== (const PDDLState& lhs, const PDDLState& rhs) {
+            return (lhs.unaryFacts == rhs.unaryFacts && lhs.binaryFacts == rhs.binaryFacts);
+        };
+
     };
-    
-};
+}
 
 namespace std {
     template <>
-    struct hash<PDDLState> {
-        auto operator()(const PDDLState& s) const -> size_t {
+    struct hash<PDDL::State> {
+        auto operator()(const PDDL::State& s) const -> size_t {
             size_t h1 = s.unaryFacts.size();
             size_t h2 = s.binaryFacts.size();
             return (h1 ^ (h2 << 1));

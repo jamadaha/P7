@@ -1,8 +1,10 @@
-#include "PDDLState.hh"
+#include "State.hh"
+#include "Instance.hh"
 
-#include "PDDLInstance.hh"
+using namespace std;
+using namespace PDDL;
 
-DoActionChanges PDDLState::DoAction(const PDDLActionInstance *action) {
+DoActionChanges State::DoAction(const ActionInstance *action) {
     DoActionChanges changes = DoActionChanges();
     int actionEffectLength = action->action->effects.size();
     for (int i = 0; i < actionEffectLength; i++) {
@@ -13,39 +15,39 @@ DoActionChanges PDDLState::DoAction(const PDDLActionInstance *action) {
             if (effect.value) {
                 if (!unaryFacts.at(effect.predicateIndex).contains(object)) {
                     if (!changes.unaryChanges.contains(effect.predicateIndex))
-                        changes.unaryChanges[effect.predicateIndex] = std::unordered_set<std::pair<unsigned int, bool>>{ std::make_pair(object, effect.value) };
+                        changes.unaryChanges[effect.predicateIndex] = unordered_set<pair<unsigned int, bool>>{ make_pair(object, effect.value) };
                     else
-                        changes.unaryChanges.at(effect.predicateIndex).emplace(std::make_pair(object, effect.value));
+                        changes.unaryChanges.at(effect.predicateIndex).emplace(make_pair(object, effect.value));
                 }
                     
                 unaryFacts.at(effect.predicateIndex).emplace(object);
             } else {
                 if (unaryFacts.at(effect.predicateIndex).contains(object)) {
                     if (!changes.unaryChanges.contains(effect.predicateIndex))
-                        changes.unaryChanges[effect.predicateIndex] = std::unordered_set<std::pair<unsigned int, bool>>{ std::make_pair(object, effect.value) };
+                        changes.unaryChanges[effect.predicateIndex] = unordered_set<pair<unsigned int, bool>>{ make_pair(object, effect.value) };
                     else
-                        changes.unaryChanges.at(effect.predicateIndex).emplace(std::make_pair(object, effect.value));
+                        changes.unaryChanges.at(effect.predicateIndex).emplace(make_pair(object, effect.value));
                 }
                 unaryFacts.at(effect.predicateIndex).erase(object);
             }
                 
         } else {
-            auto objects = std::make_pair(action->objects.at(effect.args.at(0)), action->objects.at(effect.args.at(1)));
+            auto objects = make_pair(action->objects.at(effect.args.at(0)), action->objects.at(effect.args.at(1)));
             // Handle binary effect
             if (effect.value) {
                 if (!binaryFacts.at(effect.predicateIndex).contains(objects)) {
                     if (!changes.binaryChanges.contains(effect.predicateIndex))
-                        changes.binaryChanges[effect.predicateIndex] = std::unordered_set<std::pair<std::pair<unsigned int, unsigned int>, bool>>{ std::make_pair(objects, effect.value) };
+                        changes.binaryChanges[effect.predicateIndex] = unordered_set<pair<pair<unsigned int, unsigned int>, bool>>{ make_pair(objects, effect.value) };
                     else
-                        changes.binaryChanges.at(effect.predicateIndex).emplace(std::make_pair(objects, effect.value));
+                        changes.binaryChanges.at(effect.predicateIndex).emplace(make_pair(objects, effect.value));
                 }
                 binaryFacts.at(effect.predicateIndex).emplace(objects);
             } else {
                 if (binaryFacts.at(effect.predicateIndex).contains(objects)) {
                     if (!changes.binaryChanges.contains(effect.predicateIndex))
-                        changes.binaryChanges[effect.predicateIndex] = std::unordered_set<std::pair<std::pair<unsigned int, unsigned int>, bool>>{ std::make_pair(objects, effect.value) };
+                        changes.binaryChanges[effect.predicateIndex] = unordered_set<pair<pair<unsigned int, unsigned int>, bool>>{ make_pair(objects, effect.value) };
                     else
-                        changes.binaryChanges.at(effect.predicateIndex).emplace(std::make_pair(objects, effect.value));
+                        changes.binaryChanges.at(effect.predicateIndex).emplace(make_pair(objects, effect.value));
                 }
                 binaryFacts.at(effect.predicateIndex).erase(objects);
             }
@@ -54,7 +56,7 @@ DoActionChanges PDDLState::DoAction(const PDDLActionInstance *action) {
     return changes;
 }
 
-void PDDLState::UndoAction(const DoActionChanges *changes) {
+void State::UndoAction(const DoActionChanges *changes) {
     auto unaryChanges = &changes->unaryChanges;
     auto binaryChanges = &changes->binaryChanges;
 
@@ -83,9 +85,9 @@ void PDDLState::UndoAction(const DoActionChanges *changes) {
     }
 }
 
-std::string PDDLState::ToString(const PDDLInstance* instance)
+string State::ToString(const Instance* instance)
 {
-    std::string temp = "State ";
+    string temp = "State ";
     temp += "\n";
     for (auto &unaryFact : unaryFacts)
     {

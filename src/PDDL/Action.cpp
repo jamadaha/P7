@@ -1,13 +1,16 @@
-#include "PDDLAction.hh"
+#include "Action.hh"
 
-std::vector<std::unordered_set<const PDDLLiteral*>> PDDLAction::GenerateApplicableLiterals(bool unary) const {
-    std::vector<std::unordered_set<const PDDLLiteral*>> set;
+using namespace std;
+using namespace PDDL;
+
+vector<unordered_set<const Literal*>> Action::GenerateApplicableLiterals(bool unary) const {
+    vector<unordered_set<const Literal*>> set;
     if (parameters.size() == 0 || preconditions.size() == 0)
         return set;
     for (int i = 0; i < parameters.size(); i++) {
-        std::unordered_set<const PDDLLiteral*> tempSet;
+        unordered_set<const Literal*> tempSet;
         for (int literalIndex = 0; literalIndex < preconditions.size(); literalIndex++) {
-            const PDDLLiteral *literal = &preconditions.at(literalIndex);
+            const Literal *literal = &preconditions.at(literalIndex);
             if (unary ? (literal->args.size() != 1) : (literal->args.size() == 1))
                 continue;
             for (int argIndex = 0; argIndex < literal->args.size(); argIndex++)
@@ -19,12 +22,12 @@ std::vector<std::unordered_set<const PDDLLiteral*>> PDDLAction::GenerateApplicab
     return set;
 };
 
-std::vector<std::unordered_set<unsigned int>> PDDLAction::GenerateApplicablePredicates() const {
-    std::vector<std::unordered_set<unsigned int>> set;
+vector<unordered_set<unsigned int>> Action::GenerateApplicablePredicates() const {
+    vector<unordered_set<unsigned int>> set;
     if (parameters.size() == 0 || preconditions.size() == 0)
         return set;
     for (int i = 0; i < parameters.size(); i++) {
-        std::unordered_set<unsigned int> tempSet;
+        unordered_set<unsigned int> tempSet;
         
         for (auto literal : applicableUnaryLiterals.at(i)) {
             tempSet.emplace(literal->predicateIndex);
@@ -34,12 +37,12 @@ std::vector<std::unordered_set<unsigned int>> PDDLAction::GenerateApplicablePred
     return set;
 };
 
-std::vector<std::unordered_set<unsigned int>> PDDLAction::GenerateApplicablePredicates(bool unary) const {
-    std::vector<std::unordered_set<unsigned int>> set;
+vector<unordered_set<unsigned int>> Action::GenerateApplicablePredicates(bool unary) const {
+    vector<unordered_set<unsigned int>> set;
     if (parameters.size() == 0 || preconditions.size() == 0)
         return set;
     for (int i = 0; i < parameters.size(); i++) {
-        std::unordered_set<unsigned int> tempSet;
+        unordered_set<unsigned int> tempSet;
         
         for (auto literal : applicableUnaryLiterals.at(i)) {
             tempSet.emplace(literal->predicateIndex);

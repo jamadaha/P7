@@ -1,11 +1,13 @@
-#include "PDDLActionInstance.hh"
+#include "ActionInstance.hh"
+#include "Instance.hh"
 
-#include "PDDLInstance.hh"
+using namespace std;
+using namespace PDDL;
 
-std::string PDDLActionInstance::ToString(const PDDLInstance* instance)
+string ActionInstance::ToString(const PDDLInstance* instance)
 {
     //Print action
-    std::string temp = action->name + "(";
+    string temp = action->name + "(";
     for (int i = 0; i < objects.size(); i++)
     {
         temp += instance->problem->objects[objects[i]];
@@ -22,9 +24,9 @@ std::string PDDLActionInstance::ToString(const PDDLInstance* instance)
     return temp;
 }
 
-std::string PDDLActionInstance::LiteralsToString(std::vector<PDDLLiteral> literals, const PDDLInstance* instance)
+string ActionInstance::LiteralsToString(vector<PDDLLiteral> literals, const PDDLInstance* instance)
 {
-    std::string temp;
+    string temp;
     for (int i = 0; i < literals.size(); i++)
     {
         temp += "(";
@@ -55,9 +57,9 @@ std::string PDDLActionInstance::LiteralsToString(std::vector<PDDLLiteral> litera
     return temp;
 }
 
-size_t PDDLActionInstance::GetHash() {
+size_t ActionInstance::GetHash() {
     if (Hash != 0)
         return Hash;
-    Hash = std::hash<PDDLActionInstance>{}(*this);
+    Hash = hash<PDDLActionInstance>{}(*this);
     return Hash;
 }

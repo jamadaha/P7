@@ -4,15 +4,17 @@
 #include <string>
 #include <vector>
 
-struct PDDLPredicate {
-    const std::string name;
-    // This is only used for later printing
-    const std::vector<std::string> arguments;
-    const int argumentCount;
-    
-    PDDLPredicate(int argumentCount) : argumentCount(argumentCount) {};
-    PDDLPredicate(std::string name, int argumentCount) : name(name), argumentCount(argumentCount), arguments(std::vector<std::string>{ "?x" }) {};
-    PDDLPredicate(std::string name, std::vector<std::string> arguments, int argumentCount) : name(name), arguments(arguments), argumentCount(argumentCount) {};
-};
+namespace PDDL {
+    struct Predicate {
+        const std::string name;
+        // This is only used for later printing
+        const std::vector<std::string> arguments;
+        const int argumentCount;
+
+        Predicate(int argumentCount) : argumentCount(argumentCount) {};
+        Predicate(std::string name, int argumentCount) : name(name), argumentCount(argumentCount), arguments(std::vector<std::string>{ "?x" }) {};
+        Predicate(std::string name, std::vector<std::string> arguments, int argumentCount) : name(name), arguments(arguments), argumentCount(argumentCount) {};
+    };
+}
 
 #endif

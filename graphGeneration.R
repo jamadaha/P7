@@ -54,3 +54,29 @@ report <- read.csv('report.csv')
   reformulationPlot <- ggplot(avgReformulationTimeReport, aes(algorithm, reformulation_time)) + geom_boxplot()
   ggsave(plot=reformulationPlot, filename="reformulationPlot.pdf", width=imgWidth, height=imgHeight)
 
+# Culmin Graph
+minValue = min(report$reformulation_time);
+maxValue = max(report$reformulation_time);
+xSeq = seq.int(minValue, maxValue, 100)
+
+uniqueAlgorithm = levels(unique(report$algorithm));
+
+timeAvg <- as.data.table(report)[,list(time=mean(reformulation_time)),c('domain', 'algorithm', 'problem')]
+
+vecs <- list()
+for (i in seq_along(xSeq)) {
+  for (t in seq_along(uniqueAlgorithm)) {
+    vec <- list()
+    vec[[length(vec)+1]] = as.integer(xSeq[i]);
+    rowCount = nrow(subset(timeAvg, timeAvg$algorithm == uniqueAlgorithm[t] & timeAvg$time < xSeq[i]));
+    vec[[length(vec)+1]] = uniqueAlgorithm[t];
+    vec[[length(vec)+1]] = rowCount;
+    vecs[[length(vecs)+1]] = vec;
+  }
+}
+culDF <- as.data.frame(matrix(unlist(vecs), nrow=length(unlist(vecs[1]))))
+culDF <- as.data.frame(t(culDF))
+
+colnames(culDF) <- c('value', 'algorithm', 'count')
+head(culDF)
+ggplot(data=culDF, aes(x=value, y=count, group=algorithm)) + geom_line(aes(color=algorithm));

@@ -4,7 +4,7 @@
 #include <vector>
 #include <list>
 
-#include "../../IntermediatePDDL/PDDLActionInstance.hh"
+#include "../../PDDL/ActionInstance.hh"
 #include "../Heuristics/BaseHeuristic.hh"
 #include "../DepthFunctions/BaseDepthFunction.hh"
 #include "../WidthFunctions/BaseWidthFunction.hh"
@@ -17,14 +17,14 @@
 
 class WalkerGreedyResume : public BaseWalker {
 public:
-    WalkerGreedyResume(PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) 
+    WalkerGreedyResume(PDDL::Instance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc)
         : BaseWalker("Default", instance, heuristic, widthFunc) {}
     std::vector<Path> Walk() override;
 private:
     const unsigned int maxStepCount = 1000;
     int bestValue = 0;
-    PDDLState bestState;
-    Path Walk(BaseHeuristic* heuristic, const PDDLState state, unsigned int* current);
+    PDDL::State bestState;
+    Path Walk(BaseHeuristic* heuristic, const PDDL::State state, unsigned int* current);
 };
 
 #endif

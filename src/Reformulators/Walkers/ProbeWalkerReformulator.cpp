@@ -1,6 +1,6 @@
 #include "ProbeWalkerReformulator.hh"
 
-std::vector<Path> ProbeWalkerReformulator::PerformWalk(PDDLInstance* instance, bool debugMode) {
+std::vector<Path> ProbeWalkerReformulator::PerformWalk(PDDL::Instance* instance, bool debugMode) {
     auto walkerHeuistic = Configs->GetItem<std::string>("walkerHeuristic");
     auto walker = WalkerBuilder::BuildWalker("walkerProbe", TimeLimit * (1 - Configs->GetItem<double>("reformulationTimeFraction")), walkerHeuistic, instance);
     if (debugMode)

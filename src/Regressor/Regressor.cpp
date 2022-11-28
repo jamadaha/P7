@@ -1,9 +1,9 @@
 #include "Regressor.hh"
 
-Path Regressor::RegressFromState(const PDDLState *state) {
-    std::vector<PDDLActionInstance> steps;
-    std::unordered_set<PDDLState> visitedStates{*state};
-    PDDLState tempState = PDDLState(*state);
+Path Regressor::RegressFromState(const PDDL::State *state) {
+    std::vector<PDDL::ActionInstance> steps;
+    std::unordered_set<PDDL::State> visitedStates{*state};
+    PDDL::State tempState = PDDL::State(*state);
     for (int i = 0; i < this->depthFunction->GetDepth(); i++) {
         std::vector<PartialAction> partialActions = actionGenerator.ExpandState(&tempState);
         if (partialActions.size() == 0)
@@ -26,7 +26,7 @@ Path Regressor::RegressFromState(const PDDLState *state) {
     return Path(reversedSteps, tempState, *state);
 }
 
-PDDLActionInstance Regressor::GetLegalPredecessor(const std::vector<PartialAction> *actions, PDDLState *state, bool *sucess) {
+PDDL::ActionInstance Regressor::GetLegalPredecessor(const std::vector<PartialAction> *actions, PDDL::State *state, bool *sucess) {
     const unsigned int init = rand() % actions->size();
     for (unsigned int i = 0; i < actions->size(); i++) {
         const unsigned int current = (init + i) % actions->size();
@@ -42,5 +42,5 @@ PDDLActionInstance Regressor::GetLegalPredecessor(const std::vector<PartialActio
         }
     }
     (*sucess) = false;
-    return PDDLActionInstance();
+    return PDDL::ActionInstance();
 }

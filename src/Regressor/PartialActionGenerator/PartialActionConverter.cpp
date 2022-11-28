@@ -1,6 +1,6 @@
 #include "PartialActionConverter.hh"
 
-std::vector<PDDLActionInstance> PartialActionConverter::ConvertAction(const PDDLState *state, const PartialAction *action) {
+std::vector<PDDL::ActionInstance> PartialActionConverter::ConvertAction(const PDDL::State *state, const PartialAction *action) {
     if (action->parameters.size() > MAX_PARAMETER_COUNT)
         throw std::logic_error("Parameter count exceeded max");
 
@@ -16,15 +16,15 @@ std::vector<PDDLActionInstance> PartialActionConverter::ConvertAction(const PDDL
 
     RemoveIllegal(state, action->action, &permutations);
 
-    std::vector<PDDLActionInstance> actions;
+    std::vector<PDDL::ActionInstance> actions;
     for (int i = 0; i < permutations.size();  i++)
-        actions.push_back(PDDLActionInstance(action->action, permutations.at(i)));
+        actions.push_back(PDDL::ActionInstance(action->action, permutations.at(i)));
 
     return actions;
 }
 
-std::unordered_set<unsigned int> PartialActionConverter::GetParameterCandidates(const PDDLState *state, const PartialAction *action, const unsigned int paramIndex) {
-    std::vector<const PDDLLiteral*> unaryStaticLiterals;
+std::unordered_set<unsigned int> PartialActionConverter::GetParameterCandidates(const PDDL::State *state, const PartialAction *action, const unsigned int paramIndex) {
+    std::vector<const PDDL::Literal*> unaryStaticLiterals;
     std::unordered_set<unsigned int> candidateObjects = objects;
     for (auto iter = action->action->applicableUnaryLiterals.at(paramIndex).begin(); iter != action->action->applicableUnaryLiterals.at(paramIndex).end(); iter++)
         if (instance->domain->staticPredicates.contains((*iter)->predicateIndex)) {
@@ -82,10 +82,10 @@ bool PartialActionConverter::Permute(const std::unordered_set<unsigned int> para
     return true;
 }
 
-void PartialActionConverter::RemoveIllegal(const PDDLState *state, const PDDLAction *action, std::vector<std::vector<unsigned int>> *permutations) {
+void PartialActionConverter::RemoveIllegal(const PDDL::State *state, const PDDL::Action *action, std::vector<std::vector<unsigned int>> *permutations) {
     auto iter = permutations->begin();
     while (iter != permutations->end()) {
-        PDDLState tempState = *state;
+        PDDL::State tempState = *state;
         for (const auto & effect : action->effects) {
             if (effect.value) {
                 if (effect.args.size() == 1) {
@@ -102,7 +102,7 @@ void PartialActionConverter::RemoveIllegal(const PDDLState *state, const PDDLAct
     } 
 }
 
-bool PartialActionConverter::IsLegal(const PDDLState *state) {
+bool PartialActionConverter::IsLegal(const PDDL::State *state) {
     for (auto const & var : instance->mutexes->variables) {
         bool foundTrue = false;
         for (auto const & atom : var.atoms) {

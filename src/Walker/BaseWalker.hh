@@ -4,7 +4,7 @@
 #include <vector>
 #include <list>
 
-#include "../IntermediatePDDL/PDDLActionInstance.hh"
+#include "../PDDL/ActionInstance.hh"
 #include "Path.hh"
 #include "Heuristics/BaseHeuristic.hh"
 #include "DepthFunctions/BaseDepthFunction.hh"
@@ -24,7 +24,7 @@ public:
     BaseWidthFunction* widthFunc;
     bool SaveStates = false;
 
-    BaseWalker(std::string walkerName, PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) :
+    BaseWalker(std::string walkerName, PDDL::Instance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) :
         WalkerName(walkerName), 
         instance(instance), 
         actionGenerator(ActionGenerator2(&instance->domain->actions, instance->problem->objects.size())),
@@ -43,12 +43,12 @@ public:
     std::function<const void(BaseWalker* sender, int currentStep)> OnWalkerStep;
     std::function<const void(BaseWalker* sender, int timeTaken)> OnWalkerEnd;
 
-    std::function<const void(PDDLInstance* instance, PDDLState* state)> OnTempStateMade;
-    std::function<const void(PDDLInstance* instance, PDDLState* state, PDDLActionInstance* chosenAction)> OnStateWalk;
+    std::function<const void(PDDL::Instance* instance, PDDL::State* state)> OnTempStateMade;
+    std::function<const void(PDDL::Instance* instance, PDDL::State* state, PDDL::ActionInstance* chosenAction)> OnStateWalk;
 
 protected:
     unsigned int _totalIterations = 0;
-    PDDLInstance* instance;
+    PDDL::Instance* instance;
     ActionGenerator2 actionGenerator;
     //ActionGenerator actionGenerator;
 };

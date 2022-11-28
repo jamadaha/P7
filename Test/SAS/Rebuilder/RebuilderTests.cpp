@@ -19,9 +19,9 @@ void CheckPlans(Plan sourcePlan, Plan checkPlan) {
 }
 
 TEST_CASE(TAG + "CanRebuild-NoMacros") {
-	PDDLDomain domain;
-	PDDLProblem problem;
-	PDDLInstance instance(&domain, &problem);
+	PDDL::Domain domain;
+	PDDL::Problem problem;
+	PDDL::Instance instance(&domain, &problem);
 
 	vector<Macros::Macro> macros;
 	vector<SAS::Action> actions{
@@ -37,17 +37,17 @@ TEST_CASE(TAG + "CanRebuild-NoMacros") {
 }
 
 TEST_CASE(TAG + "CanRebuild-OneMacro") {
-	auto action1 = PDDLAction("action1");
-	auto action2 = PDDLAction("action2");
-	auto action3 = PDDLAction("action3");
-	PDDLDomain domain("a", {}, {}, {}, {action1, action2, action3});
-	PDDLProblem problem("a", &domain, { "obj1", "obj2" }, {}, PDDLState(), PDDLState());
-	PDDLInstance instance(&domain, &problem);
+	auto action1 = PDDL::Action("action1");
+	auto action2 = PDDL::Action("action2");
+	auto action3 = PDDL::Action("action3");
+	PDDL::Domain domain("a", {}, {}, {}, {action1, action2, action3});
+	PDDL::Problem problem("a", &domain, { "obj1", "obj2" }, {}, PDDL::State(), PDDL::State());
+	PDDL::Instance instance(&domain, &problem);
 
 	vector<Macros::Macro> macros{
 		Macros::Macro(Macros::GroundedAction("action"), {
-				PDDLActionInstance(&action1, {0,1}),
-				PDDLActionInstance(&action2, {1,0})
+				PDDL::ActionInstance(&action1, {0,1}),
+				PDDL::ActionInstance(&action2, {1,0})
 			})
 	};
 	vector<SAS::Action> actions{
@@ -67,25 +67,25 @@ TEST_CASE(TAG + "CanRebuild-OneMacro") {
 }
 
 TEST_CASE(TAG + "CanRebuild-MultipleMacro") {
-	auto action1 = PDDLAction("action1");
-	auto action2 = PDDLAction("action2");
-	auto action3 = PDDLAction("action3");
-	PDDLDomain domain("a", {}, {}, {}, { action1, action2, action3 });
-	PDDLProblem problem("a", &domain, { "obj1", "obj2" }, {}, PDDLState(), PDDLState());
-	PDDLInstance instance(&domain, &problem);
+	auto action1 = PDDL::Action("action1");
+	auto action2 = PDDL::Action("action2");
+	auto action3 = PDDL::Action("action3");
+	PDDL::Domain domain("a", {}, {}, {}, { action1, action2, action3 });
+	PDDL::Problem problem("a", &domain, { "obj1", "obj2" }, {}, PDDL::State(), PDDL::State());
+	PDDL::Instance instance(&domain, &problem);
 
 	vector<Macros::Macro> macros{
 		Macros::Macro(Macros::GroundedAction("action1"), {
-				PDDLActionInstance(&action1, {0,1}),
-				PDDLActionInstance(&action2, {1,0})
+				PDDL::ActionInstance(&action1, {0,1}),
+				PDDL::ActionInstance(&action2, {1,0})
 			}),
 		Macros::Macro(Macros::GroundedAction("action2"), {
-				PDDLActionInstance(&action2, {0,1}),
-				PDDLActionInstance(&action3, {1,0})
+				PDDL::ActionInstance(&action2, {0,1}),
+				PDDL::ActionInstance(&action3, {1,0})
 			}),
 		Macros::Macro(Macros::GroundedAction("action3"), {
-				PDDLActionInstance(&action1, {0,1}),
-				PDDLActionInstance(&action3, {1,0})
+				PDDL::ActionInstance(&action1, {0,1}),
+				PDDL::ActionInstance(&action3, {1,0})
 			})
 	};
 	vector<SAS::Action> actions{

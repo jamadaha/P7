@@ -353,5 +353,6 @@ MigrationBackup/
 *.vscode
 
 out/
+build/
 
 P7Requirements/

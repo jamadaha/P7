@@ -1,8 +1,8 @@
 #include "WalkerQueue.hpp"
 
-Path WalkerQueue::Walk(BaseHeuristic *heuristic, const PDDLState state) {
+Path WalkerQueue::Walk(BaseHeuristic *heuristic, const PDDL::State state) {
     auto currentNode = searchQueue.begin();
-    auto currentState = PDDLState((*currentNode).second.first);
+    auto currentState = PDDL::State((*currentNode).second.first);
     auto currentPath = Path((*currentNode).second.second);
 
     heuristic->Reset();
@@ -30,7 +30,7 @@ std::vector<Path> WalkerQueue::Walk() {
     if (OnWalkerStart != nullptr)
         OnWalkerStart(this);
 
-    searchQueue.emplace(std::make_pair(0, std::make_pair(this->instance->problem->initState, Path(std::vector<PDDLActionInstance>()))));
+    searchQueue.emplace(std::make_pair(0, std::make_pair(this->instance->problem->initState, Path(std::vector<PDDL::ActionInstance>()))));
 
     auto startTime = std::chrono::steady_clock::now();
     while (widthFunc->Iterate(&current)) {

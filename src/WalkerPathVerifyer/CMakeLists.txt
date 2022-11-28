@@ -9,6 +9,6 @@ target_include_directories(WalkerPathVerifyer
         ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(WalkerPathVerifyer
     PRIVATE
-        IntermediatePDDL
+        PDDL
         Config
         Hashes)

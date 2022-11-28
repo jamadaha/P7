@@ -6,18 +6,18 @@
 
 #include "../Config/Config.hh"
 #include "../Helpers/StringHelper.hh"
-#include "../IntermediatePDDL/PDDLInstance.hh"
-#include "../IntermediatePDDL/PDDLMutex.hh"
+#include "../PDDL/Instance.hh"
+#include "../PDDL/Mutex.hh"
 
 class H2Runner {
 public:
-    H2Runner(PDDLInstance *instance) : instance(instance) {};
-    PDDLMutex RunH2(Config* config);
+    H2Runner(PDDL::Instance *instance) : instance(instance) {};
+    PDDL::Mutex RunH2(Config* config);
 private:
-    PDDLInstance *instance;
-    PDDLMutex ParseOutput();
-    std::vector<PDDLMutexVariable> ParseVariables(std::string h2Output);
-    PDDLMutexVariable ParseVariable(std::vector<std::string> variableInfo);
+    PDDL::Instance *instance;
+    PDDL::Mutex ParseOutput();
+    std::vector<PDDL::MutexVariable> ParseVariables(std::string h2Output);
+    PDDL::MutexVariable ParseVariable(std::vector<std::string> variableInfo);
 };
 
 #endif

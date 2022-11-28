@@ -13,7 +13,7 @@ std::vector<Path> BaseRegressor::Regress() {
     return paths;
 }
 
-void BaseRegressor::GetPredecessorState(PDDLState *state, const PDDLActionInstance *action) {
+void BaseRegressor::GetPredecessorState(PDDL::State *state, const PDDL::ActionInstance *action) {
     // Handle effects
     // Assumes that positive effects were untrue before action
     for (int i = 0; i < action->action->effects.size(); i++) {

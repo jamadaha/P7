@@ -1,7 +1,8 @@
 #ifndef BaseReformulator_HH
 #define BaseReformulator_HH
 
-#include "../IntermediatePDDL/PDDLInstance.hh"
+#include "../PDDL/Instance.hh"
+
 #include "../SAS/Plan.hh"
 #include "../SAS/CodeGenerator/CodeGenerator.hh"
 #include "../SAS/Parser/Parser.hh"
@@ -32,8 +33,8 @@ public:
 
 	}
 
-	virtual PDDLInstance ReformulatePDDL(PDDLInstance* instance) = 0;
-	SAS::Plan RebuildSASPlan(PDDLInstance* instance, SAS::Plan* reformulatedSAS);
+	virtual PDDL::Instance ReformulatePDDL(PDDL::Instance* instance) = 0;
+	SAS::Plan RebuildSASPlan(PDDL::Instance* instance, SAS::Plan* reformulatedSAS);
 protected:
 	Config* Configs;
 	RunReport* Report;
@@ -44,13 +45,13 @@ protected:
 	int macrosGenerated = 0;
 	bool encounteredErrors = false;
 
-	void ValidatePaths(PDDLInstance *instance, int parentReportID, bool debugMode);
-	std::vector<JointPaths::JointPath> FindEntanglements(PDDLInstance* instance, bool debugMode);
+	void ValidatePaths(PDDL::Instance *instance, int parentReportID, bool debugMode);
+	std::vector<JointPaths::JointPath> FindEntanglements(PDDL::Instance* instance, bool debugMode);
     JointPaths::Finder GetEntanglementFinder(bool debugMode);
     JointPaths::Evaluator GetEntanglementEvaluator();
-    PDDLInstance GenerateMacros(PDDLInstance* instance, std::vector<JointPaths::JointPath>* candidates, bool debugMode);
+    PDDL::Instance GenerateMacros(PDDL::Instance* instance, std::vector<JointPaths::JointPath>* candidates, bool debugMode);
 	
-	void PrintEntanglerSteps(std::vector<JointPaths::JointPath>* candidates, PDDLInstance* instance);
+	void PrintEntanglerSteps(std::vector<JointPaths::JointPath>* candidates, PDDL::Instance* instance);
     void PrintEntanglerDebugData(double ellapsed, std::vector<JointPaths::JointPath> *candidates, JointPaths::Finder *entanglementFinder, JointPaths::Evaluator *entanglementEvaluator);
 };
 

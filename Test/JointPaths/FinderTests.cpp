@@ -13,8 +13,8 @@ const std::string TAG = "JointPaths-Finder ";
 #pragma region Can_FindLargeOccurance
 
 TEST_CASE(TAG + "Can_FindLargeOccurance_1") {
-    PDDLAction constantAction = PDDLAction("Action-1");
-    PDDLActionInstance constantInstance(&constantAction, {});
+    PDDL::Action constantAction = PDDL::Action("Action-1");
+    PDDL::ActionInstance constantInstance(&constantAction, {});
     vector<Path> paths = { 
         Path({ constantInstance,constantInstance,constantInstance,constantInstance }),
         Path({ constantInstance,constantInstance,constantInstance,constantInstance }) };
@@ -30,10 +30,10 @@ TEST_CASE(TAG + "Can_FindLargeOccurance_1") {
 }
 
 TEST_CASE(TAG + "Can_FindLargeOccurance_2") {
-    PDDLAction constantAction1 = PDDLAction("Action-1");
-    PDDLActionInstance constantInstance1(&constantAction1, {});
-    PDDLAction constantAction2 = PDDLAction("Action-2");
-    PDDLActionInstance constantInstance2(&constantAction2, {});
+    PDDL::Action constantAction1 = PDDL::Action("Action-1");
+    PDDL::ActionInstance constantInstance1(&constantAction1, {});
+    PDDL::Action constantAction2 = PDDL::Action("Action-2");
+    PDDL::ActionInstance constantInstance2(&constantAction2, {});
 
     vector<Path> paths = {
         Path({ constantInstance1,constantInstance2,constantInstance2,constantInstance1 }),
@@ -52,10 +52,10 @@ TEST_CASE(TAG + "Can_FindLargeOccurance_2") {
 }
 
 TEST_CASE(TAG + "Can_FindLargeOccurance_3") {
-    PDDLAction constantAction1 = PDDLAction("Action-1");
-    PDDLActionInstance constantInstance1(&constantAction1, {});
-    PDDLAction constantAction2 = PDDLAction("Action-2");
-    PDDLActionInstance constantInstance2(&constantAction2, {});
+    PDDL::Action constantAction1 = PDDL::Action("Action-1");
+    PDDL::ActionInstance constantInstance1(&constantAction1, {});
+    PDDL::Action constantAction2 = PDDL::Action("Action-2");
+    PDDL::ActionInstance constantInstance2(&constantAction2, {});
 
     vector<Path> paths = {
         Path({ constantInstance2,constantInstance2,constantInstance1,constantInstance1 }),
@@ -73,10 +73,10 @@ TEST_CASE(TAG + "Can_FindLargeOccurance_3") {
 }
 
 TEST_CASE(TAG + "Can_FindLargeOccurance_Uneven_1") {
-    PDDLAction constantAction1 = PDDLAction("Action-1");
-    PDDLActionInstance constantInstance1(&constantAction1, {});
-    PDDLAction constantAction2 = PDDLAction("Action-2");
-    PDDLActionInstance constantInstance2(&constantAction2, {});
+    PDDL::Action constantAction1 = PDDL::Action("Action-1");
+    PDDL::ActionInstance constantInstance1(&constantAction1, {});
+    PDDL::Action constantAction2 = PDDL::Action("Action-2");
+    PDDL::ActionInstance constantInstance2(&constantAction2, {});
 
     vector<Path> paths = {
         Path({ constantInstance2,constantInstance2,constantInstance1,constantInstance1 }),
@@ -97,10 +97,10 @@ TEST_CASE(TAG + "Can_FindLargeOccurance_Uneven_1") {
 #pragma region Cant_FindLargeOccurance
 
 TEST_CASE(TAG + "Cant_FindLargeOccurance_IfNotThere_1") {
-    PDDLAction constantAction1 = PDDLAction("Action-1");
-    PDDLActionInstance constantInstance1(&constantAction1, {});
-    PDDLAction constantAction2 = PDDLAction("Action-2");
-    PDDLActionInstance constantInstance2(&constantAction2, {});
+    PDDL::Action constantAction1 = PDDL::Action("Action-1");
+    PDDL::ActionInstance constantInstance1(&constantAction1, {});
+    PDDL::Action constantAction2 = PDDL::Action("Action-2");
+    PDDL::ActionInstance constantInstance2(&constantAction2, {});
 
     vector<Path> paths = {
         Path({ constantInstance1,constantInstance1,constantInstance2,constantInstance1 }),
@@ -114,10 +114,10 @@ TEST_CASE(TAG + "Cant_FindLargeOccurance_IfNotThere_1") {
 }
 
 TEST_CASE(TAG + "Cant_FindLargeOccurance_IfNotThere_2") {
-    PDDLAction constantAction1 = PDDLAction("Action-1");
-    PDDLActionInstance constantInstance1(&constantAction1, {});
-    PDDLAction constantAction2 = PDDLAction("Action-2");
-    PDDLActionInstance constantInstance2(&constantAction2, {});
+    PDDL::Action constantAction1 = PDDL::Action("Action-1");
+    PDDL::ActionInstance constantInstance1(&constantAction1, {});
+    PDDL::Action constantAction2 = PDDL::Action("Action-2");
+    PDDL::ActionInstance constantInstance2(&constantAction2, {});
 
     vector<Path> paths = {
         Path({ constantInstance1,constantInstance1,constantInstance1,constantInstance2 }),
@@ -137,10 +137,10 @@ TEST_CASE(TAG + "Cant_FindLargeOccurance_IfNotThere_2") {
 #pragma region Can_FindMediumOccurance
 
 TEST_CASE(TAG + "Can_FindMediumOccurance_1") {
-    PDDLAction constantAction1 = PDDLAction("Action-1");
-    PDDLActionInstance constantInstance1(&constantAction1, {});
-    PDDLAction constantAction2 = PDDLAction("Action-2");
-    PDDLActionInstance constantInstance2(&constantAction2, {});
+    PDDL::Action constantAction1 = PDDL::Action("Action-1");
+    PDDL::ActionInstance constantInstance1(&constantAction1, {});
+    PDDL::Action constantAction2 = PDDL::Action("Action-2");
+    PDDL::ActionInstance constantInstance2(&constantAction2, {});
 
     vector<Path> paths = {
         //      Should find this as an occurance
@@ -156,10 +156,10 @@ TEST_CASE(TAG + "Can_FindMediumOccurance_1") {
 }
 
 TEST_CASE(TAG + "Can_FindMediumOccurance_Uneven_1") {
-    PDDLAction constantAction1 = PDDLAction("Action-1");
-    PDDLActionInstance constantInstance1(&constantAction1, {});
-    PDDLAction constantAction2 = PDDLAction("Action-2");
-    PDDLActionInstance constantInstance2(&constantAction2, {});
+    PDDL::Action constantAction1 = PDDL::Action("Action-1");
+    PDDL::ActionInstance constantInstance1(&constantAction1, {});
+    PDDL::Action constantAction2 = PDDL::Action("Action-2");
+    PDDL::ActionInstance constantInstance2(&constantAction2, {});
 
     vector<Path> paths = {
         //      Should find this as an occurance
@@ -175,10 +175,10 @@ TEST_CASE(TAG + "Can_FindMediumOccurance_Uneven_1") {
 }
 
 TEST_CASE(TAG + "Can_FindMediumOccurance_Uneven_2") {
-    PDDLAction constantAction1 = PDDLAction("Action-1");
-    PDDLActionInstance constantInstance1(&constantAction1, {});
-    PDDLAction constantAction2 = PDDLAction("Action-2");
-    PDDLActionInstance constantInstance2(&constantAction2, {});
+    PDDL::Action constantAction1 = PDDL::Action("Action-1");
+    PDDL::ActionInstance constantInstance1(&constantAction1, {});
+    PDDL::Action constantAction2 = PDDL::Action("Action-2");
+    PDDL::ActionInstance constantInstance2(&constantAction2, {});
 
     vector<Path> paths = {
         //      Should find this as an occurance
@@ -194,10 +194,10 @@ TEST_CASE(TAG + "Can_FindMediumOccurance_Uneven_2") {
 }
 
 TEST_CASE(TAG + "Can_FindMediumOccurance_Uneven_3") {
-    PDDLAction constantAction1 = PDDLAction("Action-1");
-    PDDLActionInstance constantInstance1(&constantAction1, {});
-    PDDLAction constantAction2 = PDDLAction("Action-2");
-    PDDLActionInstance constantInstance2(&constantAction2, {});
+    PDDL::Action constantAction1 = PDDL::Action("Action-1");
+    PDDL::ActionInstance constantInstance1(&constantAction1, {});
+    PDDL::Action constantAction2 = PDDL::Action("Action-2");
+    PDDL::ActionInstance constantInstance2(&constantAction2, {});
 
     vector<Path> paths = {
         //      Should find this as an occurance
@@ -217,12 +217,12 @@ TEST_CASE(TAG + "Can_FindMediumOccurance_Uneven_3") {
 #pragma region Cant_FindMediumOccurance
 
 TEST_CASE(TAG + "Cant_FindMediumOccurance_IfNotThere") {
-    PDDLAction constantAction1 = PDDLAction("Action-1");
-    PDDLActionInstance constantInstance1(&constantAction1, {});
-    PDDLAction constantAction2 = PDDLAction("Action-2");
-    PDDLActionInstance constantInstance2(&constantAction2, {});
-    PDDLAction constantAction3 = PDDLAction("Action-3");
-    PDDLActionInstance constantInstance3(&constantAction3, {});
+    PDDL::Action constantAction1 = PDDL::Action("Action-1");
+    PDDL::ActionInstance constantInstance1(&constantAction1, {});
+    PDDL::Action constantAction2 = PDDL::Action("Action-2");
+    PDDL::ActionInstance constantInstance2(&constantAction2, {});
+    PDDL::Action constantAction3 = PDDL::Action("Action-3");
+    PDDL::ActionInstance constantInstance3(&constantAction3, {});
 
     vector<Path> paths = {
         Path({ constantInstance1,constantInstance1,constantInstance1 }),
@@ -237,12 +237,12 @@ TEST_CASE(TAG + "Cant_FindMediumOccurance_IfNotThere") {
 }
 
 TEST_CASE(TAG + "Cant_FindMediumOccurance_IfNotThere_Uneven") {
-    PDDLAction constantAction1 = PDDLAction("Action-1");
-    PDDLActionInstance constantInstance1(&constantAction1, {});
-    PDDLAction constantAction2 = PDDLAction("Action-2");
-    PDDLActionInstance constantInstance2(&constantAction2, {});
-    PDDLAction constantAction3 = PDDLAction("Action-3");
-    PDDLActionInstance constantInstance3(&constantAction3, {});
+    PDDL::Action constantAction1 = PDDL::Action("Action-1");
+    PDDL::ActionInstance constantInstance1(&constantAction1, {});
+    PDDL::Action constantAction2 = PDDL::Action("Action-2");
+    PDDL::ActionInstance constantInstance2(&constantAction2, {});
+    PDDL::Action constantAction3 = PDDL::Action("Action-3");
+    PDDL::ActionInstance constantInstance3(&constantAction3, {});
 
     vector<Path> paths = {
         Path({ constantInstance1,constantInstance1,constantInstance1 }),
@@ -261,10 +261,10 @@ TEST_CASE(TAG + "Cant_FindMediumOccurance_IfNotThere_Uneven") {
 #pragma region Can_FindSmallOccurance
 
 TEST_CASE(TAG + "Can_FindSmallOccurance_1") {
-    PDDLAction constantAction1 = PDDLAction("Action-1");
-    PDDLActionInstance constantInstance1(&constantAction1, {});
-    PDDLAction constantAction2 = PDDLAction("Action-2");
-    PDDLActionInstance constantInstance2(&constantAction2, {});
+    PDDL::Action constantAction1 = PDDL::Action("Action-1");
+    PDDL::ActionInstance constantInstance1(&constantAction1, {});
+    PDDL::Action constantAction2 = PDDL::Action("Action-2");
+    PDDL::ActionInstance constantInstance2(&constantAction2, {});
 
     vector<Path> paths = {
         //      Should find this as an occurance
@@ -284,10 +284,10 @@ TEST_CASE(TAG + "Can_FindSmallOccurance_1") {
 #pragma region Cant_FindSmallOccurance
 
 TEST_CASE(TAG + "Cant_FindSmallOccurance_1") {
-    PDDLAction constantAction1 = PDDLAction("Action-1");
-    PDDLActionInstance constantInstance1(&constantAction1, {});
-    PDDLAction constantAction2 = PDDLAction("Action-2");
-    PDDLActionInstance constantInstance2(&constantAction2, {});
+    PDDL::Action constantAction1 = PDDL::Action("Action-1");
+    PDDL::ActionInstance constantInstance1(&constantAction1, {});
+    PDDL::Action constantAction2 = PDDL::Action("Action-2");
+    PDDL::ActionInstance constantInstance2(&constantAction2, {});
 
     vector<Path> paths = {
         Path({ constantInstance1,constantInstance1 }),

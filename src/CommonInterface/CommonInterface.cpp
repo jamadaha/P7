@@ -42,33 +42,16 @@ InterfaceStep<void> CommonInterface::CheckFilePaths() {
 	return InterfaceStep<void>();
 }
 
-InterfaceStep<PDDLDriver*> CommonInterface::ParsePDDLFiles() {
+InterfaceStep<PDDL::Instance> CommonInterface::ParsePDDLFiles() {
 	ConsoleHelper::PrintInfo("Parsing PDDL files...");
-	PDDLDriver* originalDriver = new PDDLDriver();
 	Report->Begin("Parsing PDDL Files");
-	if (originalDriver->parse(config.GetItem<filesystem::path>("domain"))) {
-		ConsoleHelper::PrintError("Error parsing the domain file!");
-		return InterfaceStep<PDDLDriver*>(originalDriver, false);
-	}
-	if (originalDriver->parse(config.GetItem<filesystem::path>("problem"))) {
-		ConsoleHelper::PrintError("Error parsing the problem file!");
-		return InterfaceStep<PDDLDriver*>(originalDriver, false);
-	}
+	ExternalParser parser;
+	auto result = parser.Parse(config.GetItem<filesystem::path>("domain"), config.GetItem<filesystem::path>("problem"));
 	Report->Stop();
-	return InterfaceStep<PDDLDriver*>(originalDriver);
+	return InterfaceStep<PDDL::Instance>(result);
 }
 
-InterfaceStep<PDDLInstance*> CommonInterface::ConvertPDDLFormat(PDDLDriver* driver) {
-	ConsoleHelper::PrintInfo("Converting PDDL format...");
-	Report->Begin("Converison of PDDL format");
-	static PDDLDomain domain = PDDLConverter::Convert(driver->domain);
-	static PDDLProblem problem = PDDLConverter::Convert(&domain, driver->problem);
-	PDDLInstance* instance = new PDDLInstance(&domain, &problem);
-	Report->Stop();
-	return InterfaceStep<PDDLInstance*>(instance);
-}
-
-InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulator, PDDLInstance* instance) {
+InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulator, PDDL::Instance* instance) {
 	int timeLeft = config.GetItem<int>("totalTimeLimit") * 1000;
 	int currentIncrementTimeLimit = config.GetItem<int>("startIncrement") * 1000;
 
@@ -115,7 +98,7 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 	return InterfaceStep<void>();
 }
 
-InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, PDDLInstance* instance) {
+InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, PDDL::Instance* instance) {
 	int directProcess = Report->Begin("Solving Problem");
 	int timeLimit = config.GetItem<int>("totalTimeLimit") * 1000;
 
@@ -135,12 +118,12 @@ InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, P
 	return InterfaceStep<void>();
 }
 
-InterfaceStep<CommonInterface::ReformulatorRunResultResult> CommonInterface::RunSingle(BaseReformulator* reformulator, PDDLInstance* instance, int reportID, int reformulatorTimeLimit, int downwardTimeLimit) {
+InterfaceStep<CommonInterface::ReformulatorRunResultResult> CommonInterface::RunSingle(BaseReformulator* reformulator, PDDL::Instance* instance, int reportID, int reformulatorTimeLimit, int downwardTimeLimit) {
 	ConsoleHelper::PrintInfo("Reformulating PDDL...", 1);
 	int reformulationID = Report->Begin("Reformulation of PDDL", reportID);
 	reformulator->ReportID = reformulationID;
 	reformulator->TimeLimit = reformulatorTimeLimit;
-	PDDLInstance reformulatedInstance = reformulator->ReformulatePDDL(instance);
+	PDDL::Instance reformulatedInstance = reformulator->ReformulatePDDL(instance);
 	Report->Stop();
 	Report->Stop(reformulationID);
 	if (reformulator->DidEncounterErrors()) {
@@ -150,7 +133,7 @@ InterfaceStep<CommonInterface::ReformulatorRunResultResult> CommonInterface::Run
 	// Generate new PDDL files
 	ConsoleHelper::PrintInfo("Generating PDDL files...", 1);
 	Report->Begin("Generating PDDL", reportID);
-	PDDLCodeGenerator pddlGenerator = PDDLCodeGenerator(PDDLDomainCodeGenerator(reformulatedInstance.domain), PDDLProblemCodeGenerator(reformulatedInstance.domain, reformulatedInstance.problem));
+	PDDL::CodeGenerator pddlGenerator = PDDL::CodeGenerator(PDDL::DomainCodeGenerator(reformulatedInstance.domain), PDDL::ProblemCodeGenerator(reformulatedInstance.domain, reformulatedInstance.problem));
 	pddlGenerator.GenerateCode(reformulatedInstance, CommonInterface::TempDomainName, CommonInterface::TempProblemName);
 	Report->Stop();
 
@@ -190,7 +173,7 @@ InterfaceStep<SAS::Plan> CommonInterface::ParseSASPlan() {
 	return InterfaceStep<SAS::Plan>(reformulatedSASPlan);
 }
 
-InterfaceStep<SAS::Plan> CommonInterface::RebuildSASPlan(SAS::Plan* reformulatedSASPlan, BaseReformulator* reformulator, PDDLInstance* instance) {
+InterfaceStep<SAS::Plan> CommonInterface::RebuildSASPlan(SAS::Plan* reformulatedSASPlan, BaseReformulator* reformulator, PDDL::Instance* instance) {
 	ConsoleHelper::PrintInfo("Rebuilding the SAS plan...");
 	Report->Begin("Rebuild SAS plan");
 	SAS::Plan outputPlan = reformulator->RebuildSASPlan(instance, reformulatedSASPlan);
@@ -229,17 +212,13 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 	if (!parsePDDLFilesStep.RanWithoutErrors)
 		return CommonInterface::RunResult::ErrorsEncountered;
 
-	auto convertPDDLFormatStep = ConvertPDDLFormat(parsePDDLFilesStep.Data);
-	if (!convertPDDLFormatStep.RanWithoutErrors)
-		return CommonInterface::RunResult::ErrorsEncountered;
-
 	if (!isDirect) {
-		auto runIterativelyStep = RunIteratively(getReformulatorStep.Data, convertPDDLFormatStep.Data);
+		auto runIterativelyStep = RunIteratively(getReformulatorStep.Data, &parsePDDLFilesStep.Data);
 		if (!runIterativelyStep.RanWithoutErrors)
 			return CommonInterface::RunResult::ErrorsEncountered;
 	}
 	else {
-		auto runNonIterativelyStep = RunDirect(getReformulatorStep.Data, convertPDDLFormatStep.Data);
+		auto runNonIterativelyStep = RunDirect(getReformulatorStep.Data, &parsePDDLFilesStep.Data);
 		if (!runNonIterativelyStep.RanWithoutErrors)
 			return CommonInterface::RunResult::ErrorsEncountered;
 	}
@@ -254,7 +233,7 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 	if (!parseSASPlanStep.RanWithoutErrors)
 		return CommonInterface::RunResult::ErrorsEncountered;
 
-	auto rebuildSASPlanStep = RebuildSASPlan(&parseSASPlanStep.Data, getReformulatorStep.Data, convertPDDLFormatStep.Data);
+	auto rebuildSASPlanStep = RebuildSASPlan(&parseSASPlanStep.Data, getReformulatorStep.Data, &parsePDDLFilesStep.Data);
 	if (!rebuildSASPlanStep.RanWithoutErrors)
 		return CommonInterface::RunResult::ErrorsEncountered;
 

@@ -16,7 +16,7 @@ string Path::ToString() {
 	return retStr;
 }
 
-string Path::ToString(const PDDLProblem *problem) {
+string Path::ToString(const PDDL::Problem *problem) {
 	string retStr = "";
 	for (auto step : steps) {
 		retStr += "(" + step.action->name + ", [";

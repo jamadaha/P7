@@ -19,9 +19,9 @@ TEST_CASE(TAG + "Can_Remove_Candidates_If_Too_Many_1") {
 	evaluator.OccuranceModifier = EvaluationModifiers::OccuranceModifiers::None;
 
 	unordered_map<size_t, JointPath> candidates{
-		{1, JointPath(vector<PDDLActionInstance*>(), 1)},
-		{2, JointPath(vector<PDDLActionInstance*>(), 2)},
-		{3, JointPath(vector<PDDLActionInstance*>(), 3)}
+		{1, JointPath(vector<PDDL::ActionInstance*>(), 1)},
+		{2, JointPath(vector<PDDL::ActionInstance*>(), 2)},
+		{3, JointPath(vector<PDDL::ActionInstance*>(), 3)}
 	};
 
 	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
@@ -37,9 +37,9 @@ TEST_CASE(TAG + "Can_Remove_Candidates_If_Too_Many_2") {
 	evaluator.OccuranceModifier = EvaluationModifiers::OccuranceModifiers::None;
 
 	unordered_map<size_t, JointPath> candidates{
-		{1, JointPath(vector<PDDLActionInstance*>(), 1)},
-		{2, JointPath(vector<PDDLActionInstance*>(), 2)},
-		{3, JointPath(vector<PDDLActionInstance*>(), 3)}
+		{1, JointPath(vector<PDDL::ActionInstance*>(), 1)},
+		{2, JointPath(vector<PDDL::ActionInstance*>(), 2)},
+		{3, JointPath(vector<PDDL::ActionInstance*>(), 3)}
 	};
 
 	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
@@ -55,9 +55,9 @@ TEST_CASE(TAG + "Wont_Remove_If_Too_Little") {
 	evaluator.OccuranceModifier = EvaluationModifiers::OccuranceModifiers::None;
 
 	unordered_map<size_t, JointPath> candidates{
-		{1, JointPath(vector<PDDLActionInstance*>(), 1)},
-		{2, JointPath(vector<PDDLActionInstance*>(), 2)},
-		{3, JointPath(vector<PDDLActionInstance*>(), 3)}
+		{1, JointPath(vector<PDDL::ActionInstance*>(), 1)},
+		{2, JointPath(vector<PDDL::ActionInstance*>(), 2)},
+		{3, JointPath(vector<PDDL::ActionInstance*>(), 3)}
 	};
 
 	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
@@ -74,9 +74,9 @@ TEST_CASE(TAG + "Can_Remove_Too_Low_Quality_1") {
 	evaluator.OccuranceModifier = EvaluationModifiers::OccuranceModifiers::None;
 
 	unordered_map<size_t, JointPath> candidates{
-		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 0, 0.1)},
-		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 0, 0.5)},
-		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 0, 1)}
+		{1, JointPath(vector<PDDL::ActionInstance*>(), 1, 2, 0, 0.1)},
+		{2, JointPath(vector<PDDL::ActionInstance*>(), 2, 2, 0, 0.5)},
+		{3, JointPath(vector<PDDL::ActionInstance*>(), 3, 2, 0, 1)}
 	};
 
 	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
@@ -93,9 +93,9 @@ TEST_CASE(TAG + "Can_Remove_Too_Low_Quality_2") {
 	evaluator.OccuranceModifier = EvaluationModifiers::OccuranceModifiers::None;
 
 	unordered_map<size_t, JointPath> candidates{
-		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 0, 0.1)},
-		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 0, 0.5)},
-		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 0, 1)}
+		{1, JointPath(vector<PDDL::ActionInstance*>(), 1, 2, 0, 0.1)},
+		{2, JointPath(vector<PDDL::ActionInstance*>(), 2, 2, 0, 0.5)},
+		{3, JointPath(vector<PDDL::ActionInstance*>(), 3, 2, 0, 1)}
 	};
 
 	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
@@ -112,9 +112,9 @@ TEST_CASE(TAG + "Can_Remove_Too_Low_Quality_3") {
 	evaluator.OccuranceModifier = EvaluationModifiers::OccuranceModifiers::None;
 
 	unordered_map<size_t, JointPath> candidates{
-		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 0, 0.1)},
-		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 0, 0.5)},
-		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 0, 1)}
+		{1, JointPath(vector<PDDL::ActionInstance*>(), 1, 2, 0, 0.1)},
+		{2, JointPath(vector<PDDL::ActionInstance*>(), 2, 2, 0, 0.5)},
+		{3, JointPath(vector<PDDL::ActionInstance*>(), 3, 2, 0, 1)}
 	};
 
 	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
@@ -151,9 +151,9 @@ TEST_CASE(TAG + "Can_Sort_Candidates") {
 	evaluator.OccuranceModifier = EvaluationModifiers::OccuranceModifiers::None;
 
 	unordered_map<size_t, JointPath> candidates{
-		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 0, 1)},
-		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 0, 0.2)},
-		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 0, 0.4)}
+		{1, JointPath(vector<PDDL::ActionInstance*>(), 1, 2, 0, 1)},
+		{2, JointPath(vector<PDDL::ActionInstance*>(), 2, 2, 0, 0.2)},
+		{3, JointPath(vector<PDDL::ActionInstance*>(), 3, 2, 0, 0.4)}
 	};
 
 	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
@@ -183,9 +183,9 @@ TEST_CASE(TAG + "Can_Set_Lenght_Modifier_None") {
 	};
 
 	unordered_map<size_t, JointPath> candidates{
-		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 2, 1)},
-		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 4, 1)},
-		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 6, 1)}
+		{1, JointPath(vector<PDDL::ActionInstance*>(), 1, 2, 2, 1)},
+		{2, JointPath(vector<PDDL::ActionInstance*>(), 2, 2, 4, 1)},
+		{3, JointPath(vector<PDDL::ActionInstance*>(), 3, 2, 6, 1)}
 	};
 
 	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
@@ -211,9 +211,9 @@ TEST_CASE(TAG + "Can_Set_Lenght_Modifier_Default") {
 	};
 
 	unordered_map<size_t, JointPath> candidates{
-		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 2, 1)},
-		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 4, 1)},
-		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 6, 1)}
+		{1, JointPath(vector<PDDL::ActionInstance*>(), 1, 2, 2, 1)},
+		{2, JointPath(vector<PDDL::ActionInstance*>(), 2, 2, 4, 1)},
+		{3, JointPath(vector<PDDL::ActionInstance*>(), 3, 2, 6, 1)}
 	};
 
 	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
@@ -239,9 +239,9 @@ TEST_CASE(TAG + "Can_Set_Lenght_Modifier_LengthBias") {
 	};
 
 	unordered_map<size_t, JointPath> candidates{
-		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 2, 1)},
-		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 4, 1)},
-		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 6, 1)}
+		{1, JointPath(vector<PDDL::ActionInstance*>(), 1, 2, 2, 1)},
+		{2, JointPath(vector<PDDL::ActionInstance*>(), 2, 2, 4, 1)},
+		{3, JointPath(vector<PDDL::ActionInstance*>(), 3, 2, 6, 1)}
 	};
 
 	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
@@ -271,9 +271,9 @@ TEST_CASE(TAG + "Can_Set_Occurance_Modifier_None") {
 	};
 
 	unordered_map<size_t, JointPath> candidates{
-		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 2, 1)},
-		{2, JointPath(vector<PDDLActionInstance*>(), 2, 2, 4, 1)},
-		{3, JointPath(vector<PDDLActionInstance*>(), 3, 2, 6, 1)}
+		{1, JointPath(vector<PDDL::ActionInstance*>(), 1, 2, 2, 1)},
+		{2, JointPath(vector<PDDL::ActionInstance*>(), 2, 2, 4, 1)},
+		{3, JointPath(vector<PDDL::ActionInstance*>(), 3, 2, 6, 1)}
 	};
 
 	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
@@ -299,9 +299,9 @@ TEST_CASE(TAG + "Can_Set_Occurance_Modifier_Default") {
 	};
 
 	unordered_map<size_t, JointPath> candidates{
-		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 2, 1)},
-		{2, JointPath(vector<PDDLActionInstance*>(), 2, 4, 4, 1)},
-		{3, JointPath(vector<PDDLActionInstance*>(), 3, 6, 6, 1)}
+		{1, JointPath(vector<PDDL::ActionInstance*>(), 1, 2, 2, 1)},
+		{2, JointPath(vector<PDDL::ActionInstance*>(), 2, 4, 4, 1)},
+		{3, JointPath(vector<PDDL::ActionInstance*>(), 3, 6, 6, 1)}
 	};
 
 	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);
@@ -327,9 +327,9 @@ TEST_CASE(TAG + "Can_Set_Occurance_Modifier_LowOccuranceBias") {
 	};
 
 	unordered_map<size_t, JointPath> candidates{
-		{1, JointPath(vector<PDDLActionInstance*>(), 1, 2, 2, 1)},
-		{2, JointPath(vector<PDDLActionInstance*>(), 2, 4, 4, 1)},
-		{3, JointPath(vector<PDDLActionInstance*>(), 3, 6, 6, 1)}
+		{1, JointPath(vector<PDDL::ActionInstance*>(), 1, 2, 2, 1)},
+		{2, JointPath(vector<PDDL::ActionInstance*>(), 2, 4, 4, 1)},
+		{3, JointPath(vector<PDDL::ActionInstance*>(), 3, 6, 6, 1)}
 	};
 
 	auto result = evaluator.EvaluateAndSanitizeCandidates(candidates);

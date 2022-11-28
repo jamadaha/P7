@@ -13,6 +13,6 @@ target_include_directories(Regressor
         ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(Regressor
     PRIVATE
-        IntermediatePDDL
+        PDDL
         Config
         Hashes)

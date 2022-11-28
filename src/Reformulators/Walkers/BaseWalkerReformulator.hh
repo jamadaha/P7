@@ -5,24 +5,24 @@
 #include <string>
 
 #include "../BaseReformulator.hh"
-#include "../../IntermediatePDDL/PDDLInstance.hh"
-#include "../../IntermediatePDDL/PDDLActionInstance.hh"
+#include "../../PDDL/Instance.hh"
+#include "../../PDDL/ActionInstance.hh"
 #include "../../Walker/Path.hh"
 #include "../../Walker/BaseWalker.hh"
 
 class BaseWalkerReformulator : public BaseReformulator {
 public:
     BaseWalkerReformulator(Config *config, RunReport *report) : BaseReformulator(config, report) {};
-	PDDLInstance ReformulatePDDL(PDDLInstance *instance) override;
+	PDDL::Instance ReformulatePDDL(PDDL::Instance *instance) override;
 
 protected:
-    virtual std::vector<Path> PerformWalk(PDDLInstance *instance, bool debugMode) = 0;
+    virtual std::vector<Path> PerformWalk(PDDL::Instance *instance, bool debugMode) = 0;
     void SetupWalkerDebugInfo(BaseWalker* walker);
 
 private:
     ProgressBarHelper* walkerBar;
 
-    void FindPaths(PDDLInstance *instance, bool debugMode);
+    void FindPaths(PDDL::Instance *instance, bool debugMode);
 
     void PrintWalkerDebugData(double ellapsed);
 };

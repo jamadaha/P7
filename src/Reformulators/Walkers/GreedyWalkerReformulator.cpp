@@ -1,6 +1,6 @@
 #include "GreedyWalkerReformulator.hh"
 
-std::vector<Path> GreedyWalkerReformulator::PerformWalk(PDDLInstance *instance, bool debugMode) {
+std::vector<Path> GreedyWalkerReformulator::PerformWalk(PDDL::Instance *instance, bool debugMode) {
     auto walkerHeuistic = Configs->GetItem<std::string>("walkerHeuristic");
     auto walker = WalkerBuilder::BuildWalker("walkerGreedy", TimeLimit * (1 - Configs->GetItem<double>("reformulationTimeFraction")), walkerHeuistic, instance);
         if (debugMode)

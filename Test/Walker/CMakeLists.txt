@@ -3,7 +3,7 @@ target_link_libraries(Tests-ActionGenerator
     PRIVATE 
         Catch2::Catch2WithMain
         ActionGenerator
-        IntermediatePDDL)
+        PDDL)
 
 catch_discover_tests(Tests-ActionGenerator)
 
@@ -13,7 +13,7 @@ target_link_libraries(Tests-Walker
     PRIVATE 
         Catch2::Catch2WithMain
         Walker
-        IntermediatePDDL
+        PDDL
         ActionGenerator)
 
 catch_discover_tests(Tests-Walker)

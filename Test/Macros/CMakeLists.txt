@@ -3,6 +3,6 @@ target_link_libraries(Tests-Macros
     PRIVATE 
         Catch2::Catch2WithMain
         Macros
-        IntermediatePDDL)
+        PDDL)
 
 catch_discover_tests(Tests-Macros)

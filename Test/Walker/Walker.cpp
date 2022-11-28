@@ -1,11 +1,11 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "../../src/IntermediatePDDL/PDDLState.hh"
+#include "../../src/PDDL/State.hh"
 
 const std::string TAG = "Walker ";
 
 TEST_CASE(TAG + "DoAction Unary") {
-    PDDLState state = PDDLState(
+    PDDL::State state = PDDL::State(
         std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{
             {0, std::unordered_set<unsigned int>{ }},
             {1, std::unordered_set<unsigned int>{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }}
@@ -16,18 +16,18 @@ TEST_CASE(TAG + "DoAction Unary") {
     );
 
     SECTION("Adding") {
-        PDDLAction action = PDDLAction("Name",
+        PDDL::Action action = PDDL::Action("Name",
         std::vector<std::string>{ "?x" },
-        std::vector<PDDLLiteral>{},
-        std::vector<PDDLLiteral>{
-            PDDLLiteral(0, std::vector<unsigned int>{ 0 }, true),
-            PDDLLiteral(1, std::vector<unsigned int>{ 0 }, true)
+        std::vector<PDDL::Literal>{},
+        std::vector<PDDL::Literal>{
+            PDDL::Literal(0, std::vector<unsigned int>{ 0 }, true),
+            PDDL::Literal(1, std::vector<unsigned int>{ 0 }, true)
         });
         for (unsigned int i = 0; i < 10; i++) {
             // Check that state is as expected
             REQUIRE(!state.unaryFacts.at(0).contains(i));
             REQUIRE(state.unaryFacts.at(1).contains(i));
-            PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ i });
+            PDDL::ActionInstance actionInstance = PDDL::ActionInstance(&action, std::vector<unsigned int>{ i });
             state.DoAction(&actionInstance);
             // Check that the state has been updated
             REQUIRE(state.unaryFacts.at(0).contains(i));
@@ -45,18 +45,18 @@ TEST_CASE(TAG + "DoAction Unary") {
     };
 
     SECTION("Subtracting") {
-        PDDLAction action = PDDLAction("Name",
+        PDDL::Action action = PDDL::Action("Name",
         std::vector<std::string>{ "?x" },
-        std::vector<PDDLLiteral>{},
-        std::vector<PDDLLiteral>{
-            PDDLLiteral(0, std::vector<unsigned int>{ 0 }, false),
-            PDDLLiteral(1, std::vector<unsigned int>{ 0 }, false)
+        std::vector<PDDL::Literal>{},
+        std::vector<PDDL::Literal>{
+            PDDL::Literal(0, std::vector<unsigned int>{ 0 }, false),
+            PDDL::Literal(1, std::vector<unsigned int>{ 0 }, false)
         });
         for (unsigned int i = 0; i < 10; i++) {
             // Check that state is as expected
             REQUIRE(!state.unaryFacts.at(0).contains(i));
             REQUIRE(state.unaryFacts.at(1).contains(i));
-            PDDLActionInstance actionInstance = PDDLActionInstance(&action, std::vector<unsigned int>{ i });
+            PDDL::ActionInstance actionInstance = PDDL::ActionInstance(&action, std::vector<unsigned int>{ i });
             state.DoAction(&actionInstance);
             // Check that the state has been updated
             REQUIRE(!state.unaryFacts.at(0).contains(i));

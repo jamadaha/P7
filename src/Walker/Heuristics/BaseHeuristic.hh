@@ -8,22 +8,22 @@
 #include <algorithm>
 #include <random>
 
-#include "../../IntermediatePDDL/PDDLDomain.hh"
-#include "../../IntermediatePDDL/PDDLProblem.hh"
-#include "../../IntermediatePDDL/PDDLInstance.hh"
-#include "../../IntermediatePDDL/PDDLActionInstance.hh"
+#include "../../PDDL/Domain.hh"
+#include "../../PDDL/Problem.hh"
+#include "../../PDDL/Instance.hh"
+#include "../../PDDL/ActionInstance.hh"
 
 class BaseHeuristic {
 public:
-	const PDDLDomain *domain;
-	const PDDLProblem *problem;
-	BaseHeuristic(const PDDLDomain *domain, const PDDLProblem *problem) : domain(domain), problem(problem) {
+	const PDDL::Domain *domain;
+	const PDDL::Problem *problem;
+	BaseHeuristic(const PDDL::Domain *domain, const PDDL::Problem *problem) : domain(domain), problem(problem) {
 		srand(time(NULL));
 	}
 
-	virtual PDDLActionInstance* NextChoice(PDDLState * state, std::vector<PDDLActionInstance> *choices) = 0; 
+	virtual PDDL::ActionInstance* NextChoice(PDDL::State * state, std::vector<PDDL::ActionInstance> *choices) = 0;
 
-	virtual int Eval(const PDDLState* state) const = 0;
+	virtual int Eval(const PDDL::State* state) const = 0;
 	virtual void Reset() = 0;
 };
 

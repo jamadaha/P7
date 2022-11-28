@@ -4,7 +4,7 @@
 #include <vector>
 #include <list>
 
-#include "../../IntermediatePDDL/PDDLActionInstance.hh"
+#include "../../PDDL/ActionInstance.hh"
 #include "../Heuristics/BaseHeuristic.hh"
 #include "../DepthFunctions/BaseDepthFunction.hh"
 #include "../WidthFunctions/BaseWidthFunction.hh"
@@ -17,14 +17,14 @@
 
 class WalkerQueue : public BaseWalker {
 public:
-    WalkerQueue(PDDLInstance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) 
+    WalkerQueue(PDDL::Instance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc)
         : BaseWalker("Default", instance, heuristic, widthFunc) {}
     std::vector<Path> Walk() override;
 private:
     const unsigned int maxStepCount = 100;
-    static constexpr auto cmp = [](std::pair<int, std::pair<PDDLState, Path>> a, std::pair<int, std::pair<PDDLState, Path>> b) { return a.first > b.first; };
-    std::multiset<std::pair<int, std::pair<PDDLState, Path>>, decltype(cmp)> searchQueue;
-    Path Walk(BaseHeuristic* heuristic, const PDDLState state);
+    static constexpr auto cmp = [](std::pair<int, std::pair<PDDL::State, Path>> a, std::pair<int, std::pair<PDDL::State, Path>> b) { return a.first > b.first; };
+    std::multiset<std::pair<int, std::pair<PDDL::State, Path>>, decltype(cmp)> searchQueue;
+    Path Walk(BaseHeuristic* heuristic, const PDDL::State state);
 };
 
 #endif

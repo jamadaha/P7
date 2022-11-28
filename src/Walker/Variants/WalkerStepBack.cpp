@@ -1,13 +1,13 @@
 #include "WalkerStepBack.hpp"
 
-Path WalkerStepBack::Walk(BaseHeuristic *heuristic, const PDDLState *state, unsigned int* current) {
-    std::vector<PDDLActionInstance> steps; 
+Path WalkerStepBack::Walk(BaseHeuristic *heuristic, const PDDL::State *state, unsigned int* current) {
+    std::vector<PDDL::ActionInstance> steps; 
     steps.reserve(maxStepCount);
-    std::unordered_set<PDDLState> visitedStates; 
+    std::unordered_set<PDDL::State> visitedStates; 
     visitedStates.reserve(maxStepCount);
 
-    PDDLState endState;
-    PDDLState tempState = PDDLState(state->unaryFacts, state->binaryFacts);
+    PDDL::State endState;
+    PDDL::State tempState = PDDL::State(state->unaryFacts, state->binaryFacts);
     if (OnTempStateMade != nullptr)
         OnTempStateMade(this->instance, &tempState);
 
@@ -18,12 +18,12 @@ Path WalkerStepBack::Walk(BaseHeuristic *heuristic, const PDDLState *state, unsi
         if (!widthFunc->Iterate(current))
             break;
 
-        std::vector<PDDLActionInstance> possibleActions;
+        std::vector<PDDL::ActionInstance> possibleActions;
         possibleActions = actionGenerator.GenerateActions(&tempState);
 
         if (possibleActions.size() == 0) break;
-        PDDLActionInstance *chosenAction = heuristic->NextChoice(&tempState, &possibleActions);
-        DoActionChanges changes = tempState.DoAction(chosenAction);
+        PDDL::ActionInstance *chosenAction = heuristic->NextChoice(&tempState, &possibleActions);
+        PDDL::DoActionChanges changes = tempState.DoAction(chosenAction);
 
         while (visitedStates.contains(tempState)) {
             tempState.UndoAction(&changes);

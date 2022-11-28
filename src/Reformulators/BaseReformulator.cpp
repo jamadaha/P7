@@ -1,6 +1,6 @@
 #include "BaseReformulator.hh"
 
-void BaseReformulator::ValidatePaths(PDDLInstance *instance, int parentReportID, bool debugMode) {
+void BaseReformulator::ValidatePaths(PDDL::Instance *instance, int parentReportID, bool debugMode) {
 	if (Configs->GetItem<bool>("validatePaths")) {
 		int verifyID = Report->Begin("Verifying Paths", parentReportID);
 		if (debugMode) {
@@ -31,7 +31,7 @@ void BaseReformulator::ValidatePaths(PDDLInstance *instance, int parentReportID,
 	}
 }
 
-std::vector<JointPaths::JointPath> BaseReformulator::FindEntanglements(PDDLInstance* instance, bool debugMode) {
+std::vector<JointPaths::JointPath> BaseReformulator::FindEntanglements(PDDL::Instance* instance, bool debugMode) {
     JointPaths::Finder finder = GetEntanglementFinder(debugMode);
     JointPaths::Evaluator evaluator = GetEntanglementEvaluator();
     int entangleID = Report->Begin("Finding Entanglements", ReportID);
@@ -102,7 +102,7 @@ JointPaths::Evaluator BaseReformulator::GetEntanglementEvaluator() {
 	return ee;
 }
 
-PDDLInstance BaseReformulator::GenerateMacros(PDDLInstance* instance, std::vector<JointPaths::JointPath>* candidates, bool debugMode) {
+PDDL::Instance BaseReformulator::GenerateMacros(PDDL::Instance* instance, std::vector<JointPaths::JointPath>* candidates, bool debugMode) {
 	if (debugMode)
 		ConsoleHelper::PrintDebugInfo("[Macro Generator] Generating Macros...", debugIndent);
 
@@ -120,12 +120,12 @@ PDDLInstance BaseReformulator::GenerateMacros(PDDLInstance* instance, std::vecto
 	return result;
 }
 
-SAS::Plan BaseReformulator::RebuildSASPlan(PDDLInstance *instance, SAS::Plan* reformulatedSAS) {
+SAS::Plan BaseReformulator::RebuildSASPlan(PDDL::Instance *instance, SAS::Plan* reformulatedSAS) {
 	SAS::Rebuilder builder = SAS::Rebuilder(instance, &macros);
 	return builder.RebuildSASPlan(reformulatedSAS);
 }
 
-void BaseReformulator::PrintEntanglerSteps(std::vector<JointPaths::JointPath>* candidates, PDDLInstance* instance) {
+void BaseReformulator::PrintEntanglerSteps(std::vector<JointPaths::JointPath>* candidates, PDDL::Instance* instance) {
 	ConsoleHelper::PrintDebugInfo("[Entanglement Evaluator] Top 10 Entanglements:", debugIndent);
 	ConsoleHelper::PrintDebugInfo("[Entanglements] Quality  : Chain", debugIndent + 1);
 	int counter = 0;

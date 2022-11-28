@@ -6,7 +6,7 @@
 #include "../../Walker/WidthFunctions/ConstantWidthFunction.hh"
 #include "../../Walker/WidthFunctions/TimeWidthFunction.hh"
 
-std::vector<Path> RegressionReformulator::PerformRegression(PDDLInstance *instance, bool debugMode) {
+std::vector<Path> RegressionReformulator::PerformRegression(PDDL::Instance *instance, bool debugMode) {
     Regressor regressor = Regressor(instance, new ConstantDepthFunction(100, instance), new TimeWidthFunction(TimeLimit));
 	return regressor.Regress();
 }

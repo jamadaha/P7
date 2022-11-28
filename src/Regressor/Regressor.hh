@@ -3,7 +3,7 @@
 
 #include "BaseRegressor.hh"
 
-#include "../IntermediatePDDL/PDDLInstance.hh"
+#include "../PDDL/Instance.hh"
 
 #include "PartialActionGenerator/PartialActionGenerator.hh"
 #include "PartialActionGenerator/PartialActionConverter.hh"
@@ -11,22 +11,22 @@
 class Regressor : public BaseRegressor {
 public:
     struct RegressionStep {
-        const PDDLState state;
-        const PDDLActionInstance action;
-        RegressionStep(PDDLState state, PDDLActionInstance action) : state(state), action(action) {};
+        const PDDL::State state;
+        const PDDL::ActionInstance action;
+        RegressionStep(PDDL::State state, PDDL::ActionInstance action) : state(state), action(action) {};
     };
-    Regressor(const PDDLInstance *instance, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc) : 
+    Regressor(const PDDL::Instance *instance, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc) :
     BaseRegressor(instance, depthFunc, widthFunc), 
     actionGenerator(PartialActionGenerator(&instance->domain->actions, instance->problem->objects.size())),
     actionConverter(PartialActionConverter(instance)) {};
 protected:
-    Path RegressFromState(const PDDLState *state) override;
+    Path RegressFromState(const PDDL::State *state) override;
     
 private:
     
     PartialActionGenerator actionGenerator;
     PartialActionConverter actionConverter;
-    PDDLActionInstance GetLegalPredecessor(const std::vector<PartialAction> *actions, PDDLState *state, bool *sucess);
+    PDDL::ActionInstance GetLegalPredecessor(const std::vector<PartialAction> *actions, PDDL::State *state, bool *sucess);
 };
 
 #endif

@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "../IntermediatePDDL/PDDLState.hh"
+#include "../PDDL/State.hh"
 
 #include "../Walker/Path.hh"
 
@@ -12,16 +12,16 @@
 
 class BaseRegressor {
 public:
-    BaseRegressor(const PDDLInstance *instance, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc) : instance(instance), depthFunction(depthFunc), widthFunction(widthFunc) {};
+    BaseRegressor(const PDDL::Instance *instance, BaseDepthFunction *depthFunc, BaseWidthFunction *widthFunc) : instance(instance), depthFunction(depthFunc), widthFunction(widthFunc) {};
     std::vector<Path> Regress();
     
 protected:
-    const PDDLInstance *instance;
+    const PDDL::Instance *instance;
     BaseDepthFunction *depthFunction;
     BaseWidthFunction *widthFunction;
 
-    virtual Path RegressFromState(const PDDLState *state) = 0;
-    void GetPredecessorState(PDDLState *state, const PDDLActionInstance *action);
+    virtual Path RegressFromState(const PDDL::State *state) = 0;
+    void GetPredecessorState(PDDL::State *state, const PDDL::ActionInstance *action);
 };
 
 #endif

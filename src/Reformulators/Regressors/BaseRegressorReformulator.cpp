@@ -1,6 +1,6 @@
 #include "BaseRegressorReformulator.hh"
 
-PDDLInstance BaseRegressorReformulator::ReformulatePDDL(PDDLInstance* instance) {
+PDDL::Instance BaseRegressorReformulator::ReformulatePDDL(PDDL::Instance* instance) {
     bool debugMode = Configs->GetItem<bool>("debugmode");
 
 	if (!HaveRunPreprocessor)
@@ -12,12 +12,12 @@ PDDLInstance BaseRegressorReformulator::ReformulatePDDL(PDDLInstance* instance) 
     std::vector<JointPaths::JointPath> candidates = FindEntanglements(instance, debugMode);
 
 	// Macro Generation
-	PDDLInstance macroInstance = GenerateMacros(instance, &candidates, debugMode);
+	PDDL::Instance macroInstance = GenerateMacros(instance, &candidates, debugMode);
 
     return macroInstance;
 }
 
-void BaseRegressorReformulator::FindPaths(PDDLInstance *instance, bool debugMode) {
+void BaseRegressorReformulator::FindPaths(PDDL::Instance *instance, bool debugMode) {
     int regressID = Report->Begin("Walking", ReportID);	
 
     auto tempPaths = PerformRegression(instance, debugMode);
@@ -29,7 +29,7 @@ void BaseRegressorReformulator::FindPaths(PDDLInstance *instance, bool debugMode
     ValidatePaths(instance, regressID, debugMode);
 }
 
-void BaseRegressorReformulator::GetMutexes(PDDLInstance* instance, bool debugMode) {
+void BaseRegressorReformulator::GetMutexes(PDDL::Instance* instance, bool debugMode) {
 	if (debugMode)
 		ConsoleHelper::PrintDebugInfo("Getting mutexes...", debugIndent);
 	auto domain = Configs->GetItem<std::filesystem::path>("domain");
@@ -37,7 +37,7 @@ void BaseRegressorReformulator::GetMutexes(PDDLInstance* instance, bool debugMod
 	DownwardRunner runner = DownwardRunner();
 	runner.RunTranslator(Configs, domain.c_str(), problem.c_str());
 	H2Runner h2Runner = H2Runner(instance);
-	static PDDLMutex mutexes = h2Runner.RunH2(Configs);
+	static PDDL::Mutex mutexes = h2Runner.RunH2(Configs);
 	instance->mutexes = &mutexes;
 	HaveRunPreprocessor = true;
 }

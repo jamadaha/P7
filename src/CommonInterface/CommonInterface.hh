@@ -14,17 +14,16 @@
 #include "../Reformulators/Regressors/RegressionReformulator.hh"
 #include "../Reformulators/Walkers/ProbeWalkerReformulator.hh"
 #include "../Reformulators/Walkers/StepBackWalkerReformulator.hh"
-#include "../PDDLParser/pddldriver.hh"
-#include "../PDDLCodeGenerator/PDDLCodeGenerator.hh"
+#include "../PDDL/CodeGenerators/CodeGenerator.hh"
 #include "../SAS/CodeGenerator/CodeGenerator.hh"
 #include "../SAS/Parser/Parser.hh"
 #include "../Config/Config.hh"
 #include "../DownwardRunner/DownwardRunner.hh"
 #include "../PlanValidators/PlanValidator.hh"
-#include "../IntermediatePDDL/PDDLInstance.hh"
-#include "../IntermediatePDDL/PDDLMutex.hh"
-#include "../IntermediatePDDL/PDDLConverter.hh"
+#include "../PDDL/Instance.hh"
+#include "../PDDL/Mutex.hh"
 #include "../Helpers/ConsoleHelper.hh"
+#include "../PDDL/Parsers/ExternalParser.hh"
 
 template <class T>
 struct InterfaceStep {
@@ -52,14 +51,13 @@ private:
 	enum ReformulatorRunResultResult { _None, ReformulatorFailed, FoundPlan, DidNotFindPlan };
 	InterfaceStep<BaseReformulator*> GetReformulator(int reformulatorIndex = 0);
 	InterfaceStep<void> CheckFilePaths();
-	InterfaceStep<PDDLDriver*> ParsePDDLFiles();
-	InterfaceStep<PDDLInstance*> ConvertPDDLFormat(PDDLDriver* driver);
-	InterfaceStep<void> RunIteratively(BaseReformulator* reformulator, PDDLInstance* instance);
-	InterfaceStep<void> RunDirect(BaseReformulator* reformulator, PDDLInstance* instance);
-	InterfaceStep<ReformulatorRunResultResult> RunSingle(BaseReformulator* reformulator, PDDLInstance* instance, int reportID, int reformulatorTimeLimit, int downwardTimeLimit);
+	InterfaceStep<PDDL::Instance> ParsePDDLFiles();
+	InterfaceStep<void> RunIteratively(BaseReformulator* reformulator, PDDL::Instance* instance);
+	InterfaceStep<void> RunDirect(BaseReformulator* reformulator, PDDL::Instance* instance);
+	InterfaceStep<ReformulatorRunResultResult> RunSingle(BaseReformulator* reformulator, PDDL::Instance* instance, int reportID, int reformulatorTimeLimit, int downwardTimeLimit);
 	InterfaceStep<void> ValidatePlans(std::string domainFile, std::string problemFile, std::string sasFile, std::string reportName);
 	InterfaceStep<SAS::Plan> ParseSASPlan();
-	InterfaceStep<SAS::Plan> RebuildSASPlan(SAS::Plan* reformulatedSASPlan, BaseReformulator* reformulator, PDDLInstance* instance);
+	InterfaceStep<SAS::Plan> RebuildSASPlan(SAS::Plan* reformulatedSASPlan, BaseReformulator* reformulator, PDDL::Instance* instance);
 	InterfaceStep<void> GenerateNewSASPlan(SAS::Plan outputPlan);
 
 	RunReport* Report;

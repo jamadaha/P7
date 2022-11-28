@@ -7,7 +7,7 @@ class PartialRegressionReformulator : public BaseRegressorReformulator {
 public:
     PartialRegressionReformulator(Config *config, RunReport *report) : BaseRegressorReformulator(config, report) {};
 protected:
-    std::vector<Path> PerformRegression(PDDLInstance *instance, bool debugMode) override;   
+    std::vector<Path> PerformRegression(PDDL::Instance *instance, bool debugMode) override;
 };
 
 #endif

@@ -12,14 +12,14 @@
 class BaseRegressorReformulator : public BaseReformulator {
 public:
     BaseRegressorReformulator(Config *config, RunReport *report) : BaseReformulator(config, report) {};
-	PDDLInstance ReformulatePDDL(PDDLInstance *instance) override;
+	PDDL::Instance ReformulatePDDL(PDDL::Instance *instance) override;
 
 protected:
-    virtual std::vector<Path> PerformRegression(PDDLInstance *instance, bool debugMode) = 0;
+    virtual std::vector<Path> PerformRegression(PDDL::Instance *instance, bool debugMode) = 0;
 
 private:
-    void FindPaths(PDDLInstance *instance, bool debugMode);
-    void GetMutexes(PDDLInstance* instance, bool debugMode);
+    void FindPaths(PDDL::Instance *instance, bool debugMode);
+    void GetMutexes(PDDL::Instance* instance, bool debugMode);
     bool HaveRunPreprocessor = false;
 };
 

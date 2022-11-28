@@ -101,8 +101,11 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, PDDL::Instance* instance) {
 	int directProcess = Report->Begin("Solving Problem");
 	int timeLimit = config.GetItem<int>("totalTimeLimit") * 1000;
+	int reformulatorTimeLimit = (timeLimit * 2) * config.GetItem<double>("timelimitSplit");
+	int downwardTimeLimit = (timeLimit * 2) - reformulatorTimeLimit;
+	ConsoleHelper::PrintInfo("Reformulator: " + to_string(reformulatorTimeLimit) + "ms, Downward: " + to_string(downwardTimeLimit) + "ms)");
 
-	auto runRes = RunSingle(reformulator, instance, directProcess, timeLimit, timeLimit).Data;
+	auto runRes = RunSingle(reformulator, instance, directProcess, reformulatorTimeLimit, downwardTimeLimit).Data;
 	switch (runRes) {
 	case CommonInterface::ReformulatorRunResultResult::ReformulatorFailed:
 		Report->Stop(directProcess, ReportData("None", "-1", "false"));

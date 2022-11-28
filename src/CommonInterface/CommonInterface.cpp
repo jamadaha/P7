@@ -113,7 +113,6 @@ InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, P
 		ConsoleHelper::PrintError("Fast downward did not find a plan in time!");
 		return InterfaceStep<void>(false);
 	}
-
 	Report->Stop(directProcess, ReportData("None", "-1", "true"));
 	return InterfaceStep<void>();
 }
@@ -222,6 +221,11 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 		if (!runNonIterativelyStep.RanWithoutErrors)
 			return CommonInterface::RunResult::ErrorsEncountered;
 	}
+
+	Report->Begin("Total Walker Paths");
+	Report->Stop(ReportData("None", std::to_string(getReformulatorStep.Data->GetActionIterationGenerated()), "None"));
+	Report->Begin("Total Walker Actions Generated");
+	Report->Stop(ReportData("None", std::to_string(getReformulatorStep.Data->GetActionsGenerated()), "None"));
 
 	if (config.GetItem<bool>("validate")) {
 		auto validateSASPlanStep = ValidatePlans(CommonInterface::TempDomainName, CommonInterface::TempProblemName, CommonInterface::FastDownwardSASName, "Validating reformulated plan");

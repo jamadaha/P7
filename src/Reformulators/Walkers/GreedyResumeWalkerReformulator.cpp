@@ -6,5 +6,8 @@ std::vector<Path> GreedyResumeWalkerReformulator::PerformWalk(PDDL::Instance *in
         if (debugMode)
             SetupWalkerDebugInfo(walker);
         walker->SaveStates = Configs->GetItem<bool>("validatePaths");
-    return walker->Walk();
+    auto paths = walker->Walk();
+    actionsGenerated += walker->GetTotalActionsGenerated();
+    actionIterationGenerated += walker->GetTotalIterations();
+    return paths;
 }

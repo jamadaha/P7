@@ -28,7 +28,11 @@ public:
 	int Iteration = 1;
 	int ReportID = -1;
 	int GetMacrosGenerated() { return macrosGenerated; };
+	int GetActionsGenerated() { return actionsGenerated; };
+	int GetActionIterationGenerated() { return actionIterationGenerated; };
 	bool DidEncounterErrors() { return encounteredErrors; };
+
+
 	BaseReformulator(Config* config, RunReport* report) : Configs(config), Report(report) {
 
 	}
@@ -43,6 +47,8 @@ protected:
     std::vector<Macros::Macro> macros;
 	ProgressBarHelper* entanglerBar;
 	int macrosGenerated = 0;
+	int actionsGenerated = 0;
+	int actionIterationGenerated = 0;
 	bool encounteredErrors = false;
 
 	void ValidatePaths(PDDL::Instance *instance, int parentReportID, bool debugMode);

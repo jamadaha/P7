@@ -15,7 +15,7 @@ include(Test/PlanValidators/CMakeLists.txt)
 include(Test/Helpers/CMakeLists.txt)
 include(Test/DownwardRunner/CMakeLists.txt)
 include(Test/JointPaths/CMakeLists.txt)
-include(Test/MacroGenerator/CMakeLists.txt)
+include(Test/Macros/CMakeLists.txt)
 
 add_executable(Test-All 
 	"Test/PDDLCodeGenerator/PDDLCodeGenerator.cpp"
@@ -32,7 +32,9 @@ add_executable(Test-All
 	"Test/JointPaths/EvaluatorTests.cpp"
 	"Test/JointPaths/HashesTests.cpp"
 	"Test/DownwardRunner/DownwardRunner.cpp"
-    "Test/MacroGenerator/MacroGenerator.cpp")
+    "Test/Macros/Generators/GeneratorTests.cpp"
+    "Test/Macros/Instantiators/InstantiatorTests.cpp"
+)
 target_link_libraries(Test-All 
 	PRIVATE 
 		Catch2::Catch2WithMain
@@ -54,4 +56,4 @@ target_link_libraries(Test-All
         JointPaths
         Walker
         ActionGenerator
-        MacroGenerator)
+        Macros)

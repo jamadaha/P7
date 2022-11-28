@@ -23,7 +23,7 @@ TEST_CASE(TAG + "CanRebuild-NoMacros") {
 	PDDLProblem problem;
 	PDDLInstance instance(&domain, &problem);
 
-	vector<Macro> macros;
+	vector<Macros::Macro> macros;
 	vector<SAS::Action> actions{
 		SAS::Action("action1", {"a","b"}),
 		SAS::Action("action2", {"a","b"})
@@ -44,8 +44,8 @@ TEST_CASE(TAG + "CanRebuild-OneMacro") {
 	PDDLProblem problem("a", &domain, { "obj1", "obj2" }, {}, PDDLState(), PDDLState());
 	PDDLInstance instance(&domain, &problem);
 
-	vector<Macro> macros{
-		Macro(GroundedAction("action"), {
+	vector<Macros::Macro> macros{
+		Macros::Macro(Macros::GroundedAction("action"), {
 				PDDLActionInstance(&action1, {0,1}),
 				PDDLActionInstance(&action2, {1,0})
 			})
@@ -74,16 +74,16 @@ TEST_CASE(TAG + "CanRebuild-MultipleMacro") {
 	PDDLProblem problem("a", &domain, { "obj1", "obj2" }, {}, PDDLState(), PDDLState());
 	PDDLInstance instance(&domain, &problem);
 
-	vector<Macro> macros{
-		Macro(GroundedAction("action1"), {
+	vector<Macros::Macro> macros{
+		Macros::Macro(Macros::GroundedAction("action1"), {
 				PDDLActionInstance(&action1, {0,1}),
 				PDDLActionInstance(&action2, {1,0})
 			}),
-		Macro(GroundedAction("action2"), {
+		Macros::Macro(Macros::GroundedAction("action2"), {
 				PDDLActionInstance(&action2, {0,1}),
 				PDDLActionInstance(&action3, {1,0})
 			}),
-		Macro(GroundedAction("action3"), {
+		Macros::Macro(Macros::GroundedAction("action3"), {
 				PDDLActionInstance(&action1, {0,1}),
 				PDDLActionInstance(&action3, {1,0})
 			})

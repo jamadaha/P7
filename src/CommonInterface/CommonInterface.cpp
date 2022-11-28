@@ -60,8 +60,8 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 	CommonInterface::ReformulatorRunResultResult runRes;
 	int counter = 1;
 	while (timeLeft > 0) {
-		int reformulatorTimeLimit = (currentIncrementTimeLimit * 2) * config.GetItem<double>("timelimitSplit");
-		int downwardTimeLimit = (currentIncrementTimeLimit * 2) - reformulatorTimeLimit;
+		int reformulatorTimeLimit = currentIncrementTimeLimit * config.GetItem<double>("timelimitSplit");
+		int downwardTimeLimit = currentIncrementTimeLimit - reformulatorTimeLimit;
 
 		int iterationID = Report->Begin("Iteration " + to_string(counter), iterativeProcess);
 		ConsoleHelper::PrintInfo("Iteration " + to_string(counter) + "(reformulator: " + to_string(reformulatorTimeLimit) + "ms, downward: " + to_string(downwardTimeLimit) + "ms)");
@@ -74,12 +74,12 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 		}
 
 		// Subtract the time it took to execute this iteration from the total allowed time
-		timeLeft -= currentIncrementTimeLimit * 2;
+		timeLeft -= currentIncrementTimeLimit;
 		// Increase the time limit for the next iteration
 		currentIncrementTimeLimit *= config.GetItem<int>("incrementModifier");
 		// If the next iteration will take too long, only spend the amount of time possible within the overall time limit
-		if (timeLeft - currentIncrementTimeLimit * 2 < 0)
-			currentIncrementTimeLimit = timeLeft / 2;
+		if (timeLeft - currentIncrementTimeLimit < 0)
+			currentIncrementTimeLimit = timeLeft;
 		counter++;
 	}
 
@@ -101,8 +101,8 @@ InterfaceStep<void> CommonInterface::RunIteratively(BaseReformulator* reformulat
 InterfaceStep<void> CommonInterface::RunDirect(BaseReformulator* reformulator, PDDL::Instance* instance) {
 	int directProcess = Report->Begin("Solving Problem");
 	int timeLimit = config.GetItem<int>("totalTimeLimit") * 1000;
-	int reformulatorTimeLimit = (timeLimit * 2) * config.GetItem<double>("timelimitSplit");
-	int downwardTimeLimit = (timeLimit * 2) - reformulatorTimeLimit;
+	int reformulatorTimeLimit = timeLimit * config.GetItem<double>("timelimitSplit");
+	int downwardTimeLimit = timeLimit - reformulatorTimeLimit;
 	ConsoleHelper::PrintInfo("Reformulator: " + to_string(reformulatorTimeLimit) + "ms, Downward: " + to_string(downwardTimeLimit) + "ms)");
 
 	auto runRes = RunSingle(reformulator, instance, directProcess, reformulatorTimeLimit, downwardTimeLimit).Data;

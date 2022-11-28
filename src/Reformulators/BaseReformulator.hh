@@ -31,6 +31,7 @@ public:
 	int GetActionsGenerated() { return actionsGenerated; };
 	int GetActionIterationGenerated() { return actionIterationGenerated; };
 	std::vector<unsigned int> GetBranchingFactors() { return branchingFactors; };
+	std::vector<unsigned int> GetPathLengths() { return pathLengths; };
 	bool DidEncounterErrors() { return encounteredErrors; };
 
 
@@ -52,6 +53,7 @@ protected:
 	int actionIterationGenerated = 0;
 	bool encounteredErrors = false;
 	std::vector<unsigned int> branchingFactors;
+	std::vector<unsigned int> pathLengths;
 
 	void ValidatePaths(PDDL::Instance *instance, int parentReportID, bool debugMode);
 	std::vector<JointPaths::JointPath> FindEntanglements(PDDL::Instance* instance, bool debugMode);

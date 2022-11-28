@@ -24,6 +24,7 @@ public:
     BaseWidthFunction* widthFunc;
     bool SaveStates = false;
     std::vector<unsigned int> GetBranchingFactors() { return actionGenerator.GetBranchingFactors(); };
+    std::vector<unsigned int> GetPathLengths() { return pathLengths; };
 
     BaseWalker(std::string walkerName, PDDL::Instance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) :
         WalkerName(walkerName), 
@@ -49,6 +50,7 @@ public:
 
 protected:
     unsigned int _totalIterations = 0;
+    std::vector<unsigned int> pathLengths;
     PDDL::Instance* instance;
     ActionGenerator2 actionGenerator;
     //ActionGenerator actionGenerator;

@@ -37,8 +37,10 @@ std::vector<Path> WalkerQueue::Walk() {
         if (searchQueue.size() == 0)
             break;
         Path path = Walk(heuristic, this->instance->problem->initState);
-        if (path.steps.size() > 1)
+        if (path.steps.size() > 1) {
             paths.push_back(path);
+            pathLengths.push_back(path.steps.size());
+        }
 
         if (OnWalkerStep != nullptr)
             OnWalkerStep(this, current);

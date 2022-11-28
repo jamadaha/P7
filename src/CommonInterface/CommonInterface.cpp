@@ -231,6 +231,11 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 	Report->Stop(ReportData("None", std::to_string(AlgorithmHelper::Average(branchingFactors)), "None"));
 	Report->Begin("Median Branching Factor");
 	Report->Stop(ReportData("None", std::to_string(AlgorithmHelper::Median(branchingFactors)), "None"));
+	auto pathLengths = (getReformulatorStep.Data)->GetPathLengths();
+	Report->Begin("Average Path Length");
+	Report->Stop(ReportData("None", std::to_string(AlgorithmHelper::Average(pathLengths)), "None"));
+	Report->Begin("Median Path Length");
+	Report->Stop(ReportData("None", std::to_string(AlgorithmHelper::Median(pathLengths)), "None"));
 
 	if (config.GetItem<bool>("validate")) {
 		auto validateSASPlanStep = ValidatePlans(CommonInterface::TempDomainName, CommonInterface::TempProblemName, CommonInterface::FastDownwardSASName, "Validating reformulated plan");

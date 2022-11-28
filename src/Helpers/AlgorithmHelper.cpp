@@ -21,12 +21,16 @@ void AlgorithmHelper::Difference(std::unordered_set<std::pair<unsigned int, unsi
 }
 
 unsigned int AlgorithmHelper::Median(std::vector<unsigned int> v) {
+    if (v.size() == 0)
+        return 0;
     size_t n = v.size() / 2;
     nth_element(v.begin(), v.begin() + n, v.end());
     return v[n];
 }
 
 unsigned int AlgorithmHelper::Average(std::vector<unsigned int> v) {
+    if (v.size() == 0)
+        return 0;
     unsigned int totalValue = 0;
     for (auto value : v)
         totalValue += value;

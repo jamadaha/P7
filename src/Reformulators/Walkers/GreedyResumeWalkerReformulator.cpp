@@ -9,6 +9,9 @@ std::vector<Path> GreedyResumeWalkerReformulator::PerformWalk(PDDL::Instance *in
     auto paths = walker->Walk();
     actionsGenerated += walker->GetTotalActionsGenerated();
     actionIterationGenerated += walker->GetTotalIterations();
-    branchingFactors = walker->GetBranchingFactors();
+    auto factors = walker->GetBranchingFactors();
+    copy(factors.begin(), factors.end(), back_inserter(branchingFactors));
+    auto lengths = walker->GetPathLengths();
+    copy(lengths.begin(), lengths.end(), back_inserter(pathLengths));
     return paths;
 }

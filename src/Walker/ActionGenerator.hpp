@@ -14,6 +14,7 @@
 class ActionGenerator {
 public:
     unsigned int GetTotalActionsGenerated() { return totalActions; };
+    std::vector<unsigned int> GetBranchingFactors() { return branchingFactors; };
     ActionGenerator(const std::vector<PDDL::Action> *actions, const unsigned int objectCount) : actions(actions) {
         for (int i = 0; i < objectCount; i++)
             objects.emplace(i);
@@ -44,6 +45,7 @@ public:
     static bool IsLegal(const std::vector<PDDL::Literal> *literals, const PDDL::State *state, const std::vector<unsigned int> *objects);
 
 private:
+    std::vector<unsigned int> branchingFactors;
     unsigned int totalActions = 0;
     const std::vector<PDDL::Action> *actions;
     std::unordered_set<unsigned int> objects;

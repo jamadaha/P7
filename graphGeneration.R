@@ -1,6 +1,8 @@
 # Used for fancy plots
 library(ggplot2)
 library(data.table)
+library(plyr)
+library(bigsnpr)
 
 imgWidth <-8
 imgHeight <- 8
@@ -57,25 +59,34 @@ report <- read.csv('report.csv')
 # Culmin Graph
 minValue = min(report$reformulation_time);
 maxValue = max(report$reformulation_time);
-xSeq = seq.int(0, round_any(maxValue, 200), 200)
+xSeq = seq_log(minValue, maxValue, 1000)
 
 uniqueAlgorithm = levels(unique(report$algorithm));
 
 timeAvg <- as.data.table(report)[,list(time=mean(reformulation_time)),c('domain', 'algorithm', 'problem')]
 
+maxRowCount <- 0;
 vecs <- list()
 for (i in seq_along(xSeq)) {
   for (t in seq_along(uniqueAlgorithm)) {
     vec <- list()
-    vec[[length(vec)+1]] = as.integer(xSeq[i]);
+    vec[[length(vec)+1]] = as.numeric(xSeq[i]);
     rowCount = nrow(subset(timeAvg, timeAvg$algorithm == uniqueAlgorithm[t] & timeAvg$time < xSeq[i]));
     vec[[length(vec)+1]] = uniqueAlgorithm[t];
-    vec[[length(vec)+1]] = rowCount;
+    vec[[length(vec)+1]] = as.numeric(rowCount);
     vecs[[length(vecs)+1]] = vec;
+    if (rowCount > maxRowCount) {
+      maxRowCount <- rowCount
+    }
   }
 }
+
 culDF <- as.data.frame(matrix(unlist(vecs), nrow=length(unlist(vecs[1]))))
 culDF <- as.data.frame(t(culDF))
 colnames(culDF) <- c('value', 'algorithm', 'count')
 
-ggplot(data=culDF, aes(x=value, y=count, group=algorithm)) + geom_line(aes(color=algorithm)) + scale_x_discrete(limits=culDF$value) + scale_y_discrete(limits=culDF$count);
+culDF$value <- as.numeric(as.character(culDF$value))
+culDF$count <- as.numeric(as.character(culDF$count))
+
+algoCul <- ggplot(data=culDF, aes(x=value, y=count, group=algorithm)) + geom_line(aes(color=algorithm)) + scale_x_continuous(trans='log10');
+ggsave(plot=algoCul, filename="algoCul.pdf", width=imgWidth, height=imgHeight)

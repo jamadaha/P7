@@ -108,38 +108,14 @@ PDDL::Instance BaseReformulator::GenerateMacros(PDDL::Instance* instance, std::v
 
 	int macroGenerateID = Report->Begin("Generating Macros", ReportID);
 	macros.clear();
-	MacroGenerator macroGenerator = MacroGenerator(instance->domain);
+	Macros::Generator macroGenerator = Macros::Generator(instance->domain);
 	for (auto iter = candidates->begin(); iter != candidates->end(); iter++)
-		macros.push_back(macroGenerator.GenerateMacro(&(*iter).Chain));
+		macros.push_back(macroGenerator.GenerateMacro(&iter->Chain));
 	macrosGenerated = macros.size();
-
-	if (Configs->GetItem<bool>("verifyMacros"))
-	{
-		Report->Begin("Verifying Macros", macroGenerateID);
-		if (debugMode)
-			ConsoleHelper::PrintDebugInfo("[Macro Generator] Verifying Macros...", debugIndent);
-		MacroVerifyer verifyer;
-		auto badMacros = verifyer.VerifyMacros(&macros, instance->domain);
-		if (badMacros.size() == 0)
-			Report->Stop(ReportData("None","-1", "true"));
-		else
-			Report->Stop(ReportData("None", "-1", "false"));
-
-		int counter = 0;
-		for (auto macro : badMacros) {
-			ConsoleHelper::PrintError("[Macro Generator] Bad macro: " + macro.macro.name + ", Reason: " + macro.Reason, debugIndent);
-			encounteredErrors = true;
-			counter++;
-			if (counter > 10) {
-				ConsoleHelper::PrintError("[Macro Generator] Many more than these", debugIndent);
-				break;
-			}
-		}
-	}
 
 	if (debugMode)
 		ConsoleHelper::PrintDebugInfo("[Macro Generator] Generating Macro Instance...", debugIndent);
-	auto result = InstanceGenerator::GenerateInstance(instance->domain, instance->problem, &macros);
+	auto result = Macros::Instantiator::GenerateInstance(instance->domain, instance->problem, &macros);
 	Report->Stop(macroGenerateID);
 	return result;
 }

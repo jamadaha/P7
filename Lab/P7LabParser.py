@@ -34,7 +34,13 @@ ATTRIBUTES_NAME_MAP = [
     ('p7_macros_generated_intvalues', 'macros_generated'),
     ('p7_macros_used_intvalues', 'macros_used'),
     ('p7_verifying_macros_boolvalues', 'macros_valid'),
-    ('p7_verifying_paths_boolvalues', 'paths_valid')
+    ('p7_verifying_paths_boolvalues', 'paths_valid'),
+    ('p7_total_walker_paths_intvalues', 'total_walker_paths'),
+    ('p7_total_walker_actions_generated_intvalues', 'total_walker_actions_generated'),
+    ('p7_average_branching_factor_intvalues', 'walker_average_branching_factor'),
+    ('p7_median_branching_factor_intvalues', 'walker_median_branching_factor'),
+    ('p7_average_path_length_intvalues', 'walker_average_path_length'),
+    ('p7_median_path_length_intvalues', 'walker_median_path_length')
 ]
 
 def get_times(content, props):

@@ -63,8 +63,10 @@ vector<Path> WalkerProbe::Walk() {
         PDDL::State probe = PDDL::State(unaryFacts, binaryFacts);
 
         Path path = Walk(heuristic, &probe, &current);
-        if (path.steps.size() > 1)
+        if (path.steps.size() > 1) {
             paths.push_back(path);
+            pathLengths.push_back(path.steps.size());
+        }
 
         if (OnWalkerStep != nullptr)
             OnWalkerStep(this, current);

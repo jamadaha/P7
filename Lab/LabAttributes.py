@@ -23,6 +23,13 @@ PREDEFINED_ATTRIBUTES= ['cost',
                         'solvable',
                         'plan_length_difference',
                         'macros_used',
-                        'macros_generated']
+                        'macros_generated',
+                        'total_walker_paths',
+                        'total_walker_actions_generated',
+                        'walker_average_branching_factor',
+                        'walker_median_branching_factor',
+                        'walker_average_path_length',
+                        'walker_median_path_length'
+                        ]
 
 ATTRIBUTES = ERROR_ATTRIBUTES + PREDEFINED_ATTRIBUTES

@@ -28,23 +28,23 @@ bool cmp(vector<string> as, vector<string> bs) {
 
 TEST_CASE(TAG + "Domain domain name") {
     ExternalParser parser;
-    PDDL::Instance* result = parser.Parse(domainFile, problemFile);
+    PDDL::Instance result = parser.Parse(domainFile, problemFile);
 
-    REQUIRE(result->domain->name == exDomainName);
+    REQUIRE(result.domain->name == exDomainName);
 }
 
 TEST_CASE(TAG + "Domain requirements") {
     ExternalParser parser;
-    PDDL::Instance* result = parser.Parse(domainFile, problemFile);
+    PDDL::Instance result = parser.Parse(domainFile, problemFile);
 
-    REQUIRE(cmp(result->domain->requirements, exDomainReq));
+    REQUIRE(cmp(result.domain->requirements, exDomainReq));
 }
 
 TEST_CASE(TAG + "Domain preconditions") {
     ExternalParser parser;
-    PDDL::Instance* result = parser.Parse(domainFile, problemFile);
+    PDDL::Instance result = parser.Parse(domainFile, problemFile);
 
-    auto preds = result->domain->predicates;
+    auto preds = result.domain->predicates;
     vector<string> predStrings;
 
     for (auto p : preds)
@@ -55,9 +55,9 @@ TEST_CASE(TAG + "Domain preconditions") {
 
 TEST_CASE(TAG + "Domain action names") {
     ExternalParser parser;
-    PDDL::Instance* result = parser.Parse(domainFile, problemFile);
+    PDDL::Instance result = parser.Parse(domainFile, problemFile);
 
-    auto acts = result->domain->actions;
+    auto acts = result.domain->actions;
     vector<string> actStrings;
 
     for (auto a : acts)
@@ -68,9 +68,9 @@ TEST_CASE(TAG + "Domain action names") {
 
 TEST_CASE(TAG + "Domain arguments") {
     ExternalParser parser;
-    PDDL::Instance* result = parser.Parse(domainFile, problemFile);
+    PDDL::Instance result = parser.Parse(domainFile, problemFile);
 
-    auto acts = result->domain->actions;
+    auto acts = result.domain->actions;
     unordered_set<string> args;
     vector<string> argString;
 

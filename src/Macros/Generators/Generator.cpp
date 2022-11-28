@@ -2,14 +2,15 @@
 
 using namespace std;
 using namespace Macros;
+using namespace PDDL;
 
-Macro Generator::GenerateMacro(vector<PDDLActionInstance> *actions) {
+Macro Generator::GenerateMacro(vector<ActionInstance> *actions) {
     vector<GroundedAction> groundedActions = GroundActions(actions);
     GroundedAction combinedAction = CombineActions(&groundedActions);
     return Macro(combinedAction, *actions);
 }
 
-vector<GroundedAction> Generator::GroundActions(vector<PDDLActionInstance> *actions) {
+vector<GroundedAction> Generator::GroundActions(vector<ActionInstance> *actions) {
     vector<GroundedAction> groundedActions; 
     groundedActions.reserve(actions->size());
 
@@ -19,21 +20,21 @@ vector<GroundedAction> Generator::GroundActions(vector<PDDLActionInstance> *acti
     return groundedActions;
 }
 
-GroundedAction Generator::GroundAction(PDDLActionInstance* action) {
+GroundedAction Generator::GroundAction(ActionInstance* action) {
     // Get parameters
     unordered_set<unsigned int> parameters;
     for (int t = 0; t < action->objects.size(); t++)
         parameters.emplace(action->objects.at(t));
 
     // Get preconditions
-    const vector<PDDLLiteral>* preconditions = &action->action->preconditions;
+    const vector<Literal>* preconditions = &action->action->preconditions;
     unordered_map<GroundedLiteral, bool> groundedPreconditions;
     groundedPreconditions.reserve(preconditions->size());
     for (auto lit = preconditions->begin(); lit != preconditions->end(); lit++)
         groundedPreconditions.emplace(GroundedLiteral(lit->predicateIndex, GetGroundedArguments(action, lit->args)), lit->value);
 
     // Get effects
-    const vector<PDDLLiteral>* effects = &action->action->effects;
+    const vector<Literal>* effects = &action->action->effects;
     unordered_map<GroundedLiteral, bool> groundedEffects;
     groundedEffects.reserve(effects->size());
     for (auto lit = effects->begin(); lit != effects->end(); lit++)
@@ -42,7 +43,7 @@ GroundedAction Generator::GroundAction(PDDLActionInstance* action) {
     return GroundedAction(action->action->name, parameters, groundedPreconditions, groundedEffects);
 }
 
-vector<unsigned int> Generator::GetGroundedArguments(PDDLActionInstance* action, vector<unsigned int> args) {
+vector<unsigned int> Generator::GetGroundedArguments(ActionInstance* action, vector<unsigned int> args) {
     vector<unsigned int> returnArgs;
     returnArgs.reserve(2);
     for (int q = 0; q < args.size(); q++)

@@ -4,30 +4,30 @@
 #include <vector>
 #include <set>
 
-#include "../IntermediatePDDL/PDDLInstance.hh"
+#include "../PDDL/Instance.hh"
 #include "../Macro.hh"
 
 namespace Macros {
     class Instantiator {
     public:
-        static PDDLInstance GenerateInstance(const PDDLDomain* domain, const PDDLProblem* problem, const std::vector<Macro>* macros);
+        static PDDL::Instance GenerateInstance(const PDDL::Domain* domain, const PDDL::Problem* problem, const std::vector<Macro>* macros);
     private:
-        static std::vector<PDDLLiteral> GenerateLiterals(
+        static std::vector<PDDL::Literal> GenerateLiterals(
             const std::unordered_map<GroundedLiteral, bool>* macroPreconditions,
             std::unordered_map<unsigned int, unsigned int>* groundedToIndex);
         static void GenerateUnaryFacts(
             const std::vector<Macro>* macros,
-            const PDDLProblem* problem,
+            const PDDL::Problem* problem,
             std::unordered_map<std::string, unsigned int>* predicateMap,
             std::unordered_map<unsigned int, std::unordered_set<unsigned int>>* unaryFacts,
-            std::vector<PDDLPredicate>* predicates);
+            std::vector<PDDL::Predicate>* predicates);
         static void GenerateMacroActions(
             const std::vector<Macro>* macros,
-            const PDDLProblem* problem,
+            const PDDL::Problem* problem,
             const std::unordered_map<std::string, unsigned int>* predicateMap,
-            std::vector<PDDLAction>* actions);
+            std::vector<PDDL::Action>* actions);
         static void AppendObjectPreconditions(
-            std::vector<PDDLLiteral>* literals,
+            std::vector<PDDL::Literal>* literals,
             const std::unordered_map<std::string, unsigned int>* predicateMap,
             const std::vector<std::string>* parameters);
     };

@@ -30,6 +30,7 @@ public:
 	int GetMacrosGenerated() { return macrosGenerated; };
 	int GetActionsGenerated() { return actionsGenerated; };
 	int GetActionIterationGenerated() { return actionIterationGenerated; };
+	std::vector<unsigned int> GetBranchingFactors() { return branchingFactors; };
 	bool DidEncounterErrors() { return encounteredErrors; };
 
 
@@ -50,6 +51,7 @@ protected:
 	int actionsGenerated = 0;
 	int actionIterationGenerated = 0;
 	bool encounteredErrors = false;
+	std::vector<unsigned int> branchingFactors;
 
 	void ValidatePaths(PDDL::Instance *instance, int parentReportID, bool debugMode);
 	std::vector<JointPaths::JointPath> FindEntanglements(PDDL::Instance* instance, bool debugMode);

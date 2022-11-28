@@ -23,6 +23,7 @@ public:
     BaseDepthFunction* depthFunc;
     BaseWidthFunction* widthFunc;
     bool SaveStates = false;
+    std::vector<unsigned int> GetBranchingFactors() { return actionGenerator.GetBranchingFactors(); };
 
     BaseWalker(std::string walkerName, PDDL::Instance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) :
         WalkerName(walkerName), 

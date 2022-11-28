@@ -31,6 +31,10 @@ public:
             tempVector.push_back(a.at(i));
         return tempVector;
     }
+
+    static unsigned int Median(std::vector<unsigned int> v);
+
+    static unsigned int Average(std::vector<unsigned int> v);
 };
 
 #endif

@@ -8,6 +8,9 @@ vector<PDDL::ActionInstance> ActionGenerator2::GenerateActions(const PDDL::State
         vector<PDDL::ActionInstance> tempActions = GenerateActions(&(*iter), state);
         copy(tempActions.begin(), tempActions.end(), back_inserter(legalActions));
     }
+    
+    branchingFactors.push_back(legalActions.size());
+
     totalActions += legalActions.size();
     return legalActions;
 }

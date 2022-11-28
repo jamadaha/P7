@@ -226,6 +226,11 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 	Report->Stop(ReportData("None", std::to_string(getReformulatorStep.Data->GetActionIterationGenerated()), "None"));
 	Report->Begin("Total Walker Actions Generated");
 	Report->Stop(ReportData("None", std::to_string(getReformulatorStep.Data->GetActionsGenerated()), "None"));
+	auto branchingFactors = (getReformulatorStep.Data)->GetBranchingFactors();
+	Report->Begin("Average Branching Factor");
+	Report->Stop(ReportData("None", std::to_string(AlgorithmHelper::Average(branchingFactors)), "None"));
+	Report->Begin("Median Branching Factor");
+	Report->Stop(ReportData("None", std::to_string(AlgorithmHelper::Median(branchingFactors)), "None"));
 
 	if (config.GetItem<bool>("validate")) {
 		auto validateSASPlanStep = ValidatePlans(CommonInterface::TempDomainName, CommonInterface::TempProblemName, CommonInterface::FastDownwardSASName, "Validating reformulated plan");

@@ -9,5 +9,6 @@ std::vector<Path> ProbeWalkerReformulator::PerformWalk(PDDL::Instance* instance,
     auto paths = walker->Walk();
     actionsGenerated += walker->GetTotalActionsGenerated();
     actionIterationGenerated += walker->GetTotalIterations();
+    branchingFactors = walker->GetBranchingFactors();
     return paths;
 }

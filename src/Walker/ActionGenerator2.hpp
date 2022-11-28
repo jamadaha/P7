@@ -17,6 +17,7 @@
 class ActionGenerator2 {
 public:
     unsigned int GetTotalActionsGenerated() { return totalActions; };
+    std::vector<unsigned int> GetBranchingFactors() { return branchingFactors; };
     ActionGenerator2(const std::vector<PDDL::Action>* actions, const unsigned int objectCount) : actions(actions) {
         for (int i = 0; i < objectCount; i++)
             objects.emplace(i);
@@ -25,6 +26,7 @@ public:
     std::vector<PDDL::ActionInstance> GenerateActions(const PDDL::State *state);
 private:
     unsigned int totalActions = 0;
+    std::vector<unsigned int> branchingFactors;
     std::unordered_set<unsigned int> objects;
     const std::vector<PDDL::Action> *actions;
 

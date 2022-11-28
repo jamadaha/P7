@@ -8,7 +8,7 @@ std::vector<Path> ProbeWalkerReformulator::PerformWalk(PDDL::Instance* instance,
     walker->SaveStates = Configs->GetItem<bool>("validatePaths");
     auto paths = walker->Walk();
     actionsGenerated += walker->GetTotalActionsGenerated();
-    actionIterationGenerated += walker->GetTotalIterations();
+    actionIterationGenerated += paths.size();
     auto factors = walker->GetBranchingFactors();
     copy(factors.begin(), factors.end(), back_inserter(branchingFactors));
     auto lengths = walker->GetPathLengths();

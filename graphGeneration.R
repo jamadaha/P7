@@ -57,7 +57,7 @@ report <- read.csv('report.csv')
 # Culmin Graph
 minValue = min(report$reformulation_time);
 maxValue = max(report$reformulation_time);
-xSeq = seq.int(minValue, maxValue, 100)
+xSeq = seq.int(0, round_any(maxValue, 200), 200)
 
 uniqueAlgorithm = levels(unique(report$algorithm));
 
@@ -76,7 +76,6 @@ for (i in seq_along(xSeq)) {
 }
 culDF <- as.data.frame(matrix(unlist(vecs), nrow=length(unlist(vecs[1]))))
 culDF <- as.data.frame(t(culDF))
-
 colnames(culDF) <- c('value', 'algorithm', 'count')
-head(culDF)
-ggplot(data=culDF, aes(x=value, y=count, group=algorithm)) + geom_line(aes(color=algorithm));
+
+ggplot(data=culDF, aes(x=value, y=count, group=algorithm)) + geom_line(aes(color=algorithm)) + scale_x_discrete(limits=culDF$value) + scale_y_discrete(limits=culDF$count);

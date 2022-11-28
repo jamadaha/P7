@@ -44,7 +44,7 @@ GroundedAction Generator::GroundAction(PDDLActionInstance* action) {
 
 vector<unsigned int> Generator::GetGroundedArguments(PDDLActionInstance* action, vector<unsigned int> args) {
     vector<unsigned int> returnArgs;
-    args.reserve(2);
+    returnArgs.reserve(2);
     for (int q = 0; q < args.size(); q++)
         returnArgs.push_back(action->objects.at(args.at(q)));
     return returnArgs;

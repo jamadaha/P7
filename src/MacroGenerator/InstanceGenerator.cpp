@@ -13,7 +13,7 @@ PDDL::Instance InstanceGenerator::GenerateInstance(const PDDL::Domain *domain, c
             unaryFacts.emplace(predicates.size(), std::unordered_set<unsigned int>());
             unaryFacts.at(predicates.size()).emplace(*iter);
             predicateMap.emplace(predicate, predicates.size());
-            predicates.push_back(PDDL::Predicate(predicate, 1));
+            predicates.push_back(PDDL::Predicate(predicate, {"?x"}, 1));
         }
     }
 

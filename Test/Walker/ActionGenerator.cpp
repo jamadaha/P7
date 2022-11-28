@@ -9,10 +9,10 @@ PDDL::Domain GenerateDomain(std::vector<PDDL::Action> actions = std::vector<PDDL
     return PDDL::Domain("Test",
     std::vector<std::string>{},
     std::vector<PDDL::Predicate>{
-        PDDL::Predicate("=", 0),
-        PDDL::Predicate("P1", 1),
-        PDDL::Predicate("P2", 2),
-        PDDL::Predicate("P3", 3)
+        PDDL::Predicate("=", {}, 0),
+        PDDL::Predicate("P1", { "?x" }, 1),
+        PDDL::Predicate("P2", { "?x", "?y"}, 2),
+        PDDL::Predicate("P3", { "?x", "?y", "?z"}, 3)
     },
     std::unordered_map<std::string, unsigned int> {
         {"=", 0},
@@ -168,9 +168,9 @@ TEST_CASE(TAG + "GenerateActions Multi - 1 Legal") {
 TEST_CASE(TAG + "GetCandidateObjects") {
     //std::unordered_set<unsigned int> GetCandidateObjects(const std::unordered_set<const PDDL::Literal*> *literals, const PDDL::State *state) const;
     PDDL::Domain domain{"", {}, {
-        PDDL::Predicate(1),
-        PDDL::Predicate(1),
-        PDDL::Predicate(1)
+        PDDL::Predicate("a", {"?x"}, 1),
+        PDDL::Predicate("b", {"?x"}, 1),
+        PDDL::Predicate("c", {"?x"}, 1),
     }, {}, {
         PDDL::Action("", { "", "", "", "" }, {
             PDDL::Literal(0, {0}, true), 

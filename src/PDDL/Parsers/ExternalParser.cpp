@@ -114,7 +114,7 @@ PDDL::Domain Convert(Domain* domain) {
         predicates.push_back(predicate);
     };
 
-    AddPredicate(PDDL::Predicate("=", 2));
+    AddPredicate(PDDL::Predicate("=", {"?x", "?y"}, 2));
 
     for (int i = 0; i < domain->_predicates->size(); i++) {
         auto predicate = (*domain->_predicates)[i];

@@ -8,11 +8,12 @@
 
 namespace SAS {
     struct Plan {
-        std::vector<Action> actions;
-        int cost;
-        int macrosUsed;
+        const std::vector<Action> actions;
+        const int cost;
+        const int macrosUsed;
+        const int uniqueMacrosUsed;
 
-        Plan(std::vector<Action> actions, int cost, int macrosUsed) : actions(actions), cost(cost), macrosUsed(macrosUsed) {}
+        Plan(std::vector<Action> actions, int cost, int macrosUsed, int uniqueMacrosUsed) : actions(actions), cost(cost), macrosUsed(macrosUsed), uniqueMacrosUsed(uniqueMacrosUsed) {}
     };
 }
 

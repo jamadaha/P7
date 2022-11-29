@@ -11,6 +11,7 @@ const std::string TAG = "Rebuilder ";
 void CheckPlans(Plan sourcePlan, Plan checkPlan) {
 	REQUIRE(sourcePlan.cost == checkPlan.cost);
 	REQUIRE(sourcePlan.macrosUsed == checkPlan.macrosUsed);
+	REQUIRE(sourcePlan.uniqueMacrosUsed == checkPlan.uniqueMacrosUsed);
 	for (int i = 0; i < sourcePlan.actions.size(); i++) {
 		REQUIRE(sourcePlan.actions.at(i).name == checkPlan.actions.at(i).name);
 		for (int j = 0; j < sourcePlan.actions.at(i).parameters.size(); j++)
@@ -58,7 +59,7 @@ TEST_CASE(TAG + "CanRebuild-OneMacro") {
 		SAS::Action("action1", {"obj1","obj2"}),
 		SAS::Action("action2", {"obj2","obj1"})
 	};
-	Plan expectedPlan = Plan(expActions, 2, 1, 0);
+	Plan expectedPlan = Plan(expActions, 2, 1, 1);
 
 	SAS::Rebuilder rebuilder = Rebuilder(&instance, &macros);
 	Plan checkPlan = rebuilder.RebuildSASPlan(&sourcePlan);
@@ -102,7 +103,7 @@ TEST_CASE(TAG + "CanRebuild-MultipleMacro") {
 		SAS::Action("action1", {"obj1","obj2"}),
 		SAS::Action("action3", {"obj2","obj1"})
 	};
-	Plan expectedPlan = Plan(expActions, 6, 3, 0);
+	Plan expectedPlan = Plan(expActions, 6, 3, 3);
 
 	SAS::Rebuilder rebuilder = Rebuilder(&instance, &macros);
 	Plan checkPlan = rebuilder.RebuildSASPlan(&sourcePlan);

@@ -37,9 +37,9 @@ report <- read.csv('report.csv')
   ggsave(plot=generatedPlot, filename="generatedPlot.pdf", width=imgWidth, height=imgHeight)
 
 # PlanLength Things
-  avgPlanLengthReport <- as.data.table(report)[,list(search_time=mean(plan_length)),c('domain', 'algorithm', 'problem')]
+  avgPlanLengthReport <- as.data.table(report)[,list(plan_length=mean(plan_length)),c('domain', 'algorithm', 'problem')]
   planLengthPlot <- ggplot(avgPlanLengthReport, aes(algorithm, plan_length)) + geom_boxplot()
-  ggsave(plot=planLengthPlot, filename="planLengthPlot.pdf", width=imgWidth, height=imgHeight)
+  ggsave(plot=generatedPlot, filename="planLengthPlot.pdf", width=imgWidth, height=imgHeight)
   
 # PlannerTime Things
   avgPlannerTimeReport <- as.data.table(report)[,list(planner_time=mean(planner_time)),c('domain', 'algorithm', 'problem')]
@@ -52,7 +52,7 @@ report <- read.csv('report.csv')
   ggsave(plot=searchTimePlot, filename="searchTimePlot.pdf", width=imgWidth, height=imgHeight)
   
 # ReformulationTime Things
-  avgReformulationTimeReport <- as.data.table(report)[,list(search_time=mean(reformulation_time)),c('domain', 'algorithm', 'problem')]
+  avgReformulationTimeReport <- as.data.table(report)[,list(reformulation_time=mean(reformulation_time)),c('domain', 'algorithm', 'problem')]
   reformulationPlot <- ggplot(avgReformulationTimeReport, aes(algorithm, reformulation_time)) + geom_boxplot()
   ggsave(plot=reformulationPlot, filename="reformulationPlot.pdf", width=imgWidth, height=imgHeight)
 

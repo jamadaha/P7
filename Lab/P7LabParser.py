@@ -33,6 +33,7 @@ ATTRIBUTES_NAME_MAP = [
     ('p7_plan_length_difference_intvalues', 'plan_length_difference'),
     ('p7_macros_generated_intvalues', 'macros_generated'),
     ('p7_macros_used_intvalues', 'macros_used'),
+    ('p7_unique_macros_used_intvalues', 'unique_macros_used'),
     ('p7_verifying_macros_boolvalues', 'macros_valid'),
     ('p7_verifying_paths_boolvalues', 'paths_valid'),
     ('p7_total_walker_paths_intvalues', 'total_walker_paths'),

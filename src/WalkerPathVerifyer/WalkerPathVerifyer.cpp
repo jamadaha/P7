@@ -15,7 +15,7 @@ vector<BadPath> WalkerPathVerifyer::VerifyPaths(vector<Path>* paths, PDDL::Insta
 				for (auto step : path.steps) {
 					actions.push_back(GenerateSASActionFromActionInstance(step, instance));
 				}
-				SAS::Plan checkPlan(actions, actions.size(), 0);
+				SAS::Plan checkPlan(actions, actions.size(), 0, 0);
 
 				SAS::CodeGenerator sasGenerator;
 				sasGenerator.GenerateCode(checkPlan, "sas_verify.sas");

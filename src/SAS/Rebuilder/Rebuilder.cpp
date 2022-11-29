@@ -19,7 +19,7 @@ Plan Rebuilder::RebuildSASPlan(Plan* reformulatedSAS) {
 			actions.push_back(sasAction);
 		}
 	}
-	Plan newPlan = Plan(actions, actions.size(), totalMacrosUsed);
+	Plan newPlan = Plan(actions, actions.size(), totalMacrosUsed, uniqueMacrosUsed.size());
 	return newPlan;
 }
 

@@ -6,8 +6,8 @@
 
 namespace SAS {
     struct Action {
-        std::string name;
-        std::vector<std::string> parameters;
+        const std::string name;
+        const std::vector<std::string> parameters;
 
         Action(std::string name, std::vector<std::string> parameters) : name(name), parameters(parameters) {}
     };

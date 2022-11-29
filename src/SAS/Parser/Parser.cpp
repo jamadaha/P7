@@ -34,7 +34,7 @@ Plan Parser::Parse(string SAS) {
             actions.push_back(newAction);
         }
     }
-    return Plan(actions, cost, 0);
+    return Plan(actions, cost, 0, 0);
 }
 
 vector<string> Parser::Tokenize(string const &str, const char delim) {

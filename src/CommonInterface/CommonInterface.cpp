@@ -186,6 +186,8 @@ InterfaceStep<SAS::Plan> CommonInterface::RebuildSASPlan(SAS::Plan* reformulated
 	Report->Stop(ReportData("None", to_string(reformulator->GetMacrosGenerated())));
 	Report->Begin("Macros Used");
 	Report->Stop(ReportData("None", to_string(outputPlan.macrosUsed)));
+	Report->Begin("Unique Macros Used");
+	Report->Stop(ReportData("None", to_string(outputPlan.uniqueMacrosUsed)));
 	return InterfaceStep<SAS::Plan>(outputPlan);
 }
 

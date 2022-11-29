@@ -11,6 +11,7 @@ const std::string TAG = "Rebuilder ";
 void CheckPlans(Plan sourcePlan, Plan checkPlan) {
 	REQUIRE(sourcePlan.cost == checkPlan.cost);
 	REQUIRE(sourcePlan.macrosUsed == checkPlan.macrosUsed);
+	REQUIRE(sourcePlan.uniqueMacrosUsed == checkPlan.uniqueMacrosUsed);
 	for (int i = 0; i < sourcePlan.actions.size(); i++) {
 		REQUIRE(sourcePlan.actions.at(i).name == checkPlan.actions.at(i).name);
 		for (int j = 0; j < sourcePlan.actions.at(i).parameters.size(); j++)
@@ -28,7 +29,7 @@ TEST_CASE(TAG + "CanRebuild-NoMacros") {
 		SAS::Action("action1", {"a","b"}),
 		SAS::Action("action2", {"a","b"})
 	};
-	Plan sourcePlan = Plan(actions,2,0);
+	Plan sourcePlan = Plan(actions,2,0,0);
 
 	SAS::Rebuilder rebuilder = Rebuilder(&instance, &macros);
 	Plan checkPlan = rebuilder.RebuildSASPlan(&sourcePlan);
@@ -53,12 +54,12 @@ TEST_CASE(TAG + "CanRebuild-OneMacro") {
 	vector<SAS::Action> actions{
 		SAS::Action("macro-action", {"obj1","obj2"})
 	};
-	Plan sourcePlan = Plan(actions, 2, 0);
+	Plan sourcePlan = Plan(actions, 2, 0, 0);
 	vector<SAS::Action> expActions{
 		SAS::Action("action1", {"obj1","obj2"}),
 		SAS::Action("action2", {"obj2","obj1"})
 	};
-	Plan expectedPlan = Plan(expActions, 2, 1);
+	Plan expectedPlan = Plan(expActions, 2, 1, 1);
 
 	SAS::Rebuilder rebuilder = Rebuilder(&instance, &macros);
 	Plan checkPlan = rebuilder.RebuildSASPlan(&sourcePlan);
@@ -93,7 +94,7 @@ TEST_CASE(TAG + "CanRebuild-MultipleMacro") {
 		SAS::Action("macro-action2", {"obj1","obj2"}),
 		SAS::Action("macro-action3", {"obj1","obj2"})
 	};
-	Plan sourcePlan = Plan(actions, 2, 0);
+	Plan sourcePlan = Plan(actions, 2, 0, 0);
 	vector<SAS::Action> expActions{
 		SAS::Action("action1", {"obj1","obj2"}),
 		SAS::Action("action2", {"obj2","obj1"}),
@@ -102,7 +103,7 @@ TEST_CASE(TAG + "CanRebuild-MultipleMacro") {
 		SAS::Action("action1", {"obj1","obj2"}),
 		SAS::Action("action3", {"obj2","obj1"})
 	};
-	Plan expectedPlan = Plan(expActions, 6, 3);
+	Plan expectedPlan = Plan(expActions, 6, 3, 3);
 
 	SAS::Rebuilder rebuilder = Rebuilder(&instance, &macros);
 	Plan checkPlan = rebuilder.RebuildSASPlan(&sourcePlan);

@@ -61,7 +61,7 @@ minValue = min(report$reformulation_time);
 maxValue = max(report$reformulation_time);
 xSeq = seq_log(minValue, maxValue, 1000)
 
-uniqueAlgorithm = levels(unique(report$algorithm));
+uniqueAlgorithm = unique(report$algorithm);
 
 timeAvg <- as.data.table(report)[,list(time=mean(reformulation_time)),c('domain', 'algorithm', 'problem')]
 

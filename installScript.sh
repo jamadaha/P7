@@ -19,5 +19,7 @@ sudo apt install python3-pip && pip install lab
 sudo apt install r-base r-base-dev
 Rscript -e "install.packages(\"ggplot2\");"
 Rscript -e "install.packages(\"data.table\");"
+Rscript -e "install.packages(\"plyr\");"
+Rscript -e "install.packages(\"bigsnpr\");"
 # Download data repo
 git clone https://github.com/jamadaha/P7_Data

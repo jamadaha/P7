@@ -19,6 +19,7 @@ report <- read.csv('report.csv')
     report[report=="probeWalker"] <- "Probe Walker"
     report[report=="regressor"] <- "Regression Walker"
     report[report=="partialRegressor"] <- "Partial Regression Walker"
+    report[report=="hillClimberWalker"] <- "Hill Climber Walker"
 
 # Macro Things
   # Removes rows for sameouput
@@ -166,9 +167,21 @@ report <- read.csv('report.csv')
         labs(pattern_spacing="Algorithm", pattern_angle="Algorithm", pattern="Algorithm");
     ggsave(plot=macroQualityPlot, filename="macroQualityPlot.pdf", width=imgWidth, height=imgHeight)
     
-    
-    
-
+# Search vs. Reformulation_time
+    noFD <- subset(report, algorithm != "Fast Downward")
+    SearchOverReformulationReport <- as.data.table(macroSubset)[,list(reformulation_time=reformulation_time / 1000),c('search_time','algorithm')]
+    SearchOverReformulationPlot <- ggplot(SearchOverReformulationReport, aes(x=reformulation_time, y=search_time, shape=algorithm, color=algorithm, linetype=algorithm)) + 
+        geom_point() + 
+        geom_smooth(method=lm, se=FALSE, aes(linetype=algorithm)) +    
+        ggtitle("Search Time vs. Reformulation Time") + 
+        theme(plot.title = element_text(hjust = 0.5)) + 
+        scale_x_continuous(trans='log10') +
+        scale_y_continuous(trans='log10') +
+        xlab("Reformulation Time (s)") + 
+        ylab("Search Time (s)") +
+        labs(shape="Algorithm", color="Algorithm", linetype="Algorithm") +
+        scale_color_grey();
+    ggsave(plot=SearchOverReformulationPlot, filename="searchTimeOverReformulationTime.pdf", width=imgWidth, height=imgHeight)
 
 # Make a combined graph
     combined <- ggarrange(searchTimeCulPlot, reformulationTimeCulPlot,

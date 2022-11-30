@@ -17,7 +17,7 @@ namespace JointPaths {
 
 		RunData Data;
 
-		unsigned int RemovedCandidates() const { return _RemovedCandidates; }
+		inline unsigned int RemovedCandidates() const { return _RemovedCandidates; }
 
 		Evaluator(RunData data) : Data(data) {};
 

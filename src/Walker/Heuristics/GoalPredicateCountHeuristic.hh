@@ -10,7 +10,7 @@ public:
 		GenerateGoalPredicates();
 	};
 
-	PDDL::ActionInstance* NextChoice(PDDL::State * state, std::vector<PDDL::ActionInstance> *choices) override {
+	inline PDDL::ActionInstance* NextChoice(PDDL::State * state, std::vector<PDDL::ActionInstance> *choices) override {
 		int bestIndex = -1;
 		int bestValue = -1;
 		auto engine = std::default_random_engine{};
@@ -37,7 +37,7 @@ public:
 		return &choices->at(bestIndex);
 	}
 
-	int Eval(const PDDL::State *state) const override {
+	inline int Eval(const PDDL::State *state) const override {
 		int value = 0;
 		for (auto iter = problem->goalState.unaryFacts.begin(); iter != problem->goalState.unaryFacts.end(); iter++)
 			for (auto factIter = (*iter).second.begin(); factIter != (*iter).second.end(); factIter++)

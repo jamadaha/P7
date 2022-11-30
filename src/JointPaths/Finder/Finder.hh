@@ -35,9 +35,9 @@ namespace JointPaths {
 
 		RunData Data;
 
-		int CurrentLevel() const { return _CurrentLevel; }
-		int TotalLevels() const { return _TotalLevels; }
-		unsigned int TotalComparisons() const { return _TotalComparisons; }
+		inline int CurrentLevel() const { return _CurrentLevel; }
+		inline int TotalLevels() const { return _TotalLevels; }
+		inline unsigned int TotalComparisons() const { return _TotalComparisons; }
 
 		Finder(RunData data) : Data(data) {};
 

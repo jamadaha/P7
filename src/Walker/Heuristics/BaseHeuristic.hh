@@ -18,7 +18,7 @@ public:
 	const PDDL::Domain *domain;
 	const PDDL::Problem *problem;
 	BaseHeuristic(const PDDL::Domain *domain, const PDDL::Problem *problem) : domain(domain), problem(problem) {
-		srand(time(NULL));
+		srand(0);
 	}
 
 	virtual PDDL::ActionInstance* NextChoice(PDDL::State * state, std::vector<PDDL::ActionInstance> *choices) = 0;

@@ -38,8 +38,8 @@ public:
     }
 
     virtual std::vector<Path> Walk() = 0;
-    unsigned int GetTotalActionsGenerated() { return actionGenerator.GetTotalActionsGenerated(); };
-    unsigned int GetTotalIterations() { return _totalIterations; };
+    inline unsigned int GetTotalActionsGenerated() { return actionGenerator.GetTotalActionsGenerated(); };
+    inline unsigned int GetTotalIterations() { return _totalIterations; };
 
     std::function<const void(BaseWalker* sender)> OnWalkerStart;
     std::function<const void(BaseWalker* sender, int currentStep)> OnWalkerStep;

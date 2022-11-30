@@ -8,7 +8,7 @@
 class TimeWidthFunction : public BaseWidthFunction {
 public:
     TimeWidthFunction(unsigned int timeLimitMs) : limitMs(timeLimitMs), BaseWidthFunction(timeLimitMs) {};
-    bool Iterate(unsigned int *current) override {
+    inline bool Iterate(unsigned int *current) override {
         if (!started) {
             started = true;
             startTime = std::chrono::steady_clock::now();

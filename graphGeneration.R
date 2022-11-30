@@ -4,6 +4,7 @@ library(data.table)
 library(plyr)
 library(bigsnpr)
 library(ggpubr)
+library(ggpattern)
 
 imgWidth <-8
 imgHeight <- 8
@@ -98,9 +99,11 @@ report <- read.csv('report.csv')
     culDF$value <- as.numeric(as.character(culDF$value))
     culDF$count <- as.numeric(as.character(culDF$count))
 
-    reformulationTimeCulPlot <- ggplot(data=culDF, aes(x=value, y=count, group=algorithm)) + geom_line(aes(linetype=algorithm, color=algorithm)) + scale_color_grey() + scale_x_continuous(trans='log10');
-    reformulationTimeCulPlot = 
-        reformulationTimeCulPlot + 
+    reformulationTimeCulPlot <- ggplot(data=culDF, aes(x=value, y=count, group=algorithm)) + 
+        geom_line(aes(linetype=algorithm, color=algorithm)) + 
+        scale_color_grey() + 
+        scale_x_continuous(trans='log10') +
+        labs(linetype="Algorithm", color="Algorithm") +
         ggtitle("Average Reformulation Time (Cumulative)") + 
         theme(plot.title = element_text(hjust = 0.5)) + 
         xlab("Time (Seconds)") + 
@@ -139,13 +142,15 @@ report <- read.csv('report.csv')
     culDF$value <- as.numeric(as.character(culDF$value))
     culDF$count <- as.numeric(as.character(culDF$count))
 
-    searchTimeCulPlot <- ggplot(data=culDF, aes(x=value, y=count, group=algorithm)) + geom_line(aes(linetype=algorithm, color=algorithm)) + scale_color_grey() + scale_x_continuous(trans='log10');
-    searchTimeCulPlot = 
-        searchTimeCulPlot + 
+    searchTimeCulPlot <- ggplot(data=culDF, aes(x=value, y=count)) + 
+        geom_line(aes(linetype=algorithm, color=algorithm)) + 
+        scale_color_grey() + 
+        labs(linetype="Algorithm", color="Algorithm") +
+        scale_x_continuous(trans='log10') +
         ggtitle("Average Search Time (Cumulative)") + 
         theme(plot.title = element_text(hjust = 0.5)) + 
         xlab("Time (Seconds)") + 
-        ylab("Problems Solved")
+        ylab("Problems Solved");
     ggsave(plot=searchTimeCulPlot, filename="searchTimeCulm.pdf", width=imgWidth, height=imgHeight)
 
 # Make a combined graph
@@ -153,3 +158,19 @@ report <- read.csv('report.csv')
               ncol = 2, nrow = 1, common.legend = TRUE, legend = "right")
 
     ggsave(plot=combined, filename="combinedPlot.pdf", width=imgWidth * 2, height=imgHeight)
+    
+# Macro Quality graphs
+    macroSubset <- subset(report, algorithm != "Fast Downward")
+    macroQualityReport <- as.data.table(macroSubset)[,list(macroQuality=(mean(unique_macros_used) / mean(macros_generated))*100),c('domain', 'algorithm')]
+    macroQualityPlot <- ggplot(macroQualityReport, aes(x=domain, y=macroQuality, fill=domain)) + 
+        geom_col_pattern(aes(pattern = algorithm, pattern_angle = algorithm, pattern_spacing = algorithm), fill='white', color='black', pattern_spacing =0.03, position='dodge') + 
+        scale_fill_grey() +
+        ggtitle("Average Macro Quality (%)") + 
+        theme(plot.title = element_text(hjust = 0.5)) + 
+        xlab("Domain") + 
+        ylab("Macro Quality (%)") +
+        labs(pattern_spacing="Algorithm", pattern_angle="Algorithm", pattern="Algorithm");
+    ggsave(plot=macroQualityPlot, filename="macroQualityPlot.pdf", width=imgWidth, height=imgHeight)
+    
+    
+    

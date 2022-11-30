@@ -12,6 +12,8 @@ InterfaceStep<BaseReformulator*> CommonInterface::GetReformulator(int reformulat
 		reformulator = new GreedyWalkerReformulator(&config, Report);
 	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "greedyResumeWalker")
 		reformulator = new GreedyResumeWalkerReformulator(&config, Report);
+	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "hillClimberWalker")
+		reformulator = new HillClimberWalkerReformulator(&config, Report);
 	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "queueWalker")
 		reformulator = new QueueWalkerReformulator(&config, Report);
 	else if (config.GetItem<vector<string>>("reformulator").at(reformulatorIndex) == "probeWalker")

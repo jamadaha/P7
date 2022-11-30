@@ -30,6 +30,8 @@ BaseWalker* WalkerBuilder::GetWalker(std::string walkerName, BaseWidthFunction *
 		return new WalkerGreedyResume(instance, heuristic, widthFunction);
 	else if (walkerName == "walkerQueue")
 		return new WalkerQueue(instance, heuristic, widthFunction);
+	else if (walkerName == "walkerHillClimber")
+		return new WalkerHillClimber(instance, heuristic, widthFunction);
 	else if (walkerName == "walkerProbe")
 		return new WalkerProbe(instance, heuristic, widthFunction);
 	else if (walkerName == "walkerStepBack")

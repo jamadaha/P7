@@ -9,6 +9,7 @@
 #include "../Reformulators/SameOutputReformulator.hh"
 #include "../Reformulators/Walkers/GreedyWalkerReformulator.hh"
 #include "../Reformulators/Walkers/GreedyResumeWalkerReformulator.hh"
+#include "../Reformulators/Walkers/HillClimberWalkerReformulator.hh"
 #include "../Reformulators/Walkers/QueueWalkerReformulator.hh"
 #include "../Reformulators/Regressors/PartialRegressionReformulator.hh"
 #include "../Reformulators/Regressors/RegressionReformulator.hh"

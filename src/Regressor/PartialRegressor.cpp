@@ -2,13 +2,18 @@
 
 #include <queue>
 
-Path PartialRegressor::RegressFromState(const PDDL::State *state) {
+Path PartialRegressor::RegressFromState(const PDDL::State *state, unsigned int* current) {
     std::vector<PartialAction> steps;
     std::unordered_set<PDDL::State> visitedStates{*state};
     PDDL::State tempState = PDDL::State(*state);
     for (int i = 0; i < this->depthFunction->GetDepth(); i++) {
+        if (!widthFunction->Iterate(current))
+            break;
+
         std::vector<PartialAction> partialActions = actionGenerator->ExpandState(&tempState);
         if (partialActions.size() == 0)
+            break;
+        if (!widthFunction->Iterate(current))
             break;
         
         PartialAction *action = nullptr;
@@ -24,6 +29,8 @@ Path PartialRegressor::RegressFromState(const PDDL::State *state) {
             break;
 
         PDDL::ActionInstance realAction = actionGenerator->ConvertPartialAction(instance, action);
+        if (!widthFunction->Iterate(current))
+            break;
 
         GetPredecessorState(&tempState, &realAction);
 

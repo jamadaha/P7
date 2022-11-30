@@ -17,9 +17,13 @@ sudo apt install g++ make flex bison && git clone https://github.com/KCL-Plannin
 sudo apt install python3-pip && pip install lab
 # Install R
 sudo apt install r-base r-base-dev
-Rscript -e "install.packages(\"ggplot2\");"
-Rscript -e "install.packages(\"data.table\");"
-Rscript -e "install.packages(\"plyr\");"
-Rscript -e "install.packages(\"bigsnpr\");"
+sudo apt install libudunits2-dev
+sudo apt install libgdal-dev
+sudo Rscript -e "install.packages(\"ggplot2\");"
+sudo Rscript -e "install.packages(\"data.table\");"
+sudo Rscript -e "install.packages(\"plyr\");"
+sudo Rscript -e "install.packages(\"bigsnpr\");"
+sudo Rscript -e "install.packages(\"ggpubr\");"
+sudo Rscript -e "install.packages(\"ggpattern\");"
 # Download data repo
 git clone https://github.com/jamadaha/P7_Data

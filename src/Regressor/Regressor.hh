@@ -20,7 +20,7 @@ public:
     actionGenerator(PartialActionGenerator(&instance->domain->actions, instance->problem->objects.size())),
     actionConverter(PartialActionConverter(instance)) {};
 protected:
-    Path RegressFromState(const PDDL::State *state) override;
+    Path RegressFromState(const PDDL::State *state, unsigned int* current) override;
     
 private:
     

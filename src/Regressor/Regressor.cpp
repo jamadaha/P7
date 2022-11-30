@@ -1,12 +1,17 @@
 #include "Regressor.hh"
 
-Path Regressor::RegressFromState(const PDDL::State *state) {
+Path Regressor::RegressFromState(const PDDL::State *state, unsigned int* current) {
     std::vector<PDDL::ActionInstance> steps;
     std::unordered_set<PDDL::State> visitedStates{*state};
     PDDL::State tempState = PDDL::State(*state);
     for (int i = 0; i < this->depthFunction->GetDepth(); i++) {
+        if (!widthFunction->Iterate(current))
+            break;
+
         std::vector<PartialAction> partialActions = actionGenerator.ExpandState(&tempState);
         if (partialActions.size() == 0)
+            break;
+        if (!widthFunction->Iterate(current))
             break;
         
         bool foundLegalPredecessor;

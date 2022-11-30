@@ -16,7 +16,7 @@ public:
         free(actionGenerator);
     }
 protected:
-    Path RegressFromState(const PDDL::State *state) override;
+    Path RegressFromState(const PDDL::State *state, unsigned int* current) override;
     
 private:
     PartialActionGenerator *actionGenerator;

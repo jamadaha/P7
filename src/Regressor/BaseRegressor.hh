@@ -20,7 +20,7 @@ protected:
     BaseDepthFunction *depthFunction;
     BaseWidthFunction *widthFunction;
 
-    virtual Path RegressFromState(const PDDL::State *state) = 0;
+    virtual Path RegressFromState(const PDDL::State *state, unsigned int *current) = 0;
     void GetPredecessorState(PDDL::State *state, const PDDL::ActionInstance *action);
 };
 

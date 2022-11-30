@@ -3,15 +3,25 @@ library(ggplot2)
 library(data.table)
 library(plyr)
 library(bigsnpr)
+library(ggpubr)
 
 imgWidth <-8
 imgHeight <- 8
 # Reads in with header names
 report <- read.csv('report.csv')
+# Rename Algorithms
+    report[report=="sameoutput"] <- "Fast Downward"
+    report[report=="greedyWalker"] <- "Greedy Walker"
+    report[report=="greedyResumeWalker"] <- "Greedy Resume Walker"
+    report[report=="queueWalker"] <- "Queue Walker"
+    report[report=="stepBackWalker"] <- "Step Back Walker"
+    report[report=="probeWalker"] <- "Probe Walker"
+    report[report=="regressor"] <- "Regression Walker"
+    report[report=="partialRegressor"] <- "Partial Regression Walker"
 
 # Macro Things
   # Removes rows for sameouput
-  macroSubset <- subset(report, algorithm != "sameoutput")
+  macroSubset <- subset(report, algorithm != "Fast Downward")
   avgMacroGeneratedReport <- as.data.table(report)[,list(macros_generated=mean(macros_generated)),c('domain', 'algorithm', 'problem')]
   avgMacroUseReport <- as.data.table(report)[,list(macros_used=mean(macros_used)),c('domain', 'algorithm', 'problem')]
   
@@ -57,36 +67,88 @@ report <- read.csv('report.csv')
   ggsave(plot=reformulationPlot, filename="reformulationPlot.pdf", width=imgWidth, height=imgHeight)
 
 # Culmin Graph
-minValue = min(report$reformulation_time);
-maxValue = max(report$reformulation_time);
-xSeq = seq_log(minValue, maxValue, 1000)
+    minValue = min(report$reformulation_time) / 1000;
+    maxValue = max(report$reformulation_time) / 1000;
+    xSeq = seq_log(minValue, maxValue, 1000)
 
-uniqueAlgorithm = unique(report$algorithm);
+    uniqueAlgorithm = unique(report$algorithm);
 
-timeAvg <- as.data.table(report)[,list(time=mean(reformulation_time)),c('domain', 'algorithm', 'problem')]
+    timeAvg <- as.data.table(report)[,list(time=mean(reformulation_time) / 1000),c('domain', 'algorithm', 'problem')]
 
-maxRowCount <- 0;
-vecs <- list()
-for (i in seq_along(xSeq)) {
-  for (t in seq_along(uniqueAlgorithm)) {
-    vec <- list()
-    vec[[length(vec)+1]] = as.numeric(xSeq[i]);
-    rowCount = nrow(subset(timeAvg, timeAvg$algorithm == uniqueAlgorithm[t] & timeAvg$time < xSeq[i]));
-    vec[[length(vec)+1]] = uniqueAlgorithm[t];
-    vec[[length(vec)+1]] = as.numeric(rowCount);
-    vecs[[length(vecs)+1]] = vec;
-    if (rowCount > maxRowCount) {
-      maxRowCount <- rowCount
+    maxRowCount <- 0;
+    vecs <- list()
+    for (i in seq_along(xSeq)) {
+      for (t in seq_along(uniqueAlgorithm)) {
+        vec <- list()
+        vec[[length(vec)+1]] = as.numeric(xSeq[i]);
+        rowCount = nrow(subset(timeAvg, timeAvg$algorithm == uniqueAlgorithm[t] & timeAvg$time < xSeq[i]));
+        vec[[length(vec)+1]] = uniqueAlgorithm[t];
+        vec[[length(vec)+1]] = as.numeric(rowCount);
+        vecs[[length(vecs)+1]] = vec;
+        if (rowCount > maxRowCount) {
+          maxRowCount <- rowCount
+        }
+      }
     }
-  }
-}
 
-culDF <- as.data.frame(matrix(unlist(vecs), nrow=length(unlist(vecs[1]))))
-culDF <- as.data.frame(t(culDF))
-colnames(culDF) <- c('value', 'algorithm', 'count')
+    culDF <- as.data.frame(matrix(unlist(vecs), nrow=length(unlist(vecs[1]))))
+    culDF <- as.data.frame(t(culDF))
+    colnames(culDF) <- c('value', 'algorithm', 'count')
 
-culDF$value <- as.numeric(as.character(culDF$value))
-culDF$count <- as.numeric(as.character(culDF$count))
+    culDF$value <- as.numeric(as.character(culDF$value))
+    culDF$count <- as.numeric(as.character(culDF$count))
 
-algoCul <- ggplot(data=culDF, aes(x=value, y=count, group=algorithm)) + geom_line(aes(color=algorithm)) + scale_x_continuous(trans='log10');
-ggsave(plot=algoCul, filename="algoCul.pdf", width=imgWidth, height=imgHeight)
+    reformulationTimeCulPlot <- ggplot(data=culDF, aes(x=value, y=count, group=algorithm)) + geom_line(aes(color=algorithm)) + scale_x_continuous(trans='log10');
+    reformulationTimeCulPlot = 
+        reformulationTimeCulPlot + 
+        ggtitle("Average Reformulation Time (Cumulative)") + 
+        theme(plot.title = element_text(hjust = 0.5)) + 
+        xlab("Time (Seconds)") + 
+        ylab("Problems Solved")
+    ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm.pdf", width=imgWidth, height=imgHeight)
+
+# Culmin Graph the 2nd
+    minValue = min(report$search_time);
+    maxValue = max(report$search_time);
+    xSeq = seq_log(minValue, maxValue, 1000)
+
+    uniqueAlgorithm = unique(report$algorithm);
+
+    timeAvg <- as.data.table(report)[,list(time=mean(search_time)),c('domain', 'algorithm', 'problem')]
+
+    maxRowCount <- 0;
+    vecs <- list()
+    for (i in seq_along(xSeq)) {
+      for (t in seq_along(uniqueAlgorithm)) {
+        vec <- list()
+        vec[[length(vec)+1]] = as.numeric(xSeq[i]);
+        rowCount = nrow(subset(timeAvg, timeAvg$algorithm == uniqueAlgorithm[t] & timeAvg$time < xSeq[i]));
+        vec[[length(vec)+1]] = uniqueAlgorithm[t];
+        vec[[length(vec)+1]] = as.numeric(rowCount);
+        vecs[[length(vecs)+1]] = vec;
+        if (rowCount > maxRowCount) {
+          maxRowCount <- rowCount
+        }
+      }
+    }
+
+    culDF <- as.data.frame(matrix(unlist(vecs), nrow=length(unlist(vecs[1]))))
+    culDF <- as.data.frame(t(culDF))
+    colnames(culDF) <- c('value', 'algorithm', 'count')
+
+    culDF$value <- as.numeric(as.character(culDF$value))
+    culDF$count <- as.numeric(as.character(culDF$count))
+
+    searchTimeCulPlot <- ggplot(data=culDF, aes(x=value, y=count, group=algorithm)) + geom_line(aes(color=algorithm)) + scale_x_continuous(trans='log10');
+    searchTimeCulPlot = 
+        searchTimeCulPlot + 
+        ggtitle("Average Search Time (Cumulative)") + 
+        theme(plot.title = element_text(hjust = 0.5)) + 
+        xlab("Time (Seconds)") + 
+        ylab("Problems Solved")
+    ggsave(plot=searchTimeCulPlot, filename="searchTimeCulm.pdf", width=imgWidth, height=imgHeight)
+
+combined <- ggarrange(searchTimeCulPlot, reformulationTimeCulPlot,
+          ncol = 2, nrow = 1, common.legend = TRUE, legend = "right")
+
+ggsave(plot=combined, filename="combinedPlot.pdf", width=imgWidth * 2, height=imgHeight)

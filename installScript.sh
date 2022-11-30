@@ -21,5 +21,6 @@ Rscript -e "install.packages(\"ggplot2\");"
 Rscript -e "install.packages(\"data.table\");"
 Rscript -e "install.packages(\"plyr\");"
 Rscript -e "install.packages(\"bigsnpr\");"
+Rscript -e "install.packages(\"ggpubr\");"
 # Download data repo
 git clone https://github.com/jamadaha/P7_Data

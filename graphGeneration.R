@@ -25,45 +25,45 @@ report <- read.csv('report.csv')
   avgMacroGeneratedReport <- as.data.table(report)[,list(macros_generated=mean(macros_generated)),c('domain', 'algorithm', 'problem')]
   avgMacroUseReport <- as.data.table(report)[,list(macros_used=mean(macros_used)),c('domain', 'algorithm', 'problem')]
   
-  macroGeneratedPlot <- ggplot(avgMacroGeneratedReport, aes(domain, macros_generated)) + geom_boxplot()
+  macroGeneratedPlot <- ggplot(avgMacroGeneratedReport, aes(domain, macros_generated)) + geom_boxplot() + scale_color_grey()
   ggsave(plot=macroGeneratedPlot, filename="macroGeneratedPlot.pdf", width=imgWidth, height=imgHeight)
   
-  macroUsePlot <- ggplot(avgMacroUseReport, aes(domain, macros_used)) + geom_boxplot()
+  macroUsePlot <- ggplot(avgMacroUseReport, aes(domain, macros_used)) + geom_boxplot() + scale_color_grey()
   ggsave(plot=macroUsePlot, filename="macroGeneratedPlot.pdf", width=imgWidth, height=imgHeight)
 
 # Evaluation Things
   avgEvaluationsReport <- as.data.table(report)[,list(evaluations=mean(evaluations)),c('domain', 'algorithm', 'problem')]
-  evaluationsPlot <- ggplot(avgEvaluationsReport, aes(algorithm, evaluations)) + geom_boxplot()
+  evaluationsPlot <- ggplot(avgEvaluationsReport, aes(algorithm, evaluations)) + geom_boxplot() + scale_color_grey()
   ggsave(plot=evaluationsPlot, filename="evaluationsPlot.pdf", width=imgWidth, height=imgHeight)
 
 # Expansion Things
   avgExpansionsReport <- as.data.table(report)[,list(expansions=mean(expansions)),c('domain', 'algorithm', 'problem')]
-  expansionsPlot <- ggplot(avgExpansionsReport, aes(algorithm, expansions)) + geom_boxplot()
+  expansionsPlot <- ggplot(avgExpansionsReport, aes(algorithm, expansions)) + geom_boxplot() + scale_color_grey()
   ggsave(plot=expansionsPlot, filename="expansionsPlot.pdf", width=imgWidth, height=imgHeight)
   
 # Generated Things
   avgGeneratedReport <- as.data.table(report)[,list(generated=mean(generated)),c('domain', 'algorithm', 'problem')]
-  generatedPlot <- ggplot(avgGeneratedReport, aes(algorithm, generated)) + geom_boxplot()
+  generatedPlot <- ggplot(avgGeneratedReport, aes(algorithm, generated)) + geom_boxplot() + scale_color_grey()
   ggsave(plot=generatedPlot, filename="generatedPlot.pdf", width=imgWidth, height=imgHeight)
 
 # PlanLength Things
   avgPlanLengthReport <- as.data.table(report)[,list(plan_length=mean(plan_length)),c('domain', 'algorithm', 'problem')]
-  planLengthPlot <- ggplot(avgPlanLengthReport, aes(algorithm, plan_length)) + geom_boxplot()
+  planLengthPlot <- ggplot(avgPlanLengthReport, aes(algorithm, plan_length)) + geom_boxplot() + scale_color_grey()
   ggsave(plot=generatedPlot, filename="planLengthPlot.pdf", width=imgWidth, height=imgHeight)
   
 # PlannerTime Things
   avgPlannerTimeReport <- as.data.table(report)[,list(planner_time=mean(planner_time)),c('domain', 'algorithm', 'problem')]
-  plannerTimePlot <- ggplot(avgPlannerTimeReport, aes(algorithm, planner_time)) + geom_boxplot()
+  plannerTimePlot <- ggplot(avgPlannerTimeReport, aes(algorithm, planner_time)) + geom_boxplot() + scale_color_grey()
   ggsave(plot=plannerTimePlot, filename="plannerTimePlot.pdf", width=imgWidth, height=imgHeight)
   
 # SearchTime Things
   avgSearchTimeReport <- as.data.table(report)[,list(search_time=mean(search_time)),c('domain', 'algorithm', 'problem')]
-  searchTimePlot <- ggplot(avgSearchTimeReport, aes(algorithm, search_time)) + geom_boxplot()
+  searchTimePlot <- ggplot(avgSearchTimeReport, aes(algorithm, search_time)) + geom_boxplot() + scale_color_grey()
   ggsave(plot=searchTimePlot, filename="searchTimePlot.pdf", width=imgWidth, height=imgHeight)
   
 # ReformulationTime Things
   avgReformulationTimeReport <- as.data.table(report)[,list(reformulation_time=mean(reformulation_time)),c('domain', 'algorithm', 'problem')]
-  reformulationPlot <- ggplot(avgReformulationTimeReport, aes(algorithm, reformulation_time)) + geom_boxplot()
+  reformulationPlot <- ggplot(avgReformulationTimeReport, aes(algorithm, reformulation_time)) + geom_boxplot() + scale_color_grey()
   ggsave(plot=reformulationPlot, filename="reformulationPlot.pdf", width=imgWidth, height=imgHeight)
 
 # Culmin Graph
@@ -98,7 +98,7 @@ report <- read.csv('report.csv')
     culDF$value <- as.numeric(as.character(culDF$value))
     culDF$count <- as.numeric(as.character(culDF$count))
 
-    reformulationTimeCulPlot <- ggplot(data=culDF, aes(x=value, y=count, group=algorithm)) + geom_line(aes(color=algorithm)) + scale_x_continuous(trans='log10');
+    reformulationTimeCulPlot <- ggplot(data=culDF, aes(x=value, y=count, group=algorithm)) + geom_line(aes(linetype=algorithm, color=algorithm)) + scale_color_grey() + scale_x_continuous(trans='log10');
     reformulationTimeCulPlot = 
         reformulationTimeCulPlot + 
         ggtitle("Average Reformulation Time (Cumulative)") + 
@@ -139,7 +139,7 @@ report <- read.csv('report.csv')
     culDF$value <- as.numeric(as.character(culDF$value))
     culDF$count <- as.numeric(as.character(culDF$count))
 
-    searchTimeCulPlot <- ggplot(data=culDF, aes(x=value, y=count, group=algorithm)) + geom_line(aes(color=algorithm)) + scale_x_continuous(trans='log10');
+    searchTimeCulPlot <- ggplot(data=culDF, aes(x=value, y=count, group=algorithm)) + geom_line(aes(linetype=algorithm, color=algorithm)) + scale_color_grey() + scale_x_continuous(trans='log10');
     searchTimeCulPlot = 
         searchTimeCulPlot + 
         ggtitle("Average Search Time (Cumulative)") + 
@@ -148,7 +148,8 @@ report <- read.csv('report.csv')
         ylab("Problems Solved")
     ggsave(plot=searchTimeCulPlot, filename="searchTimeCulm.pdf", width=imgWidth, height=imgHeight)
 
-combined <- ggarrange(searchTimeCulPlot, reformulationTimeCulPlot,
-          ncol = 2, nrow = 1, common.legend = TRUE, legend = "right")
+# Make a combined graph
+    combined <- ggarrange(searchTimeCulPlot, reformulationTimeCulPlot,
+              ncol = 2, nrow = 1, common.legend = TRUE, legend = "right")
 
-ggsave(plot=combined, filename="combinedPlot.pdf", width=imgWidth * 2, height=imgHeight)
+    ggsave(plot=combined, filename="combinedPlot.pdf", width=imgWidth * 2, height=imgHeight)

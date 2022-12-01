@@ -6,12 +6,12 @@
 
 class ConstantDepthFunction : public BaseDepthFunction {
 public:
-    ConstantDepthFunction(int depth, PDDL::Instance* instance, double modifier = 1) : ConstantDepth(depth), BaseDepthFunction(instance, modifier) {}
+    ConstantDepthFunction(int depth, PDDL::Instance* instance, double modifier = 1) : ConstantDepth(depth * modifier), BaseDepthFunction(instance, modifier) {}
     inline int GetDepth() override {
-        return ConstantDepth * Modifier;
+        return ConstantDepth;
     }
 private:
-    int ConstantDepth = 0;
+    const int ConstantDepth;
 };
 
 #endif

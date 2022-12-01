@@ -14,7 +14,7 @@ public:
 		free(baseHeuristic);
 	}
 
-	inline PDDL::ActionInstance* NextChoice(PDDL::State* state, std::vector<PDDL::ActionInstance>* choices) override {
+	PDDL::ActionInstance* NextChoice(PDDL::State* state, std::vector<PDDL::ActionInstance>* choices) override {
 		if (!isFirstSet) {
 			isFirstSet = true;
 			PreviousActions.clear();
@@ -43,7 +43,7 @@ public:
 		}
 	}
 
-	inline int Eval(const PDDL::State* state) const override {
+	int Eval(const PDDL::State* state) const override {
 		return 0;
 	};
 

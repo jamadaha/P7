@@ -4,6 +4,15 @@
 using namespace std;
 using namespace PDDL;
 
+#ifndef NDEBUG
+void ActionInstance::SetupDebugInfo() {
+    if (CurrentInstance != nullptr) {
+        for (int i = 0; i < objects.size(); i++)
+            objectsName.push_back(CurrentInstance->problem->objects.at(i));
+    }
+}
+#endif
+
 string ActionInstance::ToString(const Instance* instance)
 {
     //Print action

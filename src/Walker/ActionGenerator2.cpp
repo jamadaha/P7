@@ -28,7 +28,7 @@ vector<PDDL::ActionInstance> ActionGenerator2::GenerateActions(const PDDL::Actio
     GetCandidates(&candidates, state, parentValues, 0, action->parameters.size());
 
     for (auto candidate : candidates)
-        legalActions.push_back(PDDL::ActionInstance(action, vector<unsigned int> (candidate.begin(), candidate.begin() + action->parameters.size())));
+        legalActions.push_back(PDDL::ActionInstance(action, vector<unsigned int>(candidate.begin(), candidate.begin() + action->parameters.size())));
 
     return legalActions;
 }

@@ -13,7 +13,6 @@ public:
 	PDDL::ActionInstance* NextChoice(PDDL::State * state, std::vector<PDDL::ActionInstance> *choices) override {
 		int bestIndex = -1;
 		int bestValue = -1;
-		auto engine = std::default_random_engine{};
 
 		// The purpose of this init bullshitery is making it take random choices in case of equal values
 		int init = rand() % choices->size();

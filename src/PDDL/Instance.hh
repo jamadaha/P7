@@ -24,7 +24,7 @@ namespace PDDL {
     };
 
 #ifndef NDEBUG
-    extern const Instance* CurrentInstance;
+    extern Instance* CurrentInstance;
 #endif
 }
 

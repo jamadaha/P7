@@ -41,7 +41,8 @@ ATTRIBUTES_NAME_MAP = [
     ('p7_average_branching_factor_intvalues', 'walker_average_branching_factor'),
     ('p7_median_branching_factor_intvalues', 'walker_median_branching_factor'),
     ('p7_average_path_length_intvalues', 'walker_average_path_length'),
-    ('p7_median_path_length_intvalues', 'walker_median_path_length')
+    ('p7_median_path_length_intvalues', 'walker_median_path_length'),
+    ('p7_used_heuristic_notes','walker_heuristic')
 ]
 
 def get_times(content, props):

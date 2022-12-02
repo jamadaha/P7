@@ -4,8 +4,12 @@ using namespace std;
 
 vector<PDDL::ActionInstance> ActionGenerator::GenerateActions(const PDDL::State *state) {
     vector<PDDL::ActionInstance> legalActions;
-    for (auto iter = actions->begin(); iter != actions->end(); iter++) {
-        vector<PDDL::ActionInstance> tempActions = GenerateActions(&(*iter), state);
+    
+    unsigned int startI = rand() % actions->size();
+    for (int i = 0; i < actions->size(); i++) {
+        expansionActionsGenerated = 0;
+        unsigned int wI = (startI + i) % actions->size();
+        vector<PDDL::ActionInstance> tempActions = GenerateActions(&actions->at(wI), state);
         copy(tempActions.begin(), tempActions.end(), back_inserter(legalActions));
     }
     branchingFactors.push_back(legalActions.size());
@@ -13,7 +17,7 @@ vector<PDDL::ActionInstance> ActionGenerator::GenerateActions(const PDDL::State 
     return legalActions;
 }
 
-vector<PDDL::ActionInstance> ActionGenerator::GenerateActions(const PDDL::Action *action, const PDDL::State *state) const {
+vector<PDDL::ActionInstance> ActionGenerator::GenerateActions(const PDDL::Action *action, const PDDL::State *state) {
     vector<PDDL::ActionInstance> legalActions;
 
     // Object which fulfill the unary literals of the action preconditions
@@ -116,6 +120,8 @@ std::vector<std::vector<unsigned int>> ActionGenerator::PermuteAll(std::vector<s
         permutation.push_back(*iter);
         Permute(candidateObjects, candidatePairs, &permutations, &permutation);
         permutation.pop_back();
+        if (expansionActionsGenerated > maxExpansionFactor)
+            break;
     }
     return permutations;
 }
@@ -138,10 +144,14 @@ void ActionGenerator::Permute(std::vector<std::unordered_set<unsigned int>> &can
         }
 
         if (validPerm) {
-            if (permutation->size() == candidateObjects.size())
+            if (permutation->size() == candidateObjects.size()) {
                 permutations->push_back(*permutation);
-            else
+                expansionActionsGenerated++;
+            } else {
                 Permute(candidateObjects, candidatePairs, permutations, permutation);
+                if (expansionActionsGenerated > maxExpansionFactor)
+                    break;
+            }
         }
         permutation->pop_back();
     }

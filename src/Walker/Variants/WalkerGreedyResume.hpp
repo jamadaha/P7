@@ -21,7 +21,7 @@ public:
         : BaseWalker("Default", instance, heuristic, widthFunc) {}
     std::vector<Path> Walk() override;
 private:
-    const unsigned int maxStepCount = 1000;
+    const unsigned int maxStepCount = 100;
     int bestValue = 0;
     PDDL::State bestState;
     Path Walk(BaseHeuristic* heuristic, const PDDL::State state, unsigned int* current);

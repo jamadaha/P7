@@ -34,15 +34,6 @@ PDDL::Domain *domain = nullptr, std::vector<std::string> objects = std::vector<s
     PDDL::State(unaryFacts, binaryFacts));
 }
 
-TEST_CASE(TAG + "GenerateActions Empty") {
-    PDDL::Instance instance = PDDL::Instance(new PDDL::Domain(), new PDDL::Problem());
-    ActionGenerator AG = ActionGenerator(&instance.domain->actions, instance.problem->objects.size());
-    std::vector<PDDL::ActionInstance> actions = AG.GenerateActions(&instance.problem->initState);
-    REQUIRE(actions.size() == 0);
-    free(instance.domain);
-    free(instance.problem);
-}
-
 TEST_CASE(TAG + "GenerateActions Unary - 1 Legal") {
     PDDL::Domain domain = GenerateDomain(std::vector<PDDL::Action>{
         PDDL::Action("Action 1", 

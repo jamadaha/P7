@@ -23,7 +23,7 @@ public:
     /// @brief For a given state, generate all possible action instances
     std::vector<PDDL::ActionInstance> GenerateActions(const PDDL::State *state);
     /// @brief For a given action, generate all possible action instances
-    std::vector<PDDL::ActionInstance> GenerateActions(const PDDL::Action *action, const PDDL::State *state) const;
+    std::vector<PDDL::ActionInstance> GenerateActions(const PDDL::Action *action, const PDDL::State *state);
 
     /// @brief For the given \p action append all possible object permutations to candidate objects, only looks at unary literals
     /// @return Returns true if there is some legal permutation, false if not
@@ -36,9 +36,9 @@ public:
     /// @param literals Some unary literals
     static void RemoveIllegal(std::unordered_set<unsigned int> &set, const std::unordered_set<const PDDL::Literal*> *literals, const PDDL::State *state);
 
-    static std::vector<std::vector<unsigned int>> PermuteAll(std::vector<std::unordered_set<unsigned int>> candidateObjects, std::unordered_map<std::pair<unsigned int, unsigned int>, std::unordered_set<std::pair<unsigned int, unsigned int>>> candidatePairs);
+    std::vector<std::vector<unsigned int>> PermuteAll(std::vector<std::unordered_set<unsigned int>> candidateObjects, std::unordered_map<std::pair<unsigned int, unsigned int>, std::unordered_set<std::pair<unsigned int, unsigned int>>> candidatePairs);
 
-    static void Permute(std::vector<std::unordered_set<unsigned int>> &candidateObjects, std::unordered_map<std::pair<unsigned int, unsigned int>, std::unordered_set<std::pair<unsigned int, unsigned int>>> &candidatePairs, std::vector<std::vector<unsigned int>> *permutations, std::vector<unsigned int> *permutation);
+    void Permute(std::vector<std::unordered_set<unsigned int>> &candidateObjects, std::unordered_map<std::pair<unsigned int, unsigned int>, std::unordered_set<std::pair<unsigned int, unsigned int>>> &candidatePairs, std::vector<std::vector<unsigned int>> *permutations, std::vector<unsigned int> *permutation);
 
     /// @brief Checks whether the objects are valid for each of the \p literals
     /// @param literals Some multi literals
@@ -49,6 +49,8 @@ private:
     unsigned int totalActions = 0;
     const std::vector<PDDL::Action> *actions;
     std::unordered_set<unsigned int> objects;
+    unsigned int expansionActionsGenerated;
+    const unsigned int maxExpansionFactor = 5;
 };
 
 #endif

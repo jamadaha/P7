@@ -13,47 +13,36 @@ public:
 	PDDL::ActionInstance* NextChoice(PDDL::State * state, std::vector<PDDL::ActionInstance> *choices) override {
 		int bestIndex = -1;
 		int bestValue = -1;
-
-		// The purpose of this init bullshitery is making it take random choices in case of equal values
-		int init = rand() % choices->size();
-		int i = init + 1;
-	
-		while (i != init) {
-			i++;
-			if (i >= choices->size()) {
-				i = 0;
-			}
-
-			auto changes = state->DoAction(&choices->at(i));
-			int value = Eval(state);
-			state->UndoAction(&changes);
-			if (value >= bestValue) {
+		for (int i = 0; i < choices->size(); i++) {
+			int evalValue = Eval(&problem->goalState, &choices->at(i).action->effects, &choices->at(i).objects);
+			if (evalValue > bestValue) {
+				bestValue = evalValue;
 				bestIndex = i;
-				bestValue = value;
 			}
 		}
-
-		return &choices->at(bestIndex);
+		if (bestValue == 0)
+			return &choices->at(rand() % choices->size());
+		else
+			return &choices->at(bestIndex);
 	}
 
-	int Eval(const PDDL::State *state) const override {
+	int Eval(const PDDL::State* state, const std::vector<PDDL::Literal>* effects, const std::vector<unsigned int>* objects) const {
 		int value = 0;
-		for (auto iter = problem->goalState.unaryFacts.begin(); iter != problem->goalState.unaryFacts.end(); iter++)
-			for (auto factIter = (*iter).second.begin(); factIter != (*iter).second.end(); factIter++)
-				if (state->ContainsFact((*iter).first, &(*factIter)))
-					value += 1000;
-		for (auto iter = problem->goalState.binaryFacts.begin(); iter != problem->goalState.binaryFacts.end(); iter++)
-			for (auto factIter = (*iter).second.begin(); factIter != (*iter).second.end(); factIter++)
-				if (state->ContainsFact((*iter).first, (*factIter)))
-					value += 2000;
-		for (auto iter = goalPreconditions.begin(); iter != goalPreconditions.end(); iter++) {
-			if (domain->predicates.at((*iter)).arguments.size() == 1)
-				value += state->unaryFacts.at((*iter)).size();
-			else
-				value += 2 * state->binaryFacts.at((*iter)).size();
+
+		for (auto effectLiteral = effects->begin(); effectLiteral != effects->end(); effectLiteral++) {
+			if (effectLiteral->args.size() == 1) {
+				if (state->ContainsFact(effectLiteral->predicateIndex, objects->at(effectLiteral->args.at(0))))
+					value += 1;
+			} else if (effectLiteral->args.size() == 2) {
+				if (state->ContainsFact(effectLiteral->predicateIndex, std::make_pair(objects->at(effectLiteral->args.at(0)), objects->at(effectLiteral->args.at(1)))))
+					value += 1;
+			}
 		}
-		
 		return value;
+	};
+
+	int Eval(const PDDL::State *state) const override {
+		return 0;
 	};
 private:
 	// The preconditions of actions which has an effect relating to goal state

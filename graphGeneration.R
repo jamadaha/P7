@@ -21,53 +21,6 @@ report <- read.csv('report.csv')
     report[report=="partialRegressor"] <- "Partial Regression Walker"
     report[report=="hillClimberWalker"] <- "Hill Climber Walker"
 
-# Macro Things
-  # Removes rows for sameouput
-#  macroSubset <- subset(report, algorithm != "Fast Downward")
-#  avgMacroGeneratedReport <- as.data.table(report)[,list(macros_generated=mean(macros_generated)),c('domain', 'algorithm', 'problem')]
-#  avgMacroUseReport <- as.data.table(report)[,list(macros_used=mean(macros_used)),c('domain', 'algorithm', 'problem')]
-  
-#  macroGeneratedPlot <- ggplot(avgMacroGeneratedReport, aes(domain, macros_generated)) + geom_boxplot() + scale_color_grey()
-#  ggsave(plot=macroGeneratedPlot, filename="macroGeneratedPlot.pdf", width=imgWidth, height=imgHeight)
-  
-#  macroUsePlot <- ggplot(avgMacroUseReport, aes(domain, macros_used)) + geom_boxplot() + scale_color_grey()
-#  ggsave(plot=macroUsePlot, filename="macroGeneratedPlot.pdf", width=imgWidth, height=imgHeight)
-
-# Evaluation Things
-#  avgEvaluationsReport <- as.data.table(report)[,list(evaluations=mean(evaluations)),c('domain', 'algorithm', 'problem')]
-#  evaluationsPlot <- ggplot(avgEvaluationsReport, aes(algorithm, evaluations)) + geom_boxplot() + scale_color_grey()
-#  ggsave(plot=evaluationsPlot, filename="evaluationsPlot.pdf", width=imgWidth, height=imgHeight)
-
-# Expansion Things
-#  avgExpansionsReport <- as.data.table(report)[,list(expansions=mean(expansions)),c('domain', 'algorithm', 'problem')]
-#  expansionsPlot <- ggplot(avgExpansionsReport, aes(algorithm, expansions)) + geom_boxplot() + scale_color_grey()
-#  ggsave(plot=expansionsPlot, filename="expansionsPlot.pdf", width=imgWidth, height=imgHeight)
-  
-# Generated Things
-#  avgGeneratedReport <- as.data.table(report)[,list(generated=mean(generated)),c('domain', 'algorithm', 'problem')]
-#  generatedPlot <- ggplot(avgGeneratedReport, aes(algorithm, generated)) + geom_boxplot() + scale_color_grey()
-#  ggsave(plot=generatedPlot, filename="generatedPlot.pdf", width=imgWidth, height=imgHeight)
-
-# PlanLength Things
-#  avgPlanLengthReport <- as.data.table(report)[,list(plan_length=mean(plan_length)),c('domain', 'algorithm', 'problem')]
-#  planLengthPlot <- ggplot(avgPlanLengthReport, aes(algorithm, plan_length)) + geom_boxplot() + scale_color_grey()
-#  ggsave(plot=generatedPlot, filename="planLengthPlot.pdf", width=imgWidth, height=imgHeight)
-  
-# PlannerTime Things
-#  avgPlannerTimeReport <- as.data.table(report)[,list(planner_time=mean(planner_time)),c('domain', 'algorithm', 'problem')]
-#  plannerTimePlot <- ggplot(avgPlannerTimeReport, aes(algorithm, planner_time)) + geom_boxplot() + scale_color_grey()
-#  ggsave(plot=plannerTimePlot, filename="plannerTimePlot.pdf", width=imgWidth, height=imgHeight)
-  
-# SearchTime Things
-#  avgSearchTimeReport <- as.data.table(report)[,list(search_time=mean(search_time)),c('domain', 'algorithm', 'problem')]
-#  searchTimePlot <- ggplot(avgSearchTimeReport, aes(algorithm, search_time)) + geom_boxplot() + scale_color_grey()
-#  ggsave(plot=searchTimePlot, filename="searchTimePlot.pdf", width=imgWidth, height=imgHeight)
-  
-# ReformulationTime Things
-#  avgReformulationTimeReport <- as.data.table(report)[,list(reformulation_time=mean(reformulation_time)),c('domain', 'algorithm', 'problem')]
-#  reformulationPlot <- ggplot(avgReformulationTimeReport, aes(algorithm, reformulation_time)) + geom_boxplot() + scale_color_grey()
-#  ggsave(plot=reformulationPlot, filename="reformulationPlot.pdf", width=imgWidth, height=imgHeight)
-
 # Culmin Graph
     minValue = min(report$reformulation_time) / 1000;
     maxValue = max(report$reformulation_time) / 1000;
@@ -189,3 +142,20 @@ report <- read.csv('report.csv')
 
     ggsave(plot=combined, filename="combinedPlot.pdf", width=imgWidth * 2, height=imgHeight)
     
+# Sum Reformulation time
+  timeAvg <- as.data.table(report)[,list(time=mean(reformulation_time) / 1000),c('domain', 'algorithm', 'problem')]
+  agg <- aggregate(timeAvg$time, list(timeAvg$algorithm), FUN=sum) 
+  sRT<-ggplot(data=agg, aes(x=Group.1, y=x)) + 
+  geom_bar(stat="identity") +
+  xlab("Algorithm (s)") + 
+  ylab("Sum of Reformulation Time (s)")
+  ggsave(plot=sRT, filename="SumReformTime.pdf", width=imgWidth, height=imgHeight)
+    
+# Sum Search time
+  timeAvg <- as.data.table(report)[,list(time=mean(search_time) / 1000),c('domain', 'algorithm', 'problem')]
+  agg <- aggregate(timeAvg$time, list(timeAvg$algorithm), FUN=sum) 
+  sRT<-ggplot(data=agg, aes(x=Group.1, y=x)) + 
+  geom_bar(stat="identity") +
+  xlab("Algorithm (s)") + 
+  ylab("Sum of Search Time (s)")
+  ggsave(plot=sRT, filename="SumSearchTime.pdf", width=imgWidth, height=imgHeight)

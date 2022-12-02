@@ -1,5 +1,5 @@
 add_library(PDDL 
-    "Action.cpp" "ActionInstance.cpp" "Domain.hh" "Instance.hh" "Literal.hh" "Predicate.hh" "Problem.hh" "State.cpp" 
+    "Action.cpp" "ActionInstance.cpp" "Domain.hh" "Instance.cpp" "Literal.hh" "Predicate.hh" "Problem.hh" "State.cpp" 
     "CodeGenerators/BaseCodeGenerator.cpp" "CodeGenerators/CodeGenerator.cpp" "CodeGenerators/DomainCodeGenerator.cpp" "CodeGenerators/ProblemCodeGenerator.cpp" 
     "Parsers/ExternalParser.cpp"
     "Parsers/ExternalParser/action.cc" "Parsers/ExternalParser/domain.cc" "Parsers/ExternalParser/location.hh" "Parsers/ExternalParser/pddldriver.cc" "Parsers/ExternalParser/pddllex.yy.cc" "Parsers/ExternalParser/pddlparser.tab.cc" "Parsers/ExternalParser/position.hh" "Parsers/ExternalParser/predicate.cc" "Parsers/ExternalParser/problem.cc" "Parsers/ExternalParser/stack.hh"
@@ -9,6 +9,7 @@ target_sources(PDDL
         ${CMAKE_CURRENT_LIST_DIR}/Action.cpp
         ${CMAKE_CURRENT_LIST_DIR}/ActionInstance.cpp
         ${CMAKE_CURRENT_LIST_DIR}/State.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/Instance.cpp
         ${CMAKE_CURRENT_LIST_DIR}/CodeGenerators/BaseCodeGenerator.cpp
         ${CMAKE_CURRENT_LIST_DIR}/CodeGenerators/CodeGenerator.cpp
         ${CMAKE_CURRENT_LIST_DIR}/CodeGenerators/DomainCodeGenerator.cpp

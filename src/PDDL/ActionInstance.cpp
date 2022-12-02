@@ -6,10 +6,8 @@ using namespace PDDL;
 
 #ifndef NDEBUG
 void ActionInstance::SetupDebugInfo() {
-    if (CurrentInstance != nullptr) {
-        for (int i = 0; i < objects.size(); i++)
-            objectsName.push_back(CurrentInstance->problem->objects.at(i));
-    }
+    for (int i = 0; i < objects.size(); i++)
+        objectsName.push_back(PDDL::CurrentInstance->problem->objects.at(i));
 }
 #endif
 

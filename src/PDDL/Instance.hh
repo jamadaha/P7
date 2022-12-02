@@ -6,21 +6,26 @@
 #include "Mutex.hh"
 
 namespace PDDL {
-#ifndef NDEBUG
-    extern const Instance* CurrentInstance;
-#endif
-
     class Instance {
     public:
         Domain* domain;
         Problem* problem;
         Mutex* mutexes;
+        Instance(Domain* domain, Problem* problem, Mutex* mutexes) : domain(domain), problem(problem), mutexes(mutexes) {};
         Instance(Domain* domain, Problem* problem) : domain(domain), problem(problem) {
 #ifndef NDEBUG
-            CurrentInstance = this;
+            SetupDebug();
 #endif
         };
+
+#ifndef NDEBUG
+        void SetupDebug();
+#endif
     };
+
+#ifndef NDEBUG
+    extern const Instance* CurrentInstance;
+#endif
 }
 
 #endif

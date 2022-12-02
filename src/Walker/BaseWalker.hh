@@ -29,8 +29,8 @@ public:
     BaseWalker(std::string walkerName, PDDL::Instance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) :
         WalkerName(walkerName), 
         instance(instance), 
-        actionGenerator(ActionGenerator2(&instance->domain->actions, instance->problem->objects.size())),
-        //actionGenerator(ActionGenerator(&instance->domain->actions, instance->problem->objects.size())),
+        //actionGenerator(ActionGenerator2(&instance->domain->actions, instance->problem->objects.size())),
+        actionGenerator(ActionGenerator(&instance->domain->actions, instance->problem->objects.size())),
         heuristic(heuristic), widthFunc(widthFunc) {}
     ~BaseWalker() {
         free(heuristic);
@@ -52,8 +52,8 @@ protected:
     unsigned int _totalIterations = 0;
     std::vector<unsigned int> pathLengths;
     PDDL::Instance* instance;
-    ActionGenerator2 actionGenerator;
-    //ActionGenerator actionGenerator;
+    //ActionGenerator2 actionGenerator;
+    ActionGenerator actionGenerator;
 };
 
 #endif

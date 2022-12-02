@@ -17,7 +17,7 @@ std::vector<PDDL::ActionInstance> PartialActionConverter::ConvertAction(const PD
     RemoveIllegal(state, action->action, &permutations);
 
     std::vector<PDDL::ActionInstance> actions;
-    for (int i = 0; i < permutations.size();  i++)
+    for (int i = 0; i < permutations.size(); i++)
         actions.push_back(PDDL::ActionInstance(action->action, permutations.at(i)));
 
     return actions;

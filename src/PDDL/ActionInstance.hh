@@ -17,9 +17,21 @@ namespace PDDL {
 
         const Action* action = nullptr;
         std::vector<unsigned int> objects;
+#ifndef NDEBUG
+        void SetupDebugInfo();
+        std::vector<std::string> objectsName;
+#endif
+
         ActionInstance() {};
+#ifndef NDEBUG
+        ActionInstance(const Action* action, const std::vector<unsigned int> objects) : action(action), objects(objects) {
+            SetupDebugInfo();
+        };
+        ActionInstance(const ActionInstance& instance) : action(instance.action), objects(instance.objects), objectsName(instance.objectsName) {};
+#else
         ActionInstance(const Action* action, const std::vector<unsigned int> objects) : action(action), objects(objects) {};
         ActionInstance(const ActionInstance& instance) : action(instance.action), objects(instance.objects) {};
+#endif
         std::string ToString(const Instance* instance);
         std::string LiteralsToString(std::vector<Literal> literals, const Instance* instance);
 

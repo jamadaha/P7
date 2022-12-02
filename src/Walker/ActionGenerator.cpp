@@ -69,9 +69,9 @@ vector<PDDL::ActionInstance> ActionGenerator::GenerateActions(const PDDL::Action
     } else
         candidatePermutations = PermuteAll(candidateObjects, candidatePairs);
         
-    for (int i = 0; i < candidatePermutations.size(); i++)
+    for (int i = 0; i < candidatePermutations.size(); i++) 
         legalActions.push_back(PDDL::ActionInstance(action, candidatePermutations.at(i)));
- 
+
     return legalActions;
 }
 

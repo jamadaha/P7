@@ -1,10 +1,13 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "../../src/PDDL/State.hh"
+#include "../../src/PDDL/Instance.hh"
 
 const std::string TAG = "Walker ";
 
 TEST_CASE(TAG + "DoAction Unary") {
+    new PDDL::Instance(nullptr, nullptr);
+
     PDDL::State state = PDDL::State(
         std::unordered_map<unsigned int, std::unordered_set<unsigned int>>{
             {0, std::unordered_set<unsigned int>{ }},

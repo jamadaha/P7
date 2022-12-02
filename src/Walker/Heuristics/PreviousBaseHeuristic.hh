@@ -43,7 +43,7 @@ public:
 		}
 	}
 
-	int Eval(const PDDL::State* state) const override {
+	int Eval(const PDDL::State* state, const PDDL::ActionInstance* action = nullptr) const override {
 		return 0;
 	};
 

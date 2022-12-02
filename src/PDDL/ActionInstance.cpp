@@ -4,6 +4,20 @@
 using namespace std;
 using namespace PDDL;
 
+#ifndef NDEBUG
+void ActionInstance::SetupDebugInfo() {
+    if (PDDL::CurrentInstance != nullptr) {
+        if (PDDL::CurrentInstance->problem != nullptr) {
+            const int objSize = PDDL::CurrentInstance->problem->objects.size();
+            for (int i = 0; i < objects.size(); i++) {
+                if (objSize > objects.at(i))
+                    objectsName.push_back(PDDL::CurrentInstance->problem->objects.at(objects.at(i)));
+            }
+        }
+    }
+}
+#endif
+
 string ActionInstance::ToString(const Instance* instance)
 {
     //Print action

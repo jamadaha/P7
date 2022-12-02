@@ -13,7 +13,7 @@ public:
 		int bestIndex = -1;
 		int bestValue = -1;
 		for (int i = 0; i < choices->size(); i++) {
-			int evalValue = Eval(&problem->goalState, &choices->at(i).action->effects, &choices->at(i).objects);
+			int evalValue = Eval(&problem->goalState, &choices->at(i));
 			if (evalValue > bestValue) {
 				bestValue = evalValue;
 				bestIndex = i;
@@ -25,24 +25,21 @@ public:
 			return &choices->at(bestIndex);
 	}
 
-	int Eval(const PDDL::State* state, const std::vector<PDDL::Literal>* effects, const std::vector<unsigned int>* objects) const {
+	int Eval(const PDDL::State* state, const PDDL::ActionInstance* action) const override {
 		int value = 0;
 
-		for (auto effectLiteral = effects->begin(); effectLiteral != effects->end(); effectLiteral++) {
+		for (auto effectLiteral = action->action->effects.begin(); effectLiteral != action->action->effects.end(); effectLiteral++) {
 			if (effectLiteral->args.size() == 1) {
-				if (state->ContainsFact(effectLiteral->predicateIndex, objects->at(effectLiteral->args.at(0))))
+				if (state->ContainsFact(effectLiteral->predicateIndex, action->objects.at(effectLiteral->args.at(0))))
 					value += 1;
 			} else if (effectLiteral->args.size() == 2) {
-				if (state->ContainsFact(effectLiteral->predicateIndex, std::make_pair(objects->at(effectLiteral->args.at(0)), objects->at(effectLiteral->args.at(1)))))
+				if (state->ContainsFact(effectLiteral->predicateIndex, std::make_pair(action->objects.at(effectLiteral->args.at(0)), action->objects.at(effectLiteral->args.at(1)))))
 					value += 1;
 			}
 		}
 		return value;
 	};
 
-	int Eval(const PDDL::State *state) const override {
-		return 0;
-	};
 private:
 	void Reset() override {};
 };

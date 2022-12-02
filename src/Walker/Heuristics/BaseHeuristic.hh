@@ -23,7 +23,7 @@ public:
 
 	virtual PDDL::ActionInstance* NextChoice(PDDL::State * state, std::vector<PDDL::ActionInstance> *choices) = 0;
 
-	virtual int Eval(const PDDL::State* state) const = 0;
+	virtual int Eval(const PDDL::State* state, const PDDL::ActionInstance* action = nullptr) const = 0;
 	virtual void Reset() = 0;
 };
 

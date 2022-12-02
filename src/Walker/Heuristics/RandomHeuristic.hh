@@ -11,7 +11,7 @@ public:
 		return &choices->at(rand() % choices->size());
 	}
 
-	int Eval(const PDDL::State *state) const override {
+	int Eval(const PDDL::State *state, const PDDL::ActionInstance* action = nullptr) const override {
 		return rand();
 	};
 private:

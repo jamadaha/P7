@@ -29,6 +29,8 @@ InterfaceStep<BaseReformulator*> CommonInterface::GetReformulator(int reformulat
 		return InterfaceStep<BaseReformulator*>(reformulator, false);
 	}
 	Report->Stop();
+	Report->Begin("Used Heuristic");
+	Report->Stop(ReportData(config.GetItem<string>("walkerHeuristic")));
 	return InterfaceStep<BaseReformulator*>(reformulator);
 }
 

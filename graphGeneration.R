@@ -11,15 +11,15 @@ imgHeight <- 4
 # Reads in with header names
 report <- read.csv('report.csv')
 # Rename Algorithms
-    report[report=="sameoutput"] <- "Fast Downward"
-    report[report=="greedyWalker"] <- "Greedy Walker"
-    report[report=="greedyResumeWalker"] <- "Greedy Resume Walker"
-    report[report=="queueWalker"] <- "Queue Walker"
-    report[report=="stepBackWalker"] <- "Step Back Walker"
-    report[report=="probeWalker"] <- "Probe Walker"
-    report[report=="regressor"] <- "Regression Walker"
-    report[report=="partialRegressor"] <- "Partial Regression Walker"
-    report[report=="hillClimberWalker"] <- "Hill Climber Walker"
+    report[report=="sameoutput"] <- "FD"
+    report[report=="greedyWalker"] <- "GW"
+    report[report=="greedyResumeWalker"] <- "GRW"
+    report[report=="queueWalker"] <- "BFW"
+    report[report=="stepBackWalker"] <- "GFW"
+    report[report=="probeWalker"] <- "PW"
+    report[report=="regressor"] <- "BW"
+    report[report=="partialRegressor"] <- "PBW"
+    report[report=="hillClimberWalker"] <- "HCW"
 
 # Culmin Graph
     minValue = min(report$reformulation_time) / 1000;

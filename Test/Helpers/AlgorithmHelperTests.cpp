@@ -458,3 +458,25 @@ TEST_CASE(TAG + "Median-Tests") {
 
 #pragma endregion
 
+#pragma region Average
+
+const vector<pair<unsigned int, vector<unsigned int>>> AverageTestData{
+	make_pair(0, vector<unsigned int>{}),
+	make_pair(1, vector<unsigned int>{1}),
+	make_pair(1, vector<unsigned int>{1,2}),
+	make_pair(2, vector<unsigned int>{1,2,3}),
+	make_pair(5, vector<unsigned int>{1,2,3,4,5,6,7,8,9}),
+	make_pair(10, vector<unsigned int>{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20}),
+};
+
+TEST_CASE(TAG + "Average-Tests") {
+	for (int i = 0; i < AverageTestData.size(); i++) {
+		auto resultMedian = AlgorithmHelper::Average(AverageTestData.at(i).second);
+
+		REQUIRE(resultMedian == AverageTestData.at(i).first);
+	}
+}
+
+#pragma endregion
+
+

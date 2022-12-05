@@ -10,7 +10,7 @@
 class AlgorithmHelper {
 public:
     template<typename T>
-    static void InsertAll(std::unordered_set<T> &a, const std::unordered_set<T> b) {
+    static void InsertAll(std::unordered_set<T> &a, const std::unordered_set<T>& b) {
         for (auto iter = b.begin(); iter != b.end(); iter++)
             a.insert((*iter));
     }

@@ -6,20 +6,25 @@ library(bigsnpr)
 library(ggpubr)
 library(ggpattern)
 
-imgWidth <-8
-imgHeight <- 8
+# In inches!
+imgWidth <- 4
+imgHeight <- 4
+
+lineWidth <- 2
+pointSize <- 2
+
 # Reads in with header names
 report <- read.csv('report.csv')
 # Rename Algorithms
-    report[report=="sameoutput"] <- "Fast Downward"
-    report[report=="greedyWalker"] <- "Greedy Walker"
-    report[report=="greedyResumeWalker"] <- "Greedy Resume Walker"
-    report[report=="queueWalker"] <- "Queue Walker"
-    report[report=="stepBackWalker"] <- "Step Back Walker"
-    report[report=="probeWalker"] <- "Probe Walker"
-    report[report=="regressor"] <- "Regression Walker"
-    report[report=="partialRegressor"] <- "Partial Regression Walker"
-    report[report=="hillClimberWalker"] <- "Hill Climber Walker"
+    report[report=="sameoutput"] <- "FD"
+    report[report=="greedyWalker"] <- "GW"
+    report[report=="greedyResumeWalker"] <- "GRW"
+    report[report=="queueWalker"] <- "BFW"
+    report[report=="stepBackWalker"] <- "GFW"
+    report[report=="probeWalker"] <- "PW"
+    report[report=="regressor"] <- "BW"
+    report[report=="partialRegressor"] <- "PBW"
+    report[report=="hillClimberWalker"] <- "HCW"
 
 # Culmin Graph
     minValue = min(report$reformulation_time) / 1000;
@@ -54,7 +59,7 @@ report <- read.csv('report.csv')
     culDF$count <- as.numeric(as.character(culDF$count))
 
     reformulationTimeCulPlot <- ggplot(data=culDF, aes(x=value, y=count, group=algorithm)) + 
-        geom_line(aes(linetype=algorithm, color=algorithm)) + 
+        geom_line(aes(linetype=algorithm, color=algorithm),linewidth=lineWidth) + 
         scale_color_grey() + 
         scale_x_continuous(trans='log10') +
         labs(linetype="Algorithm", color="Algorithm") +
@@ -97,7 +102,7 @@ report <- read.csv('report.csv')
     culDF$count <- as.numeric(as.character(culDF$count))
 
     searchTimeCulPlot <- ggplot(data=culDF, aes(x=value, y=count)) + 
-        geom_line(aes(linetype=algorithm, color=algorithm)) + 
+        geom_line(aes(linetype=algorithm, color=algorithm),linewidth=lineWidth) + 
         scale_color_grey() + 
         labs(linetype="Algorithm", color="Algorithm") +
         scale_x_continuous(trans='log10') +
@@ -124,7 +129,7 @@ report <- read.csv('report.csv')
     noFD <- subset(report, algorithm != "Fast Downward")
     SearchOverReformulationReport <- as.data.table(macroSubset)[,list(reformulation_time=reformulation_time / 1000),c('search_time','algorithm')]
     SearchOverReformulationPlot <- ggplot(SearchOverReformulationReport, aes(x=reformulation_time, y=search_time, shape=algorithm, color=algorithm, linetype=algorithm)) + 
-        geom_point() + 
+        geom_point(size=pointSize) + 
         geom_smooth(method=lm, se=FALSE, aes(linetype=algorithm)) +    
         ggtitle("Search Time vs. Reformulation Time") + 
         theme(plot.title = element_text(hjust = 0.5)) + 

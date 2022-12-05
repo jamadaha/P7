@@ -385,60 +385,27 @@ TEST_CASE(TAG + "Difference-unordered_set-pair-Full") {
 
 #pragma region Reverse
 
-TEST_CASE(TAG + "Reverse-None") {
-	vector<unsigned int> set{
-	};
-	vector<unsigned int> expectedSet{
-	};
+// Expected, input
+vector<pair<vector<unsigned int>, vector<unsigned int>>> ReverseTestData{
+	make_pair(vector<unsigned int>{},vector<unsigned int>{}),
+	make_pair(vector<unsigned int>{1},vector<unsigned int>{1}),
+	make_pair(vector<unsigned int>{2,1},vector<unsigned int>{1,2}),
+	make_pair(vector<unsigned int>{5,4,3,2,1},vector<unsigned int>{1,2,3,4,5}),
+};
 
-	auto resultSet = AlgorithmHelper::Reverse(set);
+TEST_CASE(TAG + "Reverse-Tests") {
+	for (int i = 0; i < ReverseTestData.size(); i++) {
+		auto resultMedian = AlgorithmHelper::Reverse(ReverseTestData.at(i).second);
 
-	REQUIRE(resultSet == expectedSet);
-}
-
-TEST_CASE(TAG + "Reverse-Single") {
-	vector<unsigned int> set{
-		1
-	};
-	vector<unsigned int> expectedSet{
-		1
-	};
-
-	auto resultSet = AlgorithmHelper::Reverse(set);
-
-	REQUIRE(resultSet == expectedSet);
-}
-
-TEST_CASE(TAG + "Reverse-Dual") {
-	vector<unsigned int> set{
-		1, 2
-	};
-	vector<unsigned int> expectedSet{
-		2, 1
-	};
-
-	auto resultSet = AlgorithmHelper::Reverse(set);
-
-	REQUIRE(resultSet == expectedSet);
-}
-
-TEST_CASE(TAG + "Reverse-Multiple") {
-	vector<unsigned int> set{
-		1, 2, 3, 4, 5
-	};
-	vector<unsigned int> expectedSet{
-		5, 4, 3, 2, 1
-	};
-
-	auto resultSet = AlgorithmHelper::Reverse(set);
-
-	REQUIRE(resultSet == expectedSet);
+		REQUIRE(resultMedian == ReverseTestData.at(i).first);
+	}
 }
 
 #pragma endregion
 
 #pragma region Median
 
+// Expected, input
 const vector<pair<unsigned int, vector<unsigned int>>> MedianTestData{
 	make_pair(0, vector<unsigned int>{}),
 	make_pair(1, vector<unsigned int>{1}),
@@ -460,6 +427,7 @@ TEST_CASE(TAG + "Median-Tests") {
 
 #pragma region Average
 
+// Expected, input
 const vector<pair<unsigned int, vector<unsigned int>>> AverageTestData{
 	make_pair(0, vector<unsigned int>{}),
 	make_pair(1, vector<unsigned int>{1}),

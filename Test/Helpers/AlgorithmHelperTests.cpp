@@ -9,7 +9,7 @@
 using namespace std;
 const string TAG = "AlgorithmHelper ";
 
-#pragma region InsertAll Tests
+#pragma region InsertAll
 
 TEST_CASE(TAG + "InsertAll-UnorderedSet-None") {
 	unordered_set<unsigned int> set1{
@@ -436,3 +436,73 @@ TEST_CASE(TAG + "Reverse-Multiple") {
 }
 
 #pragma endregion
+
+#pragma region Median
+
+TEST_CASE(TAG + "Median-None") {
+	vector<unsigned int> set{
+	};
+	unsigned int expectedMedian = 0;
+
+	auto resultMedian = AlgorithmHelper::Median(set);
+
+	REQUIRE(resultMedian == expectedMedian);
+}
+
+TEST_CASE(TAG + "Median-Single") {
+	vector<unsigned int> set{
+		1
+	};
+	unsigned int expectedMedian = 1;
+
+	auto resultMedian = AlgorithmHelper::Median(set);
+
+	REQUIRE(resultMedian == expectedMedian);
+}
+
+TEST_CASE(TAG + "Median-Dual") {
+	vector<unsigned int> set{
+		1, 2
+	};
+	unsigned int expectedMedian = 2;
+
+	auto resultMedian = AlgorithmHelper::Median(set);
+
+	REQUIRE(resultMedian == expectedMedian);
+}
+
+TEST_CASE(TAG + "Median-Multiple-1") {
+	vector<unsigned int> set{
+		1, 2, 3
+	};
+	unsigned int expectedMedian = 2;
+
+	auto resultMedian = AlgorithmHelper::Median(set);
+
+	REQUIRE(resultMedian == expectedMedian);
+}
+
+TEST_CASE(TAG + "Median-Multiple-2") {
+	vector<unsigned int> set{
+		1,2,3,4,5,6,7,8,9
+	};
+	unsigned int expectedMedian = 5;
+
+	auto resultMedian = AlgorithmHelper::Median(set);
+
+	REQUIRE(resultMedian == expectedMedian);
+}
+
+TEST_CASE(TAG + "Median-Multiple-3") {
+	vector<unsigned int> set{
+		1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
+	};
+	unsigned int expectedMedian = 11;
+
+	auto resultMedian = AlgorithmHelper::Median(set);
+
+	REQUIRE(resultMedian == expectedMedian);
+}
+
+#pragma endregion
+

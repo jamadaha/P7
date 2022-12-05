@@ -241,7 +241,6 @@ TEST_CASE(TAG + "Intersect-unordered_set-pair-Full") {
 
 #pragma endregion
 
-
 #pragma region Difference
 
 TEST_CASE(TAG + "Difference-unordered_set-None") {
@@ -380,6 +379,60 @@ TEST_CASE(TAG + "Difference-unordered_set-pair-Full") {
 	AlgorithmHelper::Difference(set1, set2);
 
 	REQUIRE(set1 == expectSet);
+}
+
+#pragma endregion
+
+#pragma region Reverse
+
+TEST_CASE(TAG + "Reverse-None") {
+	vector<unsigned int> set{
+	};
+	vector<unsigned int> expectedSet{
+	};
+
+	auto resultSet = AlgorithmHelper::Reverse(set);
+
+	REQUIRE(resultSet == expectedSet);
+}
+
+TEST_CASE(TAG + "Reverse-Single") {
+	vector<unsigned int> set{
+		1
+	};
+	vector<unsigned int> expectedSet{
+		1
+	};
+
+	auto resultSet = AlgorithmHelper::Reverse(set);
+
+	REQUIRE(resultSet == expectedSet);
+}
+
+TEST_CASE(TAG + "Reverse-Dual") {
+	vector<unsigned int> set{
+		1, 2
+	};
+	vector<unsigned int> expectedSet{
+		2, 1
+	};
+
+	auto resultSet = AlgorithmHelper::Reverse(set);
+
+	REQUIRE(resultSet == expectedSet);
+}
+
+TEST_CASE(TAG + "Reverse-Multiple") {
+	vector<unsigned int> set{
+		1, 2, 3, 4, 5
+	};
+	vector<unsigned int> expectedSet{
+		5, 4, 3, 2, 1
+	};
+
+	auto resultSet = AlgorithmHelper::Reverse(set);
+
+	REQUIRE(resultSet == expectedSet);
 }
 
 #pragma endregion

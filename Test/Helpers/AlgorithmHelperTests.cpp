@@ -240,3 +240,146 @@ TEST_CASE(TAG + "Intersect-unordered_set-pair-Full") {
 }
 
 #pragma endregion
+
+
+#pragma region Difference
+
+TEST_CASE(TAG + "Difference-unordered_set-None") {
+	unordered_set<unsigned int> set1{
+		1,2,3
+	};
+	unordered_set<unsigned int> set2{
+		5,6,7
+	};
+	unordered_set<unsigned int> expectSet{
+		1,2,3
+	};
+
+	AlgorithmHelper::Difference(set1, set2);
+
+	REQUIRE(set1 == expectSet);
+}
+
+TEST_CASE(TAG + "Difference-unordered_set-pair-None") {
+	unordered_set<pair<unsigned int, unsigned int>> set1{
+		make_pair(1,2),
+		make_pair(3,4)
+	};
+	unordered_set<pair<unsigned int, unsigned int>> set2{
+		make_pair(3,6),
+		make_pair(7,8)
+	};
+	unordered_set<pair<unsigned int, unsigned int>> expectSet{
+		make_pair(1,2),
+		make_pair(3,4)
+	};
+
+	AlgorithmHelper::Difference(set1, set2);
+
+	REQUIRE(set1 == expectSet);
+}
+
+TEST_CASE(TAG + "Difference-unordered_set-Single") {
+	unordered_set<unsigned int> set1{
+		1,2,3
+	};
+	unordered_set<unsigned int> set2{
+		2,3
+	};
+	unordered_set<unsigned int> expectSet{
+		1
+	};
+
+	AlgorithmHelper::Difference(set1, set2);
+
+	REQUIRE(set1 == expectSet);
+}
+
+TEST_CASE(TAG + "Difference-unordered_set-pair-Single") {
+	unordered_set<pair<unsigned int, unsigned int>> set1{
+		make_pair(1,2),
+		make_pair(3,4)
+	};
+	unordered_set<pair<unsigned int, unsigned int>> set2{
+		make_pair(3,4)
+	};
+	unordered_set<pair<unsigned int, unsigned int>> expectSet{
+		make_pair(1,2)
+	};
+
+	AlgorithmHelper::Difference(set1, set2);
+
+	REQUIRE(set1 == expectSet);
+}
+
+TEST_CASE(TAG + "Difference-unordered_set-Multiple") {
+	unordered_set<unsigned int> set1{
+		1,2,3
+	};
+	unordered_set<unsigned int> set2{
+		2,3,4
+	};
+	unordered_set<unsigned int> expectSet{
+		1
+	};
+
+	AlgorithmHelper::Difference(set1, set2);
+
+	REQUIRE(set1 == expectSet);
+}
+
+TEST_CASE(TAG + "Difference-unordered_set-pair-Multiple") {
+	unordered_set<pair<unsigned int, unsigned int>> set1{
+		make_pair(1,2),
+		make_pair(4,4),
+		make_pair(3,4)
+	};
+	unordered_set<pair<unsigned int, unsigned int>> set2{
+		make_pair(4,4),
+		make_pair(3,4),
+		make_pair(7,8)
+	};
+	unordered_set<pair<unsigned int, unsigned int>> expectSet{
+		make_pair(1,2)
+	};
+
+	AlgorithmHelper::Difference(set1, set2);
+
+	REQUIRE(set1 == expectSet);
+}
+
+TEST_CASE(TAG + "Difference-unordered_set-Full") {
+	unordered_set<unsigned int> set1{
+		1,2,3
+	};
+	unordered_set<unsigned int> set2{
+		1,2,3
+	};
+	unordered_set<unsigned int> expectSet{
+	};
+
+	AlgorithmHelper::Difference(set1, set2);
+
+	REQUIRE(set1 == expectSet);
+}
+
+TEST_CASE(TAG + "Difference-unordered_set-pair-Full") {
+	unordered_set<pair<unsigned int, unsigned int>> set1{
+		make_pair(1,2),
+		make_pair(4,4),
+		make_pair(3,4)
+	};
+	unordered_set<pair<unsigned int, unsigned int>> set2{
+		make_pair(1,2),
+		make_pair(4,4),
+		make_pair(3,4)
+	};
+	unordered_set<pair<unsigned int, unsigned int>> expectSet{
+	};
+
+	AlgorithmHelper::Difference(set1, set2);
+
+	REQUIRE(set1 == expectSet);
+}
+
+#pragma endregion

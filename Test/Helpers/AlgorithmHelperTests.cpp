@@ -439,69 +439,21 @@ TEST_CASE(TAG + "Reverse-Multiple") {
 
 #pragma region Median
 
-TEST_CASE(TAG + "Median-None") {
-	vector<unsigned int> set{
-	};
-	unsigned int expectedMedian = 0;
+const vector<pair<unsigned int, vector<unsigned int>>> MedianTestData{
+	make_pair(0, vector<unsigned int>{}),
+	make_pair(1, vector<unsigned int>{1}),
+	make_pair(2, vector<unsigned int>{1,2}),
+	make_pair(2, vector<unsigned int>{1,2,3}),
+	make_pair(5, vector<unsigned int>{1,2,3,4,5,6,7,8,9}),
+	make_pair(11, vector<unsigned int>{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20}),
+};
 
-	auto resultMedian = AlgorithmHelper::Median(set);
+TEST_CASE(TAG + "Median-Tests") {
+	for (int i = 0; i < MedianTestData.size(); i++) {
+		auto resultMedian = AlgorithmHelper::Median(MedianTestData.at(i).second);
 
-	REQUIRE(resultMedian == expectedMedian);
-}
-
-TEST_CASE(TAG + "Median-Single") {
-	vector<unsigned int> set{
-		1
-	};
-	unsigned int expectedMedian = 1;
-
-	auto resultMedian = AlgorithmHelper::Median(set);
-
-	REQUIRE(resultMedian == expectedMedian);
-}
-
-TEST_CASE(TAG + "Median-Dual") {
-	vector<unsigned int> set{
-		1, 2
-	};
-	unsigned int expectedMedian = 2;
-
-	auto resultMedian = AlgorithmHelper::Median(set);
-
-	REQUIRE(resultMedian == expectedMedian);
-}
-
-TEST_CASE(TAG + "Median-Multiple-1") {
-	vector<unsigned int> set{
-		1, 2, 3
-	};
-	unsigned int expectedMedian = 2;
-
-	auto resultMedian = AlgorithmHelper::Median(set);
-
-	REQUIRE(resultMedian == expectedMedian);
-}
-
-TEST_CASE(TAG + "Median-Multiple-2") {
-	vector<unsigned int> set{
-		1,2,3,4,5,6,7,8,9
-	};
-	unsigned int expectedMedian = 5;
-
-	auto resultMedian = AlgorithmHelper::Median(set);
-
-	REQUIRE(resultMedian == expectedMedian);
-}
-
-TEST_CASE(TAG + "Median-Multiple-3") {
-	vector<unsigned int> set{
-		1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
-	};
-	unsigned int expectedMedian = 11;
-
-	auto resultMedian = AlgorithmHelper::Median(set);
-
-	REQUIRE(resultMedian == expectedMedian);
+		REQUIRE(resultMedian == MedianTestData.at(i).first);
+	}
 }
 
 #pragma endregion

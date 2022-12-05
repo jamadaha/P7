@@ -6,8 +6,8 @@ library(bigsnpr)
 library(ggpubr)
 library(ggpattern)
 
-imgWidth <-8
-imgHeight <- 8
+imgWidth <- 4
+imgHeight <- 4
 # Reads in with header names
 report <- read.csv('report.csv')
 # Rename Algorithms

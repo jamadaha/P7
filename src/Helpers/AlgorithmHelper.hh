@@ -23,6 +23,7 @@ public:
     static void Intersect(std::unordered_set<std::pair<unsigned int, unsigned int>> &a, const std::unordered_set<std::pair<unsigned int, unsigned int>> &b);
     static void Difference(std::unordered_set<unsigned int> &a, const std::unordered_set<unsigned int> &b);
     static void Difference(std::unordered_set<std::pair<unsigned int, unsigned int>> &a, const std::unordered_set<std::pair<unsigned int, unsigned int>> &b);
+
     template<typename T>
     static std::vector<T> Reverse(std::vector<T> &a) {
         std::vector<T> tempVector;

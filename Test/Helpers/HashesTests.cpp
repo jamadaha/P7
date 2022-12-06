@@ -6,9 +6,9 @@ using namespace std;
 const string TAG = "Helpers - Hashes ";
 
 #ifndef IS_GITHUB_ACTIONS
-const int iterationsToRunAll = 100;
+const int iterationsToRunAll = 10;
 #else
-const int iterationsToRunAll = 100000;
+const int iterationsToRunAll = 10000;
 #endif
 
 #pragma region vector<unsigned int>

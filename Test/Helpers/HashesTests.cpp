@@ -5,7 +5,7 @@
 using namespace std;
 const string TAG = "Helpers - Hashes ";
 
-#ifndef NDEBUG
+#ifndef IS_GITHUB_ACTIONS
 const int iterationsToRunAll = 100;
 #else
 const int iterationsToRunAll = 100000;

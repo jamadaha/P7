@@ -6,7 +6,7 @@
 
 #include "../../src/Walker/Path.hh"
 
-#ifndef NDEBUG
+#ifndef IS_GITHUB_ACTIONS
 const int collisionDepth = 50;
 #else
 const int collisionDepth = 5000;

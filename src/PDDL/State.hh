@@ -32,15 +32,21 @@ namespace PDDL {
 #pragma region ContainsFact
 
         bool ContainsFact(const unsigned int& key, const unsigned int* value) const {
+            if (!unaryFacts.contains(key))
+                return false;
             return unaryFacts.at(key).contains(*value);
         };
         bool ContainsFact(const unsigned int& key, const unsigned int& value) const {
+            if (!unaryFacts.contains(key))
+                return false;
             return unaryFacts.at(key).contains(value);
         };
 
         bool ContainsFact(const unsigned int& key, const std::pair<unsigned int, unsigned int>& value) const {
             if (key == 0)
                 return value.first == value.second;
+            if (!binaryFacts.contains(key))
+                return false;
             return binaryFacts.at(key).contains(value);
         }
 #pragma endregion ContainsFact

@@ -1,4 +1,4 @@
-add_executable(Tests-ActionGenerator Test/Walker/ActionGenerator.cpp)
+add_executable(Tests-ActionGenerator "Test/Walker/ActionGenerator.cpp")
 target_link_libraries(Tests-ActionGenerator 
     PRIVATE 
         Catch2::Catch2WithMain
@@ -8,7 +8,7 @@ target_link_libraries(Tests-ActionGenerator
 catch_discover_tests(Tests-ActionGenerator)
 
 
-add_executable(Tests-Walker Test/Walker/Walker.cpp)
+add_executable(Tests-Walker "Test/Walker/Walker.cpp")
 target_link_libraries(Tests-Walker 
     PRIVATE 
         Catch2::Catch2WithMain
@@ -17,4 +17,14 @@ target_link_libraries(Tests-Walker
         ActionGenerator)
 
 catch_discover_tests(Tests-Walker)
+
+add_executable(Tests-Walker-Heuristics "Test/Walker/Heuristics/GoalPredicateCountHeuristicsTests.cpp")
+target_link_libraries(Tests-Walker-Heuristics
+    PRIVATE 
+        Catch2::Catch2WithMain
+        Walker
+        PDDL
+        ActionGenerator)
+
+catch_discover_tests(Tests-Walker-Heuristics)
 

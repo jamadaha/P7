@@ -4,6 +4,10 @@ set (CMAKE_CXX_STANDARD 20)
 project(P7 VERSION 0.1.0)
 project(P7Lab VERSION 0.1.0)
 
+OPTION(DEFINE_IS_GITHUB_ACTIONS "Only for for Github Actions" OFF)
+IF(DEFINE_IS_GITHUB_ACTIONS)
+    ADD_DEFINITIONS(-DIS_GITHUB_ACTIONS)
+ENDIF(DEFINE_IS_GITHUB_ACTIONS)
 
 add_subdirectory(src/Helpers/)
 add_subdirectory(src/RunReport/)

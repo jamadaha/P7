@@ -49,7 +49,6 @@ configure_file(${PROJECT_SOURCE_DIR}/Lab/LabSuite.py ${CMAKE_BINARY_DIR}/Lab/Lab
 
 configure_file(${PROJECT_SOURCE_DIR}/baseSettings.ini ${CMAKE_BINARY_DIR}/baseSettings.ini COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/settings.ini ${CMAKE_BINARY_DIR}/settings.ini COPYONLY)
-configure_file(${PROJECT_SOURCE_DIR}/settingsFast.ini ${CMAKE_BINARY_DIR}/settingsFast.ini COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/settingsLab.ini ${CMAKE_BINARY_DIR}/settingsLab.ini COPYONLY)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

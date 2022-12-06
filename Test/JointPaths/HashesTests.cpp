@@ -6,7 +6,12 @@
 
 #include "../../src/Walker/Path.hh"
 
-int collisionDepth = 5000;
+#ifndef NDEBUG
+const int collisionDepth = 50;
+#else
+const int collisionDepth = 5000;
+#endif
+
 //int collisionDepth = 5;
 int currentCase = 1;
 int totalCases = 17;

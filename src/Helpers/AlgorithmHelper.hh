@@ -12,7 +12,7 @@ public:
     template<typename T>
     static void InsertAll(std::unordered_set<T> &a, const std::unordered_set<T>& b) {
         for (auto iter = b.begin(); iter != b.end(); iter++)
-            a.insert((*iter));
+            a.emplace((*iter));
     }
     template<typename T>
     static void InsertAll(std::vector<T> &a, const std::vector<T> &b) {

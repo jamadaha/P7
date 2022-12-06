@@ -4,6 +4,10 @@ set (CMAKE_CXX_STANDARD 20)
 project(P7 VERSION 0.1.0)
 project(P7Lab VERSION 0.1.0)
 
+OPTION(DEFINE_IS_GITHUB_ACTIONS "Only for for Github Actions" OFF)
+IF(DEFINE_IS_GITHUB_ACTIONS)
+    ADD_DEFINITIONS(-DIS_GITHUB_ACTIONS)
+ENDIF(DEFINE_IS_GITHUB_ACTIONS)
 
 add_subdirectory(src/Helpers/)
 add_subdirectory(src/RunReport/)
@@ -45,7 +49,6 @@ configure_file(${PROJECT_SOURCE_DIR}/Lab/LabSuite.py ${CMAKE_BINARY_DIR}/Lab/Lab
 
 configure_file(${PROJECT_SOURCE_DIR}/baseSettings.ini ${CMAKE_BINARY_DIR}/baseSettings.ini COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/settings.ini ${CMAKE_BINARY_DIR}/settings.ini COPYONLY)
-configure_file(${PROJECT_SOURCE_DIR}/settingsFast.ini ${CMAKE_BINARY_DIR}/settingsFast.ini COPYONLY)
 configure_file(${PROJECT_SOURCE_DIR}/settingsLab.ini ${CMAKE_BINARY_DIR}/settingsLab.ini COPYONLY)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

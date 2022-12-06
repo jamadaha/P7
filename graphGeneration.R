@@ -9,6 +9,8 @@ library(ggpattern)
 # In inches!
 imgWidth <- 4
 imgHeight <- 4
+imgWidthBig <- 8
+imgHeightBig <- 8
 
 lineWidth <- 2
 pointSize <- 2
@@ -68,6 +70,7 @@ report <- read.csv('report.csv')
         xlab("Time (Seconds)") + 
         ylab("Problems Solved")
     ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm.pdf", width=imgWidth, height=imgHeight)
+    ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm_big.pdf", width=imgWidthBig, height=imgHeightBig)
 
 # Culmin Graph the 2nd
     minValue = min(report$search_time);
@@ -111,6 +114,7 @@ report <- read.csv('report.csv')
         xlab("Time (Seconds)") + 
         ylab("Problems Solved");
     ggsave(plot=searchTimeCulPlot, filename="searchTimeCulm.pdf", width=imgWidth, height=imgHeight)
+    ggsave(plot=searchTimeCulPlot, filename="searchTimeCulm_big.pdf", width=imgWidthBig, height=imgHeightBig)
 
 # Macro Quality graphs
     macroSubset <- subset(report, algorithm != "Fast Downward")
@@ -124,6 +128,7 @@ report <- read.csv('report.csv')
         ylab("Macro Quality (%)") +
         labs(pattern_spacing="Algorithm", pattern_angle="Algorithm", pattern="Algorithm");
     ggsave(plot=macroQualityPlot, filename="macroQualityPlot.pdf", width=imgWidth, height=imgHeight)
+    ggsave(plot=macroQualityPlot, filename="macroQualityPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)
     
 # Search vs. Reformulation_time
     noFD <- subset(report, algorithm != "Fast Downward")
@@ -140,6 +145,7 @@ report <- read.csv('report.csv')
         labs(shape="Algorithm", color="Algorithm", linetype="Algorithm") +
         scale_color_grey();
     ggsave(plot=SearchOverReformulationPlot, filename="searchTimeOverReformulationTime.pdf", width=imgWidth, height=imgHeight)
+    ggsave(plot=SearchOverReformulationPlot, filename="searchTimeOverReformulationTime_big.pdf", width=imgWidthBig, height=imgHeightBig)
 
 # Make a combined graph
     combined <- ggarrange(searchTimeCulPlot, reformulationTimeCulPlot,
@@ -155,6 +161,7 @@ report <- read.csv('report.csv')
   xlab("Algorithm (s)") + 
   ylab("Sum of Reformulation Time (s)")
   ggsave(plot=sRT, filename="SumReformTime.pdf", width=imgWidth, height=imgHeight)
+  ggsave(plot=sRT, filename="SumReformTime_big.pdf", width=imgWidthBig, height=imgHeightBig)
     
 # Sum Search time
   timeAvg <- as.data.table(report)[,list(time=mean(search_time) / 1000),c('domain', 'algorithm', 'problem')]
@@ -164,8 +171,9 @@ report <- read.csv('report.csv')
   xlab("Algorithm (s)") + 
   ylab("Sum of Search Time (s)")
   ggsave(plot=sRT, filename="SumSearchTime.pdf", width=imgWidth, height=imgHeight)
+  ggsave(plot=sRT, filename="SumSearchTimeBig.pdf", width=imgWidthBig, height=imgHeightBig)
 
-# Expansion Graph
+# Expansion & eval Graph
   # Get row Domain - Problem - FD Expan - Al Expan
   #         x.pddl - px.pddl - xxxxxxxx - xxxxxxxx
   # Only generate if there are two algorithms
@@ -187,4 +195,21 @@ report <- read.csv('report.csv')
         ylab(algo2) +
         geom_abline(intercept = 0, slope = 1);
     ggsave(plot=expPlot, filename="expPlot.pdf", width=imgWidth, height=imgHeight)
+    ggsave(plot=expPlot, filename="expPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)
+
+    generated <- as.data.table(report)[,list(generated=mean(generated)),c('domain', 'algorithm', 'problem')]
+    algo1Subset <- subset(generated, algorithm == algo1);
+    algo2Subset <- subset(generated, algorithm == algo2);
+    tab <- merge(algo1Subset, algo2Subset, by=c('domain', 'problem'))
+    minVal <- min(min(algo1Subset$generated), min(algo2Subset$generated));
+    maxVal <- max(max(algo1Subset$generated), max(algo2Subset$generated));
+    genPlot <- ggplot(data=tab, aes(x=generated.x, y=generated.y)) + 
+        geom_point(size=2, shape=23) +
+        xlim(minVal, maxVal) +
+        ylim(minVal, maxVal) +
+        xlab(algo1) + 
+        ylab(algo2) +
+        geom_abline(intercept = 0, slope = 1);
+    ggsave(plot=genPlot, filename="genPlot.pdf", width=imgWidth, height=imgHeight)
+    ggsave(plot=genPlot, filename="genPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)
   }

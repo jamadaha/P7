@@ -1,0 +1,33 @@
+{
+  "version": "0.2.1",
+  "defaults": {
+  },
+  "configurations": [
+    {
+      "type": "cppgdb",
+      "name": "P7 Debug",
+      "project": "CMakeLists.txt",
+      "projectTarget": "P7",
+      "debuggerConfiguration": "gdb",
+      "cwd": "/root/.vs/P7/build",
+      "args": [
+        "settings.ini"
+      ],
+      "env": {
+      }
+    },
+    {
+      "type": "cppgdb",
+      "name": "P7 With Lab",
+      "project": "CMakeLists.txt",
+      "projectTarget": "P7Lab",
+      "debuggerConfiguration": "gdb",
+      "cwd": "/root/.vs/P7/build",
+      "args": [
+        "'--all'"
+      ],
+      "env": {
+      }
+    }
+  ]
+}

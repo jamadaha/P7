@@ -47,6 +47,7 @@ std::vector<Path> WalkerQueue::Walk() {
         _totalIterations++;
     }
     auto ellapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - startTime).count();
+    _totalWalkingTime += ellapsed;
     if (OnWalkerEnd != nullptr)
         OnWalkerEnd(this, ellapsed);
     return paths;

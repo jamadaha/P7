@@ -31,7 +31,8 @@ PREDEFINED_ATTRIBUTES= ['cost',
                         'walker_median_branching_factor',
                         'walker_average_path_length',
                         'walker_median_path_length',
-                        'walker_heuristic'
+                        'walker_heuristic',
+                        'walker_total_time'
                         ]
 
 ATTRIBUTES = ERROR_ATTRIBUTES + PREDEFINED_ATTRIBUTES

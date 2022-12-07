@@ -73,6 +73,7 @@ vector<Path> WalkerProbe::Walk() {
         _totalIterations++;
     }
     auto ellapsed = chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - startTime).count();
+    _totalWalkingTime += ellapsed;
     if (OnWalkerEnd != nullptr)
         OnWalkerEnd(this, ellapsed);
     return paths;

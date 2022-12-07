@@ -26,12 +26,14 @@ PREDEFINED_ATTRIBUTES= ['cost',
                         'unique_macros_used',
                         'macros_generated',
                         'total_walker_paths',
+                        'total_walker_steps',
                         'total_walker_actions_generated',
                         'walker_average_branching_factor',
                         'walker_median_branching_factor',
                         'walker_average_path_length',
                         'walker_median_path_length',
-                        'walker_heuristic'
+                        'walker_heuristic',
+                        'walker_total_time'
                         ]
 
 ATTRIBUTES = ERROR_ATTRIBUTES + PREDEFINED_ATTRIBUTES

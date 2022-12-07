@@ -12,10 +12,10 @@ Path WalkerQueue::Walk(BaseHeuristic *heuristic, const PDDL::State state, unsign
         if (!widthFunc->Iterate(current))
             break;
         currentPath.steps.push_back((*iter));
-        auto eval = heuristic->Eval(&currentState, &(*iter));
-        PDDL::State newState = currentState;
-        newState.DoAction(&(*iter));
-        searchQueue.emplace(std::make_pair(eval, std::make_pair(newState, currentPath)));
+    auto changes = currentState.DoAction(&(*iter));
+        auto eval = heuristic->Eval(&currentState, nullptr);
+        searchQueue.emplace(std::make_pair(eval, std::make_pair(currentState, currentPath)));
+        currentState.UndoAction(&changes);
         currentPath.steps.pop_back();
     }
 

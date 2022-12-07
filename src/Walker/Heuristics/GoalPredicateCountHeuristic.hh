@@ -13,7 +13,7 @@ public:
 		int bestIndex = -1;
 		int bestValue = -1;
 		for (int i = 0; i < choices->size(); i++) {
-			int evalValue = Eval(&problem->goalState, &choices->at(i));
+			int evalValue = Eval(state, &choices->at(i));
 			if (evalValue > bestValue) {
 				bestValue = evalValue;
 				bestIndex = i;

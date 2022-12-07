@@ -26,6 +26,9 @@ public:
 	}
 
 	int Eval(const PDDL::State* state, const PDDL::ActionInstance* action) const override {
+		if (action == nullptr)
+			return 0;
+
 		int value = 0;
 
 		for (auto effectLiteral = action->action->effects.begin(); effectLiteral != action->action->effects.end(); effectLiteral++) {

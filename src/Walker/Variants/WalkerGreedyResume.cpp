@@ -32,7 +32,7 @@ Path WalkerGreedyResume::Walk(BaseHeuristic *heuristic, const PDDL::State state,
             if (SaveStates)
                 endState = tempState;
             steps.push_back(*chosenAction);
-            int value = heuristic->Eval(&tempState); 
+            int value = heuristic->Eval(&tempState, chosenAction);
             if (value > bestValue) {
                 bestState = tempState;
                 bestValue = value;

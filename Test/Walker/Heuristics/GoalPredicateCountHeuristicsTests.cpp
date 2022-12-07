@@ -14,7 +14,7 @@ const vector<PDDL::Action> baseActions{
             PDDL::Literal(1, {1}, true)
         }, {
             PDDL::Literal(0, {0}, false),
-            PDDL::Literal(1, {1}, false)
+            PDDL::Literal(1, {1}, true)
         }),
     PDDL::Action("actionb", {"x","y"}, {
             PDDL::Literal(0, {0}, true),
@@ -49,6 +49,7 @@ TEST_CASE(TAG + "Eval - NoMatchingPredicates - Unary") {
 
     PDDL::Domain domain;
     PDDL::Problem problem("Problem-A", &domain, {}, {}, initState, goalState);
+    PDDL::Instance(&domain, &problem);
 
     vector<PDDL::ActionInstance> actionInstances{
         PDDL::ActionInstance(&baseActions.at(0), { 0,1 }),
@@ -57,8 +58,8 @@ TEST_CASE(TAG + "Eval - NoMatchingPredicates - Unary") {
 
     GoalPredicateCountHeuristic heuristic(&domain, &problem);
 
-    REQUIRE(heuristic.Eval(&goalState, &actionInstances.at(0)) == 0);
-    REQUIRE(heuristic.Eval(&goalState, &actionInstances.at(1)) == 0);
+    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(0)) == 0);
+    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(1)) == 0);
 }
 
 TEST_CASE(TAG + "Eval - NoMatchingPredicates - Binary") {
@@ -74,6 +75,7 @@ TEST_CASE(TAG + "Eval - NoMatchingPredicates - Binary") {
 
     PDDL::Domain domain;
     PDDL::Problem problem("Problem-A", &domain, {}, {}, initState, goalState);
+    PDDL::Instance(&domain, &problem);
 
     vector<PDDL::ActionInstance> actionInstances{
         PDDL::ActionInstance(&baseActions.at(2), { 3,4 }),
@@ -82,8 +84,8 @@ TEST_CASE(TAG + "Eval - NoMatchingPredicates - Binary") {
 
     GoalPredicateCountHeuristic heuristic(&domain, &problem);
 
-    REQUIRE(heuristic.Eval(&goalState, &actionInstances.at(0)) == 0);
-    REQUIRE(heuristic.Eval(&goalState, &actionInstances.at(1)) == 0);
+    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(0)) == 0);
+    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(1)) == 0);
 }
 
 TEST_CASE(TAG + "Eval - SingleMatchingPredicates - Unary") {
@@ -100,6 +102,7 @@ TEST_CASE(TAG + "Eval - SingleMatchingPredicates - Unary") {
 
     PDDL::Domain domain;
     PDDL::Problem problem("Problem-A", &domain, {}, {}, initState, goalState);
+    PDDL::Instance(&domain, &problem);
 
     vector<PDDL::ActionInstance> actionInstances{
         PDDL::ActionInstance(&baseActions.at(0), { 0,1 }),
@@ -108,8 +111,8 @@ TEST_CASE(TAG + "Eval - SingleMatchingPredicates - Unary") {
 
     GoalPredicateCountHeuristic heuristic(&domain, &problem);
 
-    REQUIRE(heuristic.Eval(&goalState, &actionInstances.at(0)) == 1);
-    REQUIRE(heuristic.Eval(&goalState, &actionInstances.at(1)) == 0);
+    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(0)) == 1);
+    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(1)) == 0);
 }
 
 TEST_CASE(TAG + "Eval - SingleMatchingPredicates - Binary") {
@@ -126,6 +129,7 @@ TEST_CASE(TAG + "Eval - SingleMatchingPredicates - Binary") {
 
     PDDL::Domain domain;
     PDDL::Problem problem("Problem-A", &domain, {}, {}, initState, goalState);
+    PDDL::Instance(&domain, &problem);
 
     vector<PDDL::ActionInstance> actionInstances{
         PDDL::ActionInstance(&baseActions.at(2), { 0,1 }),
@@ -134,8 +138,8 @@ TEST_CASE(TAG + "Eval - SingleMatchingPredicates - Binary") {
 
     GoalPredicateCountHeuristic heuristic(&domain, &problem);
 
-    REQUIRE(heuristic.Eval(&goalState, &actionInstances.at(0)) == 0);
-    REQUIRE(heuristic.Eval(&goalState, &actionInstances.at(1)) == 1);
+    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(0)) == 0);
+    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(1)) == 1);
 }
 
 TEST_CASE(TAG + "Eval - MultipleMatchingPredicates - Unary") {
@@ -153,6 +157,7 @@ TEST_CASE(TAG + "Eval - MultipleMatchingPredicates - Unary") {
 
     PDDL::Domain domain;
     PDDL::Problem problem("Problem-A", &domain, {}, {}, initState, goalState);
+    PDDL::Instance(&domain, &problem);
 
     vector<PDDL::ActionInstance> actionInstances{
         PDDL::ActionInstance(&baseActions.at(0), { 0,1 }),
@@ -161,8 +166,8 @@ TEST_CASE(TAG + "Eval - MultipleMatchingPredicates - Unary") {
 
     GoalPredicateCountHeuristic heuristic(&domain, &problem);
 
-    REQUIRE(heuristic.Eval(&goalState, &actionInstances.at(0)) == 2);
-    REQUIRE(heuristic.Eval(&goalState, &actionInstances.at(1)) == 1);
+    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(0)) == 1);
+    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(1)) == 0);
 }
 
 TEST_CASE(TAG + "Eval - MultipleMatchingPredicates - Binary") {
@@ -180,6 +185,7 @@ TEST_CASE(TAG + "Eval - MultipleMatchingPredicates - Binary") {
 
     PDDL::Domain domain;
     PDDL::Problem problem("Problem-A", &domain, {}, {}, initState, goalState);
+    PDDL::Instance(&domain, &problem);
 
     vector<PDDL::ActionInstance> actionInstances{
         PDDL::ActionInstance(&baseActions.at(2), { 2,3 }),
@@ -188,8 +194,8 @@ TEST_CASE(TAG + "Eval - MultipleMatchingPredicates - Binary") {
 
     GoalPredicateCountHeuristic heuristic(&domain, &problem);
 
-    REQUIRE(heuristic.Eval(&goalState, &actionInstances.at(0)) == 1);
-    REQUIRE(heuristic.Eval(&goalState, &actionInstances.at(1)) == 1);
+    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(0)) == 1);
+    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(1)) == 1);
 }
 
 #pragma endregion
@@ -211,6 +217,7 @@ TEST_CASE(TAG + "NextChoice - SingleMatchingPredicates - Unary") {
 
     PDDL::Domain domain;
     PDDL::Problem problem("Problem-A", &domain, {}, {}, initState, goalState);
+    PDDL::Instance(&domain, &problem);
 
     vector<PDDL::ActionInstance> actionInstances{
         PDDL::ActionInstance(&baseActions.at(0), { 0,1 }),
@@ -219,7 +226,7 @@ TEST_CASE(TAG + "NextChoice - SingleMatchingPredicates - Unary") {
 
     GoalPredicateCountHeuristic heuristic(&domain, &problem);
 
-    REQUIRE(heuristic.NextChoice(&goalState, &actionInstances) == &actionInstances.at(0));
+    REQUIRE(heuristic.NextChoice(&initState, &actionInstances) == &actionInstances.at(0));
 }
 
 
@@ -237,6 +244,7 @@ TEST_CASE(TAG + "NextChoice - SingleMatchingPredicates - Binary") {
 
     PDDL::Domain domain;
     PDDL::Problem problem("Problem-A", &domain, {}, {}, initState, goalState);
+    PDDL::Instance(&domain, &problem);
 
     vector<PDDL::ActionInstance> actionInstances{
         PDDL::ActionInstance(&baseActions.at(2), { 0,1 }),
@@ -245,7 +253,7 @@ TEST_CASE(TAG + "NextChoice - SingleMatchingPredicates - Binary") {
 
     GoalPredicateCountHeuristic heuristic(&domain, &problem);
 
-    REQUIRE(heuristic.NextChoice(&goalState, &actionInstances) == &actionInstances.at(1));
+    REQUIRE(heuristic.NextChoice(&initState, &actionInstances) == &actionInstances.at(1));
 }
 
 TEST_CASE(TAG + "NextChoice - MultipleMatchingPredicates - Unary") {
@@ -263,6 +271,7 @@ TEST_CASE(TAG + "NextChoice - MultipleMatchingPredicates - Unary") {
 
     PDDL::Domain domain;
     PDDL::Problem problem("Problem-A", &domain, {}, {}, initState, goalState);
+    PDDL::Instance(&domain, &problem);
 
     vector<PDDL::ActionInstance> actionInstances{
         PDDL::ActionInstance(&baseActions.at(1), { 0,1 }),
@@ -271,7 +280,7 @@ TEST_CASE(TAG + "NextChoice - MultipleMatchingPredicates - Unary") {
 
     GoalPredicateCountHeuristic heuristic(&domain, &problem);
 
-    REQUIRE(heuristic.NextChoice(&goalState, &actionInstances) == &actionInstances.at(1));
+    REQUIRE(heuristic.NextChoice(&initState, &actionInstances) == &actionInstances.at(1));
 }
 
 #pragma endregion

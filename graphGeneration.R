@@ -16,7 +16,7 @@ lineWidth <- 2
 pointSize <- 2
 
 # Reads in with header names
-report <- read.csv('C:\\Users\\kris7\\Downloads\\report.csv')
+report <- read.csv('report.csv')
 # Rename Algorithms
     report[report=="sameoutput"] <- "FD"
     report[report=="greedyWalker"] <- "GW"

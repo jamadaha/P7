@@ -14,5 +14,6 @@ std::vector<Path> HillClimberWalkerReformulator::PerformWalk(PDDL::Instance *ins
     auto lengths = walker->GetPathLengths();
     copy(lengths.begin(), lengths.end(), back_inserter(pathLengths));
     _totalWalkingTime += walker->GetTotalWalkingTime();
+    _totalWalkSteps += walker->GetTotalSteps();
     return paths;
 }

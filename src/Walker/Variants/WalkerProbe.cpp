@@ -64,6 +64,7 @@ vector<Path> WalkerProbe::Walk() {
 
         Path path = Walk(heuristic, &probe, &current);
         if (path.steps.size() > 1) {
+            _totalSteps += path.steps.size();
             paths.push_back(path);
             pathLengths.push_back(path.steps.size());
         }

@@ -34,6 +34,7 @@ public:
 	std::vector<unsigned int> GetPathLengths() { return pathLengths; };
 	bool DidEncounterErrors() { return encounteredErrors; };
 	unsigned int GetTotalWalkingTime() { return _totalWalkingTime; };
+	unsigned int GetTotalWalkSteps() { return _totalWalkSteps; };
 
 	BaseReformulator(Config* config, RunReport* report) : Configs(config), Report(report) {
 
@@ -52,6 +53,7 @@ protected:
 	int actionsGenerated = 0;
 	int actionIterationGenerated = 0;
 	unsigned int _totalWalkingTime = 0;
+	unsigned int _totalWalkSteps = 0;
 	bool encounteredErrors = false;
 	std::vector<unsigned int> branchingFactors;
 	std::vector<unsigned int> pathLengths;

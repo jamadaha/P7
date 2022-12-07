@@ -40,6 +40,7 @@ std::vector<Path> WalkerQueue::Walk() {
             break;
         Path path = Walk(heuristic, this->instance->problem->initState, &current);
         if (path.steps.size() > 1) {
+            _totalSteps += path.steps.size();
             paths.push_back(path);
             pathLengths.push_back(path.steps.size());
         }

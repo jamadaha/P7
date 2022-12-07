@@ -60,6 +60,7 @@ std::vector<Path> WalkerGreedyResume::Walk() {
     while (widthFunc->Iterate(&current)) {
         Path path = Walk(heuristic, bestState, &current);
         if (path.steps.size() > 1) {
+            _totalSteps += path.steps.size();
             paths.push_back(path);
             pathLengths.push_back(path.steps.size());
         }

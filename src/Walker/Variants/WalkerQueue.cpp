@@ -13,7 +13,9 @@ Path WalkerQueue::Walk(BaseHeuristic *heuristic, const PDDL::State state, unsign
             break;
         currentPath.steps.push_back((*iter));
         auto eval = heuristic->Eval(&currentState, &(*iter));
-        searchQueue.emplace(std::make_pair(eval, std::make_pair(currentState, currentPath)));
+        PDDL::State newState = currentState;
+        newState.DoAction(&(*iter));
+        searchQueue.emplace(std::make_pair(eval, std::make_pair(newState, currentPath)));
         currentPath.steps.pop_back();
     }
 

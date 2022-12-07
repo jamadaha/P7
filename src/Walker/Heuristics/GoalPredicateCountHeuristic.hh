@@ -26,18 +26,33 @@ public:
 	}
 
 	int Eval(const PDDL::State* state, const PDDL::ActionInstance* action) const override {
-		if (action == nullptr)
-			return 0;
-
 		int value = 0;
 
-		for (auto effectLiteral = action->action->effects.begin(); effectLiteral != action->action->effects.end(); effectLiteral++) {
-			if (effectLiteral->args.size() == 1) {
-				if (state->ContainsFact(effectLiteral->predicateIndex, action->objects.at(effectLiteral->args.at(0))))
+		for (auto goalUnaryFacts = problem->goalState.unaryFacts.begin(); goalUnaryFacts != problem->goalState.unaryFacts.end(); goalUnaryFacts++) {
+			for (auto fact = goalUnaryFacts->second.begin(); fact != goalUnaryFacts->second.end(); fact++) {
+				if (state->ContainsFact(goalUnaryFacts->first, *fact))
 					value += 1;
-			} else if (effectLiteral->args.size() == 2) {
-				if (state->ContainsFact(effectLiteral->predicateIndex, std::make_pair(action->objects.at(effectLiteral->args.at(0)), action->objects.at(effectLiteral->args.at(1)))))
+			}
+		}
+		for (auto goalBinaryFacts = problem->goalState.binaryFacts.begin(); goalBinaryFacts != problem->goalState.binaryFacts.end(); goalBinaryFacts++) {
+			for (auto fact = goalBinaryFacts->second.begin(); fact != goalBinaryFacts->second.end(); fact++) {
+				if (state->ContainsFact(goalBinaryFacts->first, *fact))
 					value += 1;
+			}
+		}
+
+		if (action != nullptr) {
+			for (auto effectLiteral = action->action->effects.begin(); effectLiteral != action->action->effects.end(); effectLiteral++) {
+				if (effectLiteral->args.size() == 1) {
+					if (problem->goalState.ContainsFact(effectLiteral->predicateIndex, action->objects.at(effectLiteral->args.at(0))))
+						if (effectLiteral->value)
+							value += 1;
+				}
+				else if (effectLiteral->args.size() == 2) {
+					if (problem->goalState.ContainsFact(effectLiteral->predicateIndex, std::make_pair(action->objects.at(effectLiteral->args.at(0)), action->objects.at(effectLiteral->args.at(1)))))
+						if (effectLiteral->value)
+							value += 1;
+				}
 			}
 		}
 		return value;

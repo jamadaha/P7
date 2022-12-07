@@ -28,9 +28,7 @@ Path WalkerHillClimber::Walk(BaseHeuristic *heuristic, const PDDL::State *state,
         int initIndex = rand() % possibleActions.size();
         for (int i = 0; i < possibleActions.size(); i++) {
             int wIndex = (initIndex + i) % possibleActions.size();
-            auto changes = tempState.DoAction(&possibleActions.at(wIndex));
             int val = heuristic->Eval(&tempState, &possibleActions.at(wIndex));
-            tempState.UndoAction(&changes);
             if (bestAction == nullptr || val >= bestValue) {
                 bestAction = &possibleActions.at(wIndex);
                 bestValue = val;

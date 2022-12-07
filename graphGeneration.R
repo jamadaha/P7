@@ -228,7 +228,7 @@ report <- read.csv('report.csv')
     labs(pattern_spacing="Algorithm", pattern_angle="Algorithm", pattern="Algorithm");
   print (walkerPerformancePlot);
   
-  ggsave(plot=walkerPerformancePlot, filename="walkSpeedVsMacrosGeneratedPlot.pdf", width=imgWidth, height=imgHeight)
-  ggsave(plot=walkerPerformancePlot, filename="walkSpeedVsMacrosGeneratedPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)
+  ggsave(plot=walkerPerformancePlot, filename="walkerPerformance.pdf", width=imgWidth, height=imgHeight)
+  ggsave(plot=walkerPerformancePlot, filename="walkerPerformance_big.pdf", width=imgWidthBig, height=imgHeightBig)
   
   

@@ -13,7 +13,7 @@ public:
 		int bestIndex = -1;
 		int bestValue = -1;
 		for (int i = 0; i < choices->size(); i++) {
-			int evalValue = Eval(state, &choices->at(i));
+			int evalValue = Eval(nullptr, &choices->at(i));
 			if (evalValue > bestValue) {
 				bestValue = evalValue;
 				bestIndex = i;
@@ -28,16 +28,18 @@ public:
 	int Eval(const PDDL::State* state, const PDDL::ActionInstance* action) const override {
 		int value = 0;
 
-		for (auto goalUnaryFacts = problem->goalState.unaryFacts.begin(); goalUnaryFacts != problem->goalState.unaryFacts.end(); goalUnaryFacts++) {
-			for (auto fact = goalUnaryFacts->second.begin(); fact != goalUnaryFacts->second.end(); fact++) {
-				if (state->ContainsFact(goalUnaryFacts->first, *fact))
-					value += 1;
+		if (state != nullptr) {
+			for (auto goalUnaryFacts = problem->goalState.unaryFacts.begin(); goalUnaryFacts != problem->goalState.unaryFacts.end(); goalUnaryFacts++) {
+				for (auto fact = goalUnaryFacts->second.begin(); fact != goalUnaryFacts->second.end(); fact++) {
+					if (state->ContainsFact(goalUnaryFacts->first, *fact))
+						value += 1;
+				}
 			}
-		}
-		for (auto goalBinaryFacts = problem->goalState.binaryFacts.begin(); goalBinaryFacts != problem->goalState.binaryFacts.end(); goalBinaryFacts++) {
-			for (auto fact = goalBinaryFacts->second.begin(); fact != goalBinaryFacts->second.end(); fact++) {
-				if (state->ContainsFact(goalBinaryFacts->first, *fact))
-					value += 1;
+			for (auto goalBinaryFacts = problem->goalState.binaryFacts.begin(); goalBinaryFacts != problem->goalState.binaryFacts.end(); goalBinaryFacts++) {
+				for (auto fact = goalBinaryFacts->second.begin(); fact != goalBinaryFacts->second.end(); fact++) {
+					if (state->ContainsFact(goalBinaryFacts->first, *fact))
+						value += 1;
+				}
 			}
 		}
 

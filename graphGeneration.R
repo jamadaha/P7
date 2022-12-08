@@ -5,6 +5,7 @@ library(plyr)
 library(bigsnpr)
 library(ggpubr)
 library(ggpattern)
+library(dplyr)
 library(reshape2)
 
 # In inches!
@@ -165,7 +166,7 @@ report <- read.csv('report.csv')
   ggsave(plot=sRT, filename="SumReformTime_big.pdf", width=imgWidthBig, height=imgHeightBig)
     
 # Sum Search time
-  timeAvg <- as.data.table(report)[,list(time=mean(search_time)),c('domain', 'algorithm', 'problem')]
+  timeAvg <- as.data.table(report)[,list(time=mean(search_time) / 1000),c('domain', 'algorithm', 'problem')]
   agg <- aggregate(timeAvg$time, list(timeAvg$algorithm), FUN=sum) 
   sRT<-ggplot(data=agg, aes(x=Group.1, y=x)) + 
   geom_bar(stat="identity") +
@@ -174,47 +175,6 @@ report <- read.csv('report.csv')
   ggsave(plot=sRT, filename="SumSearchTime.pdf", width=imgWidth, height=imgHeight)
   ggsave(plot=sRT, filename="SumSearchTimeBig.pdf", width=imgWidthBig, height=imgHeightBig)
 
-# Expansion & eval Graph
-  # Get row Domain - Problem - FD Expan - Al Expan
-  #         x.pddl - px.pddl - xxxxxxxx - xxxxxxxx
-  # Only generate if there are two algorithms
-  if (length(uniqueAlgorithm) == 2) {
-    DPPairs <-  as.data.table(report)[,list(domain=domain),c('problem')]
-    algo1 <- uniqueAlgorithm[1];
-    algo2 <- uniqueAlgorithm[2];
-    exp <- as.data.table(report)[,list(expansions=mean(expansions)),c('domain', 'algorithm', 'problem')]
-    algo1Subset <- subset(exp, algorithm == algo1);
-    algo2Subset <- subset(exp, algorithm == algo2);
-    tab <- merge(algo1Subset, algo2Subset, by=c('domain', 'problem'))
-    minVal <- min(min(algo1Subset$expansions), min(algo2Subset$expansions));
-    maxVal <- max(max(algo1Subset$expansions), max(algo2Subset$expansions));
-    expPlot <- ggplot(data=tab, aes(x=expansions.x, y=expansions.y)) + 
-        geom_point(size=2, shape=23) +
-        xlim(minVal, maxVal) +
-        ylim(minVal, maxVal) +
-        xlab(algo1) + 
-        ylab(algo2) +
-        geom_abline(intercept = 0, slope = 1);
-    ggsave(plot=expPlot, filename="expPlot.pdf", width=imgWidth, height=imgHeight)
-    ggsave(plot=expPlot, filename="expPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)
-
-    generated <- as.data.table(report)[,list(generated=mean(generated)),c('domain', 'algorithm', 'problem')]
-    algo1Subset <- subset(generated, algorithm == algo1);
-    algo2Subset <- subset(generated, algorithm == algo2);
-    tab <- merge(algo1Subset, algo2Subset, by=c('domain', 'problem'))
-    minVal <- min(min(algo1Subset$generated), min(algo2Subset$generated));
-    maxVal <- max(max(algo1Subset$generated), max(algo2Subset$generated));
-    genPlot <- ggplot(data=tab, aes(x=generated.x, y=generated.y)) + 
-        geom_point(size=2, shape=23) +
-        xlim(minVal, maxVal) +
-        ylim(minVal, maxVal) +
-        xlab(algo1) + 
-        ylab(algo2) +
-        geom_abline(intercept = 0, slope = 1);
-    ggsave(plot=genPlot, filename="genPlot.pdf", width=imgWidth, height=imgHeight)
-    ggsave(plot=genPlot, filename="genPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)
-  }
-  
 # Walker speeds Graphs
   walkerSpeedSet <- subset(report, algorithm != "FD")
   
@@ -230,6 +190,124 @@ report <- read.csv('report.csv')
 
   ggsave(plot=walkerPerformancePlot, filename="walkerPerformance.pdf", width=imgWidth, height=imgHeight)
   ggsave(plot=walkerPerformancePlot, filename="walkerPerformance_big.pdf", width=imgWidthBig, height=imgHeightBig)
+  
+# Expansions Graphs
+  algo1 = "FD";
+
+  set1 <- subset(report, algorithm == algo1)
+  set1 <- as.data.table(set1)[,list(yvalue=mean(expansions)),c('problem','domain')]
+  
+  uniqueSet <- unique(subset(report, algorithm != algo1)$algorithm)
+  plots <- vector('list', 0)
+  for (i in uniqueSet) {
+    set2 <- subset(report, algorithm == i)
+    set2 <- as.data.table(set2)[,list(xvalue=mean(expansions)),c('problem','domain')]
+    
+    set <- merge(set1, set2, fill=TRUE)
+    setInteresting <- subset(set, mean(xvalue) < mean(yvalue))
+    set <- anti_join(set, setInteresting)
+    
+    plots[[i]] <- local({
+      i <- i
+      plot <- 
+        ggplot() + 
+        geom_point(data=set, aes(x=xvalue, y=yvalue),color='gray') +
+        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain,shape=23)) +
+        xlab(i) + 
+        ylab(algo1) +
+        ggtitle("Expansions") + 
+        scale_x_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
+        scale_y_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
+        scale_fill_grey() +
+        geom_abline(intercept = 0, slope = 1);
+      ggsave(plot=plot, filename=paste("expPlot_",i,".pdf", sep=""), width=imgWidth, height=imgHeight)
+      ggsave(plot=plot, filename=paste("expPlot_",i,"_big.pdf", sep=""), width=imgWidthBig, height=imgHeightBig) 
+      plot <- plot
+    }) 
+  }
+  
+  combined <- ggarrange(plotlist=plots,
+                        ncol = 3, nrow = 3, common.legend = TRUE, legend = "right")
+  ggsave(plot=combined, filename="expPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)  
+
+  
+# Generated Graphs
+  algo1 = "FD";
+  
+  set1 <- subset(report, algorithm == algo1)
+  set1 <- as.data.table(set1)[,list(yvalue=mean(generated)),c('problem','domain')]
+  
+  uniqueSet <- unique(subset(report, algorithm != algo1)$algorithm)
+  plots <- vector('list', 0)
+  for (i in uniqueSet) {
+    set2 <- subset(report, algorithm == i)
+    set2 <- as.data.table(set2)[,list(xvalue=mean(generated)),c('problem','domain')]
+    
+    set <- merge(set1, set2, fill=TRUE)
+    setInteresting <- subset(set, mean(xvalue) < mean(yvalue))
+    set <- anti_join(set, setInteresting)
+    
+    plots[[i]] <- local({
+      i <- i
+      plot <- 
+        ggplot() + 
+        geom_point(data=set, aes(x=xvalue, y=yvalue),color='gray') +
+        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain,shape=23)) +
+        ggtitle("Generated") + 
+        xlab(i) + 
+        ylab(algo1) +
+        scale_x_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
+        scale_y_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
+        scale_fill_grey() +
+        geom_abline(intercept = 0, slope = 1);
+      ggsave(plot=plot, filename=paste("genPlot_",i,".pdf", sep=""), width=imgWidth, height=imgHeight)
+      ggsave(plot=plot, filename=paste("genPlot_",i,"_big.pdf", sep=""), width=imgWidthBig, height=imgHeightBig) 
+      plot <- plot
+    })
+  }
+  
+  combined <- ggarrange(plotlist=plots,
+                        ncol = 3, nrow = 3, common.legend = TRUE, legend = "right")
+  ggsave(plot=combined, filename="genPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)  
+  
+# Evaluations Graphs
+  algo1 = "FD";
+  
+  set1 <- subset(report, algorithm == algo1)
+  set1 <- as.data.table(set1)[,list(yvalue=mean(evaluations)),c('problem','domain')]
+  
+  uniqueSet <- unique(subset(report, algorithm != algo1)$algorithm)
+  plots <- vector('list', 0)
+  for (i in uniqueSet) {
+    set2 <- subset(report, algorithm == i)
+    set2 <- as.data.table(set2)[,list(xvalue=mean(evaluations)),c('problem','domain')]
+    
+    set <- merge(set1, set2, fill=TRUE)
+    setInteresting <- subset(set, mean(xvalue) < mean(yvalue))
+    set <- anti_join(set, setInteresting)
+    
+    plots[[i]] <- local({
+      i <- i
+      plot <- 
+        ggplot() + 
+        geom_point(data=set, aes(x=xvalue, y=yvalue),color='gray') +
+        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain,shape=23)) +
+        ggtitle("Evaluations") + 
+        xlab(i) + 
+        ylab(algo1) +
+        scale_x_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
+        scale_y_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
+        scale_fill_grey() +
+        geom_abline(intercept = 0, slope = 1);
+      ggsave(plot=plot, filename=paste("evalPlot_",i,".pdf", sep=""), width=imgWidth, height=imgHeight)
+      ggsave(plot=plot, filename=paste("evalPlot_",i,"_big.pdf", sep=""), width=imgWidthBig, height=imgHeightBig)
+      plot <- plot
+    })
+  }
+  
+  combined <- ggarrange(plotlist=plots,
+                        ncol = 3, nrow = 3, common.legend = TRUE, legend = "right")
+  ggsave(plot=combined, filename="evalPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)  
   
 # Walker valid vs. invlaid paths
   walkerPathsSet <- subset(report, algorithm != "FD")

@@ -6,54 +6,56 @@ using namespace PDDL;
 
 DoActionChanges State::DoAction(const ActionInstance *action) {
     DoActionChanges changes = DoActionChanges();
-    int actionEffectLength = action->action->effects.size();
-    for (int i = 0; i < actionEffectLength; i++) {
-        PDDL::Literal effect = action->action->effects.at(i);
-        if (effect.args.size() == 1) {
-            auto object = action->objects.at(effect.args.at(0));
-            // Handle unary effect
-            if (effect.value) {
-                if (!unaryFacts.at(effect.predicateIndex).contains(object)) {
-                    if (!changes.unaryChanges.contains(effect.predicateIndex))
-                        changes.unaryChanges[effect.predicateIndex] = unordered_set<pair<unsigned int, bool>>{ make_pair(object, effect.value) };
-                    else
-                        changes.unaryChanges.at(effect.predicateIndex).emplace(make_pair(object, effect.value));
-                }
-                    
-                unaryFacts.at(effect.predicateIndex).emplace(object);
-            } else {
-                if (unaryFacts.at(effect.predicateIndex).contains(object)) {
-                    if (!changes.unaryChanges.contains(effect.predicateIndex))
-                        changes.unaryChanges[effect.predicateIndex] = unordered_set<pair<unsigned int, bool>>{ make_pair(object, effect.value) };
-                    else
-                        changes.unaryChanges.at(effect.predicateIndex).emplace(make_pair(object, effect.value));
-                }
-                unaryFacts.at(effect.predicateIndex).erase(object);
-            }
-                
-        } else {
-            auto objects = make_pair(action->objects.at(effect.args.at(0)), action->objects.at(effect.args.at(1)));
-            // Handle binary effect
-            if (effect.value) {
-                if (!binaryFacts.at(effect.predicateIndex).contains(objects)) {
-                    if (!changes.binaryChanges.contains(effect.predicateIndex))
-                        changes.binaryChanges[effect.predicateIndex] = unordered_set<pair<pair<unsigned int, unsigned int>, bool>>{ make_pair(objects, effect.value) };
-                    else
-                        changes.binaryChanges.at(effect.predicateIndex).emplace(make_pair(objects, effect.value));
-                }
-                binaryFacts.at(effect.predicateIndex).emplace(objects);
-            } else {
-                if (binaryFacts.at(effect.predicateIndex).contains(objects)) {
-                    if (!changes.binaryChanges.contains(effect.predicateIndex))
-                        changes.binaryChanges[effect.predicateIndex] = unordered_set<pair<pair<unsigned int, unsigned int>, bool>>{ make_pair(objects, effect.value) };
-                    else
-                        changes.binaryChanges.at(effect.predicateIndex).emplace(make_pair(objects, effect.value));
-                }
-                binaryFacts.at(effect.predicateIndex).erase(objects);
-            }
+    auto objects = &action->objects;
+    for (int i = 0; i < action->action->negEffects.size(); i++) {
+        auto effect = action->action->negEffects.at(i);
+        DoEffect(effect, objects, &changes);
+    }
+    for (int i = 0; i < action->action->posEffects.size(); i++) {
+        auto effect = action->action->posEffects.at(i);
+        DoEffect(effect, objects, &changes);
+    }
+
+    return changes;
+}
+
+void State::DoEffect(const Literal* lit, const std::vector<unsigned int> *objects, DoActionChanges *changes) {
+    if (lit->args.size() == 1)
+        DoUnaryEffect(lit, objects, changes);
+    else
+        DoBinaryEffect(lit, objects, changes);
+}
+
+void State::DoUnaryEffect(const Literal* lit, const std::vector<unsigned int> *objects, DoActionChanges *changes) {
+    const auto object = objects->at(lit->args.at(0));
+    
+    if (lit->value) {
+        if (!unaryFacts.at(lit->predicateIndex).contains(object)) {
+            unaryFacts.at(lit->predicateIndex).emplace(object);
+            changes->AddChange(lit->predicateIndex, object, lit->value); 
+        }
+    } else {
+        if (unaryFacts.at(lit->predicateIndex).contains(object)) {
+            unaryFacts.at(lit->predicateIndex).erase(object);
+            changes->AddChange(lit->predicateIndex, object, lit->value); 
         }
     }
-    return changes;
+}
+
+void State::DoBinaryEffect(const Literal* lit, const std::vector<unsigned int> *objects, DoActionChanges *changes) {
+    auto pair = make_pair(objects->at(lit->args.at(0)), objects->at(lit->args.at(1)));
+    
+    if (lit->value) {
+        if (!binaryFacts.at(lit->predicateIndex).contains(pair)) {
+            binaryFacts.at(lit->predicateIndex).emplace(pair);
+            changes->AddChange(lit->predicateIndex, pair, lit->value); 
+        }
+    } else {
+        if (binaryFacts.at(lit->predicateIndex).contains(pair)) {
+            binaryFacts.at(lit->predicateIndex).erase(pair);
+            changes->AddChange(lit->predicateIndex, pair, lit->value); 
+        }
+    }
 }
 
 void State::UndoAction(const DoActionChanges *changes) {

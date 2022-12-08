@@ -51,3 +51,12 @@ vector<unordered_set<unsigned int>> Action::GenerateApplicablePredicates(bool un
     }
     return set;
 };
+
+std::vector<const Literal*> Action::GenerateEffectsOfValue(bool value) const {
+    std::vector<const Literal*> effs;
+    for (int i = 0; i < effects.size(); i++) {
+        if (effects.at(i).value == value)
+            effs.push_back(&effects.at(i));
+    }
+    return effs;
+}

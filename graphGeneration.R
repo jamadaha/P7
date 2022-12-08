@@ -234,7 +234,7 @@ report <- read.csv('report.csv')
 # Walker valid vs. invlaid paths
   walkerPathsSet <- subset(report, algorithm != "FD")
   
-  walkerInvalidPaths <- as.data.table(walkerPathsSet)[,list(Paths=mean(total_walker_paths),Invalid_Paths=mean(total_walker_invalid_paths)),c('algorithm')]
+  walkerInvalidPaths <- as.data.table(walkerPathsSet)[,list(Valid=mean(total_walker_paths),Invalid=mean(total_walker_invalid_paths)),c('algorithm')]
   walkerInvalidPaths <- melt(walkerInvalidPaths, id.vars='algorithm')
   walkerInvalidPathsPlot <- ggplot(walkerInvalidPaths, aes(x=algorithm, y=value, fill=variable)) + 
     geom_col_pattern(color='black', pattern_spacing =0.03,position = "dodge") + 

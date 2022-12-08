@@ -13,7 +13,7 @@ Path WalkerHillClimber::Walk(BaseHeuristic *heuristic, const PDDL::State *state,
         OnTempStateMade(this->instance, &tempState);
 
     heuristic->Reset();
-    int workingEval = heuristic->Eval(&tempState);
+    int workingEval = heuristic->Eval(&tempState, nullptr);
 
     for (int i = 0; i < maxStepCount; i++) {
         if (!widthFunc->Iterate(current))
@@ -28,9 +28,7 @@ Path WalkerHillClimber::Walk(BaseHeuristic *heuristic, const PDDL::State *state,
         int initIndex = rand() % possibleActions.size();
         for (int i = 0; i < possibleActions.size(); i++) {
             int wIndex = (initIndex + i) % possibleActions.size();
-            auto changes = tempState.DoAction(&possibleActions.at(wIndex));
-            int val = heuristic->Eval(&tempState);
-            tempState.UndoAction(&changes);
+            int val = heuristic->Eval(&tempState, &possibleActions.at(wIndex));
             if (bestAction == nullptr || val >= bestValue) {
                 bestAction = &possibleActions.at(wIndex);
                 bestValue = val;
@@ -72,6 +70,7 @@ std::vector<Path> WalkerHillClimber::Walk() {
     while (widthFunc->Iterate(&current)) {
         Path path = Walk(heuristic, &this->instance->problem->initState, &current);
         if (path.steps.size() > 1) {
+            _totalSteps += path.steps.size();
             paths.push_back(path);
             pathLengths.push_back(path.steps.size());
         }
@@ -81,6 +80,7 @@ std::vector<Path> WalkerHillClimber::Walk() {
         _totalIterations++;
     }
     auto ellapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - startTime).count();
+    _totalWalkingTime += ellapsed;
     if (OnWalkerEnd != nullptr)
         OnWalkerEnd(this, ellapsed);
     return paths;

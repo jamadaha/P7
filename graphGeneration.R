@@ -117,7 +117,7 @@ report <- read.csv('report.csv')
     ggsave(plot=searchTimeCulPlot, filename="searchTimeCulm_big.pdf", width=imgWidthBig, height=imgHeightBig)
 
 # Macro Quality graphs
-    macroSubset <- subset(report, algorithm != "Fast Downward")
+    macroSubset <- subset(report, algorithm != "FD")
     macroQualityReport <- as.data.table(macroSubset)[,list(macroQuality=(mean(unique_macros_used) / mean(macros_generated))*100),c('domain', 'algorithm')]
     macroQualityPlot <- ggplot(macroQualityReport, aes(x=domain, y=macroQuality, fill=domain)) + 
         geom_col_pattern(aes(pattern = algorithm, pattern_angle = algorithm, pattern_spacing = algorithm), fill='white', color='black', pattern_spacing =0.03, position='dodge') + 
@@ -213,3 +213,22 @@ report <- read.csv('report.csv')
     ggsave(plot=genPlot, filename="genPlot.pdf", width=imgWidth, height=imgHeight)
     ggsave(plot=genPlot, filename="genPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)
   }
+  
+# Walker speeds Graphs
+  walkerSpeedSet <- subset(report, algorithm != "FD")
+  
+  walkerPerformance <- as.data.table(walkerSpeedSet)[,list(generated=mean(total_walker_steps)),c('algorithm')]
+  walkerPerformancePlot <- ggplot(walkerPerformance, aes(x=algorithm, y=generated, fill=domain)) + 
+    geom_col_pattern(aes(pattern = algorithm, pattern_angle = algorithm, pattern_spacing = algorithm), fill='white', color='black', pattern_spacing =0.03, position='dodge') + 
+    scale_fill_grey() +
+    ggtitle("Walker Performance") + 
+    theme(plot.title = element_text(hjust = 0.5)) + 
+    xlab("Walker") + 
+    ylab("Average steps the walker made") +
+    labs(pattern_spacing="Algorithm", pattern_angle="Algorithm", pattern="Algorithm");
+  print (walkerPerformancePlot);
+  
+  ggsave(plot=walkerPerformancePlot, filename="walkerPerformance.pdf", width=imgWidth, height=imgHeight)
+  ggsave(plot=walkerPerformancePlot, filename="walkerPerformance_big.pdf", width=imgWidthBig, height=imgHeightBig)
+  
+  

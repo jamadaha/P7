@@ -32,7 +32,7 @@ Path WalkerGreedyResume::Walk(BaseHeuristic *heuristic, const PDDL::State state,
             if (SaveStates)
                 endState = tempState;
             steps.push_back(*chosenAction);
-            int value = heuristic->Eval(&tempState); 
+            int value = heuristic->Eval(&tempState, chosenAction);
             if (value > bestValue) {
                 bestState = tempState;
                 bestValue = value;
@@ -60,6 +60,7 @@ std::vector<Path> WalkerGreedyResume::Walk() {
     while (widthFunc->Iterate(&current)) {
         Path path = Walk(heuristic, bestState, &current);
         if (path.steps.size() > 1) {
+            _totalSteps += path.steps.size();
             paths.push_back(path);
             pathLengths.push_back(path.steps.size());
         }
@@ -69,6 +70,7 @@ std::vector<Path> WalkerGreedyResume::Walk() {
         _totalIterations++;
     }
     auto ellapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - startTime).count();
+    _totalWalkingTime += ellapsed;
     if (OnWalkerEnd != nullptr)
         OnWalkerEnd(this, ellapsed);
     return paths;

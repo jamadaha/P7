@@ -21,6 +21,7 @@ add_executable(Test-All
 	"Test/SAS/Parser/ParserTests.cpp"
 	"Test/SAS/CodeGenerator/CodeGeneratorTests.cpp"
 	"Test/SAS/Rebuilder/RebuilderTests.cpp"
+	"Test/Walker/Heuristics/GoalPredicateCountHeuristicsTests.cpp"
 	"Test/Walker/ActionGenerator.cpp"
 	"Test/Walker/Walker.cpp"
 	"Test/PlanValidators/PlanValidator.cpp"

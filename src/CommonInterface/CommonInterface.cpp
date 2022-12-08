@@ -235,6 +235,8 @@ enum CommonInterface::RunResult CommonInterface::Run(int reformulatorIndex) {
 	Report->Stop(ReportData("None", std::to_string(getReformulatorStep.Data->GetTotalWalkingTime()), "None"));
 	Report->Begin("Total Walker Paths");
 	Report->Stop(ReportData("None", std::to_string(getReformulatorStep.Data->GetActionIterationGenerated()), "None"));
+	Report->Begin("Total Walker Invalid Paths");
+	Report->Stop(ReportData("None", std::to_string(getReformulatorStep.Data->GetInvalidActionIterationGenerated()), "None"));
 	Report->Begin("Total Walker Steps");
 	Report->Stop(ReportData("None", std::to_string(getReformulatorStep.Data->GetTotalWalkSteps()), "None"));
 	Report->Begin("Total Walker Actions Generated");

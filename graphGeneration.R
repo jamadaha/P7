@@ -5,6 +5,7 @@ library(plyr)
 library(bigsnpr)
 library(ggpubr)
 library(ggpattern)
+library(reshape2)
 
 # In inches!
 imgWidth <- 4
@@ -226,9 +227,25 @@ report <- read.csv('report.csv')
     xlab("Walker") + 
     ylab("Average steps the walker made") +
     labs(pattern_spacing="Algorithm", pattern_angle="Algorithm", pattern="Algorithm");
-  print (walkerPerformancePlot);
-  
+
   ggsave(plot=walkerPerformancePlot, filename="walkerPerformance.pdf", width=imgWidth, height=imgHeight)
   ggsave(plot=walkerPerformancePlot, filename="walkerPerformance_big.pdf", width=imgWidthBig, height=imgHeightBig)
   
+# Walker valid vs. invlaid paths
+  walkerPathsSet <- subset(report, algorithm != "FD")
   
+  walkerInvalidPaths <- as.data.table(walkerPathsSet)[,list(Valid=mean(total_walker_paths),Invalid=mean(total_walker_invalid_paths)),c('algorithm')]
+  walkerInvalidPaths <- melt(walkerInvalidPaths, id.vars='algorithm')
+  walkerInvalidPathsPlot <- ggplot(walkerInvalidPaths, aes(x=algorithm, y=value, fill=variable)) + 
+    geom_col_pattern(color='black', pattern_spacing =0.03,position = "dodge") + 
+    scale_fill_grey() +
+    ggtitle("Valid vs. Invalid paths") + 
+    theme(plot.title = element_text(hjust = 0.5)) + 
+    xlab("Walker") + 
+    ylab("Number of paths") +
+    labs(fill='Paths');
+  print (walkerInvalidPathsPlot);
+  
+  ggsave(plot=walkerInvalidPathsPlot, filename="validvsinvalidpaths.pdf", width=imgWidth, height=imgHeight)
+  ggsave(plot=walkerInvalidPathsPlot, filename="validvsinvalidpaths_big.pdf", width=imgWidthBig, height=imgHeightBig)
+

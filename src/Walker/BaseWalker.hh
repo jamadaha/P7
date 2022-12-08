@@ -27,6 +27,7 @@ public:
     std::vector<unsigned int> GetPathLengths() { return pathLengths; };
     unsigned int GetTotalWalkingTime() { return _totalWalkingTime; };
     unsigned int GetTotalSteps() { return _totalSteps; };
+    unsigned int GetTotalInvalidPaths() { return _totalInvalidPaths; };
 
     BaseWalker(std::string walkerName, PDDL::Instance* instance, BaseHeuristic* heuristic, BaseWidthFunction* widthFunc) :
         WalkerName(walkerName), 
@@ -54,6 +55,7 @@ protected:
     unsigned int _totalIterations = 0;
     unsigned int _totalWalkingTime = 0;
     unsigned int _totalSteps = 0;
+    unsigned int _totalInvalidPaths = 0;
     std::vector<unsigned int> pathLengths;
     PDDL::Instance* instance;
     //ActionGenerator2 actionGenerator;

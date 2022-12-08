@@ -37,6 +37,7 @@ ATTRIBUTES_NAME_MAP = [
     ('p7_verifying_macros_boolvalues', 'macros_valid'),
     ('p7_verifying_paths_boolvalues', 'paths_valid'),
     ('p7_total_walker_paths_intvalues', 'total_walker_paths'),
+    ('p7_total_walker_invalid_paths_intvalues', 'total_walker_invalid_paths'),
     ('p7_total_walker_steps_intvalues', 'total_walker_steps'),
     ('p7_total_walker_actions_generated_intvalues', 'total_walker_actions_generated'),
     ('p7_average_branching_factor_intvalues', 'walker_average_branching_factor'),

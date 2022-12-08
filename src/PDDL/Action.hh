@@ -1,5 +1,5 @@
-#ifndef PDDL_ACTION_HH
-#define PDDL_ACTION_HH
+#ifndef ACTION
+#define ACTION
 
 #include <string>
 #include <vector>
@@ -20,6 +20,9 @@ namespace PDDL {
         std::vector<Literal> unaryPreconditions;
         std::vector<Literal> binaryPreconditions;
 
+        const std::vector<const Literal*> posEffects;
+        const std::vector<const Literal*> negEffects;
+
         // For each parameter, what unary preconditions mention it
         const std::vector<std::unordered_set<const Literal*>> applicableUnaryLiterals;
         // For each parameter, what unary predicates are mentioned in applicable preconditions
@@ -36,6 +39,8 @@ namespace PDDL {
             parameters(parameters),
             preconditions(preconditions),
             effects(effects),
+            posEffects(GenerateEffectsOfValue(true)),
+            negEffects(GenerateEffectsOfValue(false)),
             applicableUnaryLiterals(GenerateApplicableLiterals(true)),
             applicableUnaryPredicates(GenerateApplicablePredicates(true)),
             applicablePredicates(GenerateApplicablePredicates()),
@@ -53,6 +58,8 @@ namespace PDDL {
             parameters(a.parameters),
             preconditions(a.preconditions),
             effects(a.effects),
+            posEffects(GenerateEffectsOfValue(true)),
+            negEffects(GenerateEffectsOfValue(false)),
             applicableUnaryLiterals(GenerateApplicableLiterals(true)),
             applicableUnaryPredicates(GenerateApplicablePredicates(true)),
             applicablePredicates(GenerateApplicablePredicates()),
@@ -82,6 +89,7 @@ namespace PDDL {
         std::vector<std::unordered_set<const Literal*>> GenerateApplicableLiterals(bool unary) const;
         std::vector<std::unordered_set<unsigned int>> GenerateApplicablePredicates() const;
         std::vector<std::unordered_set<unsigned int>> GenerateApplicablePredicates(bool unary) const;
+        std::vector<const Literal*> GenerateEffectsOfValue(bool value) const;
     };
 }
 
@@ -94,4 +102,4 @@ namespace std {
     };
 }
 
-#endif
+#endif // ACTION

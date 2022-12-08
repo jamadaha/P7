@@ -1,5 +1,5 @@
-#ifndef PDDL_STATE_HH
-#define PDDL_STATE_HH
+#ifndef STATE
+#define STATE
 
 #include <vector>
 #include <unordered_map>
@@ -16,6 +16,20 @@ namespace PDDL {
     struct DoActionChanges {
         std::unordered_map<unsigned int, std::unordered_set<std::pair<unsigned int, bool>>> unaryChanges;
         std::unordered_map<unsigned int, std::unordered_set<std::pair<std::pair<unsigned int, unsigned int>, bool>>> binaryChanges;
+    
+        void AddChange(unsigned int predicate, unsigned int object, bool value) {
+            if (!unaryChanges.contains(predicate))
+                unaryChanges[predicate] = std::unordered_set<std::pair<unsigned int, bool>>{ std::make_pair(object, value) };
+            else
+                unaryChanges.at(predicate).emplace(std::make_pair(object, value));
+        }
+
+        void AddChange(unsigned int predicate, std::pair<unsigned int, unsigned int> objects, bool value) {
+            if (!binaryChanges.contains(predicate))
+                binaryChanges[predicate] = std::unordered_set<std::pair<std::pair<unsigned int, unsigned int>, bool>>{ std::make_pair(objects, value) };
+            else
+                binaryChanges.at(predicate).emplace(std::make_pair(objects, value));
+        }
     };
 
     struct State {
@@ -52,6 +66,9 @@ namespace PDDL {
 #pragma endregion ContainsFact
 
         DoActionChanges DoAction(const ActionInstance* action);
+        void DoEffect(const Literal* lit, const std::vector<unsigned int> *objects, DoActionChanges *changes);
+        void DoUnaryEffect(const Literal* lit, const std::vector<unsigned int> *objects, DoActionChanges *changes);
+        void DoBinaryEffect(const Literal* lit, const std::vector<unsigned int> *objects, DoActionChanges *changes);
         void UndoAction(const DoActionChanges* changes);
 
         std::string ToString(const Instance* instance);
@@ -75,4 +92,4 @@ namespace std {
     };
 }
 
-#endif
+#endif // STATE

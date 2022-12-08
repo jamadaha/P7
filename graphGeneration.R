@@ -303,18 +303,6 @@ report <- read.csv('report.csv')
                         ncol = 3, nrow = 3, common.legend = TRUE, legend = "right")
   ggsave(plot=combined, filename="evalPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)  
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
 # Walker valid vs. invlaid paths
   walkerPathsSet <- subset(report, algorithm != "FD")
   

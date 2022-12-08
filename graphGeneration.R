@@ -164,7 +164,7 @@ report <- read.csv('report.csv')
   ggsave(plot=sRT, filename="SumReformTime_big.pdf", width=imgWidthBig, height=imgHeightBig)
     
 # Sum Search time
-  timeAvg <- as.data.table(report)[,list(time=mean(search_time) / 1000),c('domain', 'algorithm', 'problem')]
+  timeAvg <- as.data.table(report)[,list(time=mean(search_time)),c('domain', 'algorithm', 'problem')]
   agg <- aggregate(timeAvg$time, list(timeAvg$algorithm), FUN=sum) 
   sRT<-ggplot(data=agg, aes(x=Group.1, y=x)) + 
   geom_bar(stat="identity") +

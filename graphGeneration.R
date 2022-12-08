@@ -212,11 +212,13 @@ report <- read.csv('report.csv')
       plot <- 
         ggplot() + 
         geom_point(data=set, aes(x=xvalue, y=yvalue),color='gray') +
-        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain)) +
+        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain,shape=23)) +
         xlab(i) + 
         ylab(algo1) +
+        ggtitle("Expansions") + 
         scale_x_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
         scale_y_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
+        scale_fill_grey() +
         geom_abline(intercept = 0, slope = 1);
       ggsave(plot=plot, filename=paste("expPlot_",i,".pdf", sep=""), width=imgWidth, height=imgHeight)
       ggsave(plot=plot, filename=paste("expPlot_",i,"_big.pdf", sep=""), width=imgWidthBig, height=imgHeightBig) 
@@ -250,11 +252,13 @@ report <- read.csv('report.csv')
       plot <- 
         ggplot() + 
         geom_point(data=set, aes(x=xvalue, y=yvalue),color='gray') +
-        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain)) +
+        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain,shape=23)) +
+        ggtitle("Generated") + 
         xlab(i) + 
         ylab(algo1) +
         scale_x_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
         scale_y_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
+        scale_fill_grey() +
         geom_abline(intercept = 0, slope = 1);
       ggsave(plot=plot, filename=paste("genPlot_",i,".pdf", sep=""), width=imgWidth, height=imgHeight)
       ggsave(plot=plot, filename=paste("genPlot_",i,"_big.pdf", sep=""), width=imgWidthBig, height=imgHeightBig) 
@@ -287,11 +291,13 @@ report <- read.csv('report.csv')
       plot <- 
         ggplot() + 
         geom_point(data=set, aes(x=xvalue, y=yvalue),color='gray') +
-        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain)) +
+        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain,shape=23)) +
+        ggtitle("Evaluations") + 
         xlab(i) + 
         ylab(algo1) +
         scale_x_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
         scale_y_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
+        scale_fill_grey() +
         geom_abline(intercept = 0, slope = 1);
       ggsave(plot=plot, filename=paste("evalPlot_",i,".pdf", sep=""), width=imgWidth, height=imgHeight)
       ggsave(plot=plot, filename=paste("evalPlot_",i,"_big.pdf", sep=""), width=imgWidthBig, height=imgHeightBig)

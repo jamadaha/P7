@@ -174,47 +174,6 @@ report <- read.csv('report.csv')
   ggsave(plot=sRT, filename="SumSearchTime.pdf", width=imgWidth, height=imgHeight)
   ggsave(plot=sRT, filename="SumSearchTimeBig.pdf", width=imgWidthBig, height=imgHeightBig)
 
-# Expansion & eval Graph
-  # Get row Domain - Problem - FD Expan - Al Expan
-  #         x.pddl - px.pddl - xxxxxxxx - xxxxxxxx
-  # Only generate if there are two algorithms
-  if (length(uniqueAlgorithm) == 2) {
-    DPPairs <-  as.data.table(report)[,list(domain=domain),c('problem')]
-    algo1 <- uniqueAlgorithm[1];
-    algo2 <- uniqueAlgorithm[2];
-    exp <- as.data.table(report)[,list(expansions=mean(expansions)),c('domain', 'algorithm', 'problem')]
-    algo1Subset <- subset(exp, algorithm == algo1);
-    algo2Subset <- subset(exp, algorithm == algo2);
-    tab <- merge(algo1Subset, algo2Subset, by=c('domain', 'problem'))
-    minVal <- min(min(algo1Subset$expansions), min(algo2Subset$expansions));
-    maxVal <- max(max(algo1Subset$expansions), max(algo2Subset$expansions));
-    expPlot <- ggplot(data=tab, aes(x=expansions.x, y=expansions.y)) + 
-        geom_point(size=2, shape=23) +
-        xlim(minVal, maxVal) +
-        ylim(minVal, maxVal) +
-        xlab(algo1) + 
-        ylab(algo2) +
-        geom_abline(intercept = 0, slope = 1);
-    ggsave(plot=expPlot, filename="expPlot.pdf", width=imgWidth, height=imgHeight)
-    ggsave(plot=expPlot, filename="expPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)
-
-    generated <- as.data.table(report)[,list(generated=mean(generated)),c('domain', 'algorithm', 'problem')]
-    algo1Subset <- subset(generated, algorithm == algo1);
-    algo2Subset <- subset(generated, algorithm == algo2);
-    tab <- merge(algo1Subset, algo2Subset, by=c('domain', 'problem'))
-    minVal <- min(min(algo1Subset$generated), min(algo2Subset$generated));
-    maxVal <- max(max(algo1Subset$generated), max(algo2Subset$generated));
-    genPlot <- ggplot(data=tab, aes(x=generated.x, y=generated.y)) + 
-        geom_point(size=2, shape=23) +
-        xlim(minVal, maxVal) +
-        ylim(minVal, maxVal) +
-        xlab(algo1) + 
-        ylab(algo2) +
-        geom_abline(intercept = 0, slope = 1);
-    ggsave(plot=genPlot, filename="genPlot.pdf", width=imgWidth, height=imgHeight)
-    ggsave(plot=genPlot, filename="genPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)
-  }
-  
 # Walker speeds Graphs
   walkerSpeedSet <- subset(report, algorithm != "FD")
   
@@ -260,6 +219,7 @@ report <- read.csv('report.csv')
         geom_abline(intercept = 0, slope = 1);
       ggsave(plot=plot, filename=paste("expPlot_",i,".pdf", sep=""), width=imgWidth, height=imgHeight)
       ggsave(plot=plot, filename=paste("expPlot_",i,"_big.pdf", sep=""), width=imgWidthBig, height=imgHeightBig) 
+      plot <- plot
     }) 
   }
   
@@ -297,6 +257,7 @@ report <- read.csv('report.csv')
         geom_abline(intercept = 0, slope = 1);
       ggsave(plot=plot, filename=paste("genPlot_",i,".pdf", sep=""), width=imgWidth, height=imgHeight)
       ggsave(plot=plot, filename=paste("genPlot_",i,"_big.pdf", sep=""), width=imgWidthBig, height=imgHeightBig) 
+      plot <- plot
     })
   }
   
@@ -332,7 +293,8 @@ report <- read.csv('report.csv')
         scale_y_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
         geom_abline(intercept = 0, slope = 1);
       ggsave(plot=plot, filename=paste("evalPlot_",i,".pdf", sep=""), width=imgWidth, height=imgHeight)
-      ggsave(plot=plot, filename=paste("evalPlot_",i,"_big.pdf", sep=""), width=imgWidthBig, height=imgHeightBig)  
+      ggsave(plot=plot, filename=paste("evalPlot_",i,"_big.pdf", sep=""), width=imgWidthBig, height=imgHeightBig)
+      plot <- plot
     })
   }
   

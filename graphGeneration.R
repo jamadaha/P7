@@ -5,6 +5,7 @@ library(plyr)
 library(bigsnpr)
 library(ggpubr)
 library(ggpattern)
+library(dplyr)
 
 # In inches!
 imgWidth <- 4
@@ -164,7 +165,7 @@ report <- read.csv('report.csv')
   ggsave(plot=sRT, filename="SumReformTime_big.pdf", width=imgWidthBig, height=imgHeightBig)
     
 # Sum Search time
-  timeAvg <- as.data.table(report)[,list(time=mean(search_time)),c('domain', 'algorithm', 'problem')]
+  timeAvg <- as.data.table(report)[,list(time=mean(search_time) / 1000),c('domain', 'algorithm', 'problem')]
   agg <- aggregate(timeAvg$time, list(timeAvg$algorithm), FUN=sum) 
   sRT<-ggplot(data=agg, aes(x=Group.1, y=x)) + 
   geom_bar(stat="identity") +
@@ -226,9 +227,128 @@ report <- read.csv('report.csv')
     xlab("Walker") + 
     ylab("Average steps the walker made") +
     labs(pattern_spacing="Algorithm", pattern_angle="Algorithm", pattern="Algorithm");
-  print (walkerPerformancePlot);
-  
+
   ggsave(plot=walkerPerformancePlot, filename="walkerPerformance.pdf", width=imgWidth, height=imgHeight)
   ggsave(plot=walkerPerformancePlot, filename="walkerPerformance_big.pdf", width=imgWidthBig, height=imgHeightBig)
+  
+# Expansions Graphs
+  algo1 = "FD";
+
+  set1 <- subset(report, algorithm == algo1)
+  set1 <- as.data.table(set1)[,list(yvalue=mean(expansions)),c('problem','domain')]
+  
+  uniqueSet <- unique(subset(report, algorithm != algo1)$algorithm)
+  plots <- vector('list', 0)
+  for (i in uniqueSet) {
+    set2 <- subset(report, algorithm == i)
+    set2 <- as.data.table(set2)[,list(xvalue=mean(expansions)),c('problem','domain')]
+    
+    set <- merge(set1, set2, fill=TRUE)
+    setInteresting <- subset(set, mean(xvalue) < mean(yvalue))
+    set <- anti_join(set, setInteresting)
+    
+    plots[[i]] <- local({
+      i <- i
+      plot <- 
+        ggplot() + 
+        geom_point(data=set, aes(x=xvalue, y=yvalue),color='gray') +
+        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain)) +
+        xlab(i) + 
+        ylab(algo1) +
+        scale_x_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
+        scale_y_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
+        geom_abline(intercept = 0, slope = 1);
+      ggsave(plot=plot, filename=paste("expPlot_",i,".pdf", sep=""), width=imgWidth, height=imgHeight)
+      ggsave(plot=plot, filename=paste("expPlot_",i,"_big.pdf", sep=""), width=imgWidthBig, height=imgHeightBig) 
+    }) 
+  }
+  
+  combined <- ggarrange(plotlist=plots,
+                        ncol = 3, nrow = 3, common.legend = TRUE, legend = "right")
+  ggsave(plot=combined, filename="expPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)  
+
+  
+# Generated Graphs
+  algo1 = "FD";
+  
+  set1 <- subset(report, algorithm == algo1)
+  set1 <- as.data.table(set1)[,list(yvalue=mean(generated)),c('problem','domain')]
+  
+  uniqueSet <- unique(subset(report, algorithm != algo1)$algorithm)
+  plots <- vector('list', 0)
+  for (i in uniqueSet) {
+    set2 <- subset(report, algorithm == i)
+    set2 <- as.data.table(set2)[,list(xvalue=mean(generated)),c('problem','domain')]
+    
+    set <- merge(set1, set2, fill=TRUE)
+    setInteresting <- subset(set, mean(xvalue) < mean(yvalue))
+    set <- anti_join(set, setInteresting)
+    
+    plots[[i]] <- local({
+      i <- i
+      plot <- 
+        ggplot() + 
+        geom_point(data=set, aes(x=xvalue, y=yvalue),color='gray') +
+        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain)) +
+        xlab(i) + 
+        ylab(algo1) +
+        scale_x_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
+        scale_y_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
+        geom_abline(intercept = 0, slope = 1);
+      ggsave(plot=plot, filename=paste("genPlot_",i,".pdf", sep=""), width=imgWidth, height=imgHeight)
+      ggsave(plot=plot, filename=paste("genPlot_",i,"_big.pdf", sep=""), width=imgWidthBig, height=imgHeightBig) 
+    })
+  }
+  
+  combined <- ggarrange(plotlist=plots,
+                        ncol = 3, nrow = 3, common.legend = TRUE, legend = "right")
+  ggsave(plot=combined, filename="genPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)  
+  
+# Evaluations Graphs
+  algo1 = "FD";
+  
+  set1 <- subset(report, algorithm == algo1)
+  set1 <- as.data.table(set1)[,list(yvalue=mean(evaluations)),c('problem','domain')]
+  
+  uniqueSet <- unique(subset(report, algorithm != algo1)$algorithm)
+  plots <- vector('list', 0)
+  for (i in uniqueSet) {
+    set2 <- subset(report, algorithm == i)
+    set2 <- as.data.table(set2)[,list(xvalue=mean(evaluations)),c('problem','domain')]
+    
+    set <- merge(set1, set2, fill=TRUE)
+    setInteresting <- subset(set, mean(xvalue) < mean(yvalue))
+    set <- anti_join(set, setInteresting)
+    
+    plots[[i]] <- local({
+      i <- i
+      plot <- 
+        ggplot() + 
+        geom_point(data=set, aes(x=xvalue, y=yvalue),color='gray') +
+        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain)) +
+        xlab(i) + 
+        ylab(algo1) +
+        scale_x_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
+        scale_y_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
+        geom_abline(intercept = 0, slope = 1);
+      ggsave(plot=plot, filename=paste("evalPlot_",i,".pdf", sep=""), width=imgWidth, height=imgHeight)
+      ggsave(plot=plot, filename=paste("evalPlot_",i,"_big.pdf", sep=""), width=imgWidthBig, height=imgHeightBig)  
+    })
+  }
+  
+  combined <- ggarrange(plotlist=plots,
+                        ncol = 3, nrow = 3, common.legend = TRUE, legend = "right")
+  ggsave(plot=combined, filename="evalPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   

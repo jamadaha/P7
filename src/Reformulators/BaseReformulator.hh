@@ -30,6 +30,7 @@ public:
 	int GetMacrosGenerated() { return macrosGenerated; };
 	int GetActionsGenerated() { return actionsGenerated; };
 	int GetActionIterationGenerated() { return actionIterationGenerated; };
+	int GetInvalidActionIterationGenerated() { return invalidActionIterationGenerated; };
 	std::vector<unsigned int> GetBranchingFactors() { return branchingFactors; };
 	std::vector<unsigned int> GetPathLengths() { return pathLengths; };
 	bool DidEncounterErrors() { return encounteredErrors; };
@@ -52,6 +53,7 @@ protected:
 	int macrosGenerated = 0;
 	int actionsGenerated = 0;
 	int actionIterationGenerated = 0;
+	int invalidActionIterationGenerated = 0;
 	unsigned int _totalWalkingTime = 0;
 	unsigned int _totalWalkSteps = 0;
 	bool encounteredErrors = false;

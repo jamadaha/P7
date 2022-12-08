@@ -25,5 +25,6 @@ sudo Rscript -e "install.packages(\"plyr\");"
 sudo Rscript -e "install.packages(\"bigsnpr\");"
 sudo Rscript -e "install.packages(\"ggpubr\");"
 sudo Rscript -e "install.packages(\"ggpattern\");"
+sudo Rscript -e "install.packages(\"reshape2\");"
 # Download data repo
 git clone https://github.com/jamadaha/P7_Data

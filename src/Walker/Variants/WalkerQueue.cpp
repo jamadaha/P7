@@ -44,6 +44,8 @@ std::vector<Path> WalkerQueue::Walk() {
             paths.push_back(path);
             pathLengths.push_back(path.steps.size());
         }
+        else
+            _totalInvalidPaths++;
 
         if (OnWalkerStep != nullptr)
             OnWalkerStep(this, current);

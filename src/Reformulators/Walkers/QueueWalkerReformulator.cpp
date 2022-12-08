@@ -9,6 +9,7 @@ std::vector<Path> QueueWalkerReformulator::PerformWalk(PDDL::Instance *instance,
     auto paths = walker->Walk();
     actionsGenerated += walker->GetTotalActionsGenerated();
     actionIterationGenerated += paths.size();
+    invalidActionIterationGenerated += walker->GetTotalInvalidPaths();
     auto factors = walker->GetBranchingFactors();
     copy(factors.begin(), factors.end(), back_inserter(branchingFactors));
     auto lengths = walker->GetPathLengths();

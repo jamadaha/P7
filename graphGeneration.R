@@ -197,22 +197,27 @@ sRT<-ggplot(data=agg, aes(x=Group.1, y=x)) +
 ggsave(plot=sRT, filename="SumSearchTime.pdf", width=imgWidth, height=imgHeight)
 ggsave(plot=sRT, filename="SumSearchTimeBig.pdf", width=imgWidthBig, height=imgHeightBig)
 
+
 # Walker speeds Graphs
-walkerSpeedSet <- subset(report, algorithm != "FD")
+    walkerSpeedSet <- subset(report, algorithm != "FD")
 
-walkerPerformance <- as.data.table(walkerSpeedSet)[,list(generated=mean(total_walker_steps)),c('algorithm')]
-walkerPerformancePlot <- ggplot(walkerPerformance, aes(x=algorithm, y=generated, fill=domain)) + 
-  geom_col_pattern(aes(pattern = algorithm, pattern_angle = algorithm, pattern_spacing = algorithm), fill='white', color='black', pattern_spacing =0.03, position='dodge') + 
-  scale_fill_grey() +
-  ggtitle("Walker Performance") + 
-  theme(plot.title = element_text(hjust = 0.5)) + 
-  xlab("Walker") + 
-  ylab("Average steps the walker made") +
-  labs(pattern_spacing="Algorithm", pattern_angle="Algorithm", pattern="Algorithm");
+    walkerPerformance <- as.data.table(walkerSpeedSet)[,list(generated=mean(total_walker_steps)),c('algorithm')]
+    walkerPerformancePlot <- ggplot(walkerPerformance, aes(x=algorithm, y=generated, fill=domain)) + 
+      geom_col_pattern(aes(pattern = algorithm, pattern_angle = algorithm, pattern_spacing = algorithm), fill='white', color='black', pattern_spacing =0.03, position='dodge') + 
+      scale_fill_grey() +
+      ggtitle("Walker Performance") + 
+      theme(
+          plot.title = element_text(hjust = 0.5),
+          axis.title.x=element_blank(),
+          axis.text.x=element_blank(),
+          axis.ticks.x=element_blank()
+      ) + 
+      ylab("Average steps") +
+      labs(pattern_spacing="Algorithm", pattern_angle="Algorithm", pattern="Algorithm");
 
-ggsave(plot=walkerPerformancePlot, filename="walkerPerformance.pdf", width=imgWidth, height=imgHeight)
-ggsave(plot=walkerPerformancePlot, filename="walkerPerformance_big.pdf", width=imgWidthBig, height=imgHeightBig)
-
+    ggsave(plot=walkerPerformancePlot, filename="walkerPerformance.pdf", width=imgWidth, height=imgHeight / 2)
+    ggsave(plot=walkerPerformancePlot, filename="walkerPerformance_big.pdf", width=imgWidthBig, height=imgHeightBig)
+  
 # Expansions Graphs
 algo1 = "FD";
 

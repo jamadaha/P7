@@ -217,7 +217,7 @@ report <- read.csv('report.csv')
       plot <- 
         ggplot() + 
         geom_point(data=set, aes(x=xvalue, y=yvalue),color='gray') +
-        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain,shape=23)) +
+        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain),shape=23) +
         xlab(i) + 
         ylab(algo1) +
         ggtitle("Expansions") + 
@@ -232,8 +232,8 @@ report <- read.csv('report.csv')
   }
   
   combined <- ggarrange(plotlist=plots,
-                        ncol = 3, nrow = 3, common.legend = TRUE, legend = "right")
-  ggsave(plot=combined, filename="expPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)  
+                        ncol = 3, nrow = 2, common.legend = TRUE, legend = "right")
+  ggsave(plot=combined, filename="expPlot_big.pdf", width=imgWidthBig * 2, height=imgHeightBig)  
 
   
 # Generated Graphs
@@ -257,7 +257,7 @@ report <- read.csv('report.csv')
       plot <- 
         ggplot() + 
         geom_point(data=set, aes(x=xvalue, y=yvalue),color='gray') +
-        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain,shape=23)) +
+        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain),shape=23) +
         ggtitle("Generated") + 
         xlab(i) + 
         ylab(algo1) +
@@ -272,8 +272,8 @@ report <- read.csv('report.csv')
   }
   
   combined <- ggarrange(plotlist=plots,
-                        ncol = 3, nrow = 3, common.legend = TRUE, legend = "right")
-  ggsave(plot=combined, filename="genPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)  
+                        ncol = 3, nrow = 2, common.legend = TRUE, legend = "right")
+  ggsave(plot=combined, filename="genPlot_big.pdf", width=imgWidthBig * 2, height=imgHeightBig)  
   
 # Evaluations Graphs
   algo1 = "FD";
@@ -296,7 +296,7 @@ report <- read.csv('report.csv')
       plot <- 
         ggplot() + 
         geom_point(data=set, aes(x=xvalue, y=yvalue),color='gray') +
-        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain,shape=23)) +
+        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain),shape=23) +
         ggtitle("Evaluations") + 
         xlab(i) + 
         ylab(algo1) +
@@ -311,8 +311,8 @@ report <- read.csv('report.csv')
   }
   
   combined <- ggarrange(plotlist=plots,
-                        ncol = 3, nrow = 3, common.legend = TRUE, legend = "right")
-  ggsave(plot=combined, filename="evalPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)  
+                        ncol = 3, nrow = 2, common.legend = TRUE, legend = "right")
+  ggsave(plot=combined, filename="evalPlot_big.pdf", width=imgWidthBig * 2, height=imgHeightBig)  
   
 # Walker valid vs. invlaid paths
   walkerPathsSet <- subset(report, algorithm != "FD")

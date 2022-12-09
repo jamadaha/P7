@@ -136,6 +136,24 @@ macroQualityPlot <- ggplot(macroQualityReport, aes(x=domain, y=macroQuality, fil
 ggsave(plot=macroQualityPlot, filename="macroQualityPlot.pdf", width=imgWidth * 2, height=imgHeight / 2)
 ggsave(plot=macroQualityPlot, filename="macroQualityPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)
 
+# Macro Generated graphs
+macroSubset <- subset(report, algorithm != "FD")
+macroSubset$domain <- sub("_easy", "", macroSubset$domain)
+macroSubset$domain <- sub("_medium", "", macroSubset$domain)
+macroSubset$domain <- sub("_hard", "", macroSubset$domain)
+macroSubset$domain <- sub("_insane", "", macroSubset$domain)
+macroGeneratedReport <- as.data.table(macroSubset)[,list(generated=mean(macros_generated)),c('domain', 'algorithm')]
+macroGeneratedPlot <- ggplot(macroGeneratedReport, aes(x=domain, y=generated, fill=domain)) + 
+  geom_col_pattern(aes(pattern = algorithm, pattern_angle = algorithm, pattern_spacing = algorithm), fill='white', color='black', pattern_spacing =0.03, position='dodge') + 
+  scale_fill_grey() +
+  ggtitle("Average Macros Generated") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  xlab("Domain") + 
+  ylab("Macros Generated") +
+  labs(pattern_spacing="Algorithm", pattern_angle="Algorithm", pattern="Algorithm");
+ggsave(plot=macroGeneratedPlot, filename="macrosGeneratedPlot.pdf", width=imgWidth * 2, height=imgHeight / 2)
+ggsave(plot=macroGeneratedPlot, filename="macrosGeneratedPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)
+
 # Search vs. Reformulation_time
 noFD <- subset(report, algorithm != "Fast Downward")
 SearchOverReformulationReport <- as.data.table(macroSubset)[,list(reformulation_time=reformulation_time / 1000),c('search_time','algorithm')]

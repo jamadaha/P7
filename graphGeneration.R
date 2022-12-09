@@ -125,14 +125,17 @@ macroSubset$domain <- sub("_medium", "", macroSubset$domain)
 macroSubset$domain <- sub("_hard", "", macroSubset$domain)
 macroSubset$domain <- sub("_insane", "", macroSubset$domain)
 macroQualityReport <- as.data.table(macroSubset)[,list(macroQuality=(mean(unique_macros_used) / mean(macros_generated))*100),c('domain', 'algorithm')]
-macroQualityPlot <- ggplot(macroQualityReport, aes(x=domain, y=macroQuality, fill=domain)) + 
-  geom_col_pattern(aes(pattern = algorithm, pattern_angle = algorithm, pattern_spacing = algorithm), fill='white', color='black', pattern_spacing =0.03, position='dodge') + 
-  scale_fill_grey() +
+macroQualityPlot <- ggplot(macroQualityReport, aes(x=domain, y=macroQuality)) + 
+  geom_col_pattern(aes(pattern = algorithm, pattern_angle=algorithm), fill='white', color='black', pattern_spacing =0.03, position='dodge') + 
   ggtitle("Average Macro Quality (%)") + 
-  theme(plot.title = element_text(hjust = 0.5)) + 
+  theme(
+    plot.title = element_text(hjust = 0.5), 
+    legend.title = element_blank()) +
+  scale_pattern_manual(values=c('stripe', 'circle', 'crosshatch', 'stripe', 'circle', 'crosshatch', 'stripe', 'circle', 'crosshatch')) +
+  scale_pattern_angle_manual(values=c(0, 20, 40, 60, 80, 100, 120, 140,160)) +
   xlab("Domain") + 
   ylab("Macro Quality (%)") +
-  labs(pattern_spacing="Algorithm", pattern_angle="Algorithm", pattern="Algorithm");
+  scale_fill_grey();
 ggsave(plot=macroQualityPlot, filename="macroQualityPlot.pdf", width=imgWidth * 2, height=imgHeight / 2)
 ggsave(plot=macroQualityPlot, filename="macroQualityPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)
 
@@ -143,14 +146,17 @@ macroSubset$domain <- sub("_medium", "", macroSubset$domain)
 macroSubset$domain <- sub("_hard", "", macroSubset$domain)
 macroSubset$domain <- sub("_insane", "", macroSubset$domain)
 macroGeneratedReport <- as.data.table(macroSubset)[,list(generated=mean(macros_generated)),c('domain', 'algorithm')]
-macroGeneratedPlot <- ggplot(macroGeneratedReport, aes(x=domain, y=generated, fill=domain)) + 
-  geom_col_pattern(aes(pattern = algorithm, pattern_angle = algorithm, pattern_spacing = algorithm), fill='white', color='black', pattern_spacing =0.03, position='dodge') + 
-  scale_fill_grey() +
+macroGeneratedPlot <- ggplot(macroGeneratedReport, aes(x=domain, y=generated)) + 
+  geom_col_pattern(aes(pattern = algorithm, pattern_angle=algorithm), fill='white', color='black', pattern_spacing =0.03, position='dodge') + 
   ggtitle("Average Macros Generated") + 
-  theme(plot.title = element_text(hjust = 0.5)) + 
+  theme(
+    plot.title = element_text(hjust = 0.5), 
+    legend.title = element_blank()) +
+  scale_pattern_manual(values=c('stripe', 'circle', 'crosshatch', 'stripe', 'circle', 'crosshatch', 'stripe', 'circle', 'crosshatch')) +
+  scale_pattern_angle_manual(values=c(0, 20, 40, 60, 80, 100, 120, 140,160)) +
   xlab("Domain") + 
-  ylab("Macros Generated") +
-  labs(pattern_spacing="Algorithm", pattern_angle="Algorithm", pattern="Algorithm");
+  ylab("Macros") +
+  scale_fill_grey();
 ggsave(plot=macroGeneratedPlot, filename="macrosGeneratedPlot.pdf", width=imgWidth * 2, height=imgHeight / 2)
 ggsave(plot=macroGeneratedPlot, filename="macrosGeneratedPlot_big.pdf", width=imgWidthBig, height=imgHeightBig)
 
@@ -202,18 +208,20 @@ ggsave(plot=sRT, filename="SumSearchTimeBig.pdf", width=imgWidthBig, height=imgH
     walkerSpeedSet <- subset(report, algorithm != "FD")
 
     walkerPerformance <- as.data.table(walkerSpeedSet)[,list(generated=mean(total_walker_steps)),c('algorithm')]
-    walkerPerformancePlot <- ggplot(walkerPerformance, aes(x=algorithm, y=generated, fill=domain)) + 
-      geom_col_pattern(aes(pattern = algorithm, pattern_angle = algorithm, pattern_spacing = algorithm), fill='white', color='black', pattern_spacing =0.03, position='dodge') + 
-      scale_fill_grey() +
+    walkerPerformancePlot <- ggplot(walkerPerformance, aes(x=algorithm, y=generated)) + 
+      geom_col_pattern(aes(pattern = algorithm, pattern_angle = algorithm), fill='white', color='black', pattern_spacing =0.03, position='dodge') + 
       ggtitle("Walker Performance") + 
       theme(
           plot.title = element_text(hjust = 0.5),
+          legend.title = element_blank(),
           axis.title.x=element_blank(),
           axis.text.x=element_blank(),
           axis.ticks.x=element_blank()
       ) + 
+      scale_pattern_manual(values=c('stripe', 'circle', 'crosshatch', 'stripe', 'circle', 'crosshatch', 'stripe', 'circle', 'crosshatch')) +
+      scale_pattern_angle_manual(values=c(0, 20, 40, 60, 80, 100, 120, 140,160)) +
       ylab("Average steps") +
-      labs(pattern_spacing="Algorithm", pattern_angle="Algorithm", pattern="Algorithm");
+      scale_fill_grey();
 
     ggsave(plot=walkerPerformancePlot, filename="walkerPerformance.pdf", width=imgWidth, height=imgHeight / 2)
     ggsave(plot=walkerPerformancePlot, filename="walkerPerformance_big.pdf", width=imgWidthBig, height=imgHeightBig)

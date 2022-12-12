@@ -310,11 +310,10 @@ ggsave(plot=sRT, filename="SumSearchTimeBig.pdf", width=imgWidthBig, height=imgH
   averageSearchTimeData <- merge(as.data.table(report_medium)[,list(Medium=mean(search_time)),c('algorithm')], averageSearchTimeData)
   report_easy <- report[report$domain %like% "_easy", ]
   averageSearchTimeData <- merge(as.data.table(report_easy)[,list(Easy=mean(search_time)),c('algorithm')], averageSearchTimeData)
-  ss <- tableGrob(averageSearchTimeData)
-  pdf("overall_speed_table.pdf", height=2.5, width=4)
+  averageSearchTimeData <- as.data.table(averageSearchTimeData)[,list(Algorithm=algorithm, Hard=round(Hard, digits=2),Medium=round(Medium, digits=2),Easy=round(Easy, digits=2))]  
+  pdf("overall_speed_table.pdf", height=2.5, width=3.2)
   grid.table(averageSearchTimeData)
   dev.off()
-  print(ss)
 
 # Speed improvement pr. domain difficulty
 targetWalker1 = "FD"

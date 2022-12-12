@@ -302,6 +302,47 @@ sRT<-ggplot(data=agg, aes(x=Group.1, y=x)) +
 ggsave(plot=sRT, filename="SumSearchTime.pdf", width=imgWidth, height=imgHeight)
 ggsave(plot=sRT, filename="SumSearchTimeBig.pdf", width=imgWidthBig, height=imgHeightBig)
 
+# Speed improvement pr. domain difficulty
+targetWalker1 = "FD"
+walkerSpeedSet1 <- subset(report, algorithm == targetWalker1)
+averageSpeedSet1 <- as.data.table(walkerSpeedSet1)[,list(change1=mean(search_time)),c('domain')]  
+
+uniqueSet <- unique(subset(report, algorithm != targetWalker1)$algorithm)
+plots <- vector('list', 0)
+for (i in uniqueSet){
+  walkerSpeedSet2 <- subset(report, algorithm == i)
+  averageSpeedSet2 <- as.data.table(walkerSpeedSet2)[,list(change2=mean(search_time)),c('domain')]  
+  
+  combinedSet <- merge(averageSpeedSet1, averageSpeedSet2, fill=TRUE)
+  
+  speedChangeSet <- as.data.table(combinedSet)[,list(change=(1-(change1/change2))*100),c('domain')]  
+  total <- as.data.table(speedChangeSet)[,list(avg=mean(change)),] 
+  
+  plots[[i]] <- local({
+    i <- i
+    plot <- ggplot(speedChangeSet, aes(x=domain, y=change)) + 
+      geom_bar(aes(fill=domain), stat="identity") +
+      ggtitle(paste(targetWalker1, "Vs.", i)) + 
+      theme(
+        plot.title = element_text(hjust = 0.5),
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()
+      ) + 
+      ylim(-100,100) +
+      ylab("Difference") +
+      geom_abline(intercept = total$avg, slope = 0, linetype=2) +
+      scale_fill_grey();  
+    ggsave(plot=plot, filename=paste("speedDiffPlot_",i,".pdf", sep=""), width=imgWidth, height=imgHeight)
+    ggsave(plot=plot, filename=paste("speedDiffPlot_",i,"_big.pdf", sep=""), width=imgWidthBig, height=imgHeightBig) 
+    plot <- plot
+  }) 
+}
+
+  combined <- ggarrange(plotlist=plots,
+                        ncol = 3, nrow = 2, common.legend = TRUE, legend = "right")
+  ggsave(plot=combined, filename="speedDiffPlot_big.pdf", width=imgWidthBig * 2, height=imgHeightBig)  
+
 
 # Walker speeds Graphs
     walkerSpeedSet <- subset(report, algorithm != "FD")

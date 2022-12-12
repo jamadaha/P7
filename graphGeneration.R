@@ -7,6 +7,7 @@ library(ggpubr)
 library(ggpattern)
 library(dplyr)
 library(reshape2)
+library(gridExtra)
 
 # In inches!
 imgWidth <- 4

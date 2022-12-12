@@ -14,7 +14,7 @@ imgHeight <- 4
 imgWidthBig <- 8
 imgHeightBig <- 8
 
-lineWidth <- 2
+lineWidth <- 1.2
 pointSize <- 2
 
 # Reads in with header names
@@ -62,17 +62,114 @@ colnames(culDF) <- c('value', 'algorithm', 'count')
 culDF$value <- as.numeric(as.character(culDF$value))
 culDF$count <- as.numeric(as.character(culDF$count))
 
-reformulationTimeCulPlot <- ggplot(data=culDF, aes(x=value, y=count, group=algorithm)) + 
-  geom_line(aes(linetype=algorithm, color=algorithm),linewidth=lineWidth) + 
+reformulationTimeCulPlot <- ggplot() + 
+  geom_line(data=subset(culDF, algorithm != "FD"), aes(x=value, y=count, color=algorithm, linetype=algorithm),linewidth=lineWidth) + 
+  geom_line(data=subset(culDF, algorithm == "FD"), aes(x=value, y=count, color=algorithm, linetype=algorithm), linewidth=1.5) + 
   scale_color_grey() + 
   scale_x_continuous(trans='log10') +
   labs(linetype="Algorithm", color="Algorithm") +
   ggtitle("Average Reformulation Time (Cumulative)") + 
   theme(plot.title = element_text(hjust = 0.5)) + 
   xlab("Time (Seconds)") + 
-  ylab("Problems Solved")
+  ylab("Problems Solved") + 
+  scale_linetype_manual(values=c(2,1,3,4,2,3,4))
 ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm.pdf", width=imgWidth, height=imgHeight)
 ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm_big.pdf", width=imgWidthBig, height=imgHeightBig)
+
+# Culmin Graph Hard
+hardSets <- report[report$domain %like% "_hard", ]
+minValue = min(hardSets$reformulation_time) / 1000;
+maxValue = max(hardSets$reformulation_time) / 1000;
+xSeq = seq_log(minValue, maxValue, 1000)
+
+uniqueAlgorithm = unique(hardSets$algorithm);
+
+timeAvg <- as.data.table(hardSets)[,list(time=mean(reformulation_time) / 1000),c('domain', 'algorithm', 'problem')]
+
+maxRowCount <- 0;
+vecs <- list()
+for (i in seq_along(xSeq)) {
+  for (t in seq_along(uniqueAlgorithm)) {
+    vec <- list()
+    vec[[length(vec)+1]] = as.numeric(xSeq[i]);
+    rowCount = nrow(subset(timeAvg, timeAvg$algorithm == uniqueAlgorithm[t] & timeAvg$time < xSeq[i]));
+    vec[[length(vec)+1]] = uniqueAlgorithm[t];
+    vec[[length(vec)+1]] = as.numeric(rowCount);
+    vecs[[length(vecs)+1]] = vec;
+    if (rowCount > maxRowCount) {
+      maxRowCount <- rowCount
+    }
+  }
+}
+
+culDF <- as.data.frame(matrix(unlist(vecs), nrow=length(unlist(vecs[1]))))
+culDF <- as.data.frame(t(culDF))
+colnames(culDF) <- c('value', 'algorithm', 'count')
+
+culDF$value <- as.numeric(as.character(culDF$value))
+culDF$count <- as.numeric(as.character(culDF$count))
+
+reformulationTimeCulPlot <- ggplot() + 
+  geom_line(data=subset(culDF, algorithm != "FD"), aes(x=value, y=count, color=algorithm, linetype=algorithm),linewidth=lineWidth) + 
+  geom_line(data=subset(culDF, algorithm == "FD"), aes(x=value, y=count, color=algorithm, linetype=algorithm), linewidth=1.5) + 
+  scale_color_grey() + 
+  scale_x_continuous(trans='log10') +
+  labs(linetype="Algorithm", color="Algorithm") +
+  ggtitle("Average Reformulation Time (Cumulative)") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  xlab("Time (Seconds)") + 
+  ylab("Problems Solved") + 
+  scale_linetype_manual(values=c(2,1,3,4,2,3,4))
+ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm_hard.pdf", width=imgWidth, height=imgHeight)
+ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm_hard_big.pdf", width=imgWidthBig, height=imgHeightBig)
+
+# Culmin Graph Easy
+hardSets <- report[report$domain %like% "_easy", ]
+minValue = min(hardSets$reformulation_time) / 1000;
+maxValue = max(hardSets$reformulation_time) / 1000;
+xSeq = seq_log(minValue, maxValue, 1000)
+
+uniqueAlgorithm = unique(hardSets$algorithm);
+
+timeAvg <- as.data.table(hardSets)[,list(time=mean(reformulation_time) / 1000),c('domain', 'algorithm', 'problem')]
+
+maxRowCount <- 0;
+vecs <- list()
+for (i in seq_along(xSeq)) {
+  for (t in seq_along(uniqueAlgorithm)) {
+    vec <- list()
+    vec[[length(vec)+1]] = as.numeric(xSeq[i]);
+    rowCount = nrow(subset(timeAvg, timeAvg$algorithm == uniqueAlgorithm[t] & timeAvg$time < xSeq[i]));
+    vec[[length(vec)+1]] = uniqueAlgorithm[t];
+    vec[[length(vec)+1]] = as.numeric(rowCount);
+    vecs[[length(vecs)+1]] = vec;
+    if (rowCount > maxRowCount) {
+      maxRowCount <- rowCount
+    }
+  }
+}
+
+culDF <- as.data.frame(matrix(unlist(vecs), nrow=length(unlist(vecs[1]))))
+culDF <- as.data.frame(t(culDF))
+colnames(culDF) <- c('value', 'algorithm', 'count')
+
+culDF$value <- as.numeric(as.character(culDF$value))
+culDF$count <- as.numeric(as.character(culDF$count))
+
+reformulationTimeCulPlot <- ggplot() + 
+  geom_line(data=subset(culDF, algorithm != "FD"), aes(x=value, y=count, color=algorithm, linetype=algorithm),linewidth=lineWidth) + 
+  geom_line(data=subset(culDF, algorithm == "FD"), aes(x=value, y=count, color=algorithm, linetype=algorithm), linewidth=1.5) + 
+  scale_color_grey() + 
+  scale_x_continuous(trans='log10') +
+  labs(linetype="Algorithm", color="Algorithm") +
+  ggtitle("Average Reformulation Time (Cumulative)") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  xlab("Time (Seconds)") + 
+  ylab("Problems Solved") + 
+  scale_linetype_manual(values=c(2,1,3,4,2,3,4))
+ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm_hard.pdf", width=imgWidth, height=imgHeight)
+ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm_hard_big.pdf", width=imgWidthBig, height=imgHeightBig)
+
 
 # Culmin Graph the 2nd
 minValue = min(report$search_time);
@@ -106,15 +203,17 @@ colnames(culDF) <- c('value', 'algorithm', 'count')
 culDF$value <- as.numeric(as.character(culDF$value))
 culDF$count <- as.numeric(as.character(culDF$count))
 
-searchTimeCulPlot <- ggplot(data=culDF, aes(x=value, y=count)) + 
-  geom_line(aes(linetype=algorithm, color=algorithm),linewidth=lineWidth) + 
+searchTimeCulPlot <- ggplot() + 
+  geom_line(data=subset(culDF, algorithm != "FD"), aes(x=value, y=count, color=algorithm, linetype=algorithm),linewidth=lineWidth) + 
+  geom_line(data=subset(culDF, algorithm == "FD"), aes(x=value, y=count, color=algorithm, linetype=algorithm), linewidth=1.5) + 
   scale_color_grey() + 
   labs(linetype="Algorithm", color="Algorithm") +
   scale_x_continuous(trans='log10') +
   ggtitle("Average Search Time (Cumulative)") + 
   theme(plot.title = element_text(hjust = 0.5)) + 
   xlab("Time (Seconds)") + 
-  ylab("Problems Solved");
+  ylab("Problems Solved") + 
+  scale_linetype_manual(values=c(2,1,3,4,2,3,4))
 ggsave(plot=searchTimeCulPlot, filename="searchTimeCulm.pdf", width=imgWidth, height=imgHeight)
 ggsave(plot=searchTimeCulPlot, filename="searchTimeCulm_big.pdf", width=imgWidthBig, height=imgHeightBig)
 
@@ -361,4 +460,3 @@ print (walkerInvalidPathsPlot);
 
 ggsave(plot=walkerInvalidPathsPlot, filename="validvsinvalidpaths.pdf", width=imgWidth, height=imgHeight)
 ggsave(plot=walkerInvalidPathsPlot, filename="validvsinvalidpaths_big.pdf", width=imgWidthBig, height=imgHeightBig)
-

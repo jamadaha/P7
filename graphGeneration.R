@@ -302,6 +302,19 @@ sRT<-ggplot(data=agg, aes(x=Group.1, y=x)) +
 ggsave(plot=sRT, filename="SumSearchTime.pdf", width=imgWidth, height=imgHeight / 2)
 ggsave(plot=sRT, filename="SumSearchTimeBig.pdf", width=imgWidthBig, height=imgHeightBig)
 
+# Overall speed 
+  report_hard <- report[report$domain %like% "_hard", ]
+  averageSearchTimeData <- as.data.table(report_hard)[,list(Hard=mean(search_time)),c('algorithm')]  
+  report_medium <- report[report$domain %like% "_medium", ]
+  averageSearchTimeData <- merge(as.data.table(report_medium)[,list(Medium=mean(search_time)),c('algorithm')], averageSearchTimeData)
+  report_easy <- report[report$domain %like% "_easy", ]
+  averageSearchTimeData <- merge(as.data.table(report_easy)[,list(Easy=mean(search_time)),c('algorithm')], averageSearchTimeData)
+  ss <- tableGrob(averageSearchTimeData)
+  pdf("overall_speed_table.pdf", height=2.5, width=4)
+  grid.table(averageSearchTimeData)
+  dev.off()
+  print(ss)
+
 # Speed improvement pr. domain difficulty
 targetWalker1 = "FD"
 walkerSpeedSet1 <- subset(report, algorithm == targetWalker1)

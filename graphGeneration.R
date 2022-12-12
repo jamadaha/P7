@@ -73,7 +73,7 @@ reformulationTimeCulPlot <- ggplot() +
   xlab("Time (Seconds)") + 
   ylab("Problems Solved") + 
   scale_linetype_manual(values=c(2,1,3,4,2,3,4))
-ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm.pdf", width=imgWidth, height=imgHeight)
+ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm.pdf", width=imgWidth, height=imgHeight / 2)
 ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm_big.pdf", width=imgWidthBig, height=imgHeightBig)
 
 # Culmin Graph Hard
@@ -120,7 +120,7 @@ reformulationTimeCulPlot <- ggplot() +
   xlab("Time (Seconds)") + 
   ylab("Problems Solved") + 
   scale_linetype_manual(values=c(2,1,3,4,2,3,4))
-ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm_hard.pdf", width=imgWidth, height=imgHeight)
+ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm_hard.pdf", width=imgWidth, height=imgHeight / 2)
 ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm_hard_big.pdf", width=imgWidthBig, height=imgHeightBig)
 
 # Culmin Graph Easy
@@ -167,7 +167,7 @@ reformulationTimeCulPlot <- ggplot() +
   xlab("Time (Seconds)") + 
   ylab("Problems Solved") + 
   scale_linetype_manual(values=c(2,1,3,4,2,3,4))
-ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm_easy.pdf", width=imgWidth, height=imgHeight)
+ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm_easy.pdf", width=imgWidth, height=imgHeight / 2)
 ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm_easy_big.pdf", width=imgWidthBig, height=imgHeightBig)
 
 
@@ -214,7 +214,7 @@ searchTimeCulPlot <- ggplot() +
   xlab("Time (Seconds)") + 
   ylab("Problems Solved") + 
   scale_linetype_manual(values=c(2,1,3,4,2,3,4))
-ggsave(plot=searchTimeCulPlot, filename="searchTimeCulm.pdf", width=imgWidth, height=imgHeight)
+ggsave(plot=searchTimeCulPlot, filename="searchTimeCulm.pdf", width=imgWidth, height=imgHeight / 2)
 ggsave(plot=searchTimeCulPlot, filename="searchTimeCulm_big.pdf", width=imgWidthBig, height=imgHeightBig)
 
 # Macro Quality graphs

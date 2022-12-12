@@ -289,7 +289,7 @@ sRT<-ggplot(data=agg, aes(x=Group.1, y=x)) +
   geom_bar(stat="identity") +
   xlab("Algorithm (s)") + 
   ylab("Sum of Reformulation Time (s)")
-ggsave(plot=sRT, filename="SumReformTime.pdf", width=imgWidth, height=imgHeight)
+ggsave(plot=sRT, filename="SumReformTime.pdf", width=imgWidth, height=imgHeight / 2)
 ggsave(plot=sRT, filename="SumReformTime_big.pdf", width=imgWidthBig, height=imgHeightBig)
 
 # Sum Search time
@@ -299,7 +299,7 @@ sRT<-ggplot(data=agg, aes(x=Group.1, y=x)) +
   geom_bar(stat="identity") +
   xlab("Algorithm (s)") + 
   ylab("Sum of Search Time (s)")
-ggsave(plot=sRT, filename="SumSearchTime.pdf", width=imgWidth, height=imgHeight)
+ggsave(plot=sRT, filename="SumSearchTime.pdf", width=imgWidth, height=imgHeight / 2)
 ggsave(plot=sRT, filename="SumSearchTimeBig.pdf", width=imgWidthBig, height=imgHeightBig)
 
 # Speed improvement pr. domain difficulty

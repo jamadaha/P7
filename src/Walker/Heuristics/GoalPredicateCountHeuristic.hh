@@ -1,5 +1,5 @@
-#ifndef GOAL_PREDICATE_COUNT_HEURISTIC
-#define GOAL_PREDICATE_COUNT_HEURISTIC
+#ifndef GOALPREDICATECOUNTHEURISTIC
+#define GOALPREDICATECOUNTHEURISTIC
 
 #include <unordered_set>
 #include "BaseHeuristic.hh"
@@ -27,42 +27,58 @@ public:
 
 	int Eval(const PDDL::State* state, const PDDL::ActionInstance* action) const override {
 		int value = 0;
-
-		if (state != nullptr) {
-			for (auto goalUnaryFacts = problem->goalState.unaryFacts.begin(); goalUnaryFacts != problem->goalState.unaryFacts.end(); goalUnaryFacts++) {
-				for (auto fact = goalUnaryFacts->second.begin(); fact != goalUnaryFacts->second.end(); fact++) {
-					if (state->ContainsFact(goalUnaryFacts->first, *fact))
-						value += 1;
-				}
-			}
-			for (auto goalBinaryFacts = problem->goalState.binaryFacts.begin(); goalBinaryFacts != problem->goalState.binaryFacts.end(); goalBinaryFacts++) {
-				for (auto fact = goalBinaryFacts->second.begin(); fact != goalBinaryFacts->second.end(); fact++) {
-					if (state->ContainsFact(goalBinaryFacts->first, *fact))
-						value += 1;
-				}
-			}
+		for (auto iter = problem->goalState.unaryFacts.begin(); iter != problem->goalState.unaryFacts.end(); iter++)
+			for (auto factIter = (*iter).second.begin(); factIter != (*iter).second.end(); factIter++)
+				if (state->ContainsFact((*iter).first, &(*factIter)))
+					value += 1000;
+		for (auto iter = problem->goalState.binaryFacts.begin(); iter != problem->goalState.binaryFacts.end(); iter++)
+			for (auto factIter = (*iter).second.begin(); factIter != (*iter).second.end(); factIter++)
+				if (state->ContainsFact((*iter).first, (*factIter)))
+					value += 2000;
+		for (auto iter = goalPreconditions.begin(); iter != goalPreconditions.end(); iter++) {
+			if (domain->predicates.at((*iter)).arguments.size() == 1)
+				value += state->unaryFacts.at((*iter)).size();
+			else
+				value += 2 * state->binaryFacts.at((*iter)).size();
 		}
-
-		if (action != nullptr) {
-			for (auto effectLiteral = action->action->effects.begin(); effectLiteral != action->action->effects.end(); effectLiteral++) {
-				if (effectLiteral->args.size() == 1) {
-					if (problem->goalState.ContainsFact(effectLiteral->predicateIndex, action->objects.at(effectLiteral->args.at(0))))
-						if (effectLiteral->value)
-							value += 1;
-				}
-				else if (effectLiteral->args.size() == 2) {
-					if (problem->goalState.ContainsFact(effectLiteral->predicateIndex, std::make_pair(action->objects.at(effectLiteral->args.at(0)), action->objects.at(effectLiteral->args.at(1)))))
-						if (effectLiteral->value)
-							value += 1;
-				}
-			}
-		}
+		
 		return value;
 	};
 
 private:
+	// The preconditions of actions which has an effect relating to goal state
+	// e.g. goal: ball at some room - actions: drop - preconditions: holding ball & at-room 
+	// Is a set as the case of same predicate different values is still valid
+	std::unordered_set<unsigned int> goalPreconditions;
+
+	void GenerateGoalPredicates() {
+		std::unordered_set<const PDDL::Action*> actions = GetRelevantActions();
+		for (auto action = actions.begin(); action != actions.end(); action++) {
+			for (int i = 0; i < (*action)->preconditions.size(); i++) {
+				const PDDL::Literal *literal = &(*action)->preconditions.at(i);
+				goalPreconditions.emplace(literal->predicateIndex);
+			}
+		}
+	}
+
+	// Retries those PDDL::Action whose effect relates to the goal state
+	// TODO: Handle cases where goal state requires something to be false
+	std::unordered_set<const PDDL::Action*> GetRelevantActions() {
+		std::unordered_set<const PDDL::Action*> actions;
+		for (int i = 0; i < domain->actions.size(); i++) {
+			const PDDL::Action *action = &domain->actions.at(i);
+			for (int eff = 0; eff < action->effects.size(); eff++) {
+				const PDDL::Literal *effect = &action->effects.at(eff);
+				bool containsEffectFact = (problem->goalState.unaryFacts.contains(effect->predicateIndex) && problem->goalState.unaryFacts.at(effect->predicateIndex).size() > 0);
+				if (effect->value && containsEffectFact)
+					actions.emplace(action);
+			}
+		}
+		return actions;
+	}
+
 	void Reset() override {};
 };
 
 
-#endif
+#endif // GOALPREDICATECOUNTHEURISTIC

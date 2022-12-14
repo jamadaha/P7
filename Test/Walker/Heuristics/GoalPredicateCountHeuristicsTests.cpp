@@ -58,8 +58,8 @@ TEST_CASE(TAG + "Eval - NoMatchingPredicates - Unary") {
 
     GoalPredicateCountHeuristic heuristic(&domain, &problem);
 
-    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(0)) == 0);
-    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(1)) == 0);
+    REQUIRE(heuristic.Eval(&initState) == 0);
+    REQUIRE(heuristic.Eval(&initState) == 0);
 }
 
 TEST_CASE(TAG + "Eval - NoMatchingPredicates - Binary") {
@@ -84,8 +84,8 @@ TEST_CASE(TAG + "Eval - NoMatchingPredicates - Binary") {
 
     GoalPredicateCountHeuristic heuristic(&domain, &problem);
 
-    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(0)) == 0);
-    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(1)) == 0);
+    REQUIRE(heuristic.Eval(&initState) == 0);
+    REQUIRE(heuristic.Eval(&initState) == 0);
 }
 
 TEST_CASE(TAG + "Eval - SingleMatchingPredicates - Unary") {
@@ -111,8 +111,8 @@ TEST_CASE(TAG + "Eval - SingleMatchingPredicates - Unary") {
 
     GoalPredicateCountHeuristic heuristic(&domain, &problem);
 
-    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(0)) == 1);
-    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(1)) == 0);
+    REQUIRE(heuristic.Eval(&initState) == 1);
+    REQUIRE(heuristic.Eval(&initState) == 0);
 }
 
 TEST_CASE(TAG + "Eval - SingleMatchingPredicates - Binary") {
@@ -138,8 +138,8 @@ TEST_CASE(TAG + "Eval - SingleMatchingPredicates - Binary") {
 
     GoalPredicateCountHeuristic heuristic(&domain, &problem);
 
-    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(0)) == 0);
-    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(1)) == 1);
+    REQUIRE(heuristic.Eval(&initState) == 0);
+    REQUIRE(heuristic.Eval(&initState) == 1);
 }
 
 TEST_CASE(TAG + "Eval - MultipleMatchingPredicates - Unary") {
@@ -166,8 +166,8 @@ TEST_CASE(TAG + "Eval - MultipleMatchingPredicates - Unary") {
 
     GoalPredicateCountHeuristic heuristic(&domain, &problem);
 
-    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(0)) == 1);
-    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(1)) == 0);
+    REQUIRE(heuristic.Eval(&initState) == 1);
+    REQUIRE(heuristic.Eval(&initState) == 0);
 }
 
 TEST_CASE(TAG + "Eval - MultipleMatchingPredicates - Binary") {
@@ -194,8 +194,8 @@ TEST_CASE(TAG + "Eval - MultipleMatchingPredicates - Binary") {
 
     GoalPredicateCountHeuristic heuristic(&domain, &problem);
 
-    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(0)) == 1);
-    REQUIRE(heuristic.Eval(&initState, &actionInstances.at(1)) == 1);
+    REQUIRE(heuristic.Eval(&initState) == 1);
+    REQUIRE(heuristic.Eval(&initState) == 1);
 }
 
 #pragma endregion

@@ -79,6 +79,7 @@ ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm_big.pdf", 
 
 # Culmin Graph Hard
 hardSets <- report[report$domain %like% "_hard", ]
+if (nrow(hardSets) > 0){
 minValue = min(hardSets$reformulation_time) / 1000;
 maxValue = max(hardSets$reformulation_time) / 1000;
 xSeq = seq_log(minValue, maxValue, 1000)
@@ -123,9 +124,11 @@ reformulationTimeCulPlot <- ggplot() +
   scale_linetype_manual(values=c(2,1,3,4,2,3,4))
 ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm_hard.pdf", width=imgWidth, height=imgHeight / 2)
 ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm_hard_big.pdf", width=imgWidthBig, height=imgHeightBig)
+}
 
 # Culmin Graph Easy
 hardSets <- report[report$domain %like% "_easy", ]
+if (nrow(hardSets) > 0){
 minValue = min(hardSets$reformulation_time) / 1000;
 maxValue = max(hardSets$reformulation_time) / 1000;
 xSeq = seq_log(minValue, maxValue, 1000)
@@ -170,7 +173,7 @@ reformulationTimeCulPlot <- ggplot() +
   scale_linetype_manual(values=c(2,1,3,4,2,3,4))
 ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm_easy.pdf", width=imgWidth, height=imgHeight / 2)
 ggsave(plot=reformulationTimeCulPlot, filename="reformulationTimeCulm_easy_big.pdf", width=imgWidthBig, height=imgHeightBig)
-
+}
 
 # Culmin Graph the 2nd
 minValue = min(report$search_time);
@@ -305,15 +308,17 @@ ggsave(plot=sRT, filename="SumSearchTimeBig.pdf", width=imgWidthBig, height=imgH
 
 # Overall speed 
   report_hard <- report[report$domain %like% "_hard", ]
-  averageSearchTimeData <- as.data.table(report_hard)[,list(Hard=mean(search_time)),c('algorithm')]  
   report_medium <- report[report$domain %like% "_medium", ]
-  averageSearchTimeData <- merge(as.data.table(report_medium)[,list(Medium=mean(search_time)),c('algorithm')], averageSearchTimeData)
   report_easy <- report[report$domain %like% "_easy", ]
-  averageSearchTimeData <- merge(as.data.table(report_easy)[,list(Easy=mean(search_time)),c('algorithm')], averageSearchTimeData)
-  averageSearchTimeData <- as.data.table(averageSearchTimeData)[,list(Algorithm=algorithm, Hard=round(Hard, digits=2),Medium=round(Medium, digits=2),Easy=round(Easy, digits=2))]  
-  pdf("overall_speed_table.pdf", height=2.5, width=3.2)
-  grid.table(averageSearchTimeData)
-  dev.off()
+  if (nrow(report_hard) > 0 && nrow(report_medium) > 0 && nrow(report_easy) > 0) {
+      averageSearchTimeData <- as.data.table(report_hard)[,list(Hard=mean(search_time)),c('algorithm')]  
+      averageSearchTimeData <- merge(as.data.table(report_medium)[,list(Medium=mean(search_time)),c('algorithm')], averageSearchTimeData)
+      averageSearchTimeData <- merge(as.data.table(report_easy)[,list(Easy=mean(search_time)),c('algorithm')], averageSearchTimeData)
+      averageSearchTimeData <- as.data.table(averageSearchTimeData)[,list(Algorithm=algorithm, Hard=round(Hard, digits=2),Medium=round(Medium, digits=2),Easy=round(Easy, digits=2))]  
+      pdf("overall_speed_table.pdf", height=2.5, width=3.2)
+      grid.table(averageSearchTimeData)
+      dev.off()
+  }
 
 # Speed improvement pr. domain difficulty
 targetWalker1 = "FD"
@@ -459,44 +464,67 @@ algo1 = "FD";
   ggsave(plot=combined, filename="genPlot_big.pdf", width=imgWidthBig * 2, height=imgHeightBig)  
   
 # Evaluations Graphs
-  algo1 = "FD";
+easyProblems = report
+easyProblems = easyProblems[!grepl('_easy', easyProblems$domain),]
+easyProblems = easyProblems[!grepl('_medium', easyProblems$domain),]
+easyProblems = easyProblems[!grepl('_hard', easyProblems$domain),]
+easyProblems = easyProblems[!grepl('_insane', easyProblems$domain),]
+easyProblems <- rbind(report[report$domain %like% "_easy", ], easyProblems)
+if (nrow(easyProblems) > 0)
+    easyProblems$domain <- paste0("1. Easy")
+
+mediumProblems <- report[report$domain %like% "_medium", ]
+if (nrow(mediumProblems) > 0)
+    mediumProblems$domain <- paste0("2. Medium")
+
+hardProblems <- report[report$domain %like% "_hard", ]
+if (nrow(hardProblems) > 0)
+    hardProblems$domain <- paste0("3. Hard")
+
+allProblems = rbind(easyProblems,mediumProblems,hardProblems)
+
+algo1 = "FD";
+
+set1 <- subset(allProblems, algorithm == algo1)
+set1 <- as.data.table(set1)[,list(yvalue=mean(evaluations)),c('problem','domain')]
+
+uniqueSet <- unique(subset(allProblems, algorithm != algo1)$algorithm)
+plots <- vector('list', 0)
+for (i in uniqueSet) {
+  set2 <- subset(allProblems, algorithm == i)
+  set2 <- as.data.table(set2)[,list(xvalue=mean(evaluations)),c('problem','domain')]
   
-  set1 <- subset(report, algorithm == algo1)
-  set1 <- as.data.table(set1)[,list(yvalue=mean(evaluations)),c('problem','domain')]
+  set <- merge(set1, set2, fill=TRUE)
+  setInteresting <- subset(set, mean(xvalue) < mean(yvalue))
+  set <- anti_join(set, setInteresting)
   
-  uniqueSet <- unique(subset(report, algorithm != algo1)$algorithm)
-  plots <- vector('list', 0)
-  for (i in uniqueSet) {
-    set2 <- subset(report, algorithm == i)
-    set2 <- as.data.table(set2)[,list(xvalue=mean(evaluations)),c('problem','domain')]
-    
-    set <- merge(set1, set2, fill=TRUE)
-    setInteresting <- subset(set, mean(xvalue) < mean(yvalue))
-    set <- anti_join(set, setInteresting)
-    
-    plots[[i]] <- local({
-      i <- i
-      plot <- 
-        ggplot() + 
-        geom_point(data=set, aes(x=xvalue, y=yvalue),color='gray') +
-        geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, color=domain),shape=23) +
-        ggtitle("Evaluations") + 
-        xlab(i) + 
-        ylab(algo1) +
-        scale_x_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
-        scale_y_log10(limits=c(1,max(set2$xvalue,set1$yvalue))) +
-        scale_fill_grey() +
-        geom_abline(intercept = 0, slope = 1);
-      ggsave(plot=plot, filename=paste("evalPlot_",i,".pdf", sep=""), width=imgWidth, height=imgHeight)
-      ggsave(plot=plot, filename=paste("evalPlot_",i,"_big.pdf", sep=""), width=imgWidthBig, height=imgHeightBig)
-      plot <- plot
-    })
-  }
-  
-  combined <- ggarrange(plotlist=plots,
-                        ncol = 3, nrow = 2, common.legend = TRUE, legend = "right")
-  ggsave(plot=combined, filename="evalPlot_big.pdf", width=imgWidthBig * 2, height=imgHeightBig)  
-  
+  plots[[i]] <- local({
+    i <- i
+    plot <- 
+      ggplot() + 
+      geom_point(data=set, aes(x=xvalue, y=yvalue),color='gray') +
+      geom_point(data=setInteresting, aes(x=xvalue, y=yvalue, shape=domain, color=domain)) +
+      xlab(i) + 
+      ylab(algo1) +
+      theme(
+        plot.title = element_text(hjust = 0.5)
+      ) + 
+      ggtitle("Evaluations") + 
+      scale_x_log10(limits=c(min(set2$xvalue,set1$yvalue),max(set2$xvalue,set1$yvalue))) +
+      scale_y_log10(limits=c(min(set2$xvalue,set1$yvalue),max(set2$xvalue,set1$yvalue))) +
+      labs(domain="Domain") +
+      scale_fill_grey() +
+      geom_abline(intercept = 0, slope = 1);
+    ggsave(plot=plot, filename=paste("evalPlot_",i,".pdf", sep=""), width=imgWidth, height=imgHeight)
+    ggsave(plot=plot, filename=paste("evalPlot_",i,"_big.pdf", sep=""), width=imgWidthBig, height=imgHeightBig) 
+    plot <- plot
+  }) 
+}
+
+combined <- ggarrange(plotlist=plots,
+                      ncol = 3, nrow = 2, common.legend = TRUE, legend = "right")
+ggsave(plot=combined, filename="evalPlot_big.pdf", width=imgWidthBig * 2, height=imgHeightBig)  
+
 # Walker valid vs. invlaid paths
 walkerPathsSet <- subset(report, algorithm != "FD")
 

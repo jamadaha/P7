@@ -60,7 +60,7 @@
         "'--all'"
       ],
       "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}/build",
       "environment": [
         {
           "name": "PATH",

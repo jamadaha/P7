@@ -195,8 +195,8 @@ report[report=="hillClimberWalker"] <- "HCW"
       geom_bar(stat="identity") +
       xlab("Algorithm (s)") + 
       ylab("Sum of Reformulation Time (s)")
-    ggsave(plot=sRT, filename="SumReformTime.pdf", width=imgWidth, height=imgHeight)
-    ggsave(plot=sRT, filename="SumReformTime_big.pdf", width=imgWidthBig, height=imgHeightBig)
+    ggsave(plot=sRT, filename="SumReformTime.pdf", width=imgWidth, height=imgHeight / 2)
+    ggsave(plot=sRT, filename="SumReformTime_big.pdf", width=imgWidthBig, height=imgHeightBig / 2)
 
 # Sum Search time
     #timeAvg <- as.data.table(report)[,list(time=mean(search_time) / 1000),c('domain', 'algorithm', 'problem')]

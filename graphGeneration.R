@@ -128,7 +128,6 @@ report[report=="hillClimberWalker"] <- "HCW"
       xlab("Time (Seconds)") + 
       ylab("Problems Solved") + 
       scale_linetype_manual(values=c(2,1,3,4,2,3,4))
-    print(searchTimeCulPlot)
     ggsave(plot=searchTimeCulPlot, filename="searchTimeCulm.pdf", width=imgWidth, height=imgHeight)
     ggsave(plot=searchTimeCulPlot, filename="searchTimeCulm_big.pdf", width=imgWidthBig, height=imgHeightBig)
 
@@ -393,6 +392,5 @@ report[report=="hillClimberWalker"] <- "HCW"
     #  xlab("Walker") + 
     #  ylab("Number of paths") +
     #  labs(fill='Paths');
-    #print (walkerInvalidPathsPlot);
     #ggsave(plot=walkerInvalidPathsPlot, filename="validvsinvalidpaths.pdf", width=imgWidth, height=imgHeight)
     #ggsave(plot=walkerInvalidPathsPlot, filename="validvsinvalidpaths_big.pdf", width=imgWidthBig, height=imgHeightBig)

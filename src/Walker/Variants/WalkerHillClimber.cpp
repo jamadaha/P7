@@ -13,7 +13,7 @@ Path WalkerHillClimber::Walk(BaseHeuristic *heuristic, const PDDL::State *state,
         OnTempStateMade(this->instance, &tempState);
 
     heuristic->Reset();
-    int workingEval = heuristic->Eval(&tempState, nullptr);
+    int workingEval = heuristic->Eval(&tempState);
 
     for (int i = 0; i < maxStepCount; i++) {
         if (!widthFunc->Iterate(current))
@@ -28,7 +28,9 @@ Path WalkerHillClimber::Walk(BaseHeuristic *heuristic, const PDDL::State *state,
         int initIndex = rand() % possibleActions.size();
         for (int i = 0; i < possibleActions.size(); i++) {
             int wIndex = (initIndex + i) % possibleActions.size();
-            int val = heuristic->Eval(&tempState, &possibleActions.at(wIndex));
+            auto changes = tempState.DoAction(&possibleActions.at(wIndex));
+            int val = heuristic->Eval(&tempState);
+            tempState.UndoAction(&changes);
             if (bestAction == nullptr || val >= bestValue) {
                 bestAction = &possibleActions.at(wIndex);
                 bestValue = val;

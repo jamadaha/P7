@@ -17,14 +17,3 @@ target_link_libraries(Tests-Walker
         ActionGenerator)
 
 catch_discover_tests(Tests-Walker)
-
-add_executable(Tests-Walker-Heuristics "Test/Walker/Heuristics/GoalPredicateCountHeuristicsTests.cpp")
-target_link_libraries(Tests-Walker-Heuristics
-    PRIVATE 
-        Catch2::Catch2WithMain
-        Walker
-        PDDL
-        ActionGenerator)
-
-catch_discover_tests(Tests-Walker-Heuristics)
-

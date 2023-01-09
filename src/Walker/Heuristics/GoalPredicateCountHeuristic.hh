@@ -37,12 +37,12 @@ public:
 		for (auto iter = problem->goalState.binaryFacts.begin(); iter != problem->goalState.binaryFacts.end(); iter++)
 			for (auto factIter = (*iter).second.begin(); factIter != (*iter).second.end(); factIter++)
 				if (state->ContainsFact((*iter).first, (*factIter)))
-					value += 2000;
+					value += 1000;
 		for (auto iter = goalPreconditions.begin(); iter != goalPreconditions.end(); iter++) {
 			if (domain->predicates.at((*iter)).arguments.size() == 1)
 				value += state->unaryFacts.at((*iter)).size();
 			else
-				value += 2 * state->binaryFacts.at((*iter)).size();
+				value += state->binaryFacts.at((*iter)).size();
 		}
 		
 		return value;
@@ -69,12 +69,20 @@ private:
 	std::unordered_set<const PDDL::Action*> GetRelevantActions() {
 		std::unordered_set<const PDDL::Action*> actions;
 		for (int i = 0; i < domain->actions.size(); i++) {
-			const PDDL::Action *action = &domain->actions.at(i);
-			for (int eff = 0; eff < action->effects.size(); eff++) {
-				const PDDL::Literal *effect = &action->effects.at(eff);
-				bool containsEffectFact = (problem->goalState.unaryFacts.contains(effect->predicateIndex) && problem->goalState.unaryFacts.at(effect->predicateIndex).size() > 0);
-				if (effect->value && containsEffectFact)
-					actions.emplace(action);
+			const auto action = domain->actions.at(i);
+			for (int eff = 0; eff < action.effects.size(); eff++) {
+                const auto effect = action.effects.at(eff);
+				const auto effectPredicate = effect.predicateIndex;
+				if (!effect.value)
+                    continue;
+
+                if (problem->goalState.unaryFacts.contains(effectPredicate)) {
+                    if (!problem->goalState.unaryFacts.at(effectPredicate).empty())
+                        actions.emplace(&domain->actions.at(i));
+                } else if (problem->goalState.binaryFacts.contains(effectPredicate)) {
+                    if (!problem->goalState.binaryFacts.at(effectPredicate).empty())
+                        actions.emplace(&domain->actions.at(i));
+                }
 			}
 		}
 		return actions;

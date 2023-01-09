@@ -7,6 +7,7 @@
 class GoalPredicateCountHeuristic : public BaseHeuristic {
 public:
 	GoalPredicateCountHeuristic(const PDDL::Domain *domain, const PDDL::Problem *problem) : BaseHeuristic(domain, problem){
+        GenerateGoalPredicates();
 	};
 
 	PDDL::ActionInstance* NextChoice(PDDL::State * state, std::vector<PDDL::ActionInstance> *choices) override {
